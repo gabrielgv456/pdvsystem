@@ -1,3 +1,4 @@
+
 import {Link} from 'react-router-dom'
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/Auth/AuthContext";
@@ -7,15 +8,14 @@ import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 
 
 
-export const Home = () => {
+export const InventoryManagement = () => {
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
 
     return (
         <S.Container isDarkMode={Theme.DarkMode}>
-        <S.Box>Home, Olá {auth.user?.name}, tudo bem?</S.Box>
-        <S.Box>Home, Olá {auth.user?.name}, tudo bem?</S.Box>
-        <S.Box className='Box_Cashier'>Caixa Aberto</S.Box>
+        {auth.user?.name}
+        InventoryManagement
         </S.Container>
        
     )

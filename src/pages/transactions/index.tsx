@@ -7,15 +7,17 @@ import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 
 
 
-export const Home = () => {
+export const Transactions = () => {
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
 
     return (
         <S.Container isDarkMode={Theme.DarkMode}>
-        <S.Box>Home, Olá {auth.user?.name}, tudo bem?</S.Box>
-        <S.Box>Home, Olá {auth.user?.name}, tudo bem?</S.Box>
-        <S.Box className='Box_Cashier'>Caixa Aberto</S.Box>
+        <S.Header>
+        <S.Box><label>Data Inicial</label><S.Input type="date"></S.Input></S.Box>
+        <S.Box><label>Data Final</label><S.Input type="date"></S.Input></S.Box>
+        <S.DivSearch><S.Button>Pesquisar</S.Button></S.DivSearch>
+        </S.Header>
         </S.Container>
        
     )

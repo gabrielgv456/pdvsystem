@@ -1,37 +1,70 @@
 import { useContext } from 'react';
-import './App.css';
 import { Route, Routes, Link } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Private } from './pages/Private';
 import { RequireAuth } from './contexts/Auth/RequireAuth';
 import { AuthContext } from './contexts/Auth/AuthContext';
 import { userInfo } from 'os';
+import { NotFound } from './pages/NotFound';
+import HomeSideBar from './pages/Home/Sidebar';
+import { Login } from './pages/Login'
+import { Sell } from '@mui/icons-material';
+import { SalesControl } from './pages/SalesControl';
+import { Transactions } from './pages/transactions';
+import { InventoryManagement } from './pages/InventoryManagement';
+import SalesControlsideBar from './pages/SalesControl/Sidebar';
+import SellSideBar from './pages/Sell/Sidebar';
+import TransactionsSideBar from './pages/transactions/Sidebar';
+import InventoryManagementSideBar from './pages/InventoryManagement/Sidebar';
+import { GlobalStyle } from './styles/GlobalStyle';
+import { useDarkMode } from './contexts/DarkMode/DarkModeProvider';
+import { ThemeConsumer } from 'styled-components';
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 
-
+import { AuthRedirect } from './pages/Login/AuthRedirect';
+import { fontSize } from '@mui/system';
+import { borderRadius } from 'polished';
 
 function App() {
-  const auth = useContext(AuthContext);
+  const Theme = useDarkMode();
 
-  const handleLogout = async () => {
-    await auth.signout();
-    window.location.href = window.location.href;
-  }
+const ThemeMui = createTheme({
+
+  typography: {
+    allVariants: {
+      fontFamily: ['Poppins','Nunito','sans-serif'].join(','),
+      fontSize: 14.9,
+    },
+  },
+  components:{
+    MuiInputLabel:{styleOverrides:{root:{color:Theme.DarkMode?'white':''}}},
+  
+    MuiOutlinedInput:{styleOverrides:{
+      notchedOutline:{borderColor:Theme.DarkMode?'white':''}, 
+      root:{":hover $notchedOutline": {borderColor:'red'}},
+    }},
+
+
+}
+
+  
+});
+ 
 
   return (
     <div className="App">
-      <header>
-        <h1>Header do site</h1>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/private">Página Privada</Link>
-          {auth.user && <button onClick={handleLogout}>Sair</button>}
-        </nav>
-      </header>
-      <hr />
+      <GlobalStyle isDarkMode={Theme.DarkMode}/>
+      <ThemeProvider theme={ThemeMui}>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/private" element={<RequireAuth><Private /></RequireAuth>} />
+        <Route path="/" element={<AuthRedirect><Login/></AuthRedirect>} />
+        <Route path="/home" element={<RequireAuth><HomeSideBar/></RequireAuth>} />
+        <Route path="/sell" element={<RequireAuth><SellSideBar/></RequireAuth>} />
+        <Route path="/salescontrol" element={<RequireAuth><SalesControlsideBar/></RequireAuth>} />
+        <Route path="/transactions" element={<RequireAuth><TransactionsSideBar/></RequireAuth>} />
+        <Route path="/inventorymanagement" element={<RequireAuth><InventoryManagementSideBar/></RequireAuth>} />
+        <Route path="*" element={<NotFound/>} />
       </Routes>
+      </ThemeProvider>
     </div>
   );
 }
