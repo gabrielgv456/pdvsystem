@@ -40,7 +40,7 @@ const ThemeMui = createTheme({
     MuiInputLabel:{styleOverrides:{root:{color:Theme.DarkMode?'white':''}}},
   
     MuiOutlinedInput:{styleOverrides:{
-      notchedOutline:{borderColor:Theme.DarkMode?'white':''}, 
+      notchedOutline:{borderColor:Theme.DarkMode?'white':'var(--AppBar)'}, 
       root:{":hover $notchedOutline": {borderColor:'red'}},
     }},
 

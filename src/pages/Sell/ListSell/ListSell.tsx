@@ -14,8 +14,9 @@ interface Props{
       quantity: number;
       date?: string;
    },
-   handleRemoveTask(id:number):  void;
-   handleRemoveItem(id:number, item:number):  void;
+   handleRemoveItem(id:number):  void;
+   handleEditItem(id:number, item:number):  void;
+   handleRemoveOneItem(id:number, item:number):  void;
 }
 //handleRemoveTask:(arg0:number) =>  void;
 
@@ -24,10 +25,13 @@ export function ListSell (props:Props) {
    const Theme = useDarkMode();
 
 const remove= () =>{
-  props.handleRemoveTask(props.item.id)
+  props.handleRemoveItem(props.item.id)
+}
+const ItemAdd = () => {
+   props.handleEditItem(props.item.id,props.item.quantity)
 }
 const ItemRemove = () => {
-   props.handleRemoveItem(props.item.quantity,props.item.id)
+   props.handleRemoveOneItem(props.item.id,props.item.quantity)
 }
    return (
       <>
@@ -36,9 +40,9 @@ const ItemRemove = () => {
          <S.DivButtonsAddRemove>
          <S.LabelQuantaty>{props.item.quantity}</S.LabelQuantaty>
          {props.item.quantity > 1 ? 
-         <S.ButtonRemove onClick={ItemRemove} ><IoMdRemoveCircleOutline size="20"/></S.ButtonRemove>
+         <S.ButtonRemove onClick={ItemRemove}><IoMdRemoveCircleOutline size="20"/></S.ButtonRemove>
          : ''}
-         <S.ButtonAdd><IoMdAddCircleOutline size="20"/></S.ButtonAdd> 
+         <S.ButtonAdd onClick={ItemAdd}><IoMdAddCircleOutline size="20"/></S.ButtonAdd> 
          </S.DivButtonsAddRemove>
          <S.LabelItem  isDarkMode={Theme.DarkMode}>{props.item.name}</S.LabelItem>
          <S.LabelValue>R${props.item.value}</S.LabelValue>

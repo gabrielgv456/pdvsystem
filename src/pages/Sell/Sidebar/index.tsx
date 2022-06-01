@@ -1,5 +1,7 @@
 import * as React from 'react';
 import {useNavigate} from 'react-router-dom'
+//import Modal from "react-modal"
+import Modal from '@mui/material/Modal';
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -75,14 +77,13 @@ export default function SellSideBar(props: Props) {
     setMobileOpen(!mobileOpen);
   };
   
-  
 
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
   const drawer = (
     <S.Div isDarkMode={Theme.DarkMode}  >
       <Toolbar><Typography variant="h6" noWrap component="div">Loja modelo</Typography></Toolbar>
-      <Divider />
+      <Divider sx={{borderColor: Theme.DarkMode ? 'var(--AppBar)' :''}}/>
       <List>
         {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações'].map((text, index) => (
           <ListItem button key={text} 
@@ -102,7 +103,7 @@ export default function SellSideBar(props: Props) {
           </ListItem>
         ))}
       </List>
-      <Divider />
+      <Divider sx={{borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' :''}} />
       <List >
         {['Gestão de Estoque'].map((text, index) => (
           <ListItem button key={text} className="ListItem" onClick={index == 0 ? handleInventoryManagement : handleVoid }>
@@ -135,6 +136,9 @@ export default function SellSideBar(props: Props) {
           ml: { sm: `${drawerWidth}px` },
            backgroundColor: Theme.DarkMode ? 'var(--backgroundDarkMode)' :'var(--AppBar)',
            boxShadow: 'none',
+           borderBottom: '1px solid var(--AppBar)',
+           
+        
         }}
       >
         <Toolbar >
@@ -176,6 +180,7 @@ export default function SellSideBar(props: Props) {
           sx={{
             display: { xs: 'block', sm: 'none' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            
           }}
         >
           {drawer}
@@ -199,8 +204,10 @@ export default function SellSideBar(props: Props) {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar/>
-          <Sell/>
+          <Sell />
       </Box>
+      
     </Box>
+  
   );
 }

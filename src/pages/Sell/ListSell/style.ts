@@ -22,7 +22,7 @@ export const Container = styled.div <DarkModeProps>`
 
 export const DivButtonsAddRemove = styled.div `
 display: flex;
-width: 15%;
+width: 48px;
 align-items: flex-start;
 
 `
@@ -48,8 +48,8 @@ export const ButtonTrash = styled.button `
 `
 export const LabelItem = styled.label<DarkModeProps>`
     color: ${props => (props.isDarkMode ? 'white' : '')};
-    width: 40%;
-    max-width:40%;
+    width: 45%;
+    max-width:45%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -67,10 +67,10 @@ export const LabelItem = styled.label<DarkModeProps>`
     }
 `
 export const LabelValue = styled.label `
-    width: 10%;
+    width: 20%;
 `
 
 export const LabelQuantaty = styled.label `
     width: 10%;
-    margin-right: 10px;
+    margin-right: 0.8rem;
 `

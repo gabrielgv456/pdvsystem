@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/Auth/AuthProvider';
 import {createServer } from 'miragejs'
 import { DarkModeProvider } from './contexts/DarkMode/DarkModeProvider';
+import { TestProvider } from './contexts/VariableTest';
 
 interface apireceivepostType {
     id: number;
@@ -42,7 +43,9 @@ ReactDOM.render(
     <AuthProvider>
       <BrowserRouter>
         <DarkModeProvider>
-        <App />
+        <TestProvider>
+            <App />
+        </TestProvider>
         </DarkModeProvider>
       </BrowserRouter>
     </AuthProvider>
