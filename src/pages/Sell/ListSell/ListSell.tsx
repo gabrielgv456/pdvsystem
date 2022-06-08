@@ -10,9 +10,8 @@ interface Props{
   item:{
       id:number;
       name: string;
-      value?:number;
+      totalvalue:number;
       quantity: number;
-      date?: string;
    },
    handleRemoveItem(id:number):  void;
    handleEditItem(id:number, item:number):  void;
@@ -45,7 +44,7 @@ const ItemRemove = () => {
          <S.ButtonAdd onClick={ItemAdd}><IoMdAddCircleOutline size="20"/></S.ButtonAdd> 
          </S.DivButtonsAddRemove>
          <S.LabelItem  isDarkMode={Theme.DarkMode}>{props.item.name}</S.LabelItem>
-         <S.LabelValue>R${props.item.value}</S.LabelValue>
+         <S.LabelValue>R${props.item.totalvalue}</S.LabelValue>
          <S.ButtonTrash type="button" onClick={remove}><BsTrash size="16"/></S.ButtonTrash>
       </S.Container>
      

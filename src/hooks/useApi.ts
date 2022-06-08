@@ -6,9 +6,7 @@ const api = axios.create({
 
 export const useApi = () => ({
     validateToken: async (token: string) => {
-        
         const response = await api.post('/validate', { token });
-        console.log(response.data)
         return response.data;
         {/*return {
             user: { id: 3, name: 'José', email: 'jose@gmail.com' }
@@ -28,5 +26,15 @@ export const useApi = () => ({
         const response = await api.post('/logout');
         console.log(response.data)
         return response.data;
+    },
+    addsell: async (sell:object) => {
+        console.log(JSON.stringify(sell))
+        //const response = await api.post('/addsell', {sell})
+        //return response.data
+    },
+    findProducts: async (userId:number) => {
+        const response = await api.post('/products',userId)
+        console.log(userId)
+        return response.data
     }
 });

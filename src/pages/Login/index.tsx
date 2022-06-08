@@ -81,7 +81,7 @@ export const Login = () => {
             if (isLogged) {
                 navigate('/home');
             } else {
-                alert("Não deu certo.");
+                alert("Dados incorretos, verifique seu e-mail ou senha !");
             }
         }
     }

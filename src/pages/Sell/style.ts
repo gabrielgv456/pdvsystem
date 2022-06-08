@@ -6,6 +6,8 @@ interface DarkModeProps {
     isDarkMode:Boolean;
 }
 
+
+
 export const Container = styled.div<DarkModeProps> `
     font-family: 'Poppins', sans-serif;
     width: 100%;
@@ -140,7 +142,7 @@ export const DivModalButtons = styled.div `
     justify-content: space-evenly;
 `
 export const DivModalIconsPayment = styled.div `
-    font-size:0.7rem;
+    font-size:0.8rem;
     display: flex;
     justify-content: space-around;
     padding-bottom: 1rem;
@@ -151,6 +153,14 @@ export const LabelIconsModal = styled.label `
     align-items: center;
     flex-direction: column;
     flex-wrap: wrap;
+
+`
+export const PHeaderModal = styled.p`
+    font-size: 1.1rem;
+`
+export const PHeaderModalReturnCash = styled.p`
+    font-size: 1.1rem;
+    color: red;
 `
 export const InputModal = styled.input `
     border: 1px solid silver;

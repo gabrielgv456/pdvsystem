@@ -4,7 +4,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/Auth/AuthProvider';
-import {createServer } from 'miragejs'
+//import {createServer } from 'miragejs'
 import { DarkModeProvider } from './contexts/DarkMode/DarkModeProvider';
 import { TestProvider } from './contexts/VariableTest';
 
@@ -14,7 +14,7 @@ interface apireceivepostType {
     email: string;
     password?: string;
 }
-
+{/* dasdasdas
 //Criação do banco de dados fake
 createServer({
 	routes (){
@@ -33,7 +33,7 @@ createServer({
       })
   }})
 
-
+*/}
 
 
 

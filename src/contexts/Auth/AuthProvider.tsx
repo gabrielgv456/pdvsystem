@@ -5,26 +5,37 @@ import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [idUser, setidUser] = useState(0)
+    const [isUserValid, setUserValid] = useState(false)
     const api = useApi();
 
     useEffect(() => {
         const validateToken = async () => {
+            console.log("validate")
             const storageData = localStorage.getItem('authToken');
             if (storageData) {
                 const data = await api.validateToken(storageData);
                 if (data.user) {
-                    setUser(data.user);
+                    setUser(data.user)
+                }
+                if (data.valid) {
+                    setUserValid(true);
+                }
+                if (!data.valid) {
+                    setUserValid(false)
                 }
             }
         }
         validateToken();
-    }, [api]);
+    }, []);
 
     const signin = async (email: string, password: string) => {
         const data = await api.signin(email, password);
         if (data.user && data.token) {
             setUser(data.user);
             setToken(data.token);
+            setidUser(data.id);
+            setUserValid(true)
             return true;
         }
         return false;
@@ -37,12 +48,12 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         await api.logout();
     }
 
-    const setToken = (token: string) => {
-        localStorage.setItem('authToken', token);
+    const setToken = async (token: string) => {
+       await localStorage.setItem('authToken', token);
     }
 
     return (
-        <AuthContext.Provider value={{ user, signin, signout }}>
+        <AuthContext.Provider value={{ user, idUser, signin, signout, isUserValid }}>
             {children}
         </AuthContext.Provider>
     );
