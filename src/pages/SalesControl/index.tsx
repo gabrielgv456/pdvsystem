@@ -3,8 +3,9 @@ import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 import {Listagem} from './ListSales/ListSales'
-import {useState, useContext,  KeyboardEvent} from "react"
+import {useState, useContext,  KeyboardEvent, useEffect} from "react"
 import { scopedCssBaselineClasses } from '@mui/material';
+import { useApi } from '../../hooks/useApi';
 
 
 
@@ -12,17 +13,44 @@ import { scopedCssBaselineClasses } from '@mui/material';
 export const SalesControl = () => {
     interface Item {
         id:number;
-        name: string;
-        value:number;
-        quantity: number;
-        date: string;
+        storeId: number,
+        sellValue:number;
+        valuePayment:number;
+        created_at: Date;
     };
+
+        const atualdata = ReturnData()
+        const auth = useContext(AuthContext);
+        const [InitialDate, setInitialDate] = useState(atualdata);
+        const [FinalDate, setFinalDate] = useState(atualdata);
+        const [list, setList] = useState<Item[]>([]);
+        const {findSells} = useApi()    
+        const dataToSendApi = {userId:auth.idUser,InitialDate,FinalDate}
+
+
+        useEffect(()=>{ 
+            const defaultSendtoApi = async () => {
+            
+            const data = await findSells(dataToSendApi)
+            setList(data)
+            
+        }
+        defaultSendtoApi()
+    },[])
+
+    function ReturnData () {
+        let data = new Date();
+        let day = String(data.getDate()).padStart(2, '0');
+        let mes = String(data.getMonth() + 1).padStart(2, '0');
+        let year = data.getFullYear();
+        const CurrentData = year + '-' + mes + '-' + day;
     
-        const [InitialDate, setInitialDate] = useState('');
-        const [FinalDate, setFinalDate] = useState('');
-        const [list, setList] = useState<Item[]>([{id:1,name:'Camisa basi dasd fdfsdfsd fsdfsdfsdfd',value:30,date:'15/05/2022',quantity:2},{id:1,name:'Camisa basi dasd fdfsdfsd fsdfsdfsdfd',value:10,date:'19/05/2022',quantity:2}]);
-    
-   
+        return (CurrentData)
+    }
+        const handleSendtoApi = async () => {
+            const data = await findSells(dataToSendApi)
+            setList(data)
+        }
           const handleKeyUP = (e: KeyboardEvent) => {
             if(e.code === 'Enter' && InitialDate !== ''){
                 
@@ -39,9 +67,9 @@ export const SalesControl = () => {
     return (
         <S.Container isDarkMode={Theme.DarkMode}>
         <S.Header>
-        <S.Box><label>Data Inicial</label><S.Input type="date" onChange={(e) =>setInitialDate(e.target.value)}></S.Input></S.Box>
-        <S.Box><label>Data Final</label><S.Input type="date" onChange={(e) =>setFinalDate(e.target.value)}></S.Input></S.Box>
-        <S.DivSearch><S.Button >Pesquisar</S.Button></S.DivSearch>
+        <S.Box><label>Data Inicial</label><S.Input type="date" value={InitialDate} onChange={(e) =>setInitialDate(e.target.value)}></S.Input></S.Box>
+        <S.Box><label>Data Final</label><S.Input type="date" value={FinalDate} onChange={(e) =>setFinalDate(e.target.value)}></S.Input></S.Box>
+        <S.DivSearch><S.Button onClick={handleSendtoApi} >Pesquisar</S.Button></S.DivSearch>
         </S.Header>
         <S.DivMenu isDarkMode={Theme.DarkMode}> 
       <label style={{width:25}}>&nbsp;</label> 

@@ -6,6 +6,7 @@ import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 import { MdLibraryAdd, MdPending } from "react-icons/md"
+import {HiBadgeCheck} from "react-icons/hi"
 import { AiFillPrinter, AiOutlineClose } from "react-icons/ai"
 import { FaCheckCircle, FaMoneyBillWave } from "react-icons/fa"
 import { BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill } from "react-icons/bs"
@@ -15,7 +16,7 @@ import { ListSell } from "./ListSell/ListSell";
 import PixIcon from '@mui/icons-material/Pix';
 import { useApi } from "../../hooks/useApi";
 import { PaymentMethods } from "./PaymentMethods/PaymentMethods";
-import { useGeneratePDF } from "../../hooks/useGeneratePDF";
+import { GeneratePDF } from "../../hooks/useGeneratePDF";
 
 export const Sell = () => {
   
@@ -48,13 +49,14 @@ export const Sell = () => {
 
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
-    const GeneratePDF = useGeneratePDF;
+    
     const { addsell, findProducts } = useApi();
     const [Products, setProducts] = useState<ProductsTypeReturnApi[]>([])
     const [isSellEnded, setisSellEnded] = useState(false)
 
     useEffect(() => {
         const Productsresulta = async () => {
+            console.log(auth.idUser)
             const data = await findProducts(auth.idUser);
             setProducts(data.listProducts)
 
@@ -93,6 +95,7 @@ export const Sell = () => {
     }
     function handleEditMethod(id: number, value: number) {
         let newMethods = [...listMethods]
+        if (value > 0){
         for (let i in newMethods) {
             if (newMethods[i].id === id) {
                 newMethods[i].value = value
@@ -100,6 +103,7 @@ export const Sell = () => {
         }
         setMethods(newMethods)
         console.log(finallistapi)
+    }
 
 
     }
@@ -115,7 +119,7 @@ export const Sell = () => {
     }
 
     //FUNCTIONS FOR PRODUCTS LIST//
-
+   
     const [listProducts, setListProducts] = useState<ProductsType[]>([])
     const [inputProducts, setinputProducts] = useState<ProductsTypeOptions | null>(null)
 
@@ -125,7 +129,7 @@ export const Sell = () => {
         if (inputProducts) {
             newList.push({
                 name: inputProducts.name,
-                id: listProducts.length + 1,
+                id: inputProducts.id,
                 quantity: 1,
                 initialvalue: inputProducts.value,
                 totalvalue: inputProducts.value,
@@ -177,7 +181,19 @@ export const Sell = () => {
         }
     }
     function handleCloseModalConfirmSell() {
-        setisModalConfirmSellOpen(false)
+        if(isSellEnded){
+            setListProducts([])
+            setMethods([])
+            setNeedReturnCash(false)
+            setValue([0])
+            setinputProducts(null)
+            setisModalConfirmSellOpen(false)
+            setisSellEnded(false)
+            
+        } else {
+            setisModalConfirmSellOpen(false)
+        }
+        
     }
 
 
@@ -196,24 +212,32 @@ export const Sell = () => {
         console.log(listProducts)
     }
     const sumpayvalue = listMethods.map(item => item.value).reduce((prev, curr) => prev + curr, 0);
-    const missvalue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumvalue - sumpayvalue)
+    const calculatemissvalue = sumvalue - sumpayvalue
+    const formatedmissvalue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(calculatemissvalue)
     const [needReturnCash,setNeedReturnCash] = useState(false)
     useEffect(()=>{
         if (sumvalue-sumpayvalue < 0){setNeedReturnCash(true)}; 
         if(sumvalue-sumpayvalue >= 0){setNeedReturnCash(false)};
-    },[missvalue])
+    },[formatedmissvalue])
 
     //const finallistapi = JSON.stringify({Products: {...listProducts}, Payment: {...listMethods}})
-    const finallistapi = { Products: [...listProducts], Payment: [...listMethods] }
+    const finallistapi = { 
+        UserId:auth.idUser, 
+        totalValue: sumvalue, 
+        valuePayment:sumpayvalue,
+        Products: [...listProducts], 
+        Payment: [...listMethods], 
+    }
 
     const handleSendtoApi = async (valuesSelltoSendApi: object) => {
         if (listMethods.length == 0) {
             alert("ERRO: Insira um método de pagamento!")
         }
-        if (listMethods.length != 0) {
-            await addsell(valuesSelltoSendApi)
-            alert("Sucesso")
+        if (listMethods.length != 0 && calculatemissvalue <= 0) {
+            const data = await addsell(valuesSelltoSendApi)
+            if (data.Success){
             setisSellEnded(true)
+            }
         }
     }
 
@@ -235,25 +259,28 @@ export const Sell = () => {
                     boxShadow: 24, p: 4,
                 }}>
                     <S.PHeaderModal><b>Total:</b> {sumvalueformated}</S.PHeaderModal>
-                    {needReturnCash ? '' : <S.PHeaderModal><b>Restante:</b> {missvalue}</S.PHeaderModal>}
-                    {needReturnCash ? <S.PHeaderModalReturnCash><b>Troco:</b> {missvalue}</S.PHeaderModalReturnCash>:''}
-
+                    {needReturnCash ? '' : <S.PHeaderModal><b>Restante:</b> {formatedmissvalue}</S.PHeaderModal>}
+                    {needReturnCash ? <S.PHeaderModalReturnCash><b>Troco:</b> {formatedmissvalue}</S.PHeaderModalReturnCash>:''}
+                    {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck style={{color:'var(--Green)'}} size="130"/> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
+                    {isSellEnded ? '' :
                     <S.PHeaderModal>Qual será a forma de pagamento?</S.PHeaderModal>
-
+                    }
+                    {isSellEnded ? '' :
                     <S.DivModalIconsPayment>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('cash')} ><FaMoneyBillWave size={25} style={{color:'#23591b'}}/>Dinheiro</S.LabelIconsModal>
+                        <S.LabelIconsModal onClick={() => handleAddMethod('money')} ><FaMoneyBillWave size={25} style={{color:'#23591b'}}/>Dinheiro</S.LabelIconsModal>
                         <S.LabelIconsModal onClick={() => handleAddMethod('debitcard')}><BsFillCreditCardFill size={25} style={{color:'#f1b917'}}/>Cartão de Débito</S.LabelIconsModal>
                         <S.LabelIconsModal onClick={() => handleAddMethod('creditcard')}><BsFillCreditCard2FrontFill size={25} style={{color:'#da506e'}}/>Cartão de Crédito</S.LabelIconsModal>
                         <S.LabelIconsModal onClick={() => handleAddMethod('pix')}><PixIcon style={{color:'#5cbcb1'}}/>PIX</S.LabelIconsModal>
                         <S.LabelIconsModal onClick={() => handleAddMethod('others')}><MdPending size={25} style={{color:'#7a3c3c'}} />Outros</S.LabelIconsModal>
                     </S.DivModalIconsPayment>
+                    }
                     {listMethods.map((item) => (
-                        <PaymentMethods key={item.id} item={item} handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} value={value} onChangeValuePayment={onChangeValuePayment} />
+                        <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item} handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} value={value} onChangeValuePayment={onChangeValuePayment} />
                     ))}
 
                     <S.DivModalButtons>
                         {isSellEnded ? 
-                        <S.ButtonPrint onClick={() => GeneratePDF()}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
+                        <S.ButtonPrint onClick={(e) => GeneratePDF(listProducts,sumvalueformated, sumquantity)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
                         : ''}
                         {isSellEnded ? '' :
                         <S.ButtonEndSell onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</S.ButtonEndSell>

@@ -166,4 +166,15 @@ export const InputModal = styled.input `
     border: 1px solid silver;
     border-radius: 5px;
 `
+export const ButtonSellEnded = styled.label `
+    color: var(--Green);
+`
+export const LabelSellEnded = styled.label `
+    font-size:1.1rem;
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+
+`
 // TERMINA MODAL

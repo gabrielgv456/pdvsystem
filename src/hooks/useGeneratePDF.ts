@@ -1,9 +1,35 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
+function ReturnData () {
+    let data = new Date();
+    let day = String(data.getDate()).padStart(2, '0');
+    let mes = String(data.getMonth() + 1).padStart(2, '0');
+    let year = data.getFullYear();
+    const CurrentData = day + '/' + mes + '/' + year;
 
-export const useGeneratePDF = () => {
+    return (CurrentData)
+}
+
+interface ProductsType {
+    name: string;
+    id: number;
+    totalvalue: number;
+    initialvalue: number;
+    quantity: number;
+};
+
+export const GeneratePDF = (listProducts : ProductsType[], sumvalueformated:string, sumquantity:number) => {
+
+    const CurrentData = ReturnData()
     pdfMake.vfs = pdfFonts.pdfMake.vfs
+
+    const ProductsData = listProducts.map((product) => {
+        return [
+            {text:product.quantity},{text:product.name},{text:new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.totalvalue)}
+        ]
+    })
+
 
     const docParams = {
         //pageSize: 'A4',
@@ -18,19 +44,24 @@ export const useGeneratePDF = () => {
 content: [
     {
         style:'title',
-        text: 'Comprovante de Venda\n'
+        text: 'Comprovante de Venda'
         
     },
 
     {
         style:'main',
         text: [
-            '****************Sem valor fiscal***************\n\n\n',
+            '\nLoja Modelo\n',
+            'CNPJ: 25.302.229/0001-01\n',
+            'Av Benjamim Constat - Ns Sra Fatima\n\n',
+            
             'Itens da venda\n',
             '_______________________________________________\n',
             
             
         ],
+        margins:[100,5,5,5]
+        
         
         
     },
@@ -38,28 +69,46 @@ content: [
     {
         style: 'tableItens',
         table: {
-            //widths: [200,'auto'],
+            widths: ['auto',150,'auto'],
             body: [
-                //[{text: 'aaa', colSpan:2, alignment: 'center'}],
-                ['Qnt', 'Item', 'Valor'],
-                ['1', 'Blusa de frio M/ssd', 'R$0']
+                [{text:'Qnt'}, {text:'Item'}, {text:'Valor'}],
+                ...ProductsData,
+                [{text:' '}, {text:' '}, {text:' '}],
+                [{text:'VALOR TOTAL:', colSpan: 2},{}, {text:sumvalueformated}],
+                [{text:'QTD ITENS:', colSpan: 2},{}, {text:sumquantity, alignment:'right'}],
+                [{text:' '}, {text:' '}, {text:' '}],
+                [{text:'SEM VALOR FISCAL', colSpan: 3, alignment:'center'},{},{}],
+                [{text:`${CurrentData}`, colSpan: 3, alignment:'center'},{},{}],
             ]
         },
         layout: 'noBorders'
+    },
+    {
+        style:'main',
+        text: [
+            //'\n****************Sem valor fiscal***************\n',
+            //`${CurrentData}`,
+            
+            
+            
+        ],
+        
+        
     },
 ],
 
 styles: {
 
     title:{
-        fontSize:20, bold:true
+        fontSize:24, bold:true
     },
     tableItens:{
         fontSize:12
     },
 
     main:{
-        fontSize:10
+        
+        fontSize:12
     }
 }
         

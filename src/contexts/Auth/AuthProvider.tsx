@@ -16,7 +16,10 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             if (storageData) {
                 const data = await api.validateToken(storageData);
                 if (data.user) {
-                    setUser(data.user)
+                    setUser(data.user);
+                    setToken(data.token);
+                    setidUser(data.user.id);
+                    console.log(data.user.id)
                 }
                 if (data.valid) {
                     setUserValid(true);
@@ -31,10 +34,11 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
 
     const signin = async (email: string, password: string) => {
         const data = await api.signin(email, password);
-        if (data.user && data.token) {
+        if (data.user && data.token ) {
+            console.log(data.user.id)
             setUser(data.user);
             setToken(data.token);
-            setidUser(data.id);
+            setidUser(data.user.id);
             setUserValid(true)
             return true;
         }

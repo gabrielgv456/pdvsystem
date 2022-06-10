@@ -29,12 +29,17 @@ export const useApi = () => ({
     },
     addsell: async (sell:object) => {
         console.log(JSON.stringify(sell))
-        //const response = await api.post('/addsell', {sell})
-        //return response.data
+        const response = await api.post('/addsell', {sell})
+        return response.data
     },
     findProducts: async (userId:number) => {
-        const response = await api.post('/products',userId)
         console.log(userId)
+        const response = await api.post('/products',{userId})
+        
+        return response.data
+    },
+    findSells: async (datafindSells:object) => {
+        const response = await api.post('/findsells', {datafindSells})
         return response.data
     }
 });
