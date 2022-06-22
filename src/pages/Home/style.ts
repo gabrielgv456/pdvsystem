@@ -18,6 +18,7 @@ export const Container = styled.div<DarkModeProps> `
     }
 `
 export const Box = styled.div `
+    box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
     display: flex;
     width: 15rem;
     height: 10rem;

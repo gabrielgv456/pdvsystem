@@ -78,6 +78,8 @@ export const Sell = () => {
     const [listMethods, setMethods] = useState<MethodsType[]>([])
 
     const handleAddMethod = (valuetype: string) => {
+        const alreadyexistMethod = verifyifexistsMethod(valuetype)
+        if (!alreadyexistMethod){
         let newMethods = [...listMethods]
         newMethods.push({
             id: listMethods.length + 1,
@@ -87,7 +89,7 @@ export const Sell = () => {
         })
         setMethods(newMethods)
 
-    }
+        }}
     function handleRemoveMethod(id: number) {
         let filteredmethods = listMethods.filter(method => method.id !== id)
 
@@ -127,6 +129,13 @@ export const Sell = () => {
         console.log(inputProducts)
         let newList = [...listProducts]
         if (inputProducts) {
+            let verifyexistsProduct = newList.some((item)=>item.id === inputProducts.id)
+            if (verifyexistsProduct) {
+                if (window.confirm("Produto já incluso, deseja inserir mais uma unidade?")) {
+                    handleEditItem(inputProducts.id,0)
+                }
+            }
+            if (!verifyexistsProduct){
             newList.push({
                 name: inputProducts.name,
                 id: inputProducts.id,
@@ -137,7 +146,7 @@ export const Sell = () => {
             })
             setListProducts(newList)
 
-        }
+        }}
     }
     function handleRemoveItem(id: number) {
         let filteredtasks = listProducts.filter(list => list.id !== id)
@@ -215,6 +224,12 @@ export const Sell = () => {
     const calculatemissvalue = sumvalue - sumpayvalue
     const formatedmissvalue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(calculatemissvalue)
     const [needReturnCash,setNeedReturnCash] = useState(false)
+
+    const verifyifexistsMethod = (method: string) => {
+         const existsMethod = listMethods.some((item) => item.type === method)
+         return existsMethod
+    }
+    
     useEffect(()=>{
         if (sumvalue-sumpayvalue < 0){setNeedReturnCash(true)}; 
         if(sumvalue-sumpayvalue >= 0){setNeedReturnCash(false)};
@@ -261,7 +276,7 @@ export const Sell = () => {
                     <S.PHeaderModal><b>Total:</b> {sumvalueformated}</S.PHeaderModal>
                     {needReturnCash ? '' : <S.PHeaderModal><b>Restante:</b> {formatedmissvalue}</S.PHeaderModal>}
                     {needReturnCash ? <S.PHeaderModalReturnCash><b>Troco:</b> {formatedmissvalue}</S.PHeaderModalReturnCash>:''}
-                    {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck style={{color:'var(--Green)'}} size="130"/> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
+                    {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{color:'var(--Green)'}} size="130"/> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
                     {isSellEnded ? '' :
                     <S.PHeaderModal>Qual será a forma de pagamento?</S.PHeaderModal>
                     }
@@ -274,8 +289,8 @@ export const Sell = () => {
                         <S.LabelIconsModal onClick={() => handleAddMethod('others')}><MdPending size={25} style={{color:'#7a3c3c'}} />Outros</S.LabelIconsModal>
                     </S.DivModalIconsPayment>
                     }
-                    {listMethods.map((item) => (
-                        <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item} handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} value={value} onChangeValuePayment={onChangeValuePayment} />
+                    { listMethods.map((item) => (
+                        <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item}  handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} value={value} onChangeValuePayment={onChangeValuePayment} />
                     ))}
 
                     <S.DivModalButtons>
@@ -287,7 +302,7 @@ export const Sell = () => {
                         }
                         </S.DivModalButtons>
 
-                    <S.ButtonClose onClick={handleCloseModalConfirmSell}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonClose>
+                    <S.ButtonClose isDarkMode={Theme.DarkMode} onClick={handleCloseModalConfirmSell}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonClose>
 
                 </Box>
             </Modal>

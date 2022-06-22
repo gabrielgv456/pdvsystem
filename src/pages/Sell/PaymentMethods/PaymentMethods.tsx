@@ -1,9 +1,9 @@
 import {FaMoneyBillWave} from "react-icons/fa"
-import {AiFillPrinter, AiOutlineClose} from "react-icons/ai"
-import {BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill} from "react-icons/bs"
+import{RiCloseCircleLine} from "react-icons/ri"
+import { BsFillCreditCardFill, BsFillCreditCard2FrontFill} from "react-icons/bs"
 import {MdPending} from 'react-icons/md'
 import PixIcon from '@mui/icons-material/Pix';
-import { useState } from "react";
+import InputMask from "react-input-mask"
 import * as S from "./style"
 
 interface PaymentMethodsProps {
@@ -11,6 +11,7 @@ interface PaymentMethodsProps {
 
     //value: number;
     onChangeValuePayment: (newState: number) => void;
+    
         item:
         {id: number;
         type:string;
@@ -33,39 +34,39 @@ export const PaymentMethods = (props:PaymentMethodsProps) => {
     return (
         <>
             {props.item.type === 'money' && props.isSellEnded === false ?
-            <S.DivPaymentMethods style={{borderRadius:5, backgroundColor:'#23591b'}}>
+            <S.DivPaymentMethods style={{borderRadius:5, backgroundColor:'#bceeb4', color:'#1f5018'}}>
                 <S.Label><FaMoneyBillWave size={25}/></S.Label>
                 <S.Label>Dinheiro</S.Label>
-                <S.Label>R$<S.InputModal type="number" min="0" value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
-                <S.ButtonDelete onClick={MethodRemove}><AiOutlineClose size={10} /></S.ButtonDelete>
+                <S.Label>R$<S.InputModal style={{color:'#1f5018'}} min="0" value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
+                <S.ButtonDelete style={{color:'#1f5018'}} onClick={MethodRemove}><RiCloseCircleLine size={20} /></S.ButtonDelete>
             </S.DivPaymentMethods> : 
             props.item.type === 'debitcard' && props.isSellEnded === false ?
-            <S.DivPaymentMethods style={{borderRadius:5,backgroundColor:'#f1b917'}}>
+            <S.DivPaymentMethods style={{borderRadius:5,backgroundColor:'#fcedc2',color:'#f1b917'}}>
                 <S.Label><BsFillCreditCardFill size={25}/></S.Label>
                 <S.Label>Cartão de Débito</S.Label>
-                <S.Label>R$<S.InputModal type="number" min="0" value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
-                <S.ButtonDelete onClick={MethodRemove}><AiOutlineClose size={10}/></S.ButtonDelete>
+                <S.Label>R$<S.InputModal style={{color:'#f1b917'}} min="0" value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
+                <S.ButtonDelete style={{color:'#f1b917'}} onClick={MethodRemove}><RiCloseCircleLine size={20} /></S.ButtonDelete>
             </S.DivPaymentMethods> :
             props.item.type === 'creditcard' && props.isSellEnded === false ?
-            <S.DivPaymentMethods style={{borderRadius:5,backgroundColor:'#da506e'}}>
+            <S.DivPaymentMethods style={{borderRadius:5,backgroundColor:'#fccbd6',color:'#da506e'}}>
                 <S.Label><BsFillCreditCard2FrontFill size={25}/></S.Label>
                 <S.Label>Cartão de Credito</S.Label>
-                <S.Label>R$<S.InputModal type="number" min="0" value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
-                <S.ButtonDelete onClick={MethodRemove}><AiOutlineClose size={10}/></S.ButtonDelete>
+                <S.Label>R$<S.InputModal style={{color:'#da506e'}} min="0" value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
+                <S.ButtonDelete style={{color:'#da506e'}} onClick={MethodRemove}><RiCloseCircleLine size={20} /></S.ButtonDelete>
             </S.DivPaymentMethods>:
             props.item.type === 'pix' && props.isSellEnded === false ?
-            <S.DivPaymentMethods style={{borderRadius:5,backgroundColor:'#5cbcb1'}}>
+            <S.DivPaymentMethods style={{borderRadius:5,backgroundColor:'#c3f0eb',color:'#5cbcb1'}}>
                 <S.Label><PixIcon/></S.Label>
                 <S.Label>PIX</S.Label>
-                <S.Label>R$<S.InputModal type="number" min="0" value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
-                <S.ButtonDelete onClick={MethodRemove}><AiOutlineClose size={10}/></S.ButtonDelete>
+                <S.Label>R$<S.InputModal style={{color:'#5cbcb1'}} min="0" value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
+                <S.ButtonDelete style={{color:'#5cbcb1'}} onClick={MethodRemove}><RiCloseCircleLine size={20} /></S.ButtonDelete>
             </S.DivPaymentMethods>:
             props.item.type === 'others' && props.isSellEnded === false ?
-            <S.DivPaymentMethods style={{borderRadius:5,backgroundColor:'#7a3c3c'}}>
+            <S.DivPaymentMethods style={{borderRadius:5,backgroundColor:'#c5b4b4',color:'#7a3c3c'}}>
                 <S.Label><MdPending size={25}/></S.Label>
                 <S.Label>Outros</S.Label>
-                <S.Label>R$<S.InputModal type="number" min="0"  value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
-                <S.ButtonDelete onClick={MethodRemove}><AiOutlineClose size={10}/></S.ButtonDelete>
+                <S.Label>R$<S.InputModal style={{color:'#7a3c3c'}} min="0"  value={props.item.value} onChange={(e) =>props.handleEditMethod(props.item.id, parseInt(e.target.value))}/></S.Label>
+                <S.ButtonDelete style={{color:'#7a3c3c'}} onClick={MethodRemove}><RiCloseCircleLine size={20} /></S.ButtonDelete>
             </S.DivPaymentMethods>
             : '' }
         </>

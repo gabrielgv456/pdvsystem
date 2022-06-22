@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Label = styled.label `
-    font-size:0.9rem;
+    font-size:0.85rem;
     width:33%;
     display: flex;
     align-items: center;
@@ -23,12 +23,13 @@ export const DivPaymentMethods = styled.div `
     display: flex;
     justify-content: space-around;
     align-items: center;
-	margin-top:1px;
+	margin-top:3px;
+    box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+
 
 `
 export const ButtonDelete = styled.button `
     text-decoration: none;
     border: none;
     background: none;
-    color:white;
 `

@@ -13,20 +13,26 @@ export const Container = styled.div <DarkModeProps>`
     margin: 0px 0 5px 0;
     width:100%;
     display: flex;
+    align-items: center;
     justify-content: space-between; 
     gap:5px;
     @media screen and (max-width: 930px) {
         padding: 10px;
+        font-size: 0.9rem;
     }
 `
 
-
+export const ButtonPrint= styled.button `
+    text-decoration: none;
+    background: none;
+    border:none;
+    color:#007fff;
+`
 export const ButtonEdit= styled.button `
     text-decoration: none;
     background: none;
     border:none;
     color:gold;
-    cursor: pointer;
 `
 
 export const ButtonTrash = styled.button `
@@ -37,6 +43,12 @@ export const ButtonTrash = styled.button `
     cursor: pointer;
 `
 export const LabelItem = styled.label<DarkModeProps>`
+    font-size: 0.85rem;
+`
+export const DivListItens = styled.div<DarkModeProps> `
+    
+    display: flex;
+    flex-direction: column;
     color: ${props => (props.isDarkMode ? 'white' : '')};
     width: 40%;
     max-width:40%;
@@ -56,6 +68,11 @@ export const LabelItem = styled.label<DarkModeProps>`
     white-space: nowrap;
     }
 `
+export const DivListQuantity = styled.div `
+    display: flex;
+    flex-direction: column;
+    width: 3%;
+`
 export const LabelValue = styled.label `
     width: 10%;
 `
@@ -64,5 +81,5 @@ export const LabelDate = styled.label `
     min-width: min-content;
 `
 export const LabelQuantaty = styled.label `
-    width: 10%;
+    font-size: 0.8rem;
 `

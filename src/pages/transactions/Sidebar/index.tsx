@@ -82,7 +82,7 @@ export default function TransactionsSideBar(props: Props) {
   const drawer = (
     <S.Div isDarkMode={Theme.DarkMode}  >
       <Toolbar><Typography variant="h6" noWrap component="div">Loja modelo</Typography></Toolbar>
-      <Divider />
+      <Divider sx={{borderColor: Theme.DarkMode ? 'var(--AppBar)' :''}}/>
       <List>
         {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações'].map((text, index) => (
           <ListItem button key={text} 
@@ -102,7 +102,7 @@ export default function TransactionsSideBar(props: Props) {
           </ListItem>
         ))}
       </List>
-      <Divider />
+      <Divider sx={{borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' :''}} />
       <List >
         {['Gestão de Estoque'].map((text, index) => (
           <ListItem button key={text} className="ListItem" onClick={index == 0 ? handleInventoryManagement : handleVoid }>
@@ -134,6 +134,8 @@ export default function TransactionsSideBar(props: Props) {
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
           backgroundColor: Theme.DarkMode ? 'var(--backgroundDarkMode)' :'var(--AppBar)',
+          boxShadow: 'none',
+          borderBottom: '1px solid var(--AppBar)',
         }}
       >
         <Toolbar >

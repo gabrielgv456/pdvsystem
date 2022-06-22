@@ -11,10 +11,11 @@ export const GlobalStyle = createGlobalStyle<DarkModeProps>`
     --backgroundsilver:#f0f2f5;
     --backgroundDarkMode:#1e1f20;
     --backgroundDarkMode2:#29292b;
+    --backgroundInputDarkMode: #3a3a3a;
     --iconDarkMode:#5429CC;//#34cc96;
     --AppBar: #5429CC;
     --Green: #33CC95;
-
+    --Blue: #437fff;
 
 }
 

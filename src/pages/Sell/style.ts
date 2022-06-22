@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import {darken} from 'polished'
+import { darken } from 'polished'
 
 
 interface DarkModeProps {
-    isDarkMode:Boolean;
+    isDarkMode: Boolean;
 }
 
 
@@ -53,13 +53,13 @@ export const DivConfirmSell = styled.div`
     display:flex;
     flex-direction: column;
 `
-export const TotalValue = styled.span `
+export const TotalValue = styled.span`
     padding-top:2rem;
     margin: 0 auto;
     font-size: 3.5rem;
     
 `
-export const LabelConfirm = styled.label `
+export const LabelConfirm = styled.label`
 cursor:pointer;
 
 `
@@ -84,25 +84,25 @@ export const Box = styled.div`
     height: min-content;
     padding: 10 10 0 10;
 `
-export const Button = styled.button `
+export const Button = styled.button`
     color: var(--Green);
     text-decoration: none;
     border: none;
     background: none;
     &:hover{
-        color: ${darken(0.02,'#34cc96')}
+        color: ${darken(0.02, '#34cc96')}
     }
 `
-export const ButtonClose = styled.button `
-    color: #000;
+export const ButtonClose = styled.button <DarkModeProps>`
+    color: ${props => (props.isDarkMode ? '#fff' : '#000')};
     text-decoration: none;
     border: none;
     background: none;
     &:hover{
-        color: ${darken(0.02,'gray')}
+        color: ${darken(0.02, 'gray')}
     }
 `
-export const ButtonEndSell = styled.button `
+export const ButtonEndSell = styled.button`
     background-color: #34cc96;
     border-radius: 13px;
     font-size:18px;
@@ -115,10 +115,10 @@ export const ButtonEndSell = styled.button `
     padding:5px;
     transition: background-color 0.2s;
     &:hover{
-        background-color: ${darken(0.02,'#34cc96')}
+        background-color: ${darken(0.02, '#34cc96')}
     }
 `
-export const ButtonPrint = styled.button `
+export const ButtonPrint = styled.button`
     background-color: #007fff;
     border-radius: 13px;
     font-size:18px;
@@ -131,23 +131,23 @@ export const ButtonPrint = styled.button `
     padding:5px;
     transition: background-color 0.2s;
     &:hover{
-        background-color: ${darken(0.02,'#007fff')}
+        background-color: ${darken(0.02, '#007fff')}
     }
 `
 // INICIA MODAL
 
-export const DivModalButtons = styled.div `
+export const DivModalButtons = styled.div`
     padding-top: 2rem;
     display: flex;
     justify-content: space-evenly;
 `
-export const DivModalIconsPayment = styled.div `
+export const DivModalIconsPayment = styled.div`
     font-size:0.8rem;
     display: flex;
     justify-content: space-around;
     padding-bottom: 1rem;
 `
-export const LabelIconsModal = styled.label `
+export const LabelIconsModal = styled.label`
     cursor:pointer;
     display:flex;
     align-items: center;
@@ -162,19 +162,128 @@ export const PHeaderModalReturnCash = styled.p`
     font-size: 1.1rem;
     color: red;
 `
-export const InputModal = styled.input `
+export const InputModal = styled.input`
     border: 1px solid silver;
     border-radius: 5px;
 `
-export const ButtonSellEnded = styled.label `
+export const ButtonSellEnded = styled.label`
     color: var(--Green);
 `
-export const LabelSellEnded = styled.label `
+export const LabelSellEnded = styled.label`
     font-size:1.1rem;
     display:flex;
     align-items: center;
     flex-direction: column;
     flex-wrap: wrap;
+    transition: 3s ease-in;
+    .HiBadgeCheck{
+    -webkit-animation: bounce-in-top 1.1s both;
+        animation: bounce-in-top 1.1s both;
+                
+    @-webkit-keyframes bounce-in-top {
+    0% {
+        -webkit-transform: translateY(-500px);
+                transform: translateY(-500px);
+        -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+        opacity: 0;
+    }
+    38% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+        opacity: 1;
+    }
+    55% {
+        -webkit-transform: translateY(-65px);
+                transform: translateY(-65px);
+        -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+    }
+    72% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+    }
+    81% {
+        -webkit-transform: translateY(-28px);
+                transform: translateY(-28px);
+        -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+    }
+    90% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+    }
+    95% {
+        -webkit-transform: translateY(-8px);
+                transform: translateY(-8px);
+        -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+    }
+    100% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+    }
+    }
+    @keyframes bounce-in-top {
+    0% {
+        -webkit-transform: translateY(-500px);
+                transform: translateY(-500px);
+        -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+        opacity: 0;
+    }
+    38% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+        opacity: 1;
+    }
+    55% {
+        -webkit-transform: translateY(-65px);
+                transform: translateY(-65px);
+        -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+    }
+    72% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+    }
+    81% {
+        -webkit-transform: translateY(-28px);
+                transform: translateY(-28px);
+        -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+    }
+    90% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+    }
+    95% {
+        -webkit-transform: translateY(-8px);
+                transform: translateY(-8px);
+        -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+    }
+    100% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+    }
+}}
 
 `
 // TERMINA MODAL

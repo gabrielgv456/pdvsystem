@@ -41,5 +41,9 @@ export const useApi = () => ({
     findSells: async (datafindSells:object) => {
         const response = await api.post('/findsells', {datafindSells})
         return response.data
+    },
+    findTransactions: async (datafindTransactions:object) => {
+        const response = await api.post('/findtransactions', {datafindTransactions})
+        return response.data
     }
 });

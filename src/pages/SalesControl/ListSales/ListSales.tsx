@@ -1,43 +1,86 @@
-import {useEffect, useState} from "react"
 import { BsTrash } from 'react-icons/bs'
-import {HiOutlinePencilAlt} from 'react-icons/hi'
+import { HiOutlinePencilAlt } from 'react-icons/hi'
+import { AiFillPrinter } from 'react-icons/ai'
 import * as S from "./style";
-import {useDarkMode} from "../../../contexts/DarkMode/DarkModeProvider"
+import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider"
+import { GeneratePDFSalesControl } from "../../../hooks/useGeneratePDF";
 
-interface Props{
-
-  item:{
-   id:number;
+interface SellsProductsReceiveApi {
+   id: number;
    storeId: number,
-   sellValue:number;
-   valuePayment:number;
+   sellId: number;
+   idProduct: number;
+   quantity: number;
+   valueProduct: number;
+   totalValue: number;
+   descriptionProduct: string;
    created_at: Date;
+};
+
+interface Props {
+
+   item: {
+      id: number;
+      storeId: number,
+      sellValue: number;
+      valuePayment: number;
+      created_at: Date;
    },
-   handleRemoveTask(id:number):  void;
+   listSellsProducts: SellsProductsReceiveApi[];
+   handleRemoveTask(id: number): void;
 }
-//handleRemoveTask:(arg0:number) =>  void;
 
 
-export function Listagem (props:Props) {
+export function Listagem(props: Props) {
    const Theme = useDarkMode();
 
-const remove= () =>{
-  props.handleRemoveTask(props.item.id)
-}
-   const newLocal = props.item.id;
-   //console.log(props.item)
+   const remove = () => {
+      props.handleRemoveTask(props.item.id)
+   }
+
+   const dataSell = new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(props.item.created_at))
+   const gethoursSell_title = new Date(props.item.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })
+   const searchvaluesthisSell = props.listSellsProducts.filter(item => item.sellId === props.item.id)
+   const sumtotalValuethisSell = searchvaluesthisSell.map(item => item.totalValue).reduce((prev, curr) => prev + curr, 0);
+   const sumtotalQuantitythisSell = searchvaluesthisSell.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
+   const sumtotalValuethisSellFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumtotalValuethisSell)
+
+
+   const handlePrint = () => {
+      GeneratePDFSalesControl(props.listSellsProducts, sumtotalValuethisSellFormated, sumtotalQuantitythisSell, dataSell, props.item.id)
+   }
+
+
    return (
       <>
-      
-      <S.Container isDarkMode={Theme.DarkMode}>
-         <S.ButtonEdit><HiOutlinePencilAlt size="20"/></S.ButtonEdit>
-         <S.LabelDate>{props.item.created_at}</S.LabelDate>
-         <S.LabelItem  isDarkMode={Theme.DarkMode}>{props.item.valuePayment}</S.LabelItem>
-         <S.LabelQuantaty>{props.item.id}</S.LabelQuantaty>
-         <S.LabelValue>R${props.item.sellValue}</S.LabelValue>
-         <S.ButtonTrash type="button" onClick={remove}><BsTrash size="16"/></S.ButtonTrash>
-      </S.Container>
-     
+
+         <S.Container isDarkMode={Theme.DarkMode}>
+
+            <S.ButtonEdit title="Editar Venda"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+            <S.LabelDate title={gethoursSell_title}>{dataSell}</S.LabelDate>
+            <S.DivListQuantity>
+               {props.listSellsProducts.map((products) => (
+                  products.sellId === props.item.id ?
+                     <S.LabelQuantaty>{products.quantity}</S.LabelQuantaty>
+                     : ''
+
+               ))}
+            </S.DivListQuantity>
+            <S.DivListItens isDarkMode={Theme.DarkMode}>
+               {props.listSellsProducts.map((products) => (
+                  products.sellId === props.item.id ?
+                     <S.LabelItem title={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalValue / products.quantity)} isDarkMode={Theme.DarkMode}>{products.descriptionProduct} </S.LabelItem>
+                     : ''
+               ))}
+            </S.DivListItens>
+
+            <S.LabelValue>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.item.sellValue)}</S.LabelValue>
+            <label>
+               <S.ButtonPrint title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.ButtonPrint>
+               <S.ButtonTrash title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.ButtonTrash>
+            </label>
+         </S.Container>
+
       </>
-   )}
-   // //onClick={() => handleRemoveTask(item.id)}>
+   )
+}
