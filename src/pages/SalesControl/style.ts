@@ -29,7 +29,8 @@ export const BoxResume = styled.label <DarkModeProps>`
     padding: 1rem;
     background-color: #fff;
     border-radius: 5px;
-    background-color: ${props=>(props.isDarkMode? 'var(--backgroundDarkMode)' :'#c3c3d8' )};
+    //background-color: ${props=>(props.isDarkMode? 'var(--backgroundDarkMode)' :'#fff' )};
+    background: ${(props)=>(props.isDarkMode ? 'linear-gradient(315deg, #343537 0%, #343537 18%, var(--backgroundDarkMode) 10%, var(--backgroundDarkMode) 100%)' : 'linear-gradient(315deg, #f9f8f9 0%, #f9f8f9 18%, #fff 10%, #fff 100%)')};
     justify-content: space-around;
     align-items: center;
     margin-bottom: 1rem;

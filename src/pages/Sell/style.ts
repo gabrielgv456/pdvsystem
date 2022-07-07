@@ -146,8 +146,13 @@ export const DivModalIconsPayment = styled.div`
     display: flex;
     justify-content: space-around;
     padding-bottom: 1rem;
+    .hoverbutton:hover{
+        width: 30px;
+        height:30px;
+    }
+    
 `
-export const LabelIconsModal = styled.label`
+export const LabelIconsModal = styled.div <DarkModeProps>`
     cursor:pointer;
     display:flex;
     align-items: center;

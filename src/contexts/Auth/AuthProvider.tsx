@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const [user, setUser] = useState<User | null>(null);
     const [idUser, setidUser] = useState(0)
     const [isUserValid, setUserValid] = useState(false)
+    const [masterkey,setmasterkey] = useState("")
     const api = useApi();
 
     useEffect(() => {
@@ -19,7 +20,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                     setUser(data.user);
                     setToken(data.token);
                     setidUser(data.user.id);
-                    console.log(data.user.id)
+                    setmasterkey(data.user.masterkey)
+                    console.log(data.masterkey)
                 }
                 if (data.valid) {
                     setUserValid(true);
@@ -39,6 +41,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             setUser(data.user);
             setToken(data.token);
             setidUser(data.user.id);
+            setmasterkey(data.user.masterkey)
             setUserValid(true)
             return true;
         }
@@ -57,7 +60,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, idUser, signin, signout, isUserValid }}>
+        <AuthContext.Provider value={{ user, idUser, signin, signout, isUserValid, masterkey }}>
             {children}
         </AuthContext.Provider>
     );

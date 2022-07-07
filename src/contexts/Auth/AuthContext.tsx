@@ -7,6 +7,7 @@ export type AuthContextType = {
     signout: () => void;
     isUserValid: boolean;
     idUser: number;
+    masterkey: string;
 }
 
 export const AuthContext = createContext<AuthContextType>(null!);

@@ -21,17 +21,20 @@ interface Props{
 
 
 export function ListSell (props:Props) {
-   const Theme = useDarkMode();
 
-const remove= () =>{
-  props.handleRemoveItem(props.item.id)
-}
-const ItemAdd = () => {
-   props.handleEditItem(props.item.id,props.item.quantity)
-}
-const ItemRemove = () => {
-   props.handleRemoveOneItem(props.item.id,props.item.quantity)
-}
+   const Theme = useDarkMode();
+   const itemTotalValueFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.item.totalvalue)
+
+
+   const remove= () =>{
+   props.handleRemoveItem(props.item.id)
+   }
+   const ItemAdd = () => {
+      props.handleEditItem(props.item.id,props.item.quantity)
+   }
+   const ItemRemove = () => {
+      props.handleRemoveOneItem(props.item.id,props.item.quantity)
+   }
    return (
       <>
       
@@ -44,7 +47,7 @@ const ItemRemove = () => {
          <S.ButtonAdd onClick={ItemAdd}><IoMdAddCircleOutline size="20"/></S.ButtonAdd> 
          </S.DivButtonsAddRemove>
          <S.LabelItem  isDarkMode={Theme.DarkMode}>{props.item.name}</S.LabelItem>
-         <S.LabelValue>R${props.item.totalvalue}</S.LabelValue>
+         <S.LabelValue>{itemTotalValueFormated}</S.LabelValue>
          <S.ButtonTrash type="button" onClick={remove}><BsTrash size="16"/></S.ButtonTrash>
       </S.Container>
      

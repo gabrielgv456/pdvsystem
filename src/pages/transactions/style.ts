@@ -1,18 +1,23 @@
+import { PropaneSharp } from '@mui/icons-material';
 import {darken} from 'polished'
 
 import styled from "styled-components";
 
 interface DarkModeProps {
-    isDarkMode:Boolean;
+    isDarkMode:boolean;
 }
 interface ButtonisOpenEntries{
-    isOpenEntries: boolean;   
+    isOpenEntries: boolean;  
+    isDarkMode:boolean;
+    
 }
 interface ButtonisOpenExtractDetails {
     isOpenExtractDetails:boolean;
+    isDarkMode:boolean; 
 }
 interface ButtonisOpenExits {
     isOpenExits: boolean;
+    isDarkMode:boolean;
 }
 
 export const Container = styled.div<DarkModeProps> `
@@ -24,12 +29,19 @@ export const Container = styled.div<DarkModeProps> `
   
 `
 export const Header = styled.div`
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 0 0 20px 20px;
+    padding: 0.5rem 0 1rem 0;
     gap: 5px ;
-    width: 100%;
+    width: 60%;
     height: min-content;
     display:flex;
     justify-content: center;
     align-items: flex-end;
+    margin-top: -23px;
+    box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+
 `
 export const SubHeader = styled.div `
     display: flex;
@@ -82,7 +94,7 @@ export const labelBoxResume2 = styled.label `
 
 `
 export const Box = styled.div `
-width: 30%;
+width: 40%;
 height: min-content;
 padding: 10px;
 border-radius: 5px;
@@ -140,7 +152,37 @@ export const DivExtract = styled.div `
         width: 100%;
     }
 `
-export const DivOptions = styled.div `
+export const DivTitleExtract = styled.div <DarkModeProps>`
+    min-width: min-content;
+    background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};
+    //border: ${props => (props.isDarkMode ? '1px solid gray' : '1px solid silver')}; 
+    border-radius: 10px;
+    color: #67636d;
+    padding:10px;
+    width:90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    font-size: 0.85rem;
+    box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
+`
+export const DivFooterExtract = styled.div <DarkModeProps>`
+    background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};
+    width: 90%;
+    padding:20px;
+    border-radius: 0px 0px 20px 20px;
+    display:flex;
+    justify-content: space-between;
+
+`
+export const DivAlterPage = styled.div `
+    min-width: max-content;
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+`
+export const DivOptions = styled.div <DarkModeProps>`
     flex-wrap: wrap;
     margin: 40px 0 40px 0;
     width: 40%;
@@ -148,9 +190,10 @@ export const DivOptions = styled.div `
     flex-direction: column;
     gap: 32px;
     align-items: center;
-    border-right: 1px solid silver ;
+    border-right: ${(props)=>(props.isDarkMode ? '1px solid #48454a' : '1px solid #e0e3e6 ')};
     @media screen and (max-width: 550px) {
         width: 100%;
+        border-right: none;
     }
 `
 export const ButtonEntries = styled.button  <ButtonisOpenEntries>`
@@ -162,13 +205,32 @@ export const ButtonEntries = styled.button  <ButtonisOpenEntries>`
     width: 80%;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8rem;
-    background-color: ${(props) => (props.isOpenEntries? 'var(--Blue)' : '#fff')};
     border: 1px solid var(--Blue);
     border-radius: 5px;
     padding: 0.8rem;
-    color: ${(props) => (props.isOpenEntries? '#fff' : '#444444')}; ;
+    background-color: ${(props) => (
+        props.isDarkMode === true && props.isOpenEntries === false  ? 'var(--backgroundDarkMode)' : 
+        props.isDarkMode === false && props.isOpenEntries === true  ? 'var(--Blue)' :
+        props.isOpenEntries && props.isDarkMode ? 'var(--Blue)':
+        
+        '#fff'
+        
+        ) };
+    color: ${(props) => (
+            props.isDarkMode === true && props.isOpenEntries === false  ? '#fff' : 
+            props.isDarkMode === false && props.isOpenEntries === true  ? '#fff' :
+            props.isDarkMode && props.isOpenEntries  ? '#fff':
+            
+            '#444444'
+        ) };
     &:hover{
-        background-color:${(props) => (props.isOpenEntries? '#578dff' : '#e5eeff')}; 
+        background-color: ${(props) => (
+        props.isDarkMode === true && props.isOpenEntries === false  ? 'var(--backgroundDarkMode2)' : 
+        props.isDarkMode === false && props.isOpenEntries === true  ? '#578dff' : 
+        props.isDarkMode &&  props.isOpenEntries ? '#578dff':
+        
+        '#e5eeff'
+        ) };
     }
 `
 
@@ -181,16 +243,35 @@ export const ButtonExits = styled.button  <ButtonisOpenExits>`
     width: 80%;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8rem;
-    background-color: ${(props) => (props.isOpenExits? 'var(--Blue)' : '#fff')};
     border: 1px solid var(--Blue);
     border-radius: 5px;
     padding: 0.8rem;
-    color: ${(props) => (props.isOpenExits? '#fff' : '#444444')}; ;
+    background-color: ${(props) => (
+        props.isDarkMode === true && props.isOpenExits === false  ? 'var(--backgroundDarkMode)' : 
+        props.isDarkMode === false && props.isOpenExits === true  ? 'var(--Blue)' :
+        props.isOpenExits && props.isDarkMode ? 'var(--Blue)':
+        
+        '#fff'
+        
+        ) };
+    color: ${(props) => (
+            props.isDarkMode === true && props.isOpenExits === false  ? '#fff' : 
+            props.isDarkMode === false && props.isOpenExits === true  ? '#fff' :
+            props.isDarkMode && props.isOpenExits  ? '#fff':
+            
+            '#444444'
+        ) };
     &:hover{
-        background-color:${(props) => (props.isOpenExits ? '#578dff' : '#e5eeff')}; 
+        background-color: ${(props) => (
+        props.isDarkMode === true && props.isOpenExits === false  ? 'var(--backgroundDarkMode2)' : 
+        props.isDarkMode === false && props.isOpenExits === true  ? '#578dff' : 
+        props.isDarkMode &&  props.isOpenExits ? '#578dff':
+        
+        '#e5eeff'
+        ) };
     }
 `
-export const ButtonExtract = styled.button  <ButtonisOpenExtractDetails>`
+export const ButtonExtract = styled.button  <ButtonisOpenExtractDetails> `
     flex-wrap: wrap;
     display: flex;
     align-items: flex-end;
@@ -199,13 +280,32 @@ export const ButtonExtract = styled.button  <ButtonisOpenExtractDetails>`
     width: 80%;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8rem;
-    background-color: ${(props) => (props.isOpenExtractDetails? 'var(--Blue)' : '#fff')};
     border: 1px solid var(--Blue);
     border-radius: 5px;
     padding: 0.8rem;
-    color: ${(props) => (props.isOpenExtractDetails? '#fff' : '#444444')}; 
+    background-color: ${(props) => (
+        props.isDarkMode === true && props.isOpenExtractDetails === false  ? 'var(--backgroundDarkMode)' : 
+        props.isDarkMode === false && props.isOpenExtractDetails === true  ? 'var(--Blue)' :
+        props.isOpenExtractDetails && props.isDarkMode ? 'var(--Blue)':
+        
+        '#fff'
+        
+        ) };
+    color: ${(props) => (
+            props.isDarkMode === true && props.isOpenExtractDetails === false  ? '#fff' : 
+            props.isDarkMode === false && props.isOpenExtractDetails === true  ? '#fff' :
+            props.isDarkMode && props.isOpenExtractDetails  ? '#fff':
+            
+            '#444444'
+        ) };
     &:hover{
-        background-color:${(props) => (props.isOpenExtractDetails ? '#578dff' : '#e5eeff')}; 
+        background-color: ${(props) => (
+        props.isDarkMode === true && props.isOpenExtractDetails === false  ? 'var(--backgroundDarkMode2)' : 
+        props.isDarkMode === false && props.isOpenExtractDetails === true  ? '#578dff' : 
+        props.isDarkMode &&  props.isOpenExtractDetails ? '#578dff':
+        
+        '#e5eeff'
+        ) };
     }
 `
 

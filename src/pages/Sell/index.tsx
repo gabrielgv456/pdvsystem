@@ -185,7 +185,7 @@ export const Sell = () => {
     }
     const [isModalConfirmSellOpen, setisModalConfirmSellOpen] = useState(false);
     function handleOpenModalConfirmSell() {
-        if (inputProducts) {
+        if (inputProducts && listProducts.length > 0) {
             setisModalConfirmSellOpen(true)
         }
     }
@@ -267,7 +267,13 @@ export const Sell = () => {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: 500,
+                    width: {
+                        xs: '80%', // phone
+                        sm: '80%', // tablets
+                        md: 500, // small laptop
+                        lg: 500, // desktop
+                        xl: 500 // large screens
+                    },
                     bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
                     color: Theme.DarkMode ? '#ffffff' : '#000',
                     border: Theme.DarkMode ? '1px solid silver' : '',
@@ -282,11 +288,11 @@ export const Sell = () => {
                     }
                     {isSellEnded ? '' :
                     <S.DivModalIconsPayment>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('money')} ><FaMoneyBillWave size={25} style={{color:'#23591b'}}/>Dinheiro</S.LabelIconsModal>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('debitcard')}><BsFillCreditCardFill size={25} style={{color:'#f1b917'}}/>Cartão de Débito</S.LabelIconsModal>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('creditcard')}><BsFillCreditCard2FrontFill size={25} style={{color:'#da506e'}}/>Cartão de Crédito</S.LabelIconsModal>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('pix')}><PixIcon style={{color:'#5cbcb1'}}/>PIX</S.LabelIconsModal>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('others')}><MdPending size={25} style={{color:'#7a3c3c'}} />Outros</S.LabelIconsModal>
+                        <S.LabelIconsModal onClick={() => handleAddMethod('money')} isDarkMode={Theme.DarkMode} ><FaMoneyBillWave className="hoverbutton" size={25} style={{color:'#23591b'}} />Dinheiro</S.LabelIconsModal>
+                        <S.LabelIconsModal onClick={() => handleAddMethod('debitcard') } isDarkMode={Theme.DarkMode}><BsFillCreditCardFill className="hoverbutton" size={25} style={{color:'#f1b917'}}/>Cartão de Débito</S.LabelIconsModal>
+                        <S.LabelIconsModal onClick={() => handleAddMethod('creditcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCard2FrontFill className="hoverbutton" size={25} style={{color:'#da506e'}}/>Cartão de Crédito</S.LabelIconsModal>
+                        <S.LabelIconsModal onClick={() => handleAddMethod('pix')} isDarkMode={Theme.DarkMode}><PixIcon className="hoverbutton" style={{color:'#5cbcb1'}}/>PIX</S.LabelIconsModal>
+                        <S.LabelIconsModal onClick={() => handleAddMethod('others')} isDarkMode={Theme.DarkMode}><MdPending className="hoverbutton" size={25} style={{color:'#7a3c3c'}} />Outros</S.LabelIconsModal>
                     </S.DivModalIconsPayment>
                     }
                     { listMethods.map((item) => (
@@ -318,7 +324,7 @@ export const Sell = () => {
                             options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
                             groupBy={(option) => option.firstLetter}
                             getOptionLabel={(option) => option.name}
-                            sx={{ border: '#fff', width: '100%', '& input': { color: Theme.DarkMode ? '#fff' : '', "& .MuiInputLabel-root": { color: 'green' } } }}
+                            sx={{ boxShadow: 'rgba(58, 53, 65, 0.1) 0px 1px 2px 0px' , border: '#fff', width: '100%', '& input': { color: Theme.DarkMode ? '#fff' : '', "& .MuiInputLabel-root": { color: 'green' } } }}
                             renderInput={(params) => <TextField {...params}
                                 sx={{ borderColor: '#fff' }}
                                 onKeyUp={handleKeyUP}
