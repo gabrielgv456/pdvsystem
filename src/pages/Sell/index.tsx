@@ -24,6 +24,8 @@ export const Sell = () => {
         id: number;
         name: string;
         value: number;
+        active:boolean;
+        quantity:number;
 
     }
     interface ProductsTypeOptions {
@@ -52,17 +54,24 @@ export const Sell = () => {
     
     const { addsell, findProducts } = useApi();
     const [Products, setProducts] = useState<ProductsTypeReturnApi[]>([])
+    const [NoFilteredProducts,setNoFilteredProducts] = useState<ProductsTypeReturnApi[]>([])
     const [isSellEnded, setisSellEnded] = useState(false)
 
     useEffect(() => {
         const Productsresulta = async () => {
-            console.log(auth.idUser)
             const data = await findProducts(auth.idUser);
-            setProducts(data.listProducts)
-
+            setNoFilteredProducts(data.listProducts)
         }
         Productsresulta()
     }, [])
+
+    useEffect(() => {
+        const Productsfilter = async () => {
+            const filteringProducts = NoFilteredProducts.filter(product => product.active === true && product.quantity > 0)
+            setProducts(filteringProducts)
+        }
+        Productsfilter()
+    }, [NoFilteredProducts])
 
 
     const options = Products.map((option) => {
@@ -133,7 +142,11 @@ export const Sell = () => {
             if (verifyexistsProduct) {
                 if (window.confirm("Produto já incluso, deseja inserir mais uma unidade?")) {
                     handleEditItem(inputProducts.id,0)
+                    setinputProducts(null)
+                } else {
+                    setinputProducts(null)
                 }
+                
             }
             if (!verifyexistsProduct){
             newList.push({
@@ -145,6 +158,7 @@ export const Sell = () => {
 
             })
             setListProducts(newList)
+            setinputProducts(null)
 
         }}
     }
@@ -154,11 +168,20 @@ export const Sell = () => {
         setListProducts(filteredtasks)
     }
     function handleEditItem(id: number, item: number) {
+        let verifyQuantityProducts = Products.find(product=>product.id===id)
+        console.log(verifyQuantityProducts)
+
         let newList = [...listProducts]
+    
         for (let i in newList) {
             if (newList[i].id === id) {
-                newList[i].quantity = newList[i].quantity + 1
-                newList[i].totalvalue = newList[i].totalvalue + newList[i].initialvalue
+                if (verifyQuantityProducts !== undefined && newList[i].quantity < verifyQuantityProducts.quantity){
+                    newList[i].quantity = newList[i].quantity + 1
+                    newList[i].totalvalue = newList[i].totalvalue + newList[i].initialvalue
+                }
+                else {
+                    alert(`Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
+                }
             }
         }
         setListProducts(newList)
@@ -185,7 +208,7 @@ export const Sell = () => {
     }
     const [isModalConfirmSellOpen, setisModalConfirmSellOpen] = useState(false);
     function handleOpenModalConfirmSell() {
-        if (inputProducts && listProducts.length > 0) {
+        if (listProducts.length > 0) {
             setisModalConfirmSellOpen(true)
         }
     }
@@ -248,7 +271,7 @@ export const Sell = () => {
         if (listMethods.length == 0) {
             alert("ERRO: Insira um método de pagamento!")
         }
-        if (listMethods.length != 0 && calculatemissvalue <= 0) {
+        if (listMethods.length !== 0 && calculatemissvalue <= 0) {
             const data = await addsell(valuesSelltoSendApi)
             if (data.Success){
             setisSellEnded(true)

@@ -21,7 +21,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                     setToken(data.token);
                     setidUser(data.user.id);
                     setmasterkey(data.user.masterkey)
-                    console.log(data.masterkey)
                 }
                 if (data.valid) {
                     setUserValid(true);

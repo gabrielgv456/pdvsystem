@@ -8,7 +8,7 @@ import { MdAdd, MdChevronLeft, MdChevronRight, MdFileDownloadDone } from 'react-
 import { ListProducts } from './ListProducts/ListProducts';
 import { useApi } from '../../hooks/useApi';
 import { IoMdAdd } from 'react-icons/io';
-import { BsSearch } from 'react-icons/bs';
+import { BsArrowDownLeftCircle, BsArrowUpRightCircle, BsCheckCircle, BsSearch } from 'react-icons/bs';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -23,31 +23,48 @@ interface ProductsReturnApiProps{
     name: string;
     value: number;
     created_at:Date;
+    active: boolean;
+    quantity: number;
 }
-
+export interface TransactionsProductsReturnApi {
+    type: string;
+    description: string;
+    created_at: Date;
+    quantity: number;
+    totalQuantity: number;
+}
 export const InventoryManagement = () => {
-    const {findProducts} = useApi()
-    const {addProducts} = useApi()
+    const {addProducts, findProducts} = useApi()
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
     const [ProductsReturnApi,setProductsReturnApi] = useState<ProductsReturnApiProps[]>([])
     const [ItensPerPageExtract,SetItensPerPageExtract] = useState(10)
     const [atualPageExtract, SetAtualPageExtract] = useState(0)
     const [isModalAddProductOpen, setisModalAddProductOpen] = useState(false);
-    const [isModalEditProductOpen, setisModalEditProductOpen] = useState(false);
+    const [isModalSucessOpen,setisModalSucessOpen] = useState(false);
     const [isModalTransactionsProductsOpen, setisModalTransactionsProductsOpen] = useState(false);
-    const [isModalMasterKeyOpen, setisModalMasterKeyOpen] = useState(false)
     const [isProductCreated, setisProductCreated] = useState(false)
     const [inputProductsModalName,setinputProductsModalName] = useState("")
-    const [inputMasterKey, setinputMasterKey] = useState("")
-    const [inputProductsModalValue,setinputProductsModalValue] = useState(0)
-    const [inputProductsModalQuantity,setinputProductsModalQuantity] = useState(0)
+    const [inputSearchProduct, setinputSearchProduct] = useState("")
+    const inputSearchProductLowwer = inputSearchProduct.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    const [dataTransactionsProductsReturnApi, setdataTransactionsProductsReturnApi] = useState<TransactionsProductsReturnApi[]>([])
+    const ProductsReturnApiFiltered = ProductsReturnApi.filter((product) => product.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(inputSearchProductLowwer))
+    const [inputProductsModalValue,setinputProductsModalValue] = useState<number|null>(null)
+    const [inputProductsModalQuantity,setinputProductsModalQuantity] = useState<number|null>(null)
     const [isProductActiveModalAddProduct, setisProductActiveModalAddProduct] = useState(true)
-    const PagesExtract = Math.ceil(ProductsReturnApi.length / ItensPerPageExtract )
+    const PagesExtract = Math.ceil(ProductsReturnApiFiltered.length / ItensPerPageExtract )
     const StartIndexExtract = atualPageExtract * ItensPerPageExtract
     const EndIndexExtract = StartIndexExtract + ItensPerPageExtract
-    const paginedTransactionsReturnApi = ProductsReturnApi.slice(StartIndexExtract,EndIndexExtract)
-    const finaldataAddProductsToSendApi = {userId:auth.idUser, name:inputProductsModalName, value:inputProductsModalValue, quantity:inputProductsModalQuantity }
+    const paginedTransactionsReturnApi = ProductsReturnApiFiltered.slice(StartIndexExtract,EndIndexExtract)
+
+    
+    const finaldataAddProductsToSendApi = {
+        userId:auth.idUser, 
+        name:inputProductsModalName, 
+        value:inputProductsModalValue, 
+        quantity:inputProductsModalQuantity,
+        active:isProductActiveModalAddProduct
+     }
     
     useEffect(()=>{
         SearchProducts()
@@ -67,15 +84,8 @@ export const InventoryManagement = () => {
         
     }
 
-    function handleCloseModalEditProduct() {
-        if(isProductCreated){
-            setisModalEditProductOpen(false)
-            
-        } else {
-            setisModalEditProductOpen(false)
-        }
-        
-    }
+    
+
 
     function handleCloseModalTransactionsProducts() {
         if(isProductCreated){
@@ -86,21 +96,44 @@ export const InventoryManagement = () => {
         }
         
     }
-
-    function handleCloseModalMasterKey() {
-        if(isProductCreated){
-            setisModalMasterKeyOpen(false)
-            
-        } else {
-            setisModalMasterKeyOpen(false)
-        }
-        
+    function handleCloseModalSucess() {
+        SearchProducts()
+        setisModalSucessOpen(false)
     }
+    function handleContinueAddingProducts(){
+        setisModalAddProductOpen(true)
+        setisModalSucessOpen(false)
+    }
+
+    
 
     const AddProductApi = async () => {
-        const data = await addProducts(finaldataAddProductsToSendApi)
-        console.log(data)
+        
+        if (inputProductsModalName !== ""
+            && inputProductsModalValue !== null
+            && inputProductsModalValue > 0
+            && inputProductsModalQuantity !== null
+            && inputProductsModalQuantity > 0) {
+                const data = await addProducts(finaldataAddProductsToSendApi)
+                if (data.Sucess){
+                    handleCloseModalAddProduct()
+                    setinputProductsModalName("")
+                    setinputProductsModalQuantity(null)
+                    setinputProductsModalValue(null)
+                    setisModalSucessOpen(true)
+                }
+                else {
+                    alert(`ERRO: ${JSON.stringify(data)}`)
+                }
+                
+            }
+                
+        else {
+            alert('Insira todos dados corretamente!')
+        }
     }
+    
+    
     const EditItensPerPage = (ItensPerPage:number) => {
         SetItensPerPageExtract(ItensPerPage)
         SetAtualPageExtract(0)
@@ -120,7 +153,20 @@ export const InventoryManagement = () => {
             <S.Header>
                 <S.LabelSearchProduct>  
                     <BsSearch style={{margin:'15px', color:"#9eaab5"}} size="18"/>
-                    <input style={{border:"none",background:'none',borderRadius:'7px', width:'100%', height:'100%', outline:'none',fontSize:"1rem" }} placeholder="Localizar Produto..."></input>
+                    <input 
+                    value={inputSearchProduct} 
+                    onChange={(e)=>setinputSearchProduct(e.target.value)} 
+                    style={{
+                        border:"none",
+                        background:'none',
+                        borderRadius:'7px', 
+                        width:'100%', 
+                        height:'100%', 
+                        outline:'none',
+                        fontSize:"1rem",
+                        color:`${Theme.DarkMode ? '#fff' : '#000'}`
+                    }} 
+                    placeholder="Localizar Produto..."></input>
                 </S.LabelSearchProduct>
                 <label>
                     <S.ButtonAddProduct onClick={handleOpenModalConfirmSell} isDarkMode={Theme.DarkMode}>
@@ -151,12 +197,13 @@ export const InventoryManagement = () => {
                     id={item.id} 
                     name={item.name} 
                     value={item.value}  
+                    quantity={item.quantity}
+                    active={item.active}
                     isModalTransactionsProductsOpen={isModalTransactionsProductsOpen} 
                     setisModalTransactionsProductsOpen={setisModalTransactionsProductsOpen} 
-                    isModalEditProductOpen={isModalEditProductOpen} 
-                    setisModalEditProductOpen={setisModalEditProductOpen} 
-                    isModalMasterKeyOpen={isModalMasterKeyOpen}
-                    setisModalMasterKeyOpen={setisModalMasterKeyOpen}
+                    searchProduct={SearchProducts}
+                    dataTransactionsProductsReturnApi = {dataTransactionsProductsReturnApi}
+                    setdataTransactionsProductsReturnApi = {setdataTransactionsProductsReturnApi}
                     created_at={item.created_at}/>
                 
                     )) 
@@ -249,7 +296,7 @@ export const InventoryManagement = () => {
                         onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))} 
                         type="number" 
                         id="outlined-basic" 
-                        label="Quantidade em Estoque" 
+                        label="Qtd em Estoque" 
                         variant="outlined" 
                         sx={{width:'48%'}}/> 
                         </label>
@@ -269,65 +316,7 @@ export const InventoryManagement = () => {
 
 
 
-            <Modal open={isModalEditProductOpen} onClose={handleCloseModalEditProduct}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '80%', // phone
-                        sm: '80%', // tablets
-                        md: 500, // small laptop
-                        lg: 500, // desktop
-                        xl: 500 // large screens
-                    },
-                    //width: '80%',
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    boxShadow: 24, p: 4,
-                }}
-                >
-                    <S.DivModalAddProduct>
-                        <TextField 
-                            value={inputProductsModalName}
-                            onChange={(e) => setinputProductsModalName(e.target.value)} 
-                            id="outlined-basic" 
-                            label="Nome do Produto" 
-                            variant="outlined" 
-                            sx={{width:'90%'}}/>   
-                        <label style={{display:'flex', justifyContent:'space-between',width:'90%'}}>
-                        <TextField 
-                        value={inputProductsModalValue}
-                        onChange={(e) => setinputProductsModalValue(Number(e.target.value))} 
-                        type="number" 
-                        id="outlined-basic" 
-                        label="Valor" 
-                        variant="outlined" 
-                        sx={{width:'48%'}}/> 
-
-                        <TextField 
-                        value={inputProductsModalQuantity}
-                        onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))} 
-                        type="number" 
-                        id="outlined-basic" 
-                        label="Quantidade em Estoque" 
-                        variant="outlined" 
-                        sx={{width:'48%'}}/> 
-                        </label>
-                        <label>
-                            Produto ativo 
-                            <Switch checked={isProductActiveModalAddProduct} onChange={(e)=>{setisProductActiveModalAddProduct(e.target.checked)}}/>
-                        </label>
-                    </S.DivModalAddProduct>
-                        <S.ButtonAddProductModal onClick={AddProductApi} isDarkMode={Theme.DarkMode} style={{margin: '0 auto'}}>
-                            <AiOutlineEdit size="22"/>
-                            <b>FINALIZAR EDIÇÃO</b>
-                        </S.ButtonAddProductModal>
-                        <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalEditProduct}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-                </Box>
-            </Modal>
+            
 
 
 
@@ -353,14 +342,43 @@ export const InventoryManagement = () => {
                     boxShadow: 24, p: 4,
                 }}
                 >
+                    <div style={{display:'flex', justifyContent:'space-between', color:'#48505e', fontSize:'0.9rem', marginBottom:'10px'}}>
+                                    <div style={{width:'20px'}}></div>
+                                    <div style={{width:'40%', display:'flex', justifyContent:'center'}}>Data</div>
+                                    <div style={{width:'40%', display:'flex', justifyContent:'center'}}>Descrição</div>
+                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>Qtd</div>
+                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>Saldo</div>
+                    </div>
+                    {dataTransactionsProductsReturnApi.map((transaction) =>(
+                        <div>
+                            {transaction.type === 'E' &&
+                                <div style={{display:'flex', justifyContent:'space-between', color:'green', fontSize:'0.9rem'}}>
+                                    <div style={{width:'20px'}}><BsArrowUpRightCircle size="20"/></div>
+                                    <div style={{width:'40%', display:'flex', justifyContent:'center'}}>{new Date(transaction.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })}</div>
+                                    <div style={{width:'40%'}}>{transaction.description}</div>
+                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>{transaction.quantity}</div>
+                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>{transaction.totalQuantity}</div>
+                                </div>
+                            }
+                            {transaction.type === 'S' &&
+                                <div style={{display:'flex', justifyContent:'space-between', color:'red', fontSize:'0.9rem'}}>
+                                    <div style={{width:'20px'}}><BsArrowDownLeftCircle size="20"/></div>
+                                    <div style={{width:'40%', display:'flex', justifyContent:'center'}}>{new Date(transaction.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })}</div>
+                                    <div style={{width:'40%'}}>{transaction.description}</div>
+                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>{transaction.quantity}</div>
+                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>{transaction.totalQuantity}</div>
+                                </div>
+                            }
+                            
+                        </div>
+                    ))}
+                    
                     <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalTransactionsProducts}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
                 </Box>
             </Modal>
+            
 
-
-
-
-            <Modal open={isModalMasterKeyOpen} onClose={handleCloseModalMasterKey}>
+            <Modal open={isModalSucessOpen} onClose={handleCloseModalSucess}>
                 <Box sx={{
                     position: 'absolute' as 'absolute',
                     top: '50%',
@@ -380,25 +398,19 @@ export const InventoryManagement = () => {
                     boxShadow: 24, p: 4,
                 }}
                 >
-                    <S.DivRestrictAcessModal>
-                    <h3 style={{alignSelf:'center'}}>Acesso Restrito</h3>
-                    <label style={{display:'flex',alignItems:'center',gap:'5px'}}>
-                    <RiAdminLine size="32" color='#485059'/>
-                     <TextField 
-                       value={inputMasterKey}
-                       onChange={(e)=>setinputMasterKey(e.target.value)}
-                        type="password" 
-                        id="outlined-basic" 
-                        label="Senha de administrador" 
-                        variant="outlined" 
-                        sx={{width:'85%'}}/> 
-                        <S.ButtonRestrictAcessModal>OK</S.ButtonRestrictAcessModal>
-                        </label>
-
-                    </S.DivRestrictAcessModal>
-                    <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalMasterKey}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                        <S.DivModalSucess>
+                            <h3 style={{alignSelf:'center'}}>Produto adicionado com sucesso!</h3>
+                            <BsCheckCircle color="var(--Green)" size="50" className="IconSucess"/>
+                            <div style={{display:'flex',marginTop:'30px', gap:'5px'}}>
+                            <S.ButtonAddSucessProductModal onClick={handleContinueAddingProducts}><b>Continuar adicionando</b></S.ButtonAddSucessProductModal> 
+                            <S.ButtonExitSucessProductModal onClick={handleCloseModalSucess}><b>Sair</b></S.ButtonExitSucessProductModal>
+                            </div>
+                        </S.DivModalSucess>  
+                    <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalSucess}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
                 </Box>
             </Modal>
+
+
 
             
 

@@ -55,7 +55,6 @@ export function Listagem(props: Props) {
       <>
 
          <S.Container isDarkMode={Theme.DarkMode}>
-
             <S.ButtonEdit title="Editar Venda"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
             <S.LabelDate title={gethoursSell_title}>{dataSell}</S.LabelDate>
             <S.DivListQuantity>
