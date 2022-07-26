@@ -123,11 +123,11 @@ export const ListProducts = (props:ListProductsProps) => {
             </S.LabelNameProduct>
 
             {props.quantity > 0 ?
-            <S.LabelStatus style={{backgroundColor:'#eaf9e0',color:'#4daf42'}} isDarkMode={Theme.DarkMode}>
+            <S.LabelStatus style={Theme.DarkMode ?{color:'#4daf42'} : {backgroundColor:'#eaf9e0',color:'#4daf42'}} isDarkMode={Theme.DarkMode}>
                 <b>Em estoque</b>
             </S.LabelStatus>
             : 
-            <S.LabelStatus style={{backgroundColor:'#ffe2e1',color:'#b82338'}} isDarkMode={Theme.DarkMode}>
+            <S.LabelStatus style={Theme.DarkMode ? {color:'#b82338'} : {backgroundColor:'#ffe2e1',color:'#b82338'}} isDarkMode={Theme.DarkMode}>
                 <b>Sem estoque</b>
             </S.LabelStatus>
             }

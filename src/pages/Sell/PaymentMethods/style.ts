@@ -8,12 +8,14 @@ export const Label = styled.label `
     justify-content: center;
 `
 export const InputModal = styled.input `
-    color: #fff;
-    width:3rem;
+    
+    height:1.1rem;
+    width:5.5rem;
     outline: none;
     border:none;
+    border-radius: 0px 3px 3px 0px;
     border-bottom: 1px solid #fff;
-    background: none;
+    background: #fff;
 `
 
 export const DivPaymentMethods = styled.div `

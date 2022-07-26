@@ -46,6 +46,7 @@ export const Sell = () => {
         id: number;
         type: string;
         value: number;
+        valueFormated:string;
 
     };
 
@@ -94,6 +95,7 @@ export const Sell = () => {
             id: listMethods.length + 1,
             type: valuetype,
             value: 0,
+            valueFormated:""
 
         })
         setMethods(newMethods)
@@ -104,12 +106,13 @@ export const Sell = () => {
 
         setMethods(filteredmethods)
     }
-    function handleEditMethod(id: number, value: number) {
+    function handleEditMethod(id: number, value: number, valueformated:string) {
         let newMethods = [...listMethods]
         if (value > 0){
         for (let i in newMethods) {
             if (newMethods[i].id === id) {
                 newMethods[i].value = value
+                newMethods[i].valueFormated = valueformated
             }
         }
         setMethods(newMethods)
@@ -119,6 +122,7 @@ export const Sell = () => {
 
     }
     function handleRemoveOneMethod(id: number, value: number) {
+        
         let newMethods = [...listMethods]
         for (let i in newMethods) {
             if (newMethods[i].id === id) {
@@ -245,7 +249,7 @@ export const Sell = () => {
     }
     const sumpayvalue = listMethods.map(item => item.value).reduce((prev, curr) => prev + curr, 0);
     const calculatemissvalue = sumvalue - sumpayvalue
-    const formatedmissvalue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(calculatemissvalue)
+    const formatedmissvalue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(calculatemissvalue).replace('-',"")
     const [needReturnCash,setNeedReturnCash] = useState(false)
 
     const verifyifexistsMethod = (method: string) => {
@@ -271,10 +275,17 @@ export const Sell = () => {
         if (listMethods.length == 0) {
             alert("ERRO: Insira um método de pagamento!")
         }
-        if (listMethods.length !== 0 && calculatemissvalue <= 0) {
-            const data = await addsell(valuesSelltoSendApi)
-            if (data.Success){
-            setisSellEnded(true)
+        if (needReturnCash){
+            if(window.confirm(`Confirma o troco de ${formatedmissvalue} ?`)) {
+                if (listMethods.length !== 0 && calculatemissvalue <= 0) {
+                    const data = await addsell(valuesSelltoSendApi)
+                    if (data.Success === true){
+                        setisSellEnded(true)
+                    }
+                    if (data.Success === false){
+                        alert(`ERRO: ${JSON.stringify(data.Erro)}`)
+                    }
+                }
             }
         }
     }

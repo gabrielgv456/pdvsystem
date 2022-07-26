@@ -1,10 +1,10 @@
 import {Link} from 'react-router-dom'
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import TextField from '@mui/material/TextField';
 import * as S from "./style"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
-import { BsArrowDownCircle, BsArrowUpCircle, BsFillBagFill } from 'react-icons/bs';
+import { BsArrowDownCircle, BsArrowUpCircle, BsCheckCircle, BsFillBagFill } from 'react-icons/bs';
 import { RiFileList3Line, RiMoneyDollarCircleFill, RiMoneyDollarCircleLine } from 'react-icons/ri';
 import { FaAngleLeft, FaAngleRight, FaSearch, FaShoppingCart, FaUserAstronaut } from 'react-icons/fa';
 import { AiOutlineLeft, AiOutlineRight, AiOutlineSearch } from 'react-icons/ai';
@@ -12,13 +12,15 @@ import { useApi } from '../../hooks/useApi';
 import { ListTransactions } from './ListTransactions/ListTransactions';
 import { HiOutlineChevronLeft, HiOutlineChevronRight, HiTrendingDown, HiTrendingUp } from 'react-icons/hi';
 import { MdAddTask, MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import { CurrencyMask } from '../../masks/CurrencyMask';
 
-interface TransactionsReturnApiProps {
+export interface TransactionsReturnApiProps {
     id: number,
     storeId: number,
     sellId: number,
-    typepayment: string,
+    type: string,
     value:number,
+    description:string,
     created_at: Date
 }
 
@@ -27,26 +29,61 @@ export const Transactions = () => {
 
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
-    const {findTransactions} = useApi()
+    const {findTransactions, addTransactions} = useApi()
     const atualdata = ReturnData()
     const [TransactionsReturnApi,setTransactionsReturnApi] = useState<TransactionsReturnApiProps[]>([])
     const [isOpenExtractDetails,setisOpenExtractDetails] = useState(true)
     const [isOpenExits, setisOpenExists] = useState(false)
     const [isOpenEntries, setisOpenEntries] = useState(false)
+    const [isProcedimentSucess, setisProcedimentSucess] = useState(false)
     const [InitialDate,setInitialDate] = useState(atualdata)
     const [FinalDate,SetFinalDate] = useState(atualdata)
-    const [ItensPerPageExtract,SetItensPerPageExtract] = useState(10)
+    const [ItensPerPageExtract,SetItensPerPageExtract] = useState(5)
     const [atualPageExtract, SetAtualPageExtract] = useState(0)
     const PagesExtract = Math.ceil(TransactionsReturnApi.length / ItensPerPageExtract )
     const StartIndexExtract = atualPageExtract * ItensPerPageExtract
     const EndIndexExtract = StartIndexExtract + ItensPerPageExtract
     const paginedTransactionsReturnApi = TransactionsReturnApi.slice(StartIndexExtract,EndIndexExtract)
     const datafindTransactions = {FinalDate,InitialDate,userID:auth.idUser}
-    const sumValueTransactions = TransactionsReturnApi.map(item => item.value).reduce((prev, curr) => prev + curr, 0);
-    const sumValueTransactionsFormated =  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueTransactions)
-    const sumExitsTransactionsFormated =  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(0)
-    const totalTransactionsFormated =  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueTransactions-0)
+    const [inputdescriptionExit,setinputdescriptionExit] = useState("")
+    const [inputvalueExit, setinputvalueExit] = useState<string>("")
+    const [inputdescriptionEntry, setinputdescriptionEntry] = useState("")
+    const [inputvalueEntry, setinputvalueEntry] = useState<number | null>(null)
+    const [finalvalueExit,setfinalvalueExit] = useState(0)
+    const [finalvalueEntry,setfinalvalueEntry] = useState(0)
+    const dataAddTransactionExit = {type:'exit', description: inputdescriptionExit, value: finalvalueExit, UserId:auth.idUser}
+    const dataAddTransactionEntry = {type:'entry', description: inputdescriptionEntry, value: finalvalueEntry, UserId:auth.idUser}
+    const filterExitsTransactions = TransactionsReturnApi.filter(transaction=>transaction.type === 'exit')
+    const filterEntriesTransactions = TransactionsReturnApi.filter(transaction=>transaction.type !== 'exit')
+    const sumValueEntriesTransactions = filterEntriesTransactions.map(item => item.value).reduce((prev, curr) => prev + curr, 0);
+    const sumValueExitsTransactions = filterExitsTransactions.map(item => item.value).reduce((prev, curr) => prev + curr, 0);
+    const sumValueTransactionsFormated =  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueEntriesTransactions)
+    const sumExitsTransactionsFormated =  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueExitsTransactions)
+    const totalTransactionsFormated =  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueEntriesTransactions-sumValueExitsTransactions)
     
+    const changeValueInputExit = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        
+        setinputvalueExit(e.target.value)
+        
+        let formatvalue = e.target.value
+        formatvalue = formatvalue.replace(/\D/g, "")
+        formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
+        setfinalvalueExit(parseFloat(formatvalue))
+
+        }
+    const changeValueInputEntry = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        
+        setinputvalueExit(e.target.value)
+        
+        let formatvalue = e.target.value
+        formatvalue = formatvalue.replace(/\D/g, "")
+        formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
+        console.log(formatvalue)
+        setfinalvalueEntry(parseFloat(formatvalue))
+    }
+        
+    
+
     useEffect(()=>{
         searchTransactions()
     },[])
@@ -70,21 +107,61 @@ export const Transactions = () => {
        setisOpenExtractDetails(false)
        setisOpenEntries(false)
        setisOpenExists(true)
+       setisProcedimentSucess(false)
     }
     const OpenExtract = () => {
         setisOpenExtractDetails(true)
         setisOpenEntries(false)
         setisOpenExists(false)
+        setisProcedimentSucess(false)
      }
      const OpenEntries = () => {
         setisOpenExtractDetails(false)
         setisOpenEntries(true)
         setisOpenExists(false)
+        setisProcedimentSucess(false)
      }
      const EditItensPerPage = (ItensPerPage:number) => {
         SetItensPerPageExtract(ItensPerPage)
         SetAtualPageExtract(0)
      }
+
+     const handleAddExit = async () => {
+        if (inputdescriptionExit && finalvalueExit > 0) {
+            const dataExit = await addTransactions(dataAddTransactionExit)
+            
+            if (dataExit.Sucess === true) {
+                setinputdescriptionExit("")
+                setinputvalueExit("")
+                setisOpenExists(false)
+                setisProcedimentSucess(true)
+                searchTransactions()
+            }
+            else {
+                alert(JSON.stringify(dataExit))
+            }
+        } else {
+            alert('Insira todos dados corretamente!')
+        }
+     }
+
+     const handleAddEntry = async () => {
+        if (inputdescriptionEntry && finalvalueEntry > 0){
+            const dataEntry = await addTransactions(dataAddTransactionEntry)
+            if (dataEntry.Sucess === true){
+                setinputdescriptionEntry("")
+                setinputvalueEntry(null)
+                setisOpenEntries(false)
+                setisProcedimentSucess(true)
+                searchTransactions()
+            }
+            else {
+                alert(JSON.stringify(dataEntry))
+            }
+        } else {
+            alert('Insira todos dados corretamente!')
+        }
+    }
 
     return (
         <S.Container isDarkMode={Theme.DarkMode}>
@@ -221,9 +298,29 @@ export const Transactions = () => {
         { isOpenExits &&
             <S.DivExits>
             
-            <TextField id="outlined-basic" label="Descrição" variant="outlined" className="TextField"/>
-            <TextField id="outlined-basic" label="Valor" variant="outlined" className="TextField"/>
-            <S.ButtonAddExit><MdAddTask size="40"/></S.ButtonAddExit>
+                <TextField 
+                value={inputdescriptionExit}
+                onChange={(e)=>setinputdescriptionExit(e.target.value)}
+                id="outlined-basic" 
+                label="Descrição" 
+                variant="outlined" 
+                className="TextField"
+                />
+
+                <TextField 
+                value={inputvalueExit}
+                onChange={(e)=>changeValueInputExit(CurrencyMask(e))} 
+                id="outlined-basic" 
+                label="Valor" 
+                variant="outlined" 
+                className="TextField"
+    
+        
+                />
+                <S.ButtonAddExit onClick={handleAddExit}>
+                    <MdAddTask size="40"/>
+                </S.ButtonAddExit>
+
             </S.DivExits>
         }
 
@@ -231,12 +328,36 @@ export const Transactions = () => {
         { isOpenEntries &&
         <S.DivExits>
             
-        <TextField id="outlined-basic" label="Descrição" variant="outlined" className="TextField"/>
-        <TextField id="outlined-basic" label="Valor" variant="outlined" className="TextField"/>
-        <S.ButtonAddEntry><MdAddTask size="40"/></S.ButtonAddEntry>
-        </S.DivExits>
-        }    
+            <TextField 
+            value={inputdescriptionEntry} 
+            onChange={(e)=>setinputdescriptionEntry(e.target.value)}
+            id="outlined-basic" 
+            label="Descrição" 
+            variant="outlined" 
+            className="TextField"
+            />
 
+            <TextField 
+            value={inputvalueEntry}
+            onChange={(e)=>changeValueInputEntry(CurrencyMask(e))}
+            id="outlined-basic" 
+            label="Valor" 
+            variant="outlined" 
+            className="TextField"
+            />
+
+            <S.ButtonAddEntry onClick={handleAddEntry}>
+                <MdAddTask size="40"/>
+            </S.ButtonAddEntry>
+
+        </S.DivExits>
+        } 
+        {isProcedimentSucess &&
+            <S.DivSucessProcediment>
+                <h3 style={{alignSelf:'center'}}>Adicionado com sucesso!</h3>
+                <BsCheckCircle color="var(--Green)" size="50" className="IconSucess"/>
+            </S.DivSucessProcediment>    
+        }
 
             </S.DivExtract>
 
@@ -245,3 +366,5 @@ export const Transactions = () => {
        
     )
 }
+
+

@@ -61,5 +61,9 @@ export const useApi = () => ({
     findTransactionsProducts: async (dataFindTransactionsProduct:object) => {
         const response = await api.post('/findtransactionsproducts', {dataFindTransactionsProduct})
         return response.data
+    },
+    addTransactions: async (dataAddTransaction:object) => {
+        const response = await api.post('/addtransaction', {dataAddTransaction} )
+        return response.data
     }
 });

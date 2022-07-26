@@ -1,10 +1,15 @@
 import styled from "styled-components";
+import { darken } from 'polished'
 
 interface DarkModeProps {
     isDarkMode:boolean;
 }
 interface EyeProps {
     isEyeOpen:boolean;
+}
+interface TypeTransactionProps {
+    isDarkMode:boolean;
+    typeTransction: string;
 }
 
 
@@ -31,11 +36,14 @@ export const LabelDate = styled.label `
     color:#485059;
     min-width: min-content;
 `
-export const LabelValue = styled.label <DarkModeProps>`
-    background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : '#eaf9e0')};
+export const LabelValue = styled.label <TypeTransactionProps>`
+    background-color:${props => (
+        props.isDarkMode ? 'var(--backgroundDarkMode)' : 
+        props.typeTransction === 'exit' ? '#ffe2e1' : '#eaf9e0'
+        )};
     border-radius: 10px;
     padding: 5px;
-    color:#4daf42;
+    color: ${props => (props.typeTransction === 'exit' ?  '#b82338' : '#4daf42' )} ;
     display: flex;
     justify-content: center;
     width:20%;
@@ -69,4 +77,13 @@ export const ButtonDescription = styled.button <EyeProps>`
     }
     
 
+`
+export const ButtonCloseModal = styled.button <DarkModeProps>`
+    color: ${props => (props.isDarkMode ? '#fff' : '#000')};
+    text-decoration: none;
+    border: none;
+    background: none;
+    &:hover{
+        color: ${darken(0.02, 'gray')}
+    }
 `
