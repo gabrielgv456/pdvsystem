@@ -113,8 +113,9 @@ export const ButtonProductModal = styled.button <DarkModeProps> `
     padding: 0.7rem;
     background-color: var(--Green);
     color: #fff;
+    transition: background-color 0.2s;
     &:hover{
-        background-color: '#578dff';
+        background-color:${darken(0.02,'#33CC95')}
     }
 `
 

@@ -11,6 +11,18 @@ import {useState, useContext,  KeyboardEvent, useEffect} from "react"
 import { scopedCssBaselineClasses } from '@mui/material';
 import { useApi } from '../../hooks/useApi';
 
+// start imports menu MUI //
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { execFile } from 'child_process';
+import { ModalDelete } from './Modals/DeleteSell/ModalDelete';
+import { ModalMasterKeyEdit, ModalMasterKeyDelete } from './Modals/MasterKey/MasterKeyModal';
+import { ModalSuccess } from './Modals/Success/ModalSucess';
+import { ModalEditSell } from './Modals/EditSell/ModalEditSell';
+// end imports menu MUI //
+
 
 
 
@@ -46,22 +58,42 @@ export const SalesControl = () => {
         const sumItens = listSellsProducts.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
         const sumCash = listSells.map(item => item.sellValue).reduce((prev, curr) => prev + curr, 0);
         const sumCashFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumCash)
-
+        const [ismodalDeleteOpen, setismodalDeleteOpen] = useState(false)
+        const [ismodalMasterkeyEditOpen, setismodalMasterkeyEditOpen] = useState(false)
+        const [ismodalMasterkeyDeleteOpen, setismodalMasterkeyDeleteOpen] = useState(false)
+        const [ismodalSuccessOpen, setismodalSuccessOpen] = useState(false)
+        const [ismodalEditSellOpen, setismodalEditSellOpen] = useState(false)
         const {findSells} = useApi()    
         const dataToSendApi = {userId:auth.idUser,InitialDate,FinalDate}
 
-
-        useEffect(()=>{ 
-            const defaultSendtoApi = async () => {
+        // Start params menu MUI //
+        const options = ["Exportar como Excel", "Exportar como PDF"]
+        const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+        const open = Boolean(anchorEl);
+        const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+            setAnchorEl(event.currentTarget);
+        };
+        const handleClose = () => {
+            setAnchorEl(null);
+        };
+        const handleExportExcel = () => {
+            alert("excel")
+            handleClose()
+        }
+        const handleExportPDF = () => {
+            alert("PDF")
+            handleClose()
+        }
+        const defaultSendtoApi = async () => {
             
             const data = await findSells(dataToSendApi)
             await setListSells(data.sells)
-            await setListSellsProducts(data.sellsproducts)
-            
-            
-        }
-        defaultSendtoApi()
-    },[])
+            await setListSellsProducts(data.sellsproducts)}
+        // End parms menu MUI//
+
+        useEffect(()=>{ 
+            defaultSendtoApi()
+        },[])
 
     function ReturnData () {
         let data = new Date();
@@ -73,20 +105,35 @@ export const SalesControl = () => {
         return (CurrentData)
     }
         const handleSendtoApi = async () => {
-            const data = await findSells(dataToSendApi)
-            setListSells(data.sells)
-            setListSellsProducts(data.sellsproducts)
+            if (InitialDate > FinalDate) {
+                alert('ERRO: Data inicial maior do que a data final!')
+            } 
+            else {
+                const data = await findSells(dataToSendApi)
+                setListSells(data.sells)
+                setListSellsProducts(data.sellsproducts)
+            }
         }
           const handleKeyUP = (e: KeyboardEvent) => {
             if(e.code === 'Enter' && InitialDate !== ''){
                 
             }
         }
+    
+    const [valueSellModal, setvalueSellModal] = useState(0)
+    const [idSellDeleteModal, setidSellDeleteModal] = useState(0)
+    const [listProductstoModifyQntFiltered, setlistProductstoModifyQntFiltered] = useState<SellsProductsReceiveApi[]>([])
 
-    function handleRemoveTask (id:number) {
-        let filteredtasks= listSells.filter(list => list.id !== id )
-        setListSells(filteredtasks)
+    async function handleRemoveTask (id: number, sellValue:number)  {
+        setvalueSellModal(sellValue)
+        setidSellDeleteModal(id)
+        const filter = listSellsProducts.filter(product=>product.sellId === id)
+        setlistProductstoModifyQntFiltered(filter)
+        setismodalMasterkeyDeleteOpen(true)
+        //defaultSendtoApi();
+        
     }
+    
     const Theme = useDarkMode();
 
     return (
@@ -95,9 +142,47 @@ export const SalesControl = () => {
             <S.Box><label>Data Inicial</label><S.Input isDarkMode={Theme.DarkMode} type="date" value={InitialDate} onChange={(e) =>setInitialDate(e.target.value)}></S.Input></S.Box>
             <S.Box><label>Data Final</label><S.Input isDarkMode={Theme.DarkMode} type="date" value={FinalDate} onChange={(e) =>setFinalDate(e.target.value)}></S.Input></S.Box>
                 <S.DivSearch><S.Button onClick={handleSendtoApi} >Buscar</S.Button>
-                    <label style={{display:'flex',position:'absolute',gap:3,right:'2%'}}>
-                        <S.ButtonExcel title='Exportar para Excel'><SiMicrosoftexcel size="18"/></S.ButtonExcel>
-                        <S.ButtonPdf title='Exportar para PDF'><BsFileEarmarkPdf size="18"/></S.ButtonPdf>
+                    <label style={{display:'flex',position:'absolute',right:'4%', marginBottom:"-3px"}}>
+                        <div>
+                            <IconButton
+                                aria-label="more"
+                                id="long-button"
+                                aria-controls={open ? 'long-menu' : undefined}
+                                aria-expanded={open ? 'true' : undefined}
+                                aria-haspopup="true"
+                                onClick={handleClick}
+                            >
+                                <MoreVertIcon />
+                            </IconButton>
+                            <Menu
+                                id="long-menu"
+                                MenuListProps={{
+                                'aria-labelledby': 'long-button',
+                                }}
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                PaperProps={{
+                                style: {
+                                    maxHeight: 48 * 4.5,
+                                    width: '20ch',
+                                },
+                                }}
+                            >
+                                {options.map((option, index) => (
+                                <MenuItem
+                                    key={option}
+                                    selected={option === 'Pyxis'}
+                                    onClick={index === 0 ? handleExportExcel :
+                                                index === 1 ? handleExportPDF :
+                                                    handleClose
+                                    }
+                                >
+                                    {option}
+                                </MenuItem>
+                                ))}
+                            </Menu>
+                        </div>
                     </label>
                 </S.DivSearch>
         </S.Header>
@@ -137,17 +222,59 @@ export const SalesControl = () => {
       <S.LabelDate>Data</S.LabelDate>
       <S.LabelQuantaty>Qtd</S.LabelQuantaty>
       <S.LabelItem isDarkMode={Theme.DarkMode}>Descrição</S.LabelItem> 
-      <S.LabelValue>Valor</S.LabelValue>
-      <label style={{width:41}}> &nbsp;</label>
+      <S.LabelValue>
+        Valor
+      </S.LabelValue>
+        <label style={{width:41}}> &nbsp;</label>
       </S.DivMenu>
       : 
       <S.DivMenuNotSells isDarkMode={Theme.DarkMode}> 
-      <h2>Que pena, nenhuma venda econtrada 🙁 </h2>
+        <h2>Que pena, nenhuma venda econtrada 🙁 </h2>
       </S.DivMenuNotSells>
       }
         {listSells.map((item)=>(
-    <Listagem key={item.id} item={item} handleRemoveTask={handleRemoveTask} listSellsProducts={listSellsProducts}/>
-))}
+            <Listagem 
+            key={item.id} 
+            item={item} 
+            handleRemoveTask={handleRemoveTask} 
+            listSellsProducts={listSellsProducts} 
+            setismodalMasterkeyEditOpen={setismodalMasterkeyEditOpen}
+            />
+        ))}
+
+        <ModalMasterKeyDelete
+        ismodalMasterkeyOpen={ismodalMasterkeyDeleteOpen} 
+        setismodalMasterkeyOpen={setismodalMasterkeyDeleteOpen} 
+        setismodalDeleteOpen={setismodalDeleteOpen}
+        />
+
+        <ModalDelete 
+        ismodalDeleteOpen={ismodalDeleteOpen} 
+        setismodalDeleteOpen={setismodalDeleteOpen} 
+        setismodalSuccessOpen={setismodalSuccessOpen} 
+        valueSellModal={valueSellModal} 
+        idSellDeleteModal={idSellDeleteModal} 
+        listProductstoModifyQntFiltered={listProductstoModifyQntFiltered}
+        defaultSendtoApi={defaultSendtoApi}
+        />
+
+        <ModalSuccess 
+        isModalSuccessOpen={ismodalSuccessOpen} 
+        setisModalSuccessOpen={setismodalSuccessOpen}
+        />
+        
+        <ModalMasterKeyEdit
+        ismodalMasterkeyOpen={ismodalMasterkeyEditOpen} 
+        setismodalMasterkeyOpen={setismodalMasterkeyEditOpen} 
+        setismodalEditOpen={setismodalEditSellOpen}
+        />
+
+        <ModalEditSell 
+        ismodalEditSellOpen={ismodalEditSellOpen} 
+        setismodalEditSellOpen={setismodalEditSellOpen}
+        defaultSendtoApi={defaultSendtoApi}
+        />
+
         </S.Container>
        
     )

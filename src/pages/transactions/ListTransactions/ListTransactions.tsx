@@ -42,10 +42,13 @@ export const ListTransactions = (props:{item:TransactionsReturnApiProps}) => {
             <S.LabelTypePayment title="Pix" style={{backgroundColor:'#c3f0eb'}} isDarkMode={Theme.DarkMode}><PixIcon style={{color:'#5cbcb1',width:25,height:25}}/></S.LabelTypePayment>:
             props.item.type === 'others' ?
             <S.LabelTypePayment title="Outros" style={{backgroundColor:'#c5b4b4'}} isDarkMode={Theme.DarkMode}><MdPending  size={25} style={{color:'#7a3c3c'}} /></S.LabelTypePayment> : 
-            props.item.type === 'exit' ?
+            props.item.type === 'exit_manual' ?
             <S.LabelTypePayment title="Saída Manual" style={{backgroundColor:'#ffe2e1'}} isDarkMode={Theme.DarkMode}><BiArrowToBottom  size={25} style={{color:'#b82338'}} /></S.LabelTypePayment> : 
-            props.item.type === 'entry' ?
-            <S.LabelTypePayment title="Entrada Manual" style={{backgroundColor:'#eaf9e0'}} isDarkMode={Theme.DarkMode}><BiArrowFromBottom  size={25} style={{color:'#4daf42'}} /></S.LabelTypePayment> : ''
+            props.item.type === 'entry_manual' ?
+            <S.LabelTypePayment title="Entrada Manual" style={{backgroundColor:'#eaf9e0'}} isDarkMode={Theme.DarkMode}><BiArrowFromBottom  size={25} style={{color:'#4daf42'}} /></S.LabelTypePayment> :
+            props.item.type === 'exit' ? 
+            <S.LabelTypePayment title="Estorno de venda" style={{backgroundColor:'#ffe2e1'}} isDarkMode={Theme.DarkMode}><BiArrowToBottom  size={25} style={{color:'#b82338'}} /></S.LabelTypePayment> 
+            : ''
 
             }
         

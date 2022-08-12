@@ -3,7 +3,10 @@ import { darken } from 'polished'
 
 
 interface DarkModeProps {
-    isDarkMode: Boolean;
+    isDarkMode: boolean;
+}
+interface NeedReturnCashProps {
+    needReturnCash: string;
 }
 
 
@@ -146,6 +149,10 @@ export const DivModalIconsPayment = styled.div`
     display: flex;
     justify-content: space-around;
     padding-bottom: 1rem;
+    .hoverbutton {
+        width: 25px;
+        height: 25px;
+    }
     .hoverbutton:hover{
         width: 30px;
         height:30px;
@@ -158,14 +165,15 @@ export const LabelIconsModal = styled.div <DarkModeProps>`
     align-items: center;
     flex-direction: column;
     flex-wrap: wrap;
-
+    justify-content: space-between;
+    height: 50px;
 `
 export const PHeaderModal = styled.p`
     font-size: 1.1rem;
 `
-export const PHeaderModalReturnCash = styled.p`
+export const PHeaderModalReturnCash = styled.p <NeedReturnCashProps>`
     font-size: 1.1rem;
-    color: red;
+    color: ${props=>props.needReturnCash === 'OK' ? 'green' : props.needReturnCash === 'Y' ? 'red' : 'black'};
 `
 export const InputModal = styled.input`
     border: 1px solid silver;

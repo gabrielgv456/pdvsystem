@@ -9,7 +9,7 @@ import { MdLibraryAdd, MdPending } from "react-icons/md"
 import {HiBadgeCheck} from "react-icons/hi"
 import { AiFillPrinter, AiOutlineClose } from "react-icons/ai"
 import { FaCheckCircle, FaMoneyBillWave } from "react-icons/fa"
-import { BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill } from "react-icons/bs"
+import { BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill, BsPersonBadge, BsFillPersonFill } from "react-icons/bs"
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { ListSell } from "./ListSell/ListSell";
@@ -49,14 +49,20 @@ export const Sell = () => {
         valueFormated:string;
 
     };
+    interface SellersOptionType {
+        name: string;
+        code: number;
+      }
 
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
-    
+    const sellers = [{name: 'a', code: 19}]
     const { addsell, findProducts } = useApi();
     const [Products, setProducts] = useState<ProductsTypeReturnApi[]>([])
     const [NoFilteredProducts,setNoFilteredProducts] = useState<ProductsTypeReturnApi[]>([])
     const [isSellEnded, setisSellEnded] = useState(false)
+    const [isClientNecessary, setisClientNecessary] = useState(false)
+    const [isSellerNecessary, setisSellerNecessary] = useState(false)
 
     useEffect(() => {
         const Productsresulta = async () => {
@@ -108,13 +114,13 @@ export const Sell = () => {
     }
     function handleEditMethod(id: number, value: number, valueformated:string) {
         let newMethods = [...listMethods]
-        if (value > 0){
+        
         for (let i in newMethods) {
             if (newMethods[i].id === id) {
                 newMethods[i].value = value
                 newMethods[i].valueFormated = valueformated
             }
-        }
+        
         setMethods(newMethods)
         console.log(finallistapi)
     }
@@ -220,7 +226,7 @@ export const Sell = () => {
         if(isSellEnded){
             setListProducts([])
             setMethods([])
-            setNeedReturnCash(false)
+            setNeedReturnCash('N')
             setValue([0])
             setinputProducts(null)
             setisModalConfirmSellOpen(false)
@@ -247,10 +253,10 @@ export const Sell = () => {
 
         console.log(listProducts)
     }
-    const sumpayvalue = listMethods.map(item => item.value).reduce((prev, curr) => prev + curr, 0);
+    const sumpayvalue = listMethods.filter(item => Number.isNaN(item.value) === false).map(item => item.value).reduce((prev, curr) => prev + curr, 0);
     const calculatemissvalue = sumvalue - sumpayvalue
-    const formatedmissvalue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(calculatemissvalue).replace('-',"")
-    const [needReturnCash,setNeedReturnCash] = useState(false)
+    let formatedmissvalue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(calculatemissvalue).replace('-',"")
+    const [needReturnCash,setNeedReturnCash] = useState('N')
 
     const verifyifexistsMethod = (method: string) => {
          const existsMethod = listMethods.some((item) => item.type === method)
@@ -258,8 +264,10 @@ export const Sell = () => {
     }
     
     useEffect(()=>{
-        if (sumvalue-sumpayvalue < 0){setNeedReturnCash(true)}; 
-        if(sumvalue-sumpayvalue >= 0){setNeedReturnCash(false)};
+        if (sumvalue-sumpayvalue < 0){setNeedReturnCash('Y')};
+        if (sumvalue-sumpayvalue === 0){setNeedReturnCash('OK')};  
+        if(sumvalue-sumpayvalue > 0){setNeedReturnCash('N')};
+        console.log(sumpayvalue, listMethods)
     },[formatedmissvalue])
 
     //const finallistapi = JSON.stringify({Products: {...listProducts}, Payment: {...listMethods}})
@@ -274,21 +282,43 @@ export const Sell = () => {
     const handleSendtoApi = async (valuesSelltoSendApi: object) => {
         if (listMethods.length == 0) {
             alert("ERRO: Insira um método de pagamento!")
-        }
-        if (needReturnCash){
-            if(window.confirm(`Confirma o troco de ${formatedmissvalue} ?`)) {
-                if (listMethods.length !== 0 && calculatemissvalue <= 0) {
-                    const data = await addsell(valuesSelltoSendApi)
-                    if (data.Success === true){
-                        setisSellEnded(true)
+        } 
+        else {
+            if (listMethods.some(method => Number.isNaN(method.value)) || listMethods.some(method => method.value === 0)){
+                alert('ERRO: Existe método de pagamento vazio, remova ou insira o valor!')
+            }
+            else {
+                if (needReturnCash === 'N'){
+                    alert(`ERRO: Restam ${formatedmissvalue} a serem recebidos!`)
+                }
+                
+                if (needReturnCash === 'Y'){
+                    if(window.confirm(`Confirma o troco de ${formatedmissvalue} ?`)) {
+                        if (listMethods.length !== 0 && calculatemissvalue <= 0) {
+                            const data = await addsell(valuesSelltoSendApi)
+                            if (data.Success === true){
+                                setisSellEnded(true)
+                            }
+                            if (data.Success === false){
+                                alert(`ERRO: ${JSON.stringify(data.Erro)}`)
+                            }
+                        }
                     }
-                    if (data.Success === false){
-                        alert(`ERRO: ${JSON.stringify(data.Erro)}`)
+                }
+                if (needReturnCash === 'OK'){
+                        if (listMethods.length !== 0 && calculatemissvalue <= 0) {
+                            const data = await addsell(valuesSelltoSendApi)
+                            if (data.Success === true){
+                                setisSellEnded(true)
+                            }
+                            if (data.Success === false){
+                                alert(`ERRO: ${JSON.stringify(data.Erro)}`)
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
+        } 
 
 
 
@@ -313,26 +343,65 @@ export const Sell = () => {
                     border: Theme.DarkMode ? '1px solid silver' : '',
                     boxShadow: 24, p: 4,
                 }}>
-                    <S.PHeaderModal><b>Total:</b> {sumvalueformated}</S.PHeaderModal>
-                    {needReturnCash ? '' : <S.PHeaderModal><b>Restante:</b> {formatedmissvalue}</S.PHeaderModal>}
-                    {needReturnCash ? <S.PHeaderModalReturnCash><b>Troco:</b> {formatedmissvalue}</S.PHeaderModalReturnCash>:''}
+                    <div style={{fontSize: '1.1rem',marginBottom: '10px'}}><b>Total:</b> {sumvalueformated}</div> 
+                    {needReturnCash === 'N' ? <div style={{fontSize: '1.1rem'}}><b>Restante:</b> { formatedmissvalue}</div> : ''}
+                    {needReturnCash === 'Y' && <S.PHeaderModalReturnCash needReturnCash={needReturnCash}><b>Troco:</b> {formatedmissvalue}</S.PHeaderModalReturnCash>}
+                    {needReturnCash === 'OK' && <S.PHeaderModalReturnCash needReturnCash={needReturnCash}><b>Restante:</b> { formatedmissvalue}</S.PHeaderModalReturnCash>}
                     {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{color:'var(--Green)'}} size="130"/> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
                     {isSellEnded ? '' :
+                    <div>
+                    <div style={{width:'100%',display:'flex', justifyContent:'space-between'}}>
+                    
+                    
+                    <label style={{display:'flex',width:"48%", alignItems:'flex-end', justifyContent:'space-around'}}> 
+                    <BsFillPersonFill size="22" color="#5d5c5c"/>
+                    <Autocomplete
+                        style={{width:'84%'}}
+                        options={sellers}
+                        getOptionLabel={ (option: SellersOptionType) => option.name}
+                        id="autocomplete_seller"
+                        autoComplete
+                        includeInputInList
+                        renderInput={(params) => (
+                        <TextField {...params} label="Cliente" variant="standard" />
+                        )}
+                    /> </label>
+                    
+                    
+                    
+                    <label style={{display:'flex',width:"48%", alignItems:'flex-end', justifyContent:'space-around'}}>
+                    <BsPersonBadge size="22" color="#5d5c5c"/>
+                    <Autocomplete
+                        style={{width:'84%'}}
+                        options={sellers}
+                        getOptionLabel={ (option: SellersOptionType) => option.name}
+                        id="autocomplete_sellers"
+                        autoComplete
+                        includeInputInList
+                        renderInput={(params) => (
+                        <TextField {...params} label="Vendedor" variant="standard" />
+                        )}
+                    />
+                    </label>
+                    </div>
+                    
                     <S.PHeaderModal>Qual será a forma de pagamento?</S.PHeaderModal>
+                    </div>
+                    
                     }
                     {isSellEnded ? '' :
                     <S.DivModalIconsPayment>
                         <S.LabelIconsModal onClick={() => handleAddMethod('money')} isDarkMode={Theme.DarkMode} ><FaMoneyBillWave className="hoverbutton" size={25} style={{color:'#23591b'}} />Dinheiro</S.LabelIconsModal>
                         <S.LabelIconsModal onClick={() => handleAddMethod('debitcard') } isDarkMode={Theme.DarkMode}><BsFillCreditCardFill className="hoverbutton" size={25} style={{color:'#f1b917'}}/>Cartão de Débito</S.LabelIconsModal>
                         <S.LabelIconsModal onClick={() => handleAddMethod('creditcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCard2FrontFill className="hoverbutton" size={25} style={{color:'#da506e'}}/>Cartão de Crédito</S.LabelIconsModal>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('pix')} isDarkMode={Theme.DarkMode}><PixIcon className="hoverbutton" style={{color:'#5cbcb1'}}/>PIX</S.LabelIconsModal>
+                        <S.LabelIconsModal onClick={() => handleAddMethod('pix')} isDarkMode={Theme.DarkMode}><PixIcon className="hoverbutton" style={{color:'#5cbcb1'}}/> &nbsp; PIX &nbsp;</S.LabelIconsModal>
                         <S.LabelIconsModal onClick={() => handleAddMethod('others')} isDarkMode={Theme.DarkMode}><MdPending className="hoverbutton" size={25} style={{color:'#7a3c3c'}} />Outros</S.LabelIconsModal>
                     </S.DivModalIconsPayment>
                     }
                     { listMethods.map((item) => (
                         <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item}  handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} value={value} onChangeValuePayment={onChangeValuePayment} />
                     ))}
-
+                    
                     <S.DivModalButtons>
                         {isSellEnded ? 
                         <S.ButtonPrint onClick={(e) => GeneratePDF(listProducts,sumvalueformated, sumquantity)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
@@ -346,6 +415,7 @@ export const Sell = () => {
 
                 </Box>
             </Modal>
+
 
             <S.Container isDarkMode={Theme.DarkMode}>
                 <S.Header>

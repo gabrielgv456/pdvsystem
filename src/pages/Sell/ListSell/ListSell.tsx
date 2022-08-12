@@ -41,10 +41,10 @@ export function ListSell (props:Props) {
       <S.Container isDarkMode={Theme.DarkMode}>
          <S.DivButtonsAddRemove>
          <S.LabelQuantaty>{props.item.quantity}</S.LabelQuantaty>
+         <S.ButtonAdd onClick={ItemAdd}><IoMdAddCircleOutline size="20"/></S.ButtonAdd> 
          {props.item.quantity > 1 ? 
          <S.ButtonRemove onClick={ItemRemove}><IoMdRemoveCircleOutline size="20"/></S.ButtonRemove>
          : ''}
-         <S.ButtonAdd onClick={ItemAdd}><IoMdAddCircleOutline size="20"/></S.ButtonAdd> 
          </S.DivButtonsAddRemove>
          <S.LabelItem  isDarkMode={Theme.DarkMode}>{props.item.name}</S.LabelItem>
          <S.LabelValue>{itemTotalValueFormated}</S.LabelValue>

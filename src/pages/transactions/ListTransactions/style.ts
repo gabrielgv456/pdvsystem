@@ -39,11 +39,11 @@ export const LabelDate = styled.label `
 export const LabelValue = styled.label <TypeTransactionProps>`
     background-color:${props => (
         props.isDarkMode ? 'var(--backgroundDarkMode)' : 
-        props.typeTransction === 'exit' ? '#ffe2e1' : '#eaf9e0'
+        props.typeTransction === 'exit' || props.typeTransction === 'exit_manual' ? '#ffe2e1' : '#eaf9e0'
         )};
     border-radius: 10px;
     padding: 5px;
-    color: ${props => (props.typeTransction === 'exit' ?  '#b82338' : '#4daf42' )} ;
+    color: ${props => (props.typeTransction === 'exit' || props.typeTransction === 'exit_manual' ?  '#b82338' : '#4daf42' )} ;
     display: flex;
     justify-content: center;
     width:20%;

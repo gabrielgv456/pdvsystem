@@ -65,5 +65,9 @@ export const useApi = () => ({
     addTransactions: async (dataAddTransaction:object) => {
         const response = await api.post('/addtransaction', {dataAddTransaction} )
         return response.data
+    },
+    deleteSell: async (dataDeleteSell:object) => {
+        const response = await api.post('/deletesell', {dataDeleteSell})
+        return response.data
     }
 });

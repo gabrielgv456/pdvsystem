@@ -27,7 +27,8 @@ interface Props {
       created_at: Date;
    },
    listSellsProducts: SellsProductsReceiveApi[];
-   handleRemoveTask(id: number): void;
+   handleRemoveTask(id: number, sellValue: number): void;
+   setismodalMasterkeyEditOpen: (value:boolean) => void;
 }
 
 
@@ -35,7 +36,7 @@ export function Listagem(props: Props) {
    const Theme = useDarkMode();
 
    const remove = () => {
-      props.handleRemoveTask(props.item.id)
+      props.handleRemoveTask(props.item.id, props.item.sellValue)
    }
 
    const dataSell = new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(props.item.created_at))
@@ -55,7 +56,7 @@ export function Listagem(props: Props) {
       <>
 
          <S.Container isDarkMode={Theme.DarkMode}>
-            <S.ButtonEdit title="Editar Venda"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+            <S.ButtonEdit title="Editar Venda" onClick={() => props.setismodalMasterkeyEditOpen(true)}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
             <S.LabelDate title={gethoursSell_title}>{dataSell}</S.LabelDate>
             <S.DivListQuantity>
                {props.listSellsProducts.map((products) => (

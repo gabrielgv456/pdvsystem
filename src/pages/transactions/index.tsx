@@ -46,15 +46,15 @@ export const Transactions = () => {
     const paginedTransactionsReturnApi = TransactionsReturnApi.slice(StartIndexExtract,EndIndexExtract)
     const datafindTransactions = {FinalDate,InitialDate,userID:auth.idUser}
     const [inputdescriptionExit,setinputdescriptionExit] = useState("")
-    const [inputvalueExit, setinputvalueExit] = useState<string>("")
+    const [inputvalueExit, setinputvalueExit] = useState("")
     const [inputdescriptionEntry, setinputdescriptionEntry] = useState("")
     const [inputvalueEntry, setinputvalueEntry] = useState<number | null>(null)
     const [finalvalueExit,setfinalvalueExit] = useState(0)
     const [finalvalueEntry,setfinalvalueEntry] = useState(0)
-    const dataAddTransactionExit = {type:'exit', description: inputdescriptionExit, value: finalvalueExit, UserId:auth.idUser}
-    const dataAddTransactionEntry = {type:'entry', description: inputdescriptionEntry, value: finalvalueEntry, UserId:auth.idUser}
-    const filterExitsTransactions = TransactionsReturnApi.filter(transaction=>transaction.type === 'exit')
-    const filterEntriesTransactions = TransactionsReturnApi.filter(transaction=>transaction.type !== 'exit')
+    const dataAddTransactionExit = {type:'exit_manual', description: inputdescriptionExit, value: finalvalueExit, UserId:auth.idUser}
+    const dataAddTransactionEntry = {type:'entry_manual', description: inputdescriptionEntry, value: finalvalueEntry, UserId:auth.idUser}
+    const filterExitsTransactions = TransactionsReturnApi.filter(transaction=>transaction.type === 'exit' || transaction.type === 'exit_manual')
+    const filterEntriesTransactions = TransactionsReturnApi.filter(transaction=>transaction.type !== 'exit' && transaction.type !== 'exit_manual') 
     const sumValueEntriesTransactions = filterEntriesTransactions.map(item => item.value).reduce((prev, curr) => prev + curr, 0);
     const sumValueExitsTransactions = filterExitsTransactions.map(item => item.value).reduce((prev, curr) => prev + curr, 0);
     const sumValueTransactionsFormated =  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueEntriesTransactions)
@@ -99,8 +99,13 @@ export const Transactions = () => {
     }
 
     const searchTransactions = async () => {
-        const data = await findTransactions(datafindTransactions)
-        setTransactionsReturnApi(data)
+        if (InitialDate > FinalDate) {
+        alert('ERRO: Data inicial maior do que a final!')
+        }
+        else {
+            const data = await findTransactions(datafindTransactions)
+            setTransactionsReturnApi(data)
+        }
     }
 
     const OpenAddExits = () => {
