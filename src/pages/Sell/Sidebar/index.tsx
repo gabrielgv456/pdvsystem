@@ -27,6 +27,8 @@ import { DrawerStyle} from '../Sidebar/stylemui';
 import { Sell } from '..';
 import * as S from '../Sidebar/style'
 import { useDarkMode, useDarkModeLocalStorage } from '../../../contexts/DarkMode/DarkModeProvider';
+import { BsFillPeopleFill } from 'react-icons/bs';
+import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
 
 
 
@@ -42,6 +44,8 @@ interface Props {
 }
 
 export default function SellSideBar(props: Props) {
+  const [drawerWidth, setdrawerWidth] = React.useState(240);
+  const [PeopleMode,setPeopleMode] = React.useState('Clients')
   const classes = DrawerStyle();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -70,6 +74,9 @@ export default function SellSideBar(props: Props) {
       const handleInventoryManagement = () => {
         navigate('/inventorymanagement');
       }
+      const handlePeopleRegistration = () => {
+        navigate('/peopleregistration');
+      }
       const handleVoid = () => {
       }
 
@@ -77,44 +84,66 @@ export default function SellSideBar(props: Props) {
     setMobileOpen(!mobileOpen);
   };
   
+  
 
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
   const drawer = (
     <S.Div isDarkMode={Theme.DarkMode}  >
-      <Toolbar><Typography variant="h6" noWrap component="div">Loja modelo</Typography></Toolbar>
+      <Toolbar><Typography variant="h6" noWrap component="div">{auth.user?.name}</Typography></Toolbar>
       <Divider sx={{borderColor: Theme.DarkMode ? 'var(--AppBar)' :''}}/>
       <List>
-        {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações'].map((text, index) => (
+        {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações', 'Pessoas','Gestão de Estoque'].map((text, index) => (
           <ListItem button key={text} 
           onClick= { 
-            index === 0 ? handleHome : 
+            index === 0 ? handleHome :
             index === 1 ? handleSell :
-            index === 2 ? handleSalesControl : 
-            index === 3 ? handleTansactions : handleVoid 
+            index === 2 ? handleSalesControl :
+            index === 3 ? handleTansactions :
+            index === 4 ? handlePeopleRegistration :
+            index === 5 ? handleInventoryManagement : handleVoid
           } className="ListItem">
             <ListItemIcon>
-              {index === 0 ? <HomeIcon className="Icons" /> : <></>}
-              {index === 1 ? <StorefrontIcon className="Icons" /> : <></>}
-              {index === 2 ? <ReceiptLongIcon className="Icons"/> : <></>}
-              {index === 3 ? <PaidIcon className="Icons"/> : <></>}
+              {index === 0 && <HomeIcon className="Icons" /> }
+              {index === 1 && <StorefrontIcon className="Icons" /> }
+              {index === 2 && <ReceiptLongIcon className="Icons"/> }
+              {index === 3 && <PaidIcon className="Icons"/> }
+              {index === 4 && <BsFillPeopleFill size="22" className="Icons"/>}
+              {index === 5 && <PieChartIcon  className="Icons" /> }
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
         ))}
       </List>
+      
+      {drawerWidth === 240 ?
+      <S.ButtonRetract
+      onClick={()=>setdrawerWidth(0)} 
+      style={{position:'fixed',
+              left:'239px',
+              top:'50%', 
+              }}
+      isDarkMode={Theme.DarkMode}
+      > 
+        <IoMdArrowRoundBack  size="14" color="var(--AppBar)" /> 
+      </S.ButtonRetract>
+      :
+      <S.ButtonRetract
+      onClick={()=>setdrawerWidth(240)} 
+      style={{position:'fixed',
+              left:'0',
+              top:'50%', 
+              }}
+      isDarkMode={Theme.DarkMode}
+      > 
+        <IoMdArrowRoundForward color="var(--AppBar)" size="14"/> 
+      </S.ButtonRetract>
+      }
+      
+      
+      
       <Divider sx={{borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' :''}} />
-      <List >
-        {['Gestão de Estoque'].map((text, index) => (
-          <ListItem button key={text} className="ListItem" onClick={index == 0 ? handleInventoryManagement : handleVoid }>
-            <ListItemIcon>
-              {index === 0 ? <PieChartIcon  className="Icons" /> : <></>}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-        
-      </List>
+      
      <S.DivSwitch isDarkMode={Theme.DarkMode}>☼
       <Switch checked={Theme.DarkMode} 
          onChange={e => Theme.setDarkMode(e.target.checked)} sx={{display:'flex'}}  />
@@ -123,6 +152,7 @@ export default function SellSideBar(props: Props) {
 
     </S.Div>
   );
+
 
   const container = window !== undefined ? () => window().document.body : undefined;
 

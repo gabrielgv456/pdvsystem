@@ -6,13 +6,13 @@ interface DarkModeProps {
 }
 interface ActiveProps {
     isDarkMode:boolean;
-    isProductActive:boolean;
+    isSellerActive:boolean;
 }
 
 
 export const Container = styled.div <ActiveProps>`
-    text-decoration:${props => (props.isProductActive? '' : 'line-through' )} ;
-    opacity: ${props => (props.isProductActive? '' : '0.6' )};
+    text-decoration:${props => (props.isSellerActive? '' : 'line-through' )} ;
+    opacity: ${props => (props.isSellerActive? '' : '0.6' )};
     min-width: min-content;
     padding:20px;
     width:100%;
@@ -27,45 +27,36 @@ export const Container = styled.div <ActiveProps>`
    
 `
 
-export const LabelDate = styled.label `
-    color:#5fcd0e;
-    display: flex;
-    justify-content: center;
-    width: 20%;
-    color:#485059;
-    min-width: min-content;
-`
-export const LabelStatus = styled.label <DarkModeProps>`
-    border-radius: 10px;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    width:15%;
-    min-width: min-content;
-`
-export const LabelValue = styled.label <DarkModeProps> `
+export const LabelEmail = styled.label <DarkModeProps> `
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    display: flex;
-    justify-content: center;
-    width:10%;
-    min-width: min-content;
-`
-export const LabelNameProduct = styled.label <DarkModeProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width: 30%;
-    max-width:30%;
+    min-width:20%;
+    max-width:20%;
+`
+export const LabelCpf = styled.label <DarkModeProps>`
+    padding: 5px;
+    
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
     
-`
-export const LabelQuantity = styled.label <DarkModeProps>`
-    display: flex;
-    justify-content: center;
+    width:15%;
     min-width: min-content;
-    color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    width:15%
 `
+export const LabelPhone = styled.label <DarkModeProps> `
+    color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
+    width:15%;
+    min-width: min-content;
+`
+export const LabelNameSeller = styled.label <DarkModeProps>`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
+    max-width:25%;
+    min-width:25%;
+`
+
 
 export const ButtonEdit= styled.button `
     text-decoration: none;
@@ -95,7 +86,7 @@ export const ButtonTrash = styled.button `
     width:min-content;
 `
 
-export const DivModalProduct = styled.div `
+export const DivModalSeller = styled.div `
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -103,7 +94,7 @@ export const DivModalProduct = styled.div `
     margin: 30px 0 30px 0;
 `
 
-export const ButtonProductModal = styled.button <DarkModeProps> `
+export const ButtonSellerModal = styled.button <DarkModeProps> `
     flex-wrap: wrap;
     display: flex;
     align-items: center;
@@ -147,7 +138,7 @@ export const ButtonRestrictAcessModal = styled.button `
     height:55px;
    
 `
-export const DivDeleteProductModal = styled.div ` 
+export const DivDeleteSellerModal = styled.div ` 
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -198,7 +189,7 @@ export const DivDeleteProductModal = styled.div `
 }
 
     `
-export const ButtonYesDeleteProductModal = styled.button `
+export const ButtonYesDeleteSellerModal = styled.button `
     background:var(--Green);
     border:none;
     border-radius:5px;
@@ -208,7 +199,7 @@ export const ButtonYesDeleteProductModal = styled.button `
         background: ${darken(0.02, '#33CC95')}
     }
 `
-export const ButtonNoDeleteProductModal = styled.button `
+export const ButtonNoDeleteSellerModal = styled.button `
     background:none;
     border:none;
     border-radius:5px;

@@ -12,10 +12,9 @@ import { BsArrowDownLeftCircle, BsArrowUpRightCircle, BsCheckCircle, BsSearch } 
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { AiOutlineClose, AiOutlineEdit } from 'react-icons/ai';
+import { AiOutlineClose,  } from 'react-icons/ai';
 import Switch from '@mui/material/Switch';
-import { RiAdminLine } from 'react-icons/ri';
-
+import { CurrencyMask } from '../../masks/CurrencyMask';
 
 
 interface ProductsReturnApiProps{
@@ -49,7 +48,8 @@ export const InventoryManagement = () => {
     const inputSearchProductLowwer = inputSearchProduct.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     const [dataTransactionsProductsReturnApi, setdataTransactionsProductsReturnApi] = useState<TransactionsProductsReturnApi[]>([])
     const ProductsReturnApiFiltered = ProductsReturnApi.filter((product) => product.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(inputSearchProductLowwer))
-    const [inputProductsModalValue,setinputProductsModalValue] = useState<number|null>(null)
+    const [inputvalueProduct, setinputvalueProduct] = useState<string|null>(null)
+    const [finalvalueProduct,setfinalvalueProduct] = useState(0)
     const [inputProductsModalQuantity,setinputProductsModalQuantity] = useState<number|null>(null)
     const [isProductActiveModalAddProduct, setisProductActiveModalAddProduct] = useState(true)
     const PagesExtract = Math.ceil(ProductsReturnApiFiltered.length / ItensPerPageExtract )
@@ -61,7 +61,7 @@ export const InventoryManagement = () => {
     const finaldataAddProductsToSendApi = {
         userId:auth.idUser, 
         name:inputProductsModalName, 
-        value:inputProductsModalValue, 
+        value:finalvalueProduct, 
         quantity:inputProductsModalQuantity,
         active:isProductActiveModalAddProduct
      }
@@ -105,21 +105,30 @@ export const InventoryManagement = () => {
         setisModalSucessOpen(false)
     }
 
+    const changeInputValueProduct = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+
+        setinputvalueProduct(e.target.value)
+
+        let formatvalue = e.target.value
+        formatvalue = formatvalue.replace(/\D/g, "")
+        formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
+        setfinalvalueProduct(parseFloat(formatvalue))
+    }
     
 
     const AddProductApi = async () => {
         
         if (inputProductsModalName !== ""
-            && inputProductsModalValue !== null
-            && inputProductsModalValue > 0
-            && inputProductsModalQuantity !== null
+            && finalvalueProduct > 0
+            && inputProductsModalQuantity
             && inputProductsModalQuantity > 0) {
                 const data = await addProducts(finaldataAddProductsToSendApi)
                 if (data.Sucess){
                     handleCloseModalAddProduct()
                     setinputProductsModalName("")
                     setinputProductsModalQuantity(null)
-                    setinputProductsModalValue(null)
+                    setinputvalueProduct(null)
+                    setfinalvalueProduct(0)
                     setisModalSucessOpen(true)
                 }
                 else {
@@ -280,12 +289,12 @@ export const InventoryManagement = () => {
                             id="outlined-basic" 
                             label="Nome do Produto" 
                             variant="outlined" 
+                            autoFocus
                             sx={{width:'90%'}}/>   
                         <label style={{display:'flex', justifyContent:'space-between',width:'90%'}}>
                         <TextField 
-                        value={inputProductsModalValue}
-                        onChange={(e) => setinputProductsModalValue(Number(e.target.value))} 
-                        type="number" 
+                        value={inputvalueProduct}
+                        onChange={(e) => changeInputValueProduct(CurrencyMask(e))}
                         id="outlined-basic" 
                         label="Valor" 
                         variant="outlined" 

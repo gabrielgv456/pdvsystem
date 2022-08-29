@@ -6,13 +6,13 @@ interface DarkModeProps {
 }
 interface ActiveProps {
     isDarkMode:boolean;
-    isProductActive:boolean;
+    isClientActive:boolean;
 }
 
 
 export const Container = styled.div <ActiveProps>`
-    text-decoration:${props => (props.isProductActive? '' : 'line-through' )} ;
-    opacity: ${props => (props.isProductActive? '' : '0.6' )};
+    text-decoration:${props => (props.isClientActive? '' : 'line-through' )} ;
+    opacity: ${props => (props.isClientActive? '' : '0.6' )};
     min-width: min-content;
     padding:20px;
     width:100%;
@@ -27,45 +27,43 @@ export const Container = styled.div <ActiveProps>`
    
 `
 
-export const LabelDate = styled.label `
+export const LabelNumber = styled.label `
     color:#5fcd0e;
     display: flex;
-    justify-content: center;
-    width: 20%;
+    width: 15%;
     color:#485059;
     min-width: min-content;
 `
-export const LabelStatus = styled.label <DarkModeProps>`
-    border-radius: 10px;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    width:15%;
-    min-width: min-content;
-`
-export const LabelValue = styled.label <DarkModeProps> `
-    color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    display: flex;
-    justify-content: center;
-    width:10%;
-    min-width: min-content;
-`
-export const LabelNameProduct = styled.label <DarkModeProps>`
+
+export const LabelMail= styled.label `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width: 30%;
-    max-width:30%;
+    color:#5fcd0e;
+    max-width: 20%;
+    min-width:20%;
+    color:#485059;
+    
+`
+export const LabelCpf = styled.label <DarkModeProps>`
+    border-radius: 10px;
+    padding: 5px;
+    display: flex;
+    width:15%;
+    min-width: min-content;
+    color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
+`
+
+export const LabelNameClient = styled.label <DarkModeProps>`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 25%;
+    max-width: 25%;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
     
 `
-export const LabelQuantity = styled.label <DarkModeProps>`
-    display: flex;
-    justify-content: center;
-    min-width: min-content;
-    color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    width:15%
-`
+
 
 export const ButtonEdit= styled.button `
     text-decoration: none;
@@ -95,33 +93,8 @@ export const ButtonTrash = styled.button `
     width:min-content;
 `
 
-export const DivModalProduct = styled.div `
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
-    margin: 30px 0 30px 0;
-`
 
-export const ButtonProductModal = styled.button <DarkModeProps> `
-    flex-wrap: wrap;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap:10px;
-    width: max-content;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8rem;
-    border:none;
-    border-radius: 5px;
-    padding: 0.7rem;
-    background-color: var(--Green);
-    color: #fff;
-    transition: background-color 0.2s;
-    &:hover{
-        background-color:${darken(0.02,'#33CC95')}
-    }
-`
+
 
 export const ButtonCloseModal = styled.button <DarkModeProps>`
     color: ${props => (props.isDarkMode ? '#fff' : '#000')};
@@ -147,7 +120,7 @@ export const ButtonRestrictAcessModal = styled.button `
     height:55px;
    
 `
-export const DivDeleteProductModal = styled.div ` 
+export const DivDeleteClientModal = styled.div ` 
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -198,7 +171,7 @@ export const DivDeleteProductModal = styled.div `
 }
 
     `
-export const ButtonYesDeleteProductModal = styled.button `
+export const ButtonYesDeleteClientModal = styled.button `
     background:var(--Green);
     border:none;
     border-radius:5px;
@@ -208,7 +181,7 @@ export const ButtonYesDeleteProductModal = styled.button `
         background: ${darken(0.02, '#33CC95')}
     }
 `
-export const ButtonNoDeleteProductModal = styled.button `
+export const ButtonNoDeleteClientModal = styled.button `
     background:none;
     border:none;
     border-radius:5px;

@@ -24,6 +24,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { AuthRedirect } from './pages/Login/AuthRedirect';
 import { fontSize } from '@mui/system';
 import { borderRadius } from 'polished';
+import PeopleRegistrationSideBar from './pages/PeopleRegistration/Sidebar';
 
 function App() {
   const Theme = useDarkMode();
@@ -46,11 +47,15 @@ const ThemeMui = createTheme({
       fontSize: 14.9,
     },
   },
+    // palette:{
+    // info:{
+    //   main:'#888',
+    // dark:'#fff',
+    //}
+    //},
   components:{
-    MuiInputLabel:{styleOverrides:{root:{color:Theme.DarkMode?'white':''}}},
-  
     MuiOutlinedInput:{styleOverrides:{
-      //notchedOutline:{borderColor:Theme.DarkMode?'white':'var(--AppBar)'}, 
+      notchedOutline:{borderColor:Theme.DarkMode?'#757575':''}, // ALTERAR BORDA DOS TEXTFIELDS
       //root:{":hover $notchedOutline": {borderColor:'red'}},
     }},
 
@@ -72,6 +77,7 @@ const ThemeMui = createTheme({
         <Route path="/salescontrol" element={<RequireAuth><SalesControlsideBar/></RequireAuth>} />
         <Route path="/transactions" element={<RequireAuth><TransactionsSideBar/></RequireAuth>} />
         <Route path="/inventorymanagement" element={<RequireAuth><InventoryManagementSideBar/></RequireAuth>} />
+        <Route path="/peopleregistration" element={<RequireAuth><PeopleRegistrationSideBar/></RequireAuth>} />
         <Route path="*" element={<NotFound/>} />
       </Routes>
       </ThemeProvider>

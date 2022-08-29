@@ -149,8 +149,8 @@ export const DivMenuNotSells = styled.div <DarkModeProps>`
 `
 export const LabelItem = styled.label<DarkModeProps>`
     color: gray;
-    width: 40%;
-    max-width:40%;
+    width: 25%;
+    max-width:25%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -168,7 +168,7 @@ export const LabelItem = styled.label<DarkModeProps>`
     }
 `
 export const LabelValue = styled.label `
-    width: 11%;
+    width: 10%;
 `
 export const LabelDate = styled.label `
     width: 10%;

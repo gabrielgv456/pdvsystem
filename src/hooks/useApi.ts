@@ -69,5 +69,33 @@ export const useApi = () => ({
     deleteSell: async (dataDeleteSell:object) => {
         const response = await api.post('/deletesell', {dataDeleteSell})
         return response.data
-    }
+    },
+    findSellers: async (userId:number) => {
+        const response = await api.post('/findsellers', {userId})
+        return response.data
+    },
+    addSeller: async (dataAddSeller:object) => {
+        const response = await api.post('/addseller', {dataAddSeller})
+        return response.data
+    },
+    editSeller: async(dataEditSeller:object) => {
+        const response = await api.post('/editseller',{dataEditSeller})
+        return response.data
+    },
+    deleteSeller: async(dataDeleteSeller:object) => {
+        const response = await api.post('/deleteseller',{dataDeleteSeller})
+        return response.data
+    },
+    findClients: async (userId:number) => {
+        const response = await api.post('/findclients', {userId})
+        return response.data
+    },
+    editClient: async(dataEditClient:object) => {
+        const response = await api.post('/editclient', {dataEditClient})
+        return response.data
+    },
+    addClient: async(dataAddClient:object)=> {
+        const response = await api.post('/addclient', {dataAddClient})
+        return response.data
+    },
 });

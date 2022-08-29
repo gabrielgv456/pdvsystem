@@ -50,8 +50,8 @@ export const DivListItens = styled.div<DarkModeProps> `
     display: flex;
     flex-direction: column;
     color: ${props => (props.isDarkMode ? 'white' : '')};
-    width: 40%;
-    max-width:40%;
+    width: 25%;
+    max-width:25%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -73,8 +73,20 @@ export const DivListQuantity = styled.div `
     flex-direction: column;
     width: 3%;
 `
-export const LabelValue = styled.label `
-    width: 10%;
+export const LabelNameSeller = styled.label `
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 15%;
+    min-width: 15%;
+`
+export const LabelValue= styled.label `
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 10%;
+    min-width: 10%;
 `
 export const LabelDate = styled.label `
     width: 10%;

@@ -23,30 +23,29 @@ import { ModalSuccess } from './Modals/Success/ModalSucess';
 import { ModalEditSell } from './Modals/EditSell/ModalEditSell';
 // end imports menu MUI //
 
+export interface SellsProductsReceiveApi {
+    id:number;
+    storeId: number,
+    sellId:number;
+    idProduct:number;
+    quantity: number,
+    valueProduct: number;
+    totalValue: number;
+    descriptionProduct: string;
+    created_at: Date;
+ };
 
-
+export interface Item {
+    id:number;
+    storeId: number,
+    clientName:string|null,
+    sellerName:string|null,
+    sellValue:number;
+    valuePayment:number;
+    created_at: Date;
+};
 
 export const SalesControl = () => {
-
-    interface SellsProductsReceiveApi {
-        id:number;
-        storeId: number,
-        sellId:number;
-        idProduct:number;
-        quantity: number,
-        valueProduct: number;
-        totalValue: number;
-        descriptionProduct: string;
-        created_at: Date;
-     };
-
-    interface Item {
-        id:number;
-        storeId: number,
-        sellValue:number;
-        valuePayment:number;
-        created_at: Date;
-    };
 
         const atualdata = ReturnData()
         const auth = useContext(AuthContext);
@@ -221,10 +220,13 @@ export const SalesControl = () => {
       <label style={{width:25}}>&nbsp;</label> 
       <S.LabelDate>Data</S.LabelDate>
       <S.LabelQuantaty>Qtd</S.LabelQuantaty>
-      <S.LabelItem isDarkMode={Theme.DarkMode}>Descrição</S.LabelItem> 
+      <S.LabelItem isDarkMode={Theme.DarkMode}>Descrição</S.LabelItem>
+      <label style={{width:'15%'}}>Cliente</label>
+      <label style={{width:'15%'}}>Vendedor</label> 
       <S.LabelValue>
         Valor
       </S.LabelValue>
+      
         <label style={{width:41}}> &nbsp;</label>
       </S.DivMenu>
       : 

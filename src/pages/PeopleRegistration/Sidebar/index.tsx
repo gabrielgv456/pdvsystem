@@ -22,15 +22,16 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import { DrawerStyle} from '../Sidebar/stylemui';
-import { InventoryManagement } from '..';
+import { ClientsRegistration } from '../Clients';
 import * as S from '../Sidebar/style'
 import { useDarkMode, useDarkModeLocalStorage } from '../../../contexts/DarkMode/DarkModeProvider';
-import { BsFillPeopleFill } from 'react-icons/bs';
+import { BsArrowLeftSquare, BsArrowLeftSquareFill, BsArrowRightSquareFill, BsFillPeopleFill } from 'react-icons/bs';
+import { SellersRegistration } from '../Sellers';
 import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
 
 
 
-const drawerWidth = 240;
+
 
 
 interface Props {
@@ -41,7 +42,7 @@ interface Props {
   window?: () => Window;
 }
 
-export default function InventoryManagementSideBar(props: Props) {
+export default function PeopleRegistrationSideBar(props: Props) {
   const [drawerWidth, setdrawerWidth] = React.useState(240);
   const [PeopleMode,setPeopleMode] = React.useState('Clients')
   const classes = DrawerStyle();
@@ -178,7 +179,7 @@ export default function InventoryManagementSideBar(props: Props) {
           </IconButton>
           
           <Typography variant="h6" noWrap component="div" display="flex">
-            Gestão de Estoque
+            Cadastro de Pessoas
           </Typography>
           {auth.user && 
           <PowerSettingsNewIcon 
@@ -228,7 +229,13 @@ export default function InventoryManagementSideBar(props: Props) {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar/>
-          <InventoryManagement/>
+        {PeopleMode === 'Clients' ?
+          <ClientsRegistration PeopleMode={PeopleMode} setPeopleMode={setPeopleMode} />
+        :
+        PeopleMode === 'Sellers' ?
+          <SellersRegistration PeopleMode={PeopleMode} setPeopleMode={setPeopleMode}/>
+        : ''
+        }
       </Box>
     </Box>
   );

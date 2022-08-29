@@ -4,37 +4,22 @@ import { AiFillPrinter } from 'react-icons/ai'
 import * as S from "./style";
 import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider"
 import { GeneratePDFSalesControl } from "../../../hooks/useGeneratePDF";
+import { Item, SellsProductsReceiveApi } from "../index"
 
-interface SellsProductsReceiveApi {
-   id: number;
-   storeId: number,
-   sellId: number;
-   idProduct: number;
-   quantity: number;
-   valueProduct: number;
-   totalValue: number;
-   descriptionProduct: string;
-   created_at: Date;
-};
+
 
 interface Props {
 
-   item: {
-      id: number;
-      storeId: number,
-      sellValue: number;
-      valuePayment: number;
-      created_at: Date;
-   },
+   item: Item;
    listSellsProducts: SellsProductsReceiveApi[];
    handleRemoveTask(id: number, sellValue: number): void;
-   setismodalMasterkeyEditOpen: (value:boolean) => void;
+   setismodalMasterkeyEditOpen: (value: boolean) => void;
 }
 
 
 export function Listagem(props: Props) {
-   const Theme = useDarkMode();
 
+   const Theme = useDarkMode();
    const remove = () => {
       props.handleRemoveTask(props.item.id, props.item.sellValue)
    }
@@ -53,7 +38,6 @@ export function Listagem(props: Props) {
 
 
    return (
-      <>
 
          <S.Container isDarkMode={Theme.DarkMode}>
             <S.ButtonEdit title="Editar Venda" onClick={() => props.setismodalMasterkeyEditOpen(true)}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
@@ -73,7 +57,8 @@ export function Listagem(props: Props) {
                      : ''
                ))}
             </S.DivListItens>
-
+            <S.LabelNameSeller>{props.item.clientName ?? "Não informado"}</S.LabelNameSeller>
+            <S.LabelNameSeller>{props.item.sellerName ?? "Não informado"}</S.LabelNameSeller>
             <S.LabelValue>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.item.sellValue)}</S.LabelValue>
             <label>
                <S.ButtonPrint title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.ButtonPrint>
@@ -81,6 +66,5 @@ export function Listagem(props: Props) {
             </label>
          </S.Container>
 
-      </>
    )
 }

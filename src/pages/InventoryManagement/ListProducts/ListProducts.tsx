@@ -13,7 +13,7 @@ import { useApi } from "../../../hooks/useApi";
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import { RiAdminLine } from "react-icons/ri";
 import {TransactionsProductsReturnApi} from "../index"
-
+import { CurrencyMask } from "../../../masks/CurrencyMask"
 
 interface ListProductsProps{
     id: number;
@@ -47,7 +47,10 @@ export const ListProducts = (props:ListProductsProps) => {
     const [isModalDeleteProductOpen,setisModalDeleteProductOpen] = useState(false)
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false)
     const [valueInputProductName,setvalueInputProductName]=useState(props.name)
+    const [inputvalueProduct, setinputvalueProduct] = useState<string|null>(null)
     const [valueInputProductValue,setvalueInputProductValue]=useState(props.value)
+    const [finalvalueProduct,setfinalvalueProduct] = useState(0)
+
     const [valueInputProductQuantity,setvalueInputProductQuantity]=useState(props.quantity)
     const [valueInputProductActive,setvalueInputProductActive]=useState(props.active)
     const finaldataEditProductsToSendApi = {
@@ -58,7 +61,15 @@ export const ListProducts = (props:ListProductsProps) => {
         active:valueInputProductActive,
         userId: auth.idUser
     }
-    
+    const changeInputValueProduct = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+
+        setinputvalueProduct(e.target.value)
+
+        let formatvalue = e.target.value
+        formatvalue = formatvalue.replace(/\D/g, "")
+        formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
+        setfinalvalueProduct(parseFloat(formatvalue))
+    }
     function handleCloseModalSucess() {
         props.searchProduct()
         setisModalSucessOpen(false)
@@ -107,7 +118,7 @@ export const ListProducts = (props:ListProductsProps) => {
     }
     const handleOpenModalTransactionsProducts = async () => {
         props.setisModalTransactionsProductsOpen(true)
-        const data = await findTransactionsProducts({id:props.id})
+        const data = await findTransactionsProducts({id:props.id, storeId:auth.idUser})
         props.setdataTransactionsProductsReturnApi(data.findTransactionsProducts)
     }
     
@@ -184,8 +195,8 @@ export const ListProducts = (props:ListProductsProps) => {
                             sx={{width:'90%'}}/>   
                         <label style={{display:'flex', justifyContent:'space-between',width:'90%'}}>
                         <TextField 
-                        value={valueInputProductValue}
-                        onChange={(e)=>{setvalueInputProductValue(Number(e.target.value))}}
+                        value={inputvalueProduct}
+                        onChange={(e) => changeInputValueProduct(CurrencyMask(e))}
                         type="number" 
                         id="outlined-basic" 
                         label="Valor" 
