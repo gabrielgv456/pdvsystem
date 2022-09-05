@@ -94,8 +94,12 @@ export const useApi = () => ({
         const response = await api.post('/editclient', {dataEditClient})
         return response.data
     },
-    addClient: async(dataAddClient:object)=> {
+    addClient: async(dataAddClient:object) => {
         const response = await api.post('/addclient', {dataAddClient})
         return response.data
     },
+    deleteClient: async(dataDeleteClient:object) => {
+        const response = await api.post('/deleteclient', {dataDeleteClient})
+        return response.data
+    }
 });

@@ -1,16 +1,14 @@
-import { Link } from 'react-router-dom'
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import TextField from '@mui/material/TextField';
 import * as S from "./style"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
-import { BsArrowDownCircle, BsArrowUpCircle, BsCheckCircle, BsFillBagFill } from 'react-icons/bs';
-import { RiFileList3Line, RiMoneyDollarCircleFill, RiMoneyDollarCircleLine } from 'react-icons/ri';
-import { FaAngleLeft, FaAngleRight, FaSearch, FaShoppingCart, FaUserAstronaut } from 'react-icons/fa';
-import { AiOutlineLeft, AiOutlineRight, AiOutlineSearch } from 'react-icons/ai';
+import { BsArrowDownCircle, BsArrowUpCircle, BsCheckCircle } from 'react-icons/bs';
+import { RiFileList3Line, RiMoneyDollarCircleLine } from 'react-icons/ri';
+import { FaSearch } from 'react-icons/fa';
 import { useApi } from '../../hooks/useApi';
 import { ListTransactions } from './ListTransactions/ListTransactions';
-import { HiOutlineChevronLeft, HiOutlineChevronRight, HiTrendingDown, HiTrendingUp } from 'react-icons/hi';
+import { HiTrendingDown, HiTrendingUp } from 'react-icons/hi';
 import { MdAddTask, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { CurrencyMask } from '../../masks/CurrencyMask';
 
@@ -322,6 +320,7 @@ export const Transactions = () => {
 
 
                             />
+
                             <S.ButtonAddExit onClick={handleAddExit}>
                                 <MdAddTask size="40" />
                             </S.ButtonAddExit>

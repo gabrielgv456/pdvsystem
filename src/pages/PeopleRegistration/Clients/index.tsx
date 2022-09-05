@@ -7,7 +7,7 @@ import { MdAdd, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useApi } from '../../../hooks/useApi';
-import {  BsSearch } from 'react-icons/bs';
+import { BsSearch } from 'react-icons/bs';
 import { ListClients } from './ListClients/ListClients';
 import { ModalAddClient } from "./Modals/addClient/addClient";
 import { ModalSuccessClient } from "./Modals/Success/modalSuccess";
@@ -22,7 +22,7 @@ export interface ClientsReturnApiProps {
     email: string | null;
     created_at: Date;
     active: boolean;
-    birthDate: Date ,
+    birthDate: Date,
     phoneNumber: string | null,
     cellNumber: string | null,
     adressStreet: string | null,
@@ -67,7 +67,7 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
 
     }
 
-    
+
     function handleContinueAddingClients() {
         setisModalAddClientOpen(true)
         setisModalSucessOpen(false)
@@ -100,10 +100,6 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
     return (
         <>
             <S.Container isDarkMode={Theme.DarkMode}>
-
-
-
-
                 <S.Header>
                     <S.LabelSearchClient>
                         <BsSearch style={{ margin: '15px', color: "#9eaab5" }} size="18" />
@@ -128,7 +124,7 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
                         value={props.PeopleMode}
                         exclusive
                         onChange={handleChangePeopleType}
-                        
+
                     >
                         <ToggleButton value="Clients" >Clientes</ToggleButton>
                         <ToggleButton value="Sellers">Vendedores</ToggleButton>
@@ -213,16 +209,16 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
 
 
             <ModalAddClient
-            setisModalAddClientOpen={setisModalAddClientOpen}
-            setisModalSucessOpen={setisModalSucessOpen}
-            isModalAddClientOpen={isModalAddClientOpen}
-            searchClients={SearchClients}
+                setisModalAddClientOpen={setisModalAddClientOpen}
+                setisModalSucessOpen={setisModalSucessOpen}
+                isModalAddClientOpen={isModalAddClientOpen}
+                searchClients={SearchClients}
             />
 
             <ModalSuccessClient
-            setisModalSucessOpen={setisModalSucessOpen}
-            isModalSucessOpen ={isModalSucessOpen}
-            handleContinueAddingClients ={handleContinueAddingClients}
+                setisModalSucessOpen={setisModalSucessOpen}
+                isModalSucessOpen={isModalSucessOpen}
+                handleContinueAddingClients={handleContinueAddingClients}
             />
 
         </>

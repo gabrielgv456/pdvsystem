@@ -7,14 +7,14 @@ import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 import { MdAdd, MdChevronLeft, MdChevronRight, MdFileDownloadDone } from 'react-icons/md';
 import { ListProducts } from './ListProducts/ListProducts';
 import { useApi } from '../../hooks/useApi';
-import { IoMdAdd } from 'react-icons/io';
-import { BsArrowDownLeftCircle, BsArrowUpRightCircle, BsCheckCircle, BsSearch } from 'react-icons/bs';
+import {  BsCheckCircle, BsSearch } from 'react-icons/bs';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { AiOutlineClose,  } from 'react-icons/ai';
 import Switch from '@mui/material/Switch';
 import { CurrencyMask } from '../../masks/CurrencyMask';
+import { ModalTransactionsProducts } from './Modals';
 
 
 interface ProductsReturnApiProps{
@@ -85,17 +85,6 @@ export const InventoryManagement = () => {
     }
 
     
-
-
-    function handleCloseModalTransactionsProducts() {
-        if(isProductCreated){
-            setisModalTransactionsProductsOpen(false)
-            
-        } else {
-            setisModalTransactionsProductsOpen(false)
-        }
-        
-    }
     function handleCloseModalSucess() {
         SearchProducts()
         setisModalSucessOpen(false)
@@ -262,6 +251,12 @@ export const InventoryManagement = () => {
 
             {/******     Modals Start  *********/}
 
+            <ModalTransactionsProducts
+                dataTransactionsProductsReturnApi= {dataTransactionsProductsReturnApi}
+                isModalTransactionsProductsOpen = { isModalTransactionsProductsOpen }
+                setisModalTransactionsProductsOpen =  {setisModalTransactionsProductsOpen}
+            />
+
             <Modal open={isModalAddProductOpen} onClose={handleCloseModalAddProduct}>
                 <Box sx={{
                     position: 'absolute' as 'absolute',
@@ -322,70 +317,8 @@ export const InventoryManagement = () => {
                 </Box>
             </Modal>
 
-
-
-
             
 
-
-
-
-
-            <Modal open={isModalTransactionsProductsOpen} onClose={handleCloseModalTransactionsProducts}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '80%', // phone
-                        sm: '80%', // tablets
-                        md: 500, // small laptop
-                        lg: 500, // desktop
-                        xl: 500 // large screens
-                    },
-                    //width: '80%',
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    boxShadow: 24, p: 4,
-                }}
-                >
-                    <div style={{display:'flex', justifyContent:'space-between', color:'#48505e', fontSize:'0.9rem', marginBottom:'10px'}}>
-                                    <div style={{width:'20px'}}></div>
-                                    <div style={{width:'40%', display:'flex', justifyContent:'center'}}>Data</div>
-                                    <div style={{width:'40%', display:'flex', justifyContent:'center'}}>Descrição</div>
-                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>Qtd</div>
-                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>Saldo</div>
-                    </div>
-                    {dataTransactionsProductsReturnApi.map((transaction) =>(
-                        <div>
-                            {transaction.type === 'E' &&
-                                <div style={{display:'flex', justifyContent:'space-between', color:'green', fontSize:'0.9rem'}}>
-                                    <div style={{width:'20px'}}><BsArrowUpRightCircle size="20"/></div>
-                                    <div style={{width:'40%', display:'flex', justifyContent:'center'}}>{new Date(transaction.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })}</div>
-                                    <div style={{width:'40%'}}>{transaction.description}</div>
-                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>{transaction.quantity}</div>
-                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>{transaction.totalQuantity}</div>
-                                </div>
-                            }
-                            {transaction.type === 'S' &&
-                                <div style={{display:'flex', justifyContent:'space-between', color:'red', fontSize:'0.9rem'}}>
-                                    <div style={{width:'20px'}}><BsArrowDownLeftCircle size="20"/></div>
-                                    <div style={{width:'40%', display:'flex', justifyContent:'center'}}>{new Date(transaction.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })}</div>
-                                    <div style={{width:'40%'}}>{transaction.description}</div>
-                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>{transaction.quantity}</div>
-                                    <div style={{width:'10%', display:'flex',justifyContent:'center'}}>{transaction.totalQuantity}</div>
-                                </div>
-                            }
-                            
-                        </div>
-                    ))}
-                    
-                    <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalTransactionsProducts}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-                </Box>
-            </Modal>
-            
 
             <Modal open={isModalSucessOpen} onClose={handleCloseModalSucess}>
                 <Box sx={{

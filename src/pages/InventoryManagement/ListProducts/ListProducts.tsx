@@ -1,4 +1,4 @@
-import { BsCheckCircle, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsInfoCircle, BsTrash } from "react-icons/bs";
+import { BsCheckCircle, BsTrash } from "react-icons/bs";
 import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider";
 import * as S from "./style"
 import {BiTransfer} from "react-icons/bi"
@@ -46,17 +46,15 @@ export const ListProducts = (props:ListProductsProps) => {
     const [inputMasterKey, setinputMasterKey] = useState("")
     const [isModalDeleteProductOpen,setisModalDeleteProductOpen] = useState(false)
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false)
+    const [inputvalueProduct, setinputvalueProduct] = useState<string|null>(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.value))
     const [valueInputProductName,setvalueInputProductName]=useState(props.name)
-    const [inputvalueProduct, setinputvalueProduct] = useState<string|null>(null)
-    const [valueInputProductValue,setvalueInputProductValue]=useState(props.value)
-    const [finalvalueProduct,setfinalvalueProduct] = useState(0)
-
+    const [finalvalueProduct,setfinalvalueProduct] = useState(props.value)
     const [valueInputProductQuantity,setvalueInputProductQuantity]=useState(props.quantity)
     const [valueInputProductActive,setvalueInputProductActive]=useState(props.active)
     const finaldataEditProductsToSendApi = {
         id:props.id,
         name:valueInputProductName, 
-        value:valueInputProductValue,
+        value:finalvalueProduct,
         quantity:valueInputProductQuantity,
         active:valueInputProductActive,
         userId: auth.idUser
@@ -75,7 +73,7 @@ export const ListProducts = (props:ListProductsProps) => {
         setisModalSucessOpen(false)
     }
     function handleCloseModalMasterKey() {
-            setisModalMasterKeyOpen(false)
+        setisModalMasterKeyOpen(false)
     }
     function handleCloseModalDeleteProduct() {
         setisModalDeleteProductOpen(false)
@@ -103,7 +101,12 @@ export const ListProducts = (props:ListProductsProps) => {
        
     }
     function handleCloseModalEditProduct() {
-            setisModalEditProductOpen(false)
+        setvalueInputProductName(props.name)
+        setfinalvalueProduct(props.value)
+        setvalueInputProductQuantity(props.quantity)
+        setvalueInputProductActive(props.active)
+        setinputvalueProduct(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.value))
+        setisModalEditProductOpen(false)
     }
     const EditProductApi = async () => {
         const data = await editProducts(finaldataEditProductsToSendApi)
@@ -112,7 +115,7 @@ export const ListProducts = (props:ListProductsProps) => {
             setisModalSucessOpen(true)
         }
         else {
-            alert(data.Erro)
+            alert(data.erro)
         }
         
     }
@@ -193,11 +196,12 @@ export const ListProducts = (props:ListProductsProps) => {
                             label="Nome do Produto" 
                             variant="outlined" 
                             sx={{width:'90%'}}/>   
+
                         <label style={{display:'flex', justifyContent:'space-between',width:'90%'}}>
+
                         <TextField 
                         value={inputvalueProduct}
                         onChange={(e) => changeInputValueProduct(CurrencyMask(e))}
-                        type="number" 
                         id="outlined-basic" 
                         label="Valor" 
                         variant="outlined" 
@@ -211,8 +215,9 @@ export const ListProducts = (props:ListProductsProps) => {
                         label="Quantidade em Estoque" 
                         variant="outlined" 
                         sx={{width:'48%'}}/> 
-                        </label>
 
+                        </label>
+                        
                         <label>
                             Produto ativo 
                             <Switch checked={valueInputProductActive} onChange={(e)=>setvalueInputProductActive(e.target.checked)}/>

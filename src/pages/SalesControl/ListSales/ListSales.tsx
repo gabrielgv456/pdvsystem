@@ -4,16 +4,20 @@ import { AiFillPrinter } from 'react-icons/ai'
 import * as S from "./style";
 import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider"
 import { GeneratePDFSalesControl } from "../../../hooks/useGeneratePDF";
-import { Item, SellsProductsReceiveApi } from "../index"
+import { Sell, SellsProductsReceiveApi } from "../index"
 
 
 
 interface Props {
 
-   item: Item;
+   item: Sell;
    listSellsProducts: SellsProductsReceiveApi[];
    handleRemoveTask(id: number, sellValue: number): void;
    setismodalMasterkeyEditOpen: (value: boolean) => void;
+   setidselltoEdit: (value:number) => void;
+   SearchSellers:()=>void;
+   filterSellerandClient:(sellerId: number|null, clientId:number|null)=>void;
+   
 }
 
 
@@ -35,26 +39,32 @@ export function Listagem(props: Props) {
    const handlePrint = () => {
       GeneratePDFSalesControl(props.listSellsProducts, sumtotalValuethisSellFormated, sumtotalQuantitythisSell, dataSell, props.item.id)
    }
-
+   const handleEdit = async () => {
+      
+      props.setidselltoEdit(props.item.id)
+      props.filterSellerandClient(props.item.sellerId, props.item.clientId)
+      props.setismodalMasterkeyEditOpen(true)
+      
+   }
 
    return (
 
          <S.Container isDarkMode={Theme.DarkMode}>
-            <S.ButtonEdit title="Editar Venda" onClick={() => props.setismodalMasterkeyEditOpen(true)}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+            <S.ButtonEdit title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
             <S.LabelDate title={gethoursSell_title}>{dataSell}</S.LabelDate>
             <S.DivListQuantity>
                {props.listSellsProducts.map((products) => (
-                  products.sellId === props.item.id ?
+                  products.sellId === props.item.id &&
                      <S.LabelQuantaty>{products.quantity}</S.LabelQuantaty>
-                     : ''
+                     
 
                ))}
             </S.DivListQuantity>
             <S.DivListItens isDarkMode={Theme.DarkMode}>
                {props.listSellsProducts.map((products) => (
-                  products.sellId === props.item.id ?
+                  products.sellId === props.item.id &&
                      <S.LabelItem title={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalValue / products.quantity)} isDarkMode={Theme.DarkMode}>{products.descriptionProduct} </S.LabelItem>
-                     : ''
+                     
                ))}
             </S.DivListItens>
             <S.LabelNameSeller>{props.item.clientName ?? "Não informado"}</S.LabelNameSeller>

@@ -41,7 +41,7 @@ interface SidebartoPeopleRegistrationProps {
 
 
 export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => {
-    const { addSeller, findSellers } = useApi()
+    const { findSellers } = useApi()
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
     const [SellersReturnApi, setSellersReturnApi] = useState<SellersReturnApiProps[]>([])
@@ -50,27 +50,14 @@ export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => 
     const [isModalAddSellerOpen, setisModalAddSellerOpen] = useState(false);
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false);
     const [isModalTransactionsSellersOpen, setisModalTransactionsSellersOpen] = useState(false);
-    const [isSellerCreated, setisSellerCreated] = useState(false)
-    const [inputSellersModalName, setinputSellersModalName] = useState("")
     const [inputSearchSeller, setinputSearchSeller] = useState("")
     const inputSearchSellerLowwer = inputSearchSeller.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     const SellersReturnApiFiltered = SellersReturnApi.filter((seller) => seller.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(inputSearchSellerLowwer))
-    const [inputSellersModalValue, setinputSellersModalValue] = useState<number | null>(null)
-    const [inputSellersModalQuantity, setinputSellersModalQuantity] = useState<number | null>(null)
-    const [isSellerActiveModalAddSeller, setisSellerActiveModalAddSeller] = useState(true)
     const PagesExtract = Math.ceil(SellersReturnApiFiltered.length / ItensPerPageExtract)
     const StartIndexExtract = atualPageExtract * ItensPerPageExtract
     const EndIndexExtract = StartIndexExtract + ItensPerPageExtract
     const paginedTransactionsReturnApi = SellersReturnApiFiltered.slice(StartIndexExtract, EndIndexExtract)
 
-
-    const finaldataAddSellersToSendApi = {
-        userId: auth.idUser,
-        name: inputSellersModalName,
-        value: inputSellersModalValue,
-        quantity: inputSellersModalQuantity,
-        active: isSellerActiveModalAddSeller
-    }
 
     useEffect(() => {
         SearchSellers()
@@ -80,15 +67,7 @@ export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => 
         setisModalAddSellerOpen(true)
 
     }
-    function handleCloseModalAddSeller() {
-        if (isSellerCreated) {
-            setisModalAddSellerOpen(false)
-
-        } else {
-            setisModalAddSellerOpen(false)
-        }
-
-    }
+   
 
     function handleContinueAddingSellers() {
         setisModalAddSellerOpen(true)
@@ -232,6 +211,8 @@ export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => 
                 isModalSucessOpen={isModalSucessOpen}
                 handleContinueAddingSellers={handleContinueAddingSellers}
             />
+
+            
 
         </>
     )

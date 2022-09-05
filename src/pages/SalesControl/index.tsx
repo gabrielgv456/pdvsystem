@@ -16,7 +16,6 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { execFile } from 'child_process';
 import { ModalDelete } from './Modals/DeleteSell/ModalDelete';
 import { ModalMasterKeyEdit, ModalMasterKeyDelete } from './Modals/MasterKey/MasterKeyModal';
 import { ModalSuccess } from './Modals/Success/ModalSucess';
@@ -35,15 +34,23 @@ export interface SellsProductsReceiveApi {
     created_at: Date;
  };
 
-export interface Item {
+export interface Sell {
     id:number;
     storeId: number,
     clientName:string|null,
     sellerName:string|null,
+    sellerId: number|null,
+    clientId: number|null,
     sellValue:number;
     valuePayment:number;
     created_at: Date;
 };
+export interface SellersandClientsType {
+    id: number ;
+    name: string;
+    cpf: string;
+    active: boolean;
+}
 
 export const SalesControl = () => {
 
@@ -51,7 +58,7 @@ export const SalesControl = () => {
         const auth = useContext(AuthContext);
         const [InitialDate, setInitialDate] = useState(atualdata);
         const [FinalDate, setFinalDate] = useState(atualdata);
-        const [listSells, setListSells] = useState<Item[]>([]);
+        const [listSells, setListSells] = useState<Sell[]>([]);
         const [listSellsProducts, setListSellsProducts] = useState<SellsProductsReceiveApi[]>([]);
         const sumSells = listSells.length
         const sumItens = listSellsProducts.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
@@ -62,7 +69,14 @@ export const SalesControl = () => {
         const [ismodalMasterkeyDeleteOpen, setismodalMasterkeyDeleteOpen] = useState(false)
         const [ismodalSuccessOpen, setismodalSuccessOpen] = useState(false)
         const [ismodalEditSellOpen, setismodalEditSellOpen] = useState(false)
-        const {findSells} = useApi()    
+        const [idselltoEdit, setidselltoEdit] = useState(0)
+        
+        const {findSells, findSellers, findClients} = useApi()  
+        const [sellers, setSellers] = useState<SellersandClientsType[]>([])
+        const [clients, setClients] = useState<SellersandClientsType[]>([])  
+        const [sellerfiltered, setsellerfiltered] = useState<SellersandClientsType | null>(null)
+        const [clientfiltered, setclientfiltered] = useState<SellersandClientsType | null>(null)
+
         const dataToSendApi = {userId:auth.idUser,InitialDate,FinalDate}
 
         // Start params menu MUI //
@@ -111,6 +125,8 @@ export const SalesControl = () => {
                 const data = await findSells(dataToSendApi)
                 setListSells(data.sells)
                 setListSellsProducts(data.sellsproducts)
+                SearchSellers()
+                
             }
         }
           const handleKeyUP = (e: KeyboardEvent) => {
@@ -123,6 +139,8 @@ export const SalesControl = () => {
     const [idSellDeleteModal, setidSellDeleteModal] = useState(0)
     const [listProductstoModifyQntFiltered, setlistProductstoModifyQntFiltered] = useState<SellsProductsReceiveApi[]>([])
 
+
+
     async function handleRemoveTask (id: number, sellValue:number)  {
         setvalueSellModal(sellValue)
         setidSellDeleteModal(id)
@@ -130,6 +148,37 @@ export const SalesControl = () => {
         setlistProductstoModifyQntFiltered(filter)
         setismodalMasterkeyDeleteOpen(true)
         //defaultSendtoApi();
+        
+    }
+    async function SearchSellers() {
+        const resultSellers = await findSellers(auth.idUser)
+        if(resultSellers.Success){
+            setSellers(resultSellers.findSellers)
+        }
+        else{
+            alert(`ERRO: ${resultSellers.erro}`)
+        }
+        const resultClients = await findClients(auth.idUser)
+        if(resultClients.Success){
+            setClients(resultClients.findClients)
+        }
+        else {
+            alert(`ERRO: ${resultClients.erro}`)
+        }
+    }
+    async function filterSellerandClient (idSellertoEdit:number|null,idClienttoEdit:number|null) {
+        
+        const filterseller = (sellers.find(seller=>seller.id === idSellertoEdit))
+        
+        if (filterseller !== undefined) {
+            setsellerfiltered( filterseller )
+        }
+        
+        const filterclient = (clients.find(client=>client.id === idClienttoEdit))
+
+        if (filterclient !== undefined) {
+            setclientfiltered(filterclient)
+        }
         
     }
     
@@ -236,11 +285,15 @@ export const SalesControl = () => {
       }
         {listSells.map((item)=>(
             <Listagem 
+            SearchSellers={SearchSellers}
+            filterSellerandClient={filterSellerandClient}
             key={item.id} 
             item={item} 
             handleRemoveTask={handleRemoveTask} 
             listSellsProducts={listSellsProducts} 
             setismodalMasterkeyEditOpen={setismodalMasterkeyEditOpen}
+            setidselltoEdit = {setidselltoEdit}
+           
             />
         ))}
 
@@ -275,6 +328,11 @@ export const SalesControl = () => {
         ismodalEditSellOpen={ismodalEditSellOpen} 
         setismodalEditSellOpen={setismodalEditSellOpen}
         defaultSendtoApi={defaultSendtoApi}
+        idselltoEdit={idselltoEdit}
+        sellers={sellers}
+        clients={clients}
+        clientfiltered = {clientfiltered}
+        sellerfiltered = {sellerfiltered}
         />
 
         </S.Container>
