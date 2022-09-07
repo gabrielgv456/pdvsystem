@@ -1,15 +1,15 @@
 import styled from "styled-components";
 
 interface DarkModeProps {
-    isDarkMode:Boolean;
+    isDarkMode: Boolean;
+}
+interface BoxProps {
+    widthBox: string;
 }
 
 export const Container = styled.div<DarkModeProps> `
-    display: flex;
     width: 100%;
     min-height: 82vh;
-    justify-content: space-around;
-    align-items:center;
     border: 0px solid;
     color: ${props => (props.isDarkMode ? 'white' : '')};
     .Box_Cashier{
@@ -17,11 +17,12 @@ export const Container = styled.div<DarkModeProps> `
         color: #fff;
     }
 `
-export const Box = styled.div `
+export const Box = styled.div<BoxProps> ` 
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
     display: flex;
-    width: 15rem;
-    height: 10rem;
+    width: ${props => props.widthBox};
+    min-width: min-content;
+    height: min-content;
     background: var(--background);
     border-radius: 5px;
     justify-content: center;
