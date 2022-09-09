@@ -21,14 +21,27 @@ ChartJS.register(
 
 export const RadarChart = () => {
 
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom' as const,
+            },
+            //title: {
+            //    display: true,
+            //    text: 'Metodos de pagamento',
+            //},
+        },
+    };
+
     const data = {
         labels: [ 'Dinheiro', 'PIX','Cartão de Crédito', 'Cartão de Débito', 'Outros'],
         datasets: [
             {
-                label: 'Qtd Vendas Mensal',
+                label: 'Quantidade Vendas Mensal',
                 data: [10, 7, 15, 10, 10],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: '#4a2da31f',
+                borderColor: '#4a2da3',
                 borderWidth: 1,
             },
         ],
@@ -36,7 +49,7 @@ export const RadarChart = () => {
 
 
     return (
-        <Radar data={data} />
+        <Radar data={data} options={options}/>
     )
 
 }

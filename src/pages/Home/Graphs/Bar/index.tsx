@@ -26,12 +26,12 @@ export const BarChart = () => {
         responsive: true,
         plugins: {
             legend: {
-                position: 'top' as const,
+                position: 'bottom' as const,
             },
-            title: {
-                display: true,
-                text: 'Comparativo Mensal',
-            },
+            //title: {
+            //    display: true,
+           //     text: 'Comparativo Mensal',
+           // },
         },
     };
 
@@ -44,12 +44,13 @@ export const BarChart = () => {
             {
                 label: 'Ticket Médio',
                 data: labels.map(() => 800 ),
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                backgroundColor: '#064699',
+                
             },
             {
-                label: 'Valor em Reais',
+                label: 'Valor Total',
                 data: labels.map(() => 8000 ),
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                backgroundColor: '#3181ed',
             },
         ],
     };

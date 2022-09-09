@@ -31,10 +31,10 @@ export const AreaChart = () => {
             legend: {
                 position: 'top' as const,
             },
-            title: {
-                display: true,
-                text: 'Vendas Diárias',
-            },
+            //title: {
+              //  display: true,
+               // text: 'Vendas Diárias',
+           // },
         },
     };
 
@@ -45,7 +45,7 @@ export const AreaChart = () => {
         datasets: [
             {
                 fill: true,
-                label: 'Valor em Reais',
+                label: 'Valor',
                 data: labels.map((value,index) => 
                 index === 0 ?  10000 :
                 index === 1 ?  11000 :
