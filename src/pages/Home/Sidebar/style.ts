@@ -1,8 +1,5 @@
 import styled from "styled-components";
 
-
-
-
 interface DarkModeProps {
     isDarkMode:Boolean;
 }
@@ -45,4 +42,13 @@ export const ButtonRetract = styled.button <DarkModeProps>`
         box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 30px 0px;
     }
 
+`
+
+export const DivCashierStatus = styled.div `
+    background: var(--Green);
+    width: max-content;
+    border-radius: 5px;
+    padding: 0.5rem;
+    position:absolute;
+    right:70px;
 `

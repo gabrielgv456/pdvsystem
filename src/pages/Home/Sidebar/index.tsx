@@ -27,6 +27,7 @@ import * as S from '../Sidebar/style'
 import { useDarkMode, useDarkModeLocalStorage } from '../../../contexts/DarkMode/DarkModeProvider';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
+import logo from '../../../images/logo.png'
 
 
 
@@ -140,8 +141,10 @@ export default function HomeSideBar(props: Props) {
       
       
       
-      <Divider sx={{borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' :''}} />
-      
+      <Divider sx={{borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' :'', width:'60%', margin:'0 auto'}} />
+      <div style={{display:'flex', width:"100%",justifyContent:'center', position:'absolute', bottom:80}}>
+      <img src={logo} style={{width:150,height:100}}/>
+      </div>
      <S.DivSwitch isDarkMode={Theme.DarkMode}>☼
       <Switch checked={Theme.DarkMode} 
          onChange={e => Theme.setDarkMode(e.target.checked)} sx={{display:'flex'}}  />
@@ -181,10 +184,14 @@ export default function HomeSideBar(props: Props) {
           <Typography variant="h6" noWrap component="div" display="flex">
             Bem Vindo !
           </Typography>
+          <S.DivCashierStatus>
+            Caixa aberto
+          </S.DivCashierStatus>
           {auth.user && 
           <PowerSettingsNewIcon 
           onClick={handleLogout}  
           sx={{position:'absolute', right:20, cursor:'pointer','&:hover':{color:'firebrick'}}}/>}
+          
           
         </Toolbar>
       </AppBar>

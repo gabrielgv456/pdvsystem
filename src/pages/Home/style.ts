@@ -5,6 +5,7 @@ interface DarkModeProps {
 }
 interface BoxProps {
     widthBox: string;
+    isDarkMode: Boolean;
 }
 
 export const Container = styled.div<DarkModeProps> `
@@ -23,7 +24,7 @@ export const Box = styled.div<BoxProps> `
     width: ${props => props.widthBox};
     //min-width: min-content;
     height: min-content;
-    background: var(--background);
+    background: ${props=>props.isDarkMode ? 'var(--backgroundDarkMode)' : '#fff'};
     border-radius: 5px;
     justify-content: center;
     align-items: center;
@@ -35,6 +36,7 @@ export const HeaderBox = styled.div `
     width: 100%;
     font-size:0.9rem;
     display: flex;
+    
     flex-direction: column;
 `
 
