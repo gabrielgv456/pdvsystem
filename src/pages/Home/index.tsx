@@ -10,6 +10,7 @@ import { DoughnutChart } from './Graphs/Doughnut';
 import { AreaChart } from './Graphs/Area';
 import { RadarChart } from './Graphs/Radar';
 import { BestSellers } from './Components/BestSellers';
+import { HorizontalChart } from './Graphs/Horizontal';
 
 
 export const Home = () => {
@@ -19,7 +20,7 @@ export const Home = () => {
     return (
 
         <S.Container isDarkMode={Theme.DarkMode}>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: 40, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: 40, flexWrap: 'wrap', alignItems:'center' }}>
                 <S.Box isDarkMode={Theme.DarkMode} widthBox="60%" >
                     <S.HeaderBox >
                         <b>Comparativo Mensal</b>
@@ -40,7 +41,7 @@ export const Home = () => {
                 </S.Box>
 
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', marginBottom: 10 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', marginBottom: 30 , alignItems:'center'}}>
                 <S.Box isDarkMode={Theme.DarkMode} widthBox="50%">
                     <S.HeaderBox >
                         <b>Vendas Diárias</b>
@@ -60,19 +61,19 @@ export const Home = () => {
                     </div>
                 </S.Box>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', marginBottom: 10 }}>
-                <S.Box isDarkMode={Theme.DarkMode} widthBox="50%">
+            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', marginBottom: 30, alignItems:'center' }}>
+                <S.Box isDarkMode={Theme.DarkMode} widthBox="60%" >
                     <S.HeaderBox >
                         <b>Produtos mais vendidos</b>
-                        
+                        <S.LabelsubHeader>em quantidade</S.LabelsubHeader>
                     </S.HeaderBox>
                     <div style={{ width: '100%', padding: 10 }}>
-                        
+                        <HorizontalChart/>
                     </div>
                 </S.Box>
-                <S.Box isDarkMode={Theme.DarkMode} widthBox='40%'>
+                <S.Box isDarkMode={Theme.DarkMode} widthBox='30%'>
                     <S.HeaderBox >
-                        <b>Transações por Método de Pagamento</b>
+                        <b>Transações por Método</b>
                         <S.LabelsubHeader>em quantidade</S.LabelsubHeader>
                     </S.HeaderBox>
                     <div style={{ width: '100%', padding: 10 }}>
