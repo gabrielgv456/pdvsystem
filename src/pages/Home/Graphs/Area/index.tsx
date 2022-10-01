@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,6 +11,8 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { useApi } from '../../../../hooks/useApi';
+import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 
 ChartJS.register(
     CategoryScale,
@@ -22,8 +24,36 @@ ChartJS.register(
     Filler,
     Legend
 );
+interface AreaChartDataType{
+    totalSells: number,
+    day: number,
+    nameDay: string,
+}
 
 export const AreaChart = () => {
+
+    const auth = useContext(AuthContext)
+    const {findAreaChartData} = useApi()
+    const [areaChartData,setAreaChartData] = useState<AreaChartDataType[]>([])
+
+    useEffect(()=>{
+        const SearchDataAreaChart = async () => {
+            try {
+                const dataAreaChart = await findAreaChartData(auth.idUser)
+                if (dataAreaChart.Success){
+                    setAreaChartData(dataAreaChart.SellsChartArea)
+                } else {
+                    alert(`Houve uma falha ao consultar dados do banco de dados: ${dataAreaChart.erro}`)
+                }
+            }
+            catch (error)
+            {
+                alert(`Erro ao realizar requisição do gráfico de area ${error}`)
+            }
+
+        }
+        SearchDataAreaChart();
+    },[])
 
     const options = {
         responsive: true,
@@ -38,7 +68,10 @@ export const AreaChart = () => {
         },
     };
 
-    const labels = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+    const labels = areaChartData.map(
+        sell=>
+            sell.nameDay[0].toLocaleUpperCase() + sell.nameDay.substring(1).split("-",1)  // convert to uppercase   
+        );
 
     const data = {
         labels,
@@ -46,14 +79,14 @@ export const AreaChart = () => {
             {
                 fill: true,
                 label: 'Valor',
-                data: labels.map((value,index) => 
-                index === 0 ?  10000 :
-                index === 1 ?  11000 :
-                index === 2 ?  12000 :
-                index === 3 ?  13000 :
-                index === 4 ?  14000 :
-                index === 5 ?  15000 :
-                index === 6 ?  16000 :
+                data: areaChartData.map((value,index) => 
+                index === 0 ?  value.totalSells :
+                index === 1 ?  value.totalSells :
+                index === 2 ?  value.totalSells :
+                index === 3 ?  value.totalSells :
+                index === 4 ?  value.totalSells :
+                index === 5 ?  value.totalSells :
+                index === 6 ?  value.totalSells :
                 0 
                 ),
                 borderColor: 'rgb(53, 162, 235)',

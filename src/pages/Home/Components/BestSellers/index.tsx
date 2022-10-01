@@ -2,10 +2,36 @@ import bronze from "../../../../images/bronze.png"
 import silver from "../../../../images/silver.png"
 import gold from "../../../../images/gold.png"
 import * as S from "./style"
+import { useApi } from "../../../../hooks/useApi"
+import { useContext, useEffect, useState } from "react"
+import { AuthContext } from "../../../../contexts/Auth/AuthContext"
+
+interface BestSellersType {
+    id: number,
+	name: string,
+	totalValueSell: number,
+	totalItensSell: number
+}
 
 export const BestSellers = () => {
 
-    const sellers = ['Maria de Fatima Bernardes da Silva Ferreira', 'Miranda Gomes Naves', 'Rafael Neves Dias', 'Stefany Honorio Sandi']
+    const {findBestSellersChartData}= useApi()
+    const auth = useContext(AuthContext)
+    const [sellers,setSellers] = useState<BestSellersType[]>([])
+
+    useEffect(()=>{
+        const searchDataBestSellers = async () => {
+            const dataBestSellers = await findBestSellersChartData(auth.idUser)
+            if (dataBestSellers.Success)(
+                setSellers(dataBestSellers.bestSellers)
+            )
+            else {
+                alert(`Falha ao buscar dados dos melhores vendedores! Erro: ${dataBestSellers.erro}`)
+            }
+        }
+        searchDataBestSellers();
+    },[])
+    
 
     return (
         <>
@@ -17,13 +43,13 @@ export const BestSellers = () => {
                         {index === 2 && <img src={bronze} width="35" height="45"></img>}
                     </div>
                     <div style={{width:'40%', maxWidth:'40%',overflow: 'hidden', textOverflow: 'ellipsis',whiteSpace: 'nowrap'}}>
-                        {seller}
+                        {seller.name}
                     </div>
                     <div style={{width:'20%'}}>
-                        1200
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(seller.totalValueSell)}
                     </div>
-                    <div style={{width:'20%'}}>
-                        8000
+                    <div style={{width:'20%', display:'flex',justifyContent:'center'}}>
+                        {seller.totalItensSell}
                     </div>
                 </S.DivContainer>
             )}

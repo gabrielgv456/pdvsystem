@@ -90,5 +90,21 @@ export const useApi = () => ({
     deleteClient: async(dataDeleteClient:object) => {
         const response = await api.post('/deleteclient', {dataDeleteClient})
         return response.data
+    },
+    findBarChartData: async(userId:number) => {
+        const response = await api.post('/charts/bar', {userId})
+        return response.data
+    },
+    findDoughnutChartData: async(userId:number) => {
+        const response = await api.post('charts/doughnut', {userId})
+        return response.data
+    },
+    findAreaChartData: async(userId:number) => {
+        const response = await api.post('charts/area', {userId})
+        return response.data
+    },
+    findBestSellersChartData: async(userId:number) => {
+        const response = await api.post('/charts/bestsellers',{userId})
+        return response.data
     }
 });

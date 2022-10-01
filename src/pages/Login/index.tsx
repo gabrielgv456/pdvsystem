@@ -1,8 +1,8 @@
 import { ChangeEvent, useContext, useState, KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/Auth/AuthContext";
-import {HiOutlineMail} from 'react-icons/hi'
-import {RiLock2Line} from 'react-icons/ri'
+import { HiOutlineMail } from 'react-icons/hi'
+import { RiLock2Line } from 'react-icons/ri'
 import * as S from './style'
 
 
@@ -26,7 +26,7 @@ export const Login = () => {
         }
     }
     const handleVerifyInputPassword = () => {
-        if (password.length<8){
+        if (password.length < 8) {
             setPasswordWrong(true)
         }
         else {
@@ -42,21 +42,22 @@ export const Login = () => {
         setPassword(event.target.value);
     }
     const handleKeyUP = (e: KeyboardEvent) => {
-        if (e.code === 'Enter'){
-        email.includes('@') ? setEmailWrong(false) : setEmailWrong(true)
-        email.includes('.') ? setEmailWrong(false) : setEmailWrong(true)
-        switch (email) {
-            case '':
-                setEmailWrong(true)
-                break
+        if (e.code === 'Enter') {
+            email.includes('@') ? setEmailWrong(false) : setEmailWrong(true)
+            email.includes('.') ? setEmailWrong(false) : setEmailWrong(true)
+            switch (email) {
+                case '':
+                    setEmailWrong(true)
+                    break
+            }
+            if (password.length < 8) {
+                setPasswordWrong(true)
+            }
+            else {
+                setPasswordWrong(false)
+            }
         }
-        if (password.length<8){
-            setPasswordWrong(true)
-        }
-        else {
-            setPasswordWrong(false)
-        }}
-        if(e.code === 'Enter' && email !== '' && email.includes('@') && email.includes('.') && password !== '' && password.length>=8 ){
+        if (e.code === 'Enter' && email !== '' && email.includes('@') && email.includes('.') && password !== '' && password.length >= 8) {
             handleLogin();
         }
     }
@@ -69,19 +70,24 @@ export const Login = () => {
                 setEmailWrong(true)
                 break
         }
-        if (password.length<8){
+        if (password.length < 8) {
             setPasswordWrong(true)
         }
         else {
             setPasswordWrong(false)
         }
-    
-        if (email !== '' && email.includes('@') && email.includes('.') && password !== '' && password.length>=8) {
-            const isLogged = await auth.signin(email, password);
-            if (isLogged) {
-                navigate('/home');
-            } else {
-                alert("Dados incorretos, verifique seu e-mail ou senha !");
+
+        if (email !== '' && email.includes('@') && email.includes('.') && password !== '' && password.length >= 8) {
+            try {
+                const isLogged = await auth.signin(email, password);
+                if (isLogged) {
+                    navigate('/home');
+                } else {
+                    alert("Dados incorretos, verifique seu e-mail ou senha !");
+                }
+            }
+            catch (error) {
+                alert("Falha de conexão com servidor remoto" + error)
             }
         }
     }
@@ -92,7 +98,7 @@ export const Login = () => {
                 <S.BoxLogin>
                     <S.H2>Management Store</S.H2>
                     <S.Div>
-                        <HiOutlineMail size={20} className="icon_login"/>
+                        <HiOutlineMail size={20} className="icon_login" />
                         <S.InputMail
                             type="text"
                             value={email}
@@ -101,11 +107,11 @@ export const Login = () => {
                             onKeyUp={handleKeyUP}
                             onBlur={handleVerifyInputEmail}
                             isEmailWrong={isEmailWrong}
-                            
+
                         />
                     </S.Div>
                     <S.Div>
-                        <RiLock2Line size={20} className="icon_login"/>
+                        <RiLock2Line size={20} className="icon_login" />
                         <S.InputPassword
                             type="password"
                             value={password}
@@ -114,11 +120,11 @@ export const Login = () => {
                             onKeyUp={handleKeyUP}
                             onBlur={handleVerifyInputPassword}
                             isPasswordWrong={isPasswordWrong}
-                        
+
                         />
                     </S.Div>
                     <S.Button onClick={handleLogin}>Login</S.Button>
-                </S.BoxLogin>    
+                </S.BoxLogin>
 
                 <S.BoxBackgroundLogin>
                 </S.BoxBackgroundLogin>
