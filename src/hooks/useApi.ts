@@ -106,5 +106,13 @@ export const useApi = () => ({
     findBestSellersChartData: async(userId:number) => {
         const response = await api.post('/charts/bestsellers',{userId})
         return response.data
+    },
+    findTopSellingProducts: async (userId:number) => {
+        const response = await api.post('/charts/topsellingproducts',{userId})
+        return response.data
+    },
+    findRadarChartData: async (userId:number) => {
+        const response = await api.post('/charts/radar', {userId})
+        return response.data
     }
 });

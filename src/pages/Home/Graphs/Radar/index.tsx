@@ -9,6 +9,13 @@ import {
     Legend,
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
+import { AuthContext } from '../../../../contexts/Auth/AuthContext';
+import { useApi } from '../../../../hooks/useApi';
+
+interface radarChartType {
+    typepayment: string,
+    quantity: number
+}
 
 ChartJS.register(
     RadialLinearScale,
@@ -20,6 +27,27 @@ ChartJS.register(
 );
 
 export const RadarChart = () => {
+
+    const auth = React.useContext(AuthContext)
+    const { findRadarChartData } = useApi()
+    const [radarChartdata, setRadarChartData] = React.useState<radarChartType[]>([])
+
+    React.useEffect(() => {
+        const searchDataRadarChart = async () => {
+            try {
+                const dataRadarChart = await findRadarChartData(auth.idUser)
+                if (dataRadarChart.Success) {
+                    setRadarChartData(dataRadarChart.Payments)
+                }
+                else {
+                    alert(`Erro ao consultar dados do gráfico radar! ${dataRadarChart.erro}`)
+                }
+            } catch (error) {
+                alert(`Erro ao consultar dados do gráfico radar! ${error}`)
+            }
+        }
+        searchDataRadarChart();
+    }, [])
 
     const options = {
         responsive: true,
@@ -35,11 +63,12 @@ export const RadarChart = () => {
     };
 
     const data = {
-        labels: [ 'Dinheiro', 'PIX','Cartão de Crédito', 'Cartão de Débito', 'Outros'],
+        labels: radarChartdata.map(payment=>payment.typepayment),
+        //labels: ['Dinheiro', 'PIX', 'Cartão de Crédito', 'Cartão de Débito', 'Outros'],
         datasets: [
             {
                 label: 'Quantidade Vendas Mensal',
-                data: [10, 7, 15, 10, 10],
+                data: radarChartdata.map(payment=>payment.quantity),
                 backgroundColor: '#4a2da31f',
                 borderColor: '#4a2da3',
                 borderWidth: 1,
@@ -49,7 +78,7 @@ export const RadarChart = () => {
 
 
     return (
-        <Radar data={data} options={options}/>
+        <Radar data={data} options={options} />
     )
 
 }
