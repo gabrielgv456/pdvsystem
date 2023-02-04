@@ -55,12 +55,13 @@ export const HorizontalChart = () => {
     const options = {
         indexAxis: 'y' as const,
         scales: {
+            
             x: {
                 grid: {
                     display: false
                 }
             },
-            y: {
+            y: { 
                 grid: {
                     display: false
                 }
@@ -86,7 +87,7 @@ export const HorizontalChart = () => {
         labels,
         datasets: 
             topSellingProducts.map((value,index)=>({
-                label: value.productName,
+                label: value.productName.substring(0,12) + ' ...',
                 data: [value.quantity],
                 borderColor: index === 0 ? '#5e38a3' : 
                              index === 1 ? '#2d5b8f' :

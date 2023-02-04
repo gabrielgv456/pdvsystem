@@ -9,7 +9,7 @@ interface CreateContextProps {
 
 type ChildrenProps = {
     children: ReactNode 
-   }
+}
 //const [test,setTest] = useState('VARIAVEL')
 
 const TestContext = createContext({} as CreateContextProps)

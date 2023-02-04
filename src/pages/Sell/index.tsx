@@ -379,8 +379,8 @@ export const Sell = () => {
                 }}>
                     <div style={{ fontSize: '1.1rem', marginBottom: '10px' }}><b>Total:</b> {sumvalueformated}</div>
                     {needReturnCash === 'N' ? <div style={{ fontSize: '1.1rem' }}><b>Restante:</b> {formatedmissvalue}</div> : ''}
-                    {needReturnCash === 'Y' && <S.PHeaderModalReturnCash needReturnCash={needReturnCash}><b>Troco:</b> {formatedmissvalue}</S.PHeaderModalReturnCash>}
-                    {needReturnCash === 'OK' && <S.PHeaderModalReturnCash needReturnCash={needReturnCash}><b>Restante:</b> {formatedmissvalue}</S.PHeaderModalReturnCash>}
+                    {needReturnCash === 'Y' && <div style={{ fontSize:'1.1rem', color: 'red'}}><b>Troco:</b> {formatedmissvalue}</div>}
+                    {needReturnCash === 'OK' && <div style={{ fontSize:'1.1rem', color: 'green'}}><b>Restante:</b> {formatedmissvalue}</div>}
                     {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" /> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
                     {isSellEnded ? '' :
                         <div>

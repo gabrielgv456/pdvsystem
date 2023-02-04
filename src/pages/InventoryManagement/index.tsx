@@ -15,6 +15,7 @@ import { AiOutlineClose,  } from 'react-icons/ai';
 import Switch from '@mui/material/Switch';
 import { CurrencyMask } from '../../masks/CurrencyMask';
 import { ModalTransactionsProducts } from './Modals';
+import { useLayout } from '../../contexts/Layout/layoutContext';
 
 
 interface ProductsReturnApiProps{
@@ -67,7 +68,7 @@ export const InventoryManagement = () => {
      }
     
     useEffect(()=>{
-        SearchProducts()
+        SearchProducts();
     },[])
 
     function handleOpenModalConfirmSell() {

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
@@ -13,10 +13,11 @@ import { BestSellers } from './Components/BestSellers';
 import { HorizontalChart } from './Graphs/Horizontal';
 
 
+
 export const Home = () => {
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
-
+    
     return (
 
         <S.Container isDarkMode={Theme.DarkMode}>

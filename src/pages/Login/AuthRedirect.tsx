@@ -2,7 +2,7 @@ import { useContext , ReactNode} from "react";
 import { Login } from "../../pages/Login";
 import {AuthContext} from "../../contexts/Auth/AuthContext"
 import { useNavigate } from "react-router-dom";
-import HomeSideBar from "../Home/Sidebar";
+import LayoutDefault from "../Layout";
 
 export const AuthRedirect = ({ children }: { children: ReactNode }) => {
     const auth = useContext(AuthContext);
@@ -10,7 +10,7 @@ export const AuthRedirect = ({ children }: { children: ReactNode }) => {
 
 
     if (auth.user) {
-        return <HomeSideBar/>
+        return <LayoutDefault/>
        
     } else{
         return <Login />    }

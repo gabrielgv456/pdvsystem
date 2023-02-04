@@ -58,7 +58,7 @@ export const Transactions = () => {
     const sumValueTransactionsFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueEntriesTransactions)
     const sumExitsTransactionsFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueExitsTransactions)
     const totalTransactionsFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueEntriesTransactions - sumValueExitsTransactions)
-
+    
     const changeValueInputExit = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 
         setinputvalueExit(e.target.value)

@@ -7,12 +7,13 @@ import { AuthProvider } from './contexts/Auth/AuthProvider';
 //import {createServer } from 'miragejs'
 import { DarkModeProvider } from './contexts/DarkMode/DarkModeProvider';
 import { TestProvider } from './contexts/VariableTest';
+import { LayoutProvider } from './contexts/Layout/layoutContext';
 
 interface apireceivepostType {
-    id: number;
-    name: string;
-    email: string;
-    password?: string;
+  id: number;
+  name: string;
+  email: string;
+  password?: string;
 }
 {/* dasdasdas
 //Criação do banco de dados fake
@@ -38,14 +39,16 @@ createServer({
 
 
 ReactDOM.render(
- 
+
   <React.StrictMode>
     <AuthProvider>
       <BrowserRouter>
         <DarkModeProvider>
-        <TestProvider>
-            <App />
-        </TestProvider>
+          <TestProvider>
+            <LayoutProvider>
+              <App />
+            </LayoutProvider>
+          </TestProvider>
         </DarkModeProvider>
       </BrowserRouter>
     </AuthProvider>

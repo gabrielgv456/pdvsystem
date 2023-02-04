@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {useNavigate} from 'react-router-dom'
-import { AuthContext } from "../../../contexts/Auth/AuthContext";
+import {useNavigate,Outlet} from 'react-router-dom'
+import { AuthContext } from "../../contexts/Auth/AuthContext";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,13 +21,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
-import { DrawerStyle} from '../Sidebar/stylemui';
-import { Home } from '..';
-import * as S from '../Sidebar/style'
-import { useDarkMode, useDarkModeLocalStorage } from '../../../contexts/DarkMode/DarkModeProvider';
+import { DrawerStyle} from '../Layout/stylemui';
+import * as S from '../Layout/style'
+import { useDarkMode, useDarkModeLocalStorage } from '../../contexts/DarkMode/DarkModeProvider';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
-import logo from '../../../images/logo.png'
+import logo from '../../images/logo.png'
+import { useLayout } from '../../contexts/Layout/layoutContext';
 
 
 
@@ -42,7 +42,7 @@ interface Props {
   window?: () => Window;
 }
 
-export default function HomeSideBar(props: Props) {
+export default function LayoutDefault(props: Props) {
   const [drawerWidth, setdrawerWidth] = React.useState(240);
   const [PeopleMode,setPeopleMode] = React.useState('Clients')
   const classes = DrawerStyle();
@@ -51,6 +51,7 @@ export default function HomeSideBar(props: Props) {
   const auth = React.useContext(AuthContext);
   const navigate = useNavigate();
   const Theme = useDarkMode();
+  const {actualPage,setActualPage}= useLayout();
  // const test = useDarkModeLocalStorage();
 
     const handleLogout = async () => {
@@ -60,21 +61,27 @@ export default function HomeSideBar(props: Props) {
       }
       const handleHome = () => {
         navigate('/home');
+        setActualPage('Página Inicial')
       }
       const handleSell = () => {
         navigate('/sell');
+        setActualPage('Realizar Vendas')
       }
       const handleSalesControl = () => {
         navigate('/salescontrol');
+        setActualPage('Controle de Vendas')
       }
       const handleTansactions = () => {
         navigate('/transactions');
+        setActualPage('Movimentações')
       }
       const handleInventoryManagement = () => {
         navigate('/inventorymanagement');
+        setActualPage('Gestão de Estoque')
       }
       const handlePeopleRegistration = () => {
         navigate('/peopleregistration');
+        setActualPage('Pessoas')
       }
       const handleVoid = () => {
       }
@@ -142,7 +149,7 @@ export default function HomeSideBar(props: Props) {
       
       
       <Divider sx={{borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' :'', width:'60%', margin:'0 auto'}} />
-      <div style={{display:'flex', width:"100%",justifyContent:'center', position:'absolute', bottom:80}}>
+      <div style={{display:'flex', width:"100%",justifyContent:'center', position:'absolute', bottom:130}}>
       <img src={logo} style={{width:150,height:100}}/>
       </div>
      <S.DivSwitch isDarkMode={Theme.DarkMode}>☼
@@ -182,7 +189,7 @@ export default function HomeSideBar(props: Props) {
           </IconButton>
           
           <Typography variant="h6" noWrap component="div" display="flex">
-            Bem Vindo !
+            {actualPage}
           </Typography>
           <S.DivCashierStatus>
             Caixa aberto
@@ -236,7 +243,7 @@ export default function HomeSideBar(props: Props) {
         sx={{  flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar/>
-          <Home/>
+          <Outlet/>
       </Box>
     </Box>
   );

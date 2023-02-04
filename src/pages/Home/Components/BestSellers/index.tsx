@@ -18,13 +18,15 @@ export const BestSellers = () => {
     const {findBestSellersChartData}= useApi()
     const auth = useContext(AuthContext)
     const [sellers,setSellers] = useState<BestSellersType[]>([])
+    const [consulted,setConsulted] = useState(false)
 
     useEffect(()=>{
         const searchDataBestSellers = async () => {
             const dataBestSellers = await findBestSellersChartData(auth.idUser)
-            if (dataBestSellers.Success)(
+            if (dataBestSellers.Success){
                 setSellers(dataBestSellers.bestSellers)
-            )
+                setConsulted(true)
+            }
             else {
                 alert(`Falha ao buscar dados dos melhores vendedores! Erro: ${dataBestSellers.erro}`)
             }
@@ -35,7 +37,11 @@ export const BestSellers = () => {
 
     return (
         <>
-            {sellers.map((seller,index) => 
+            {
+            sellers.length === 0 && consulted ? 
+                <S.DivContainer>Nenhum vendedor encontrado no Ranking</S.DivContainer>
+            :
+            sellers.map((seller,index) => 
                 <S.DivContainer>
                     <div style={{width:'10%'}}>
                         {index === 0 && <img src={gold} width="35" height="45"></img>}

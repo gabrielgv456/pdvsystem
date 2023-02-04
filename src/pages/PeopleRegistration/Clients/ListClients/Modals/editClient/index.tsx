@@ -46,7 +46,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
     const Theme = useDarkMode()
     const { editClient } = useApi()
     const auth = useContext(AuthContext)
-    const birthDateFormated = props.client.birthDate.toString().replace(/\T.+/g, "")
+    //const birthDateFormated = props.client.birthDate.toString().replace(/\T.+/g, "")
     const [valueInputClientName, setvalueInputClientName] = useState(props.client.name)
     const [valueInputClientGender, setvalueInputClientGender] = useState(props.client.gender)
     const [valueInputClientCpfCnpj, setvalueInputClientCpfCnpj] = useState(cpfcnpjformated)

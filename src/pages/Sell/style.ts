@@ -171,10 +171,7 @@ export const LabelIconsModal = styled.div <DarkModeProps>`
 export const PHeaderModal = styled.p`
     font-size: 1.1rem;
 `
-export const PHeaderModalReturnCash = styled.p <NeedReturnCashProps>`
-    font-size: 1.1rem;
-    color: ${props=>props.needReturnCash === 'OK' ? 'green' : props.needReturnCash === 'Y' ? 'red' : 'black'};
-`
+
 export const InputModal = styled.input`
     border: 1px solid silver;
     border-radius: 5px;
