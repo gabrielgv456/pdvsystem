@@ -18,15 +18,36 @@ export const Container = styled.div<DarkModeProps> `
     border: 0px solid;
     color: ${props => (props.isDarkMode ? 'white' : '')};
 `
-export const Header = styled.div`
+export const Header = styled.div<DarkModeProps>`
     gap: 5px ;
-    width: 100%;
+    width: 70%;
     height: min-content;
     display:flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+    background-color: ${props => (props.isDarkMode ?  'var(--backgroundDarkMode)': '#fff' )} ;
+    border-radius: 0 0 20px 20px;
+    box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+    padding: 1rem 0 1rem 0;
+    margin-top: -23px;
 `
+// export const Header = styled.div<DarkModeProps>`
+//     margin: 0 auto;
+   
+//     padding: 0.5rem 0 1rem 0;
+//     gap: 5px ;
+//     width: 60%;
+//     height: min-content;
+//     display:flex;
+//     justify-content: center;
+//     align-items: flex-end;
+//     margin-top: -23px;
+    
+
+// `
+
 export const Main = styled.div`
     display: flex;
     width: 100%;
@@ -83,7 +104,7 @@ export const Input = styled.input`
 
 `
 export const Box = styled.div`
-    width: 45%;
+    width: 70%;
     height: min-content;
     padding: 10 10 0 10;
 `

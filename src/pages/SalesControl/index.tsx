@@ -186,11 +186,11 @@ export const SalesControl = () => {
 
     return (
         <S.Container isDarkMode={Theme.DarkMode}>
-            <S.Header>
+            <S.Header isDarkMode={Theme.DarkMode}>
             <S.Box><label>Data Inicial</label><S.Input isDarkMode={Theme.DarkMode} type="date" value={InitialDate} onChange={(e) =>setInitialDate(e.target.value)}></S.Input></S.Box>
             <S.Box><label>Data Final</label><S.Input isDarkMode={Theme.DarkMode} type="date" value={FinalDate} onChange={(e) =>setFinalDate(e.target.value)}></S.Input></S.Box>
                 <S.DivSearch><S.Button onClick={handleSendtoApi} >Buscar</S.Button>
-                    <label style={{display:'flex',position:'absolute',right:'4%', marginBottom:"-3px"}}>
+                    <label style={{display:'flex', marginBottom:"-3px"}}>
                         <div>
                             <IconButton
                                 aria-label="more"

@@ -168,7 +168,7 @@ export const Transactions = () => {
 
     return (
         <S.Container isDarkMode={Theme.DarkMode}>
-            <S.Header>
+            <S.Header isDarkMode={Theme.DarkMode}>
                 <S.Box><label>Data Inicial</label><S.Input value={InitialDate} onChange={(e) => setInitialDate(e.target.value)} isDarkMode={Theme.DarkMode} type="date"></S.Input ></S.Box>
                 <S.Box><label>Data Final</label><S.Input value={FinalDate} onChange={(e) => SetFinalDate(e.target.value)} isDarkMode={Theme.DarkMode} type="date"></S.Input></S.Box>
                 <S.Button onClick={searchTransactions}><FaSearch size="13" /></S.Button>

@@ -9,10 +9,11 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const [isUserValid, setUserValid] = useState(false)
     const [masterkey,setmasterkey] = useState("")
     const api = useApi();
+    const [isLoading,setIsLoading] = useState(true)
 
     useEffect(() => {
         const validateToken = async () => {
-            console.log("validate")
+            setIsLoading(true)
             const storageData = localStorage.getItem('authToken');
             if (storageData) {
                 const data = await api.validateToken(storageData);
@@ -26,9 +27,13 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                     setUserValid(true);
                 }
                 if (!data.valid) {
-                    setUserValid(false)
-                }
+                    
+                }   
             }
+            else {
+                setUserValid(false)
+            }
+            setIsLoading(false)
         }
         validateToken();
     }, []);
@@ -59,7 +64,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, idUser, signin, signout, isUserValid, masterkey }}>
+        <AuthContext.Provider value={{ user, idUser, signin, signout, isUserValid, masterkey,isLoading }}>
             {children}
         </AuthContext.Provider>
     );

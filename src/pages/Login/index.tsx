@@ -96,7 +96,7 @@ export const Login = () => {
         <div>
             <S.Container>
                 <S.BoxLogin>
-                    <S.H2>Management Store</S.H2>
+                    <S.H2>Smart Store</S.H2>
                     <S.Div>
                         <HiOutlineMail size={20} className="icon_login" />
                         <S.InputMail

@@ -47,17 +47,23 @@ export const SectionValuesBoxResume = styled.section `
         font-size: 1.3rem;
     }
 `
-export const Header = styled.div`
+export const Header = styled.div<DarkModeProps>`
     gap: 5px ;
-    width: 100%;
+    width: 70%;
     height: min-content;
     display:flex;
     justify-content: center;
+    margin: 0 auto;
+    margin-top:-23px;
+    background-color: ${props => (props.isDarkMode ?  'var(--backgroundDarkMode)': '#fff' )} ;
+    border-radius: 0 0 20px 20px;
+    padding:0.5rem 0 1rem 0;
+    box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
 `
 
 
 export const Box = styled.div `
-    width: 30%;
+    width: 35%;
     height: min-content;
     padding: 10px;
     border-radius: 5px;

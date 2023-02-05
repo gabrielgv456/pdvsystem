@@ -16,6 +16,7 @@ import PixIcon from '@mui/icons-material/Pix';
 import { useApi } from "../../hooks/useApi";
 import { PaymentMethods } from "./PaymentMethods/PaymentMethods";
 import { GeneratePDF } from "../../hooks/useGeneratePDF";
+import { RiAddCircleFill } from "react-icons/ri";
 
 export const Sell = () => {
 
@@ -470,7 +471,7 @@ export const Sell = () => {
 
 
             <S.Container isDarkMode={Theme.DarkMode}>
-                <S.Header>
+                <S.Header isDarkMode={Theme.DarkMode}>
                     <S.Box>
                         <Autocomplete
                             value={inputProducts}
@@ -489,7 +490,7 @@ export const Sell = () => {
                         />
                     </S.Box>
                     <S.Button onClick={handleAddProduct}>
-                        <MdLibraryAdd size="25" />
+                        <RiAddCircleFill size="25"/>
                     </S.Button>
                 </S.Header>
                 <S.Main>

@@ -22,6 +22,8 @@ export const Box = styled.div<BoxProps> `
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
     display: flex;
     width: ${props => props.widthBox};
+    //flex-wrap: wrap;
+    min-width: 300px;
     //min-width: min-content;
     height: min-content;
     background: ${props=>props.isDarkMode ? 'var(--backgroundDarkMode)' : '#fff'};
@@ -29,6 +31,7 @@ export const Box = styled.div<BoxProps> `
     justify-content: center;
     align-items: center;
     flex-direction:column;
+    margin-bottom: 40px;
 `
 export const HeaderBox = styled.div `
     padding:15px 30px 15px 30px ; 
@@ -39,6 +42,17 @@ export const HeaderBox = styled.div `
     
     flex-direction: column;
 `
+
+export const LabelTopHeader= styled.div `
+    display: flex;
+    justify-content: space-between;
+`
+export const labelPeriod = styled.div `
+    color: var(--AppBar);
+    font-size: 0.65rem;
+`
+
+
 
 export const LabelsubHeader = styled.label `
     color: #abaac7;

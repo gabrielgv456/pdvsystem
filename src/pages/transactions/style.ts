@@ -28,13 +28,13 @@ export const Container = styled.div<DarkModeProps> `
     color: ${props => (props.isDarkMode ? 'white' : '')};
   
 `
-export const Header = styled.div`
+export const Header = styled.div<DarkModeProps>`
     margin: 0 auto;
-    background-color: #fff;
+    background-color: ${props => (props.isDarkMode ?  'var(--backgroundDarkMode)': '#fff' )} ;
     border-radius: 0 0 20px 20px;
     padding: 0.5rem 0 1rem 0;
     gap: 5px ;
-    width: 60%;
+    width: 70%;
     height: min-content;
     display:flex;
     justify-content: center;

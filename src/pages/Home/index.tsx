@@ -21,19 +21,20 @@ export const Home = () => {
     return (
 
         <S.Container isDarkMode={Theme.DarkMode}>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: 40, flexWrap: 'wrap', alignItems:'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', alignItems:'center' }}>
                 <S.Box isDarkMode={Theme.DarkMode} widthBox="60%" >
                     <S.HeaderBox >
-                        <b>Comparativo Mensal</b>
+                        <S.LabelTopHeader><b>Comparativo Mensal</b><S.labelPeriod>Últimos 6 meses</S.labelPeriod></S.LabelTopHeader>
                         <S.LabelsubHeader>em reais (R$)</S.LabelsubHeader>
                     </S.HeaderBox>
+                    
                     <div style={{ width: '100%', padding: 10 }}>
                         <BarChart />
                     </div>
                 </S.Box>
                 <S.Box isDarkMode={Theme.DarkMode} widthBox="30%">
                     <S.HeaderBox >
-                        <b>Vendas por Gênero</b>
+                        <S.LabelTopHeader> <b>Vendas por Gênero</b><S.labelPeriod>Este Mês</S.labelPeriod></S.LabelTopHeader>
                         <S.LabelsubHeader>em quantidade </S.LabelsubHeader>
                     </S.HeaderBox>
                     <div style={{ width: '100%', padding: 10 }}>
@@ -42,10 +43,10 @@ export const Home = () => {
                 </S.Box>
 
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', marginBottom: 30 , alignItems:'center'}}>
+            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', alignItems:'center'}}>
                 <S.Box isDarkMode={Theme.DarkMode} widthBox="50%">
                     <S.HeaderBox >
-                        <b>Vendas Diárias</b>
+                        <S.LabelTopHeader><b>Vendas Diárias</b><S.labelPeriod>Esta Semana</S.labelPeriod></S.LabelTopHeader>
                         <S.LabelsubHeader>em reais (R$)</S.LabelsubHeader>
                     </S.HeaderBox>
                     <div style={{ width: '100%', padding: 10 }}>
@@ -65,7 +66,7 @@ export const Home = () => {
             <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', marginBottom: 30, alignItems:'center' }}>
                 <S.Box isDarkMode={Theme.DarkMode} widthBox="60%" >
                     <S.HeaderBox >
-                        <b>Produtos mais vendidos</b>
+                        <S.LabelTopHeader><b>Produtos mais vendidos</b><S.labelPeriod>Este Mês</S.labelPeriod></S.LabelTopHeader>
                         <S.LabelsubHeader>em quantidade</S.LabelsubHeader>
                     </S.HeaderBox>
                     <div style={{ width: '100%', padding: 10 }}>
@@ -74,7 +75,7 @@ export const Home = () => {
                 </S.Box>
                 <S.Box isDarkMode={Theme.DarkMode} widthBox='30%'>
                     <S.HeaderBox >
-                        <b>Transações por Método</b>
+                        <S.LabelTopHeader><b>Transações por Método</b><S.labelPeriod>Este Mês</S.labelPeriod></S.LabelTopHeader>
                         <S.LabelsubHeader>em quantidade</S.LabelsubHeader>
                     </S.HeaderBox>
                     <div style={{ width: '100%', padding: 10 }}>

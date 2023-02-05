@@ -67,7 +67,7 @@ export const RadarChart = () => {
         //labels: ['Dinheiro', 'PIX', 'Cartão de Crédito', 'Cartão de Débito', 'Outros'],
         datasets: [
             {
-                label: 'Quantidade Vendas Mensal',
+                label: 'Quantidade de vendas',
                 data: radarChartdata.map(payment=>payment.quantity),
                 backgroundColor: '#4a2da31f',
                 borderColor: '#4a2da3',

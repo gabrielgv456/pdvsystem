@@ -98,7 +98,7 @@ export default function LayoutDefault(props: Props) {
     <S.Div isDarkMode={Theme.DarkMode}  >
       <Toolbar><Typography variant="h6" noWrap component="div">{auth.user?.name}</Typography></Toolbar>
       <Divider sx={{borderColor: Theme.DarkMode ? 'var(--AppBar)' :''}}/>
-      <List>
+      <List sx={{marginBottom:'10%'}}>
         {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações', 'Pessoas','Gestão de Estoque'].map((text, index) => (
           <ListItem button key={text} 
           onClick= { 
@@ -149,8 +149,11 @@ export default function LayoutDefault(props: Props) {
       
       
       <Divider sx={{borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' :'', width:'60%', margin:'0 auto'}} />
-      <div style={{display:'flex', width:"100%",justifyContent:'center', position:'absolute', bottom:130}}>
-      <img src={logo} style={{width:150,height:100}}/>
+      <div style={{display:'flex', width:"100%",justifyContent:'center',flexDirection:'column',alignItems:'center', position:'absolute', bottom:130}}>
+      
+        <S.BNameLogo isDarkMode={Theme.DarkMode}>Smart Store®</S.BNameLogo>
+        <img src={logo} style={{width:150,height:92}}/>
+      
       </div>
      <S.DivSwitch isDarkMode={Theme.DarkMode}>☼
       <Switch checked={Theme.DarkMode} 

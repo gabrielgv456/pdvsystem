@@ -52,3 +52,8 @@ export const DivCashierStatus = styled.div `
     position:absolute;
     right:70px;
 `
+
+export const BNameLogo = styled.b <DarkModeProps>`
+    font-size: 28px;
+    color: ${props=>(props.isDarkMode ? '#FFF' : '')}
+`
