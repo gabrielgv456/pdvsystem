@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useNavigate,Outlet} from 'react-router-dom'
+import { useNavigate, Outlet } from 'react-router-dom'
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -21,13 +21,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
-import { DrawerStyle} from '../Layout/stylemui';
+import { DrawerStyle } from '../Layout/stylemui';
 import * as S from '../Layout/style'
 import { useDarkMode, useDarkModeLocalStorage } from '../../contexts/DarkMode/DarkModeProvider';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
 import logo from '../../images/logo.png'
 import { useLayout } from '../../contexts/Layout/layoutContext';
+import { BiMoon, BiSun } from 'react-icons/bi';
 
 
 
@@ -44,121 +45,123 @@ interface Props {
 
 export default function LayoutDefault(props: Props) {
   const [drawerWidth, setdrawerWidth] = React.useState(240);
-  const [PeopleMode,setPeopleMode] = React.useState('Clients')
+  const [PeopleMode, setPeopleMode] = React.useState('Clients')
   const classes = DrawerStyle();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const auth = React.useContext(AuthContext);
   const navigate = useNavigate();
   const Theme = useDarkMode();
-  const {actualPage,setActualPage}= useLayout();
- // const test = useDarkModeLocalStorage();
+  const { actualPage, setActualPage } = useLayout();
+  // const test = useDarkModeLocalStorage();
 
-    const handleLogout = async () => {
-        await auth.signout();
-        //window.location.href = window.location.href;
-        navigate('/');
-      }
-      const handleHome = () => {
-        navigate('/home');
-        setActualPage('Página Inicial')
-      }
-      const handleSell = () => {
-        navigate('/sell');
-        setActualPage('Realizar Vendas')
-      }
-      const handleSalesControl = () => {
-        navigate('/salescontrol');
-        setActualPage('Controle de Vendas')
-      }
-      const handleTansactions = () => {
-        navigate('/transactions');
-        setActualPage('Movimentações')
-      }
-      const handleInventoryManagement = () => {
-        navigate('/inventorymanagement');
-        setActualPage('Gestão de Estoque')
-      }
-      const handlePeopleRegistration = () => {
-        navigate('/peopleregistration');
-        setActualPage('Pessoas')
-      }
-      const handleVoid = () => {
-      }
+  const handleLogout = async () => {
+    await auth.signout();
+    //window.location.href = window.location.href;
+    navigate('/');
+  }
+  const handleHome = () => {
+    navigate('/home');
+    setActualPage('Página Inicial')
+  }
+  const handleSell = () => {
+    navigate('/sell');
+    setActualPage('Realizar Vendas')
+  }
+  const handleSalesControl = () => {
+    navigate('/salescontrol');
+    setActualPage('Controle de Vendas')
+  }
+  const handleTansactions = () => {
+    navigate('/transactions');
+    setActualPage('Movimentações')
+  }
+  const handleInventoryManagement = () => {
+    navigate('/inventorymanagement');
+    setActualPage('Gestão de Estoque')
+  }
+  const handlePeopleRegistration = () => {
+    navigate('/peopleregistration');
+    setActualPage('Pessoas')
+  }
+  const handleVoid = () => {
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  
-  
+
+
 
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
   const drawer = (
     <S.Div isDarkMode={Theme.DarkMode}  >
       <Toolbar><Typography variant="h6" noWrap component="div">{auth.user?.name}</Typography></Toolbar>
-      <Divider sx={{borderColor: Theme.DarkMode ? 'var(--AppBar)' :''}}/>
-      <List sx={{marginBottom:'10%'}}>
-        {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações', 'Pessoas','Gestão de Estoque'].map((text, index) => (
-          <ListItem button key={text} 
-          onClick= { 
-            index === 0 ? handleHome :
-            index === 1 ? handleSell :
-            index === 2 ? handleSalesControl :
-            index === 3 ? handleTansactions :
-            index === 4 ? handlePeopleRegistration :
-            index === 5 ? handleInventoryManagement : handleVoid
-          } className="ListItem">
+      <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} />
+      <List sx={{ marginBottom: '10%' }}>
+        {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações', 'Pessoas', 'Gestão de Estoque'].map((text, index) => (
+          <ListItem button key={text}
+            onClick={
+              index === 0 ? handleHome :
+                index === 1 ? handleSell :
+                  index === 2 ? handleSalesControl :
+                    index === 3 ? handleTansactions :
+                      index === 4 ? handlePeopleRegistration :
+                        index === 5 ? handleInventoryManagement : handleVoid
+            } className="ListItem">
             <ListItemIcon>
-              {index === 0 && <HomeIcon className="Icons" /> }
-              {index === 1 && <StorefrontIcon className="Icons" /> }
-              {index === 2 && <ReceiptLongIcon className="Icons"/> }
-              {index === 3 && <PaidIcon className="Icons"/> }
-              {index === 4 && <BsFillPeopleFill size="22" className="Icons"/>}
-              {index === 5 && <PieChartIcon  className="Icons" /> }
+              {index === 0 && <HomeIcon className="Icons" />}
+              {index === 1 && <StorefrontIcon className="Icons" />}
+              {index === 2 && <ReceiptLongIcon className="Icons" />}
+              {index === 3 && <PaidIcon className="Icons" />}
+              {index === 4 && <BsFillPeopleFill size="22" className="Icons" />}
+              {index === 5 && <PieChartIcon className="Icons" />}
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
         ))}
       </List>
-      
+
       {drawerWidth === 240 ?
-      <S.ButtonRetract
-      onClick={()=>setdrawerWidth(0)} 
-      style={{position:'fixed',
-              left:'239px',
-              top:'50%', 
-              }}
-      isDarkMode={Theme.DarkMode}
-      > 
-        <IoMdArrowRoundBack  size="14" color="var(--AppBar)" /> 
-      </S.ButtonRetract>
-      :
-      <S.ButtonRetract
-      onClick={()=>setdrawerWidth(240)} 
-      style={{position:'fixed',
-              left:'0',
-              top:'50%', 
-              }}
-      isDarkMode={Theme.DarkMode}
-      > 
-        <IoMdArrowRoundForward color="var(--AppBar)" size="14"/> 
-      </S.ButtonRetract>
+        <S.ButtonRetract
+          onClick={() => setdrawerWidth(0)}
+          style={{
+            position: 'fixed',
+            left: '239px',
+            top: '50%',
+          }}
+          isDarkMode={Theme.DarkMode}
+        >
+          <IoMdArrowRoundBack size="14" color="var(--AppBar)" />
+        </S.ButtonRetract>
+        :
+        <S.ButtonRetract
+          onClick={() => setdrawerWidth(240)}
+          style={{
+            position: 'fixed',
+            left: '0',
+            top: '50%',
+          }}
+          isDarkMode={Theme.DarkMode}
+        >
+          <IoMdArrowRoundForward color="var(--AppBar)" size="14" />
+        </S.ButtonRetract>
       }
-      
-      
-      
-      <Divider sx={{borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' :'', width:'60%', margin:'0 auto'}} />
-      <div style={{display:'flex', width:"100%",justifyContent:'center',flexDirection:'column',alignItems:'center', position:'absolute', bottom:130}}>
-      
+
+
+
+      <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : '', width: '60%', margin: '0 auto' }} />
+      <div style={{ display: 'flex', width: "100%", justifyContent: 'center', flexDirection: 'column', alignItems: 'center', position: 'absolute', bottom: 130 }}>
+
         <S.BNameLogo isDarkMode={Theme.DarkMode}>Smart Store®</S.BNameLogo>
-        <img src={logo} style={{width:150,height:92}}/>
-      
+        <img src={logo} style={{ width: 150, height: 94 }} />
+
       </div>
-     <S.DivSwitch isDarkMode={Theme.DarkMode}>☼
-      <Switch checked={Theme.DarkMode} 
-         onChange={e => Theme.setDarkMode(e.target.checked)} sx={{display:'flex'}}  />
-      ☾
+      <S.DivSwitch isDarkMode={Theme.DarkMode}>
+        <BiSun color="#727272"/>
+        <Switch checked={Theme.DarkMode} onChange={e => Theme.setDarkMode(e.target.checked)} sx={{ display: 'flex' }} />
+        <BiMoon color="#727272"/>
       </S.DivSwitch>
 
     </S.Div>
@@ -175,7 +178,7 @@ export default function LayoutDefault(props: Props) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          backgroundColor: Theme.DarkMode ? 'var(--backgroundDarkMode)' :'var(--AppBar)',
+          backgroundColor: Theme.DarkMode ? 'var(--backgroundDarkMode)' : 'var(--AppBar)',
           boxShadow: 'none',
           borderBottom: '1px solid var(--AppBar)',
         }}
@@ -190,19 +193,19 @@ export default function LayoutDefault(props: Props) {
           >
             <MenuIcon />
           </IconButton>
-          
+
           <Typography variant="h6" noWrap component="div" display="flex">
             {actualPage}
           </Typography>
           <S.DivCashierStatus>
             Caixa aberto
           </S.DivCashierStatus>
-          {auth.user && 
-          <PowerSettingsNewIcon 
-          onClick={handleLogout}  
-          sx={{position:'absolute', right:20, cursor:'pointer','&:hover':{color:'firebrick'}}}/>}
-          
-          
+          {auth.user &&
+            <PowerSettingsNewIcon
+              onClick={handleLogout}
+              sx={{ position: 'absolute', right: 20, cursor: 'pointer', '&:hover': { color: 'firebrick' } }} />}
+
+
         </Toolbar>
       </AppBar>
       <Box
@@ -212,7 +215,7 @@ export default function LayoutDefault(props: Props) {
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
-          classes={{paper: Theme.DarkMode ? classes.drawerPaperDarkMode : classes.drawerPaper  }}
+          classes={{ paper: Theme.DarkMode ? classes.drawerPaperDarkMode : classes.drawerPaper }}
           container={container}
           variant="temporary"
           open={mobileOpen}
@@ -226,11 +229,11 @@ export default function LayoutDefault(props: Props) {
           }}
         >
           {drawer}
-         
+
         </Drawer>
-       
-        <Drawer 
-          classes={{paper: Theme.DarkMode ? classes.drawerPaperDarkMode : classes.drawerPaper  }}
+
+        <Drawer
+          classes={{ paper: Theme.DarkMode ? classes.drawerPaperDarkMode : classes.drawerPaper }}
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
@@ -243,10 +246,10 @@ export default function LayoutDefault(props: Props) {
       </Box>
       <Box
         component="main"
-        sx={{  flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
-        <Toolbar/>
-          <Outlet/>
+        <Toolbar />
+        <Outlet />
       </Box>
     </Box>
   );

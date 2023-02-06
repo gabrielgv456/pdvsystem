@@ -14,10 +14,10 @@ interface Props {
    listSellsProducts: SellsProductsReceiveApi[];
    handleRemoveTask(id: number, sellValue: number): void;
    setismodalMasterkeyEditOpen: (value: boolean) => void;
-   setidselltoEdit: (value:number) => void;
-   SearchSellers:()=>void;
-   filterSellerandClient:(sellerId: number|null, clientId:number|null)=>void;
-   
+   setidselltoEdit: (value: number) => void;
+   SearchSellers: () => void;
+   filterSellerandClient: (sellerId: number | null, clientId: number | null) => void;
+
 }
 
 
@@ -40,31 +40,72 @@ export function Listagem(props: Props) {
       GeneratePDFSalesControl(props.listSellsProducts, sumtotalValuethisSellFormated, sumtotalQuantitythisSell, dataSell, props.item.id)
    }
    const handleEdit = async () => {
-      
+
       props.setidselltoEdit(props.item.id)
       props.filterSellerandClient(props.item.sellerId, props.item.clientId)
       props.setismodalMasterkeyEditOpen(true)
-      
+
    }
 
    return (
 
-         <S.Container isDarkMode={Theme.DarkMode}>
-            <S.ButtonEdit title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+      <S.Container isDarkMode={Theme.DarkMode}>
+         <S.DivTitle>
+            <S.DivTipo>
+               {dataSell}
+               <label>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.item.sellValue)}</label>
+            </S.DivTipo>
+         </S.DivTitle>
+         <S.DivContent>
+            <S.span>
+               <S.bItem>Qtd</S.bItem>
+               <S.DivListQuantity>
+                  {props.listSellsProducts.map((products) => (
+                     products.sellId === props.item.id &&
+                     <S.LabelQuantaty>{products.quantity}</S.LabelQuantaty>
+                  ))}
+               </S.DivListQuantity>
+            </S.span>
+            <S.span>
+               <S.bItem>Produtos</S.bItem>
+               <S.DivListItens isDarkMode={Theme.DarkMode}>
+                  {props.listSellsProducts.map((products) => (
+                     products.sellId === props.item.id &&
+                     <S.LabelItem title={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalValue / products.quantity)} isDarkMode={Theme.DarkMode}>{products.descriptionProduct} </S.LabelItem>
+                  ))}
+               </S.DivListItens>
+            </S.span>
+            <S.span>
+               <S.bItem>Valor</S.bItem> <S.DivListItens isDarkMode={Theme.DarkMode}>
+                  {props.listSellsProducts.map((products) => (
+                     products.sellId === props.item.id &&
+                     <S.LabelItem isDarkMode={Theme.DarkMode}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalValue)} </S.LabelItem>
+                  ))}
+               </S.DivListItens>
+            </S.span>
+            <S.span>
+               <S.bItem>Cliente</S.bItem>
+               <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.clientName ?? "Não informado"}</S.LabelItem>
+            </S.span>
+            <S.span>
+               <S.bItem>Vendedor</S.bItem>
+               <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.sellerName ?? "Não informado"}</S.LabelItem>
+            </S.span>
+            {/* <S.ButtonEdit title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
             <S.LabelDate title={gethoursSell_title}>{dataSell}</S.LabelDate>
             <S.DivListQuantity>
                {props.listSellsProducts.map((products) => (
                   products.sellId === props.item.id &&
-                     <S.LabelQuantaty>{products.quantity}</S.LabelQuantaty>
-                     
+                  <S.LabelQuantaty>{products.quantity}</S.LabelQuantaty>
+
 
                ))}
             </S.DivListQuantity>
             <S.DivListItens isDarkMode={Theme.DarkMode}>
                {props.listSellsProducts.map((products) => (
                   products.sellId === props.item.id &&
-                     <S.LabelItem title={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalValue / products.quantity)} isDarkMode={Theme.DarkMode}>{products.descriptionProduct} </S.LabelItem>
-                     
+                  <S.LabelItem title={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalValue / products.quantity)} isDarkMode={Theme.DarkMode}>{products.descriptionProduct} </S.LabelItem>
+
                ))}
             </S.DivListItens>
             <S.LabelNameSeller>{props.item.clientName ?? "Não informado"}</S.LabelNameSeller>
@@ -73,8 +114,9 @@ export function Listagem(props: Props) {
             <label>
                <S.ButtonPrint title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.ButtonPrint>
                <S.ButtonTrash title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.ButtonTrash>
-            </label>
-         </S.Container>
+            </label> */}
+         </S.DivContent>
+      </S.Container>
 
    )
 }

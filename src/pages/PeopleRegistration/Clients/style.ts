@@ -13,8 +13,10 @@ export const Container = styled.div<DarkModeProps> `
     width: 100%;
     min-height: 82vh;
     padding: 25px;
+    max-width: 380px;
+    flex-wrap: wrap;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
-
+   
 `
 export const Header = styled.div`
     display: flex;
@@ -67,6 +69,7 @@ export const DivListClients = styled.div `
     @media screen and (max-width: 550px) {
         width: 100%;
     }
+   
 `
 export const DivTitleListClients = styled.div <DarkModeProps>`
     min-width: min-content;
@@ -81,6 +84,9 @@ export const DivTitleListClients = styled.div <DarkModeProps>`
     justify-content: space-between; 
     font-size: 0.85rem;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
+      @media screen and (max-width:930px) {
+        font-size: 0.7rem;
+    }
 `
 export const DivFooterListClients = styled.div <DarkModeProps>`
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};

@@ -24,6 +24,9 @@ export const Container = styled.div <ActiveProps>`
     &:hover{
         background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f7f7f8')};
     }
+    @media screen and (max-width:930px) {
+        font-size: 0.5rem;
+    }
    
 `
 

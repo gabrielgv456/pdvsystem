@@ -5,7 +5,7 @@ import {SiMicrosoftexcel} from "react-icons/si"
 import {RiMoneyDollarCircleFill} from "react-icons/ri"
 import {BsFileEarmarkPdf, BsFillBagFill} from "react-icons/bs"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
-import {FaShoppingCart} from "react-icons/fa"
+import {FaSearch, FaShoppingCart} from "react-icons/fa"
 import {Listagem} from './ListSales/ListSales'
 import {useState, useContext,  KeyboardEvent, useEffect} from "react"
 import { scopedCssBaselineClasses } from '@mui/material';
@@ -189,7 +189,7 @@ export const SalesControl = () => {
             <S.Header isDarkMode={Theme.DarkMode}>
             <S.Box><label>Data Inicial</label><S.Input isDarkMode={Theme.DarkMode} type="date" value={InitialDate} onChange={(e) =>setInitialDate(e.target.value)}></S.Input></S.Box>
             <S.Box><label>Data Final</label><S.Input isDarkMode={Theme.DarkMode} type="date" value={FinalDate} onChange={(e) =>setFinalDate(e.target.value)}></S.Input></S.Box>
-                <S.DivSearch><S.Button onClick={handleSendtoApi} >Buscar</S.Button>
+                <S.DivSearch><S.Button onClick={handleSendtoApi} ><FaSearch size="13" /></S.Button>
                     <label style={{display:'flex', marginBottom:"-3px"}}>
                         <div>
                             <IconButton
@@ -236,7 +236,7 @@ export const SalesControl = () => {
         </S.Header>
         <S.SubHeader>
             <S.BoxResume isDarkMode={Theme.DarkMode}>
-                <FaShoppingCart size="45" color="var(--AppBar)"/>
+                <FaShoppingCart size="2.5rem" color="var(--AppBar)"/>
 
                 <label>
                     <section>Total Vendas</section>
@@ -246,7 +246,7 @@ export const SalesControl = () => {
             </S.BoxResume>
 
             <S.BoxResume isDarkMode={Theme.DarkMode}>
-                <RiMoneyDollarCircleFill size="45" color="var(--AppBar)"/>
+                <RiMoneyDollarCircleFill size="2.5rem" color="var(--AppBar)"/>
                 <label>
                     <section>Receita Vendas</section>
                     <S.SectionValuesBoxResume>{sumCashFormated}</S.SectionValuesBoxResume>
@@ -254,7 +254,7 @@ export const SalesControl = () => {
             </S.BoxResume>
 
             <S.BoxResume isDarkMode={Theme.DarkMode}>
-                <BsFillBagFill size="45" color="var(--AppBar)"/>
+                <BsFillBagFill size="2.5rem" color="var(--AppBar)"/>
                 <label>
                     <section>Itens Vendidos</section>
                     <S.SectionValuesBoxResume>{sumItens}</S.SectionValuesBoxResume>
@@ -265,19 +265,7 @@ export const SalesControl = () => {
 
         </S.SubHeader>
      {listSells.length != 0 ? 
-        <S.DivMenu isDarkMode={Theme.DarkMode}> 
-      <label style={{width:25}}>&nbsp;</label> 
-      <S.LabelDate>Data</S.LabelDate>
-      <S.LabelQuantaty>Qtd</S.LabelQuantaty>
-      <S.LabelItem isDarkMode={Theme.DarkMode}>Descrição</S.LabelItem>
-      <label style={{width:'15%'}}>Cliente</label>
-      <label style={{width:'15%'}}>Vendedor</label> 
-      <S.LabelValue>
-        Valor
-      </S.LabelValue>
-      
-        <label style={{width:41}}> &nbsp;</label>
-      </S.DivMenu>
+       ''
       : 
       <S.DivMenuNotSells isDarkMode={Theme.DarkMode}> 
         <h2>Que pena, nenhuma venda econtrada 🙁 </h2>

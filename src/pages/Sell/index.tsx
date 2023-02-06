@@ -380,8 +380,8 @@ export const Sell = () => {
                 }}>
                     <div style={{ fontSize: '1.1rem', marginBottom: '10px' }}><b>Total:</b> {sumvalueformated}</div>
                     {needReturnCash === 'N' ? <div style={{ fontSize: '1.1rem' }}><b>Restante:</b> {formatedmissvalue}</div> : ''}
-                    {needReturnCash === 'Y' && <div style={{ fontSize:'1.1rem', color: 'red'}}><b>Troco:</b> {formatedmissvalue}</div>}
-                    {needReturnCash === 'OK' && <div style={{ fontSize:'1.1rem', color: 'green'}}><b>Restante:</b> {formatedmissvalue}</div>}
+                    {needReturnCash === 'Y' && <div style={{ fontSize: '1.1rem', color: 'red' }}><b>Troco:</b> {formatedmissvalue}</div>}
+                    {needReturnCash === 'OK' && <div style={{ fontSize: '1.1rem', color: 'green' }}><b>Restante:</b> {formatedmissvalue}</div>}
                     {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" /> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
                     {isSellEnded ? '' :
                         <div>
@@ -490,15 +490,17 @@ export const Sell = () => {
                         />
                     </S.Box>
                     <S.Button onClick={handleAddProduct}>
-                        <RiAddCircleFill size="25"/>
+                        <RiAddCircleFill size="25" />
                     </S.Button>
                 </S.Header>
                 <S.Main>
-                    <S.DivList>
-                        {listProducts.map((item) => (
-                            <ListSell key={item.name} item={item} handleRemoveItem={handleRemoveItem} handleEditItem={handleEditItem} handleRemoveOneItem={handleRemoveOneItem} />
+                    {listProducts.length > 0 &&
+                        <S.DivList>
+                            {listProducts.map((item) => (
+                                <ListSell key={item.name} item={item} handleRemoveItem={handleRemoveItem} handleEditItem={handleEditItem} handleRemoveOneItem={handleRemoveOneItem} />
 
-                        ))}</S.DivList>
+                            ))}</S.DivList>
+                    }
                     <S.Checkout isDarkMode={Theme.DarkMode}>
                         <label>Qtd: {sumquantity}</label>
                         <label>Valor Total:</label>

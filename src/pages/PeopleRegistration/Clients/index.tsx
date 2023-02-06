@@ -124,10 +124,11 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
                         value={props.PeopleMode}
                         exclusive
                         onChange={handleChangePeopleType}
+                       
 
                     >
-                        <ToggleButton value="Clients" >Clientes</ToggleButton>
-                        <ToggleButton value="Sellers">Vendedores</ToggleButton>
+                        <ToggleButton value="Clients" style={{padding:'0.3rem',height:'min-content',fontSize:'1rem'}}>Clientes</ToggleButton>
+                        <ToggleButton value="Sellers" style={{padding:'0.3rem',height:'min-content',fontSize:'1rem'}}>Vendedores</ToggleButton>
 
                     </ToggleButtonGroup>
 

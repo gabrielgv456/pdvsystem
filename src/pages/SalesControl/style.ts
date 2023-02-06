@@ -37,6 +37,11 @@ export const BoxResume = styled.label <DarkModeProps>`
     margin-top: 1.5rem;
     flex-wrap: wrap;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+    @media screen and (max-width: 930px) {
+        font-size: 0.8rem;
+        flex-direction: column;
+        padding: 0.5rem;
+    }
     
 `
 export const SectionValuesBoxResume = styled.section `
@@ -44,7 +49,7 @@ export const SectionValuesBoxResume = styled.section `
     display: flex;
     justify-content: center;
     @media screen and (max-width: 930px) {
-        font-size: 1.3rem;
+        font-size: 1rem;
     }
 `
 export const Header = styled.div<DarkModeProps>`
@@ -59,6 +64,10 @@ export const Header = styled.div<DarkModeProps>`
     border-radius: 0 0 20px 20px;
     padding:0.5rem 0 1rem 0;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+    max-width:max-content;
+    @media screen and (max-width:930px) {
+        width:90%
+    }
 `
 
 
@@ -67,6 +76,10 @@ export const Box = styled.div `
     height: min-content;
     padding: 10px;
     border-radius: 5px;
+    @media screen and (max-width:930px) {
+      padding:0;
+      width:30%;  
+    }
     
     `
     export const DivSearch = styled.div `
@@ -78,6 +91,10 @@ export const Box = styled.div `
     height: min-content;
     padding: 10px;
     border-radius: 5px;
+    @media screen and (max-width:930px){
+        gap:0px;
+        padding:0
+    }
     `
 export const Input = styled.input <DarkModeProps> `
     background-color: ${props=>(props.isDarkMode ? 'var(--backgroundInputDarkMode)':'')};
@@ -95,7 +112,7 @@ font-family: 'Poppins', sans-serif;
     height: min-content;
     background: var(--Green);
     color: #fff;
-    padding: 5px 10px 5px 10px;
+    padding: 5px 18px 5px 18px;
     background-color: #34cc96;
     border-radius: 5px;
     font-size: 0.9rem;

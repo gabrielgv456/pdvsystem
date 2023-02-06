@@ -32,6 +32,9 @@ export const Box = styled.div<BoxProps> `
     align-items: center;
     flex-direction:column;
     margin-bottom: 40px;
+    @media screen and (max-width:599px) {
+        min-width: 90%;
+    }
 `
 export const HeaderBox = styled.div `
     padding:15px 30px 15px 30px ; 

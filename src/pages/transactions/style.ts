@@ -32,7 +32,7 @@ export const Header = styled.div<DarkModeProps>`
     margin: 0 auto;
     background-color: ${props => (props.isDarkMode ?  'var(--backgroundDarkMode)': '#fff' )} ;
     border-radius: 0 0 20px 20px;
-    padding: 0.5rem 0 1rem 0;
+    padding: 0.5rem 0.2rem 1rem 0.2rem;
     gap: 5px ;
     width: 70%;
     height: min-content;
@@ -41,6 +41,9 @@ export const Header = styled.div<DarkModeProps>`
     align-items: flex-end;
     margin-top: -23px;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+    @media screen and (max-width:930px) {
+        width: 90%;
+    }
 
 `
 export const SubHeader = styled.div `

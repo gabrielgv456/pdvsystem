@@ -3,24 +3,77 @@ import styled from "styled-components";
 interface DarkModeProps {
     isDarkMode:Boolean;
 }
-
 export const Container = styled.div <DarkModeProps>`
-    background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
-    box-shadow: ${props => (props.isDarkMode ? '' : '0px 0px 5px #CCC')}; 
-    border: ${props => (props.isDarkMode ? '1px solid gray' : '')}; 
-    border-radius: 10px;
-    padding:20px;
-    margin: 0px 0 5px 0;
+
+    background-color: #fff;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-family: sans-serif;
+    box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
+`
+// export const Container = styled.div <DarkModeProps>`
+//     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
+//     box-shadow: ${props => (props.isDarkMode ? '' : '0px 0px 5px #CCC')}; 
+//     border: ${props => (props.isDarkMode ? '1px solid gray' : '')}; 
+//     border-radius: 10px;
+//     padding:20px;
+//     margin: 0px 0 5px 0;
+//     width:100%;
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between; 
+//     gap:5px;
+//     @media screen and (max-width: 930px) {
+//         padding: 10px;
+//         font-size: 0.9rem;
+//     }
+// `
+
+export const span = styled.span `
+    border-right: 0.1px solid #e8e8e8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+`
+
+export const bItem = styled.b `
+    background-color:#efefef;
+    border-radius: 1px;
     width:100%;
     display: flex;
-    align-items: center;
-    justify-content: space-between; 
-    gap:5px;
-    @media screen and (max-width: 930px) {
-        padding: 10px;
-        font-size: 0.9rem;
+    justify-content: center;
+    padding: 8px;
+    font-size: 0.8rem;
+    @media screen and (max-width:930px) {
+        padding: 4px;
     }
 `
+export const DivTitle = styled.div `
+    width: 100%;
+    border-bottom: 1px solid silver;
+    box-sizing: border-box;
+    padding: 10px 10px 5px 10px;
+    background-color: var(--AppBar);
+    color:#fff;
+    border-radius: 5px 5px 0px 0px;
+`
+
+export const DivTipo = styled.div `
+    display: flex;
+    align-items:flex-end;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    
+`
+export const DivContent = styled.div `
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+`
+
 
 export const ButtonPrint= styled.button `
     text-decoration: none;
@@ -43,6 +96,9 @@ export const ButtonTrash = styled.button `
     cursor: pointer;
 `
 export const LabelItem = styled.label<DarkModeProps>`
+    height: 100%;
+    align-items: center;
+    display: flex;
     font-size: 0.85rem;
 `
 export const DivListItens = styled.div<DarkModeProps> `
@@ -50,23 +106,10 @@ export const DivListItens = styled.div<DarkModeProps> `
     display: flex;
     flex-direction: column;
     color: ${props => (props.isDarkMode ? 'white' : '')};
-    width: 25%;
-    max-width:25%;
+    max-width:95%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    @media screen and (max-width: 590px) {
-    max-width:12ch;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    }
-    @media screen and (max-width: 930px) {
-    max-width:15ch;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    }
 `
 export const DivListQuantity = styled.div `
     display: flex;

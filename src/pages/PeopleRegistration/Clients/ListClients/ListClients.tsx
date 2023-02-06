@@ -60,7 +60,7 @@ export const ListClients = (props: ListClientsProps) => {
         <>
             <S.Container isDarkMode={Theme.DarkMode} isClientActive={props.client.active}>
 
-                <S.ButtonEdit onClick={() => setisModalEditClientOpen(true)} title="Editar Produto"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+                <S.ButtonEdit onClick={() => setisModalEditClientOpen(true)} title="Editar Produto"><HiOutlinePencilAlt size="1rem" /></S.ButtonEdit>
 
                 <S.LabelNameClient isDarkMode={Theme.DarkMode}>
                     <b>{props.client.name}</b>
@@ -73,7 +73,7 @@ export const ListClients = (props: ListClientsProps) => {
                 <S.LabelNumber >
                 {props.client.cellNumber &&
                     <>
-                    <a href={linkwhatsapp} target="blank"><RiWhatsappLine color="#47c254" size="18"/></a>
+                    <a href={linkwhatsapp} target="blank"><RiWhatsappLine color="#47c254" size="1rem"/></a>
 
                     &nbsp;
 
@@ -85,7 +85,7 @@ export const ListClients = (props: ListClientsProps) => {
                 <S.LabelMail >
                 {props.client.email &&
                     <div style={{display:'flex', justifyContent:'flex-end'}}>
-                    <a href={linkmailto}  ><MdOutlineMail color="#85cdc5" size="18"/></a>
+                    <a href={linkmailto}  ><MdOutlineMail color="#85cdc5" size="1rem"/></a>
 
                     &nbsp;
                     
@@ -98,7 +98,7 @@ export const ListClients = (props: ListClientsProps) => {
                 
 
 
-                <S.ButtonTrash onClick={() => setisModalDeleteClientOpen(true)} title="Excluir Produto" ><BsTrash size="16" /></S.ButtonTrash>
+                <S.ButtonTrash onClick={() => setisModalDeleteClientOpen(true)} title="Excluir Produto" ><BsTrash size="1rem" /></S.ButtonTrash>
 
             </S.Container>
 

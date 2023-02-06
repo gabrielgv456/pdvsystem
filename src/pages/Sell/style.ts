@@ -32,6 +32,9 @@ export const Header = styled.div<DarkModeProps>`
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
     padding: 1rem 0 1rem 0;
     margin-top: -23px;
+    @media screen and (max-width:930px) {
+        width:90%
+    }
 `
 // export const Header = styled.div<DarkModeProps>`
 //     margin: 0 auto;
@@ -51,11 +54,15 @@ export const Header = styled.div<DarkModeProps>`
 export const Main = styled.div`
     display: flex;
     width: 100%;
-   
+    flex-wrap: wrap;
     justify-content: space-around;
+    @media screen and (max-width:599px) {
+        flex-direction: column;
+    }
 `
 export const Checkout = styled.div<DarkModeProps>`
     width: 45%;
+    min-width: min-content;
     height: min-content;
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
     box-shadow: ${props => (props.isDarkMode ? '' : '0px 0px 5px #CCC')}; 
@@ -68,8 +75,10 @@ export const Checkout = styled.div<DarkModeProps>`
     flex-direction: column;
     justify-content: space-between; 
     gap:5px;
-    @media screen and (max-width: 930px) {
-        padding: 10px;}
+    @media screen and (max-width:900px) {
+        width: 100%;
+        padding: 10px;
+    }    
 `
 export const DivConfirmSell = styled.div`
     margin-top: 2rem;
@@ -90,6 +99,9 @@ cursor:pointer;
 
 export const DivList = styled.div`
 width: 45%;
+@media screen and (max-width:900px) {
+        width: 100%;
+    }
 
 `
 
