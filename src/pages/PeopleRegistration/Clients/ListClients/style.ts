@@ -13,7 +13,7 @@ interface ActiveProps {
 export const Container = styled.div <ActiveProps>`
     text-decoration:${props => (props.isClientActive? '' : 'line-through' )} ;
     opacity: ${props => (props.isClientActive? '' : '0.6' )};
-    min-width: min-content;
+    /* min-width: min-content; */
     padding:20px;
     width:100%;
     display: flex;
@@ -26,6 +26,7 @@ export const Container = styled.div <ActiveProps>`
     }
     @media screen and (max-width:930px) {
         font-size: 0.5rem;
+        padding:5px;
     }
    
 `
@@ -36,25 +37,27 @@ export const LabelNumber = styled.label `
     white-space: nowrap;
     color:#5fcd0e;
     width: 15%;
-    max-width: 15%;
-    
+   
     color:#485059;
     
 `
 
 export const LabelMail= styled.label `
     color:#5fcd0e;
-    max-width: 20%;
-    min-width:20%;
+    max-width: 10%;
+    /* min-width:20%; */
     color:#485059;
+    @media screen and (max-width:930px) {
+       display: none;
+    }
     
 `
 export const bMail= styled.b `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;  
-    max-width: 100%;
-    min-width:100%; 
+  
+    /* min-width:100%;  */
 `
 
 export const LabelCpf = styled.label <DarkModeProps>`
@@ -64,7 +67,6 @@ export const LabelCpf = styled.label <DarkModeProps>`
     border-radius: 10px;
     padding: 5px;
     width:15%;
-    max-width: 15%;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
 `
 
@@ -72,8 +74,8 @@ export const LabelNameClient = styled.label <DarkModeProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width: 25%;
-    max-width: 25%;
+    max-width: 10%;
+    width: 25%;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
     
 `
@@ -92,7 +94,7 @@ export const ButtonInfo = styled.button `
     border:none;
     display: flex;
     justify-content: center;
-    min-width: min-content;
+    /* min-width: min-content; */
     width:min-content;
 `
 
@@ -103,7 +105,7 @@ export const ButtonTrash = styled.button `
     border:none;
     display: flex;
     justify-content: center;
-    min-width: min-content;
+    /* min-width: min-content; */
     width:min-content;
 `
 

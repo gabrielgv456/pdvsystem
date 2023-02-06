@@ -118,6 +118,7 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
                             }}
                             placeholder="Localizar Consumidor..."></input>
                     </S.LabelSearchClient>
+                    <label style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:'5%'}}>
                     <ToggleButtonGroup
 
                         color="info"
@@ -127,12 +128,12 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
                        
 
                     >
-                        <ToggleButton value="Clients" style={{padding:'0.3rem',height:'min-content',fontSize:'1rem'}}>Clientes</ToggleButton>
-                        <ToggleButton value="Sellers" style={{padding:'0.3rem',height:'min-content',fontSize:'1rem'}}>Vendedores</ToggleButton>
+                        <ToggleButton value="Clients" style={{padding:'0.8rem',height:'min-content',fontSize:'1rem'}}>Clientes</ToggleButton>
+                        <ToggleButton value="Sellers" style={{padding:'0.8rem',height:'min-content',fontSize:'1rem'}}>Vendedores</ToggleButton>
 
                     </ToggleButtonGroup>
 
-                    <label>
+                    
                         <S.ButtonAddClient onClick={handleOpenModalConfirmSell} isDarkMode={Theme.DarkMode}>
                             <MdAdd size="22" />
                             <b>NOVO CLIENTE</b>
