@@ -29,34 +29,40 @@ export const Container = styled.div <ActiveProps>`
 
 export const LabelDate = styled.label `
     color:#5fcd0e;
-    display: flex;
+    //display: flex;
     justify-content: center;
     width: 20%;
     color:#485059;
-    min-width: min-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `
 export const LabelStatus = styled.label <DarkModeProps>`
     border-radius: 10px;
     padding: 5px;
-    display: flex;
+    //display: flex;
     justify-content: center;
     width:15%;
-    min-width: min-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `
 export const LabelValue = styled.label <DarkModeProps> `
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
     display: flex;
     justify-content: center;
     width:10%;
-    min-width: min-content;
+    min-width: max-content;
 `
 export const LabelNameProduct = styled.label <DarkModeProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width: 30%;
-    max-width:30%;
+    width:30%;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
+    @media screen and (max-width:930px){
+        width: 15%;
+    }
     
 `
 export const LabelQuantity = styled.label <DarkModeProps>`
@@ -64,7 +70,10 @@ export const LabelQuantity = styled.label <DarkModeProps>`
     justify-content: center;
     min-width: min-content;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    width:15%
+    width:15%;
+    @media screen and (max-width:930px){
+        width: 5%;
+    }
 `
 
 export const ButtonEdit= styled.button `

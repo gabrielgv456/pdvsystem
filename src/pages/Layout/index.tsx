@@ -99,7 +99,7 @@ export default function LayoutDefault(props: Props) {
     <S.Div isDarkMode={Theme.DarkMode}  >
       <Toolbar><Typography variant="h6" noWrap component="div">{auth.user?.name}</Typography></Toolbar>
       <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} />
-      <List sx={{ marginBottom: '10%' }}>
+      <List sx={{ marginBottom: '1rem' }}>
         {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações', 'Pessoas', 'Gestão de Estoque'].map((text, index) => (
           <ListItem button key={text}
             onClick={
@@ -152,18 +152,18 @@ export default function LayoutDefault(props: Props) {
 
 
       <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : '', width: '60%', margin: '0 auto' }} />
-      <div style={{ display: 'flex', width: "100%", justifyContent: 'center', flexDirection: 'column', alignItems: 'center', position: 'absolute', bottom: 130 }}>
-
+      <div style={{ display: 'flex', width: "100%", justifyContent: 'center', flexDirection: 'column', alignItems: 'center', margin:'2.5rem 0 1rem 0' }}>
+       
         <S.BNameLogo isDarkMode={Theme.DarkMode}>Smart Store®</S.BNameLogo>
         <img src={logo} style={{ width: 150, height: 94 }} />
 
-      </div>
+        </div>
       <S.DivSwitch isDarkMode={Theme.DarkMode}>
         <BiSun color="#727272"/>
         <Switch checked={Theme.DarkMode} onChange={e => Theme.setDarkMode(e.target.checked)} sx={{ display: 'flex' }} />
         <BiMoon color="#727272"/>
       </S.DivSwitch>
-
+      
     </S.Div>
   );
 

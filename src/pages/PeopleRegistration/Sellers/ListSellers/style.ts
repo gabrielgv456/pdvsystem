@@ -18,11 +18,15 @@ export const Container = styled.div <ActiveProps>`
     width:100%;
     display: flex;
     align-items: center;
-    justify-content: space-between; 
+    justify-content: space-between;
     font-size: 0.85rem;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 0px 0px;
     &:hover{
         background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f7f7f8')};
+    }
+    @media screen and (max-width:930px) {
+        font-size: 0.7rem;
+        padding:5px;
     }
    
 `
@@ -32,29 +36,41 @@ export const LabelEmail = styled.label <DarkModeProps> `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width:20%;
-    max-width:20%;
+    width:20%;
+    @media screen and (max-width:930px){
+        display: none;
+    }
 `
 export const LabelCpf = styled.label <DarkModeProps>`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     padding: 5px;
-    
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    
     width:15%;
-    min-width: min-content;
+    
 `
 export const LabelPhone = styled.label <DarkModeProps> `
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
     width:15%;
-    min-width: min-content;
+    @media screen and (max-width:930px) {
+        display: none;
+    }
+    
+    
 `
 export const LabelNameSeller = styled.label <DarkModeProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    max-width:25%;
-    min-width:25%;
+    width:25%;
+    @media screen and (max-width:930px){
+        width:20%;
+    }
 `
 
 

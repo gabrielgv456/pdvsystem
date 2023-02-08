@@ -14,6 +14,9 @@ export const Container = styled.div<DarkModeProps> `
     min-height: 82vh;
     padding: 25px;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+    @media screen and (max-width:930px){
+        width: 95%;
+    }
 
 `
 export const Header = styled.div`
@@ -21,6 +24,10 @@ export const Header = styled.div`
     justify-content:space-between;
     width: 100%;
     margin-bottom: 3%;
+    @media screen and (max-width:930px) {
+        flex-direction: column;
+        gap:5px;
+    }
 `
 export const LabelSearchSeller = styled.label `
     display:flex;
@@ -29,23 +36,31 @@ export const LabelSearchSeller = styled.label `
     width:40%;
     height:3.2rem;
     align-items:center;
+    @media screen and (max-width:930px) {
+       width: 100%;
+    }
 `
 export const ButtonAddSeller = styled.button <DarkModeProps> `
-    flex-wrap: wrap;
+    //flex-wrap: wrap;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap:10px;
-    width: 100%;
+    gap:0.2rem;
+    width: 30%;
+    min-width: max-content;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8rem;
     border: 1px solid var(--Blue);
     border-radius: 5px;
-    padding: 0.7rem;
+    padding: 0.8rem;
     background-color: var(--Blue);
     color: #fff;
+     
     &:hover{
         background-color: '#578dff';
+    }
+    @media screen and (max-width:930px) {
+        min-width: 0;
     }
 `
 
@@ -105,6 +120,24 @@ export const DivTitleListSellers = styled.div <DarkModeProps>`
     justify-content: space-between; 
     font-size: 0.85rem;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
+    @media screen and (max-width:930px) {
+        font-size: 0.7rem;
+    }
+`
+export const labelEmail = styled.label`
+    width: 20%; 
+    display: flex;
+    @media screen and (max-width:930px){
+        display: none;
+    }
+`
+export const labelCelular = styled.label`
+    width: 15%;
+    display: flex;
+    @media screen and (max-width:930px) {
+        display: none;
+    }
+    
 `
 export const DivFooterListSellers = styled.div <DarkModeProps>`
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};

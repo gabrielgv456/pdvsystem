@@ -101,7 +101,7 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
         <>
             <S.Container isDarkMode={Theme.DarkMode}>
                 <S.Header>
-                    <S.LabelSearchClient>
+                    <S.LabelSearchClient> 
                         <BsSearch style={{ margin: '15px', color: "#9eaab5" }} size="18" />
                         <input
                             value={inputSearchClient}
@@ -118,22 +118,22 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
                             }}
                             placeholder="Localizar Consumidor..."></input>
                     </S.LabelSearchClient>
-                    <label style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:'5%'}}>
-                    <ToggleButtonGroup
+                    <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '5%' }}>
+                        <ToggleButtonGroup
 
-                        color="info"
-                        value={props.PeopleMode}
-                        exclusive
-                        onChange={handleChangePeopleType}
-                       
+                            color="info"
+                            value={props.PeopleMode}
+                            exclusive
+                            onChange={handleChangePeopleType}
 
-                    >
-                        <ToggleButton value="Clients" style={{padding:'0.8rem',height:'min-content',fontSize:'1rem'}}>Clientes</ToggleButton>
-                        <ToggleButton value="Sellers" style={{padding:'0.8rem',height:'min-content',fontSize:'1rem'}}>Vendedores</ToggleButton>
 
-                    </ToggleButtonGroup>
+                        >
+                            <ToggleButton value="Clients" style={{ padding: '0.8rem', height: 'min-content', fontSize: '1rem' }}>Clientes</ToggleButton>
+                            <ToggleButton value="Sellers" style={{ padding: '0.8rem', height: 'min-content', fontSize: '1rem' }}>Vendedores</ToggleButton>
 
-                    
+                        </ToggleButtonGroup>
+
+
                         <S.ButtonAddClient onClick={handleOpenModalConfirmSell} isDarkMode={Theme.DarkMode}>
                             <MdAdd size="22" />
                             <b>NOVO CLIENTE</b>
@@ -146,12 +146,12 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
                 <S.DivListClients>
 
                     <S.DivTitleListClients isDarkMode={Theme.DarkMode}>
-                        <label style={{ width: '32px', display: 'flex', marginLeft: 10 }}>&nbsp;</label>
-                        <label style={{ width: '25%', display: 'flex' }}><b>Nome / Razão Social </b></label>
-                        <label style={{ width: '15%', display: 'flex' }}><b>CPF/CNPJ</b></label>
-                        <label style={{ width: '15%', display: 'flex' }}><b>Celular</b></label>
-                        <label style={{ width: '20%', display: 'flex' }}><b>Email</b></label>
-                        <label style={{ width: '28px', display: 'flex', marginRight: 10 }}>&nbsp;</label>
+                        <S.labelEdit >&nbsp;</S.labelEdit>
+                        <S.labelNomeRazao><b>Nome / Razão Social </b></S.labelNomeRazao>
+                        <S.labelCpfCnpj ><b>CPF/CNPJ</b></S.labelCpfCnpj>
+                        <S.labelCelular><b>Celular</b></S.labelCelular>
+                        <S.labelEmail ><b>Email</b></S.labelEmail>
+                        <S.labelExcluir>&nbsp;</S.labelExcluir>
                     </S.DivTitleListClients>
 
 

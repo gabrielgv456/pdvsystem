@@ -21,13 +21,15 @@ export const Div = styled.div<DarkModeProps> `
 `
 
 export const DivSwitch = styled.div<DarkModeProps> `
-    background:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
+    //background:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
     display:flex;
     width:100%;
     justify-content: center;
     align-items:center;
-    position:absolute;
-    bottom:0px;
+    position: absolute;
+    bottom: 0;
+   
+    
 `
 export const ButtonRetract = styled.button <DarkModeProps>`
 
@@ -40,6 +42,9 @@ export const ButtonRetract = styled.button <DarkModeProps>`
     &:hover{
         background-color:${props => (props.isDarkMode ? '#3a3a3e' :'#edf4fb')} ;
         box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 30px 0px;
+    }
+     @media screen and (max-width:600px) {
+        display: none;
     }
 
 `

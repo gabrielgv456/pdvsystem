@@ -67,7 +67,7 @@ export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => 
         setisModalAddSellerOpen(true)
 
     }
-   
+
 
     function handleContinueAddingSellers() {
         setisModalAddSellerOpen(true)
@@ -114,17 +114,17 @@ export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => 
                             }}
                             placeholder="Localizar Colaborador..."></input>
                     </S.LabelSearchSeller>
-                    <ToggleButtonGroup
-                        color="primary"
-                        value={props.PeopleMode}
-                        exclusive
-                        onChange={handleChangePeopleType}
-                    >
-                        <ToggleButton value="Clients">Clientes</ToggleButton>
-                        <ToggleButton value="Sellers">Vendedores</ToggleButton>
+                    <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '5%' }}>
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={props.PeopleMode}
+                            exclusive
+                            onChange={handleChangePeopleType}
+                        >
+                            <ToggleButton value="Clients">Clientes</ToggleButton>
+                            <ToggleButton value="Sellers">Vendedores</ToggleButton>
 
-                    </ToggleButtonGroup>
-                    <label>
+                        </ToggleButtonGroup>
                         <S.ButtonAddSeller onClick={handleOpenModalConfirmSell} isDarkMode={Theme.DarkMode}>
                             <MdAdd size="22" />
                             <b>NOVO VENDEDOR</b>
@@ -137,8 +137,8 @@ export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => 
                         <label style={{ width: '32px', display: 'flex', marginLeft: 10 }}>&nbsp;</label>
                         <label style={{ width: '25%', display: 'flex' }}><b>Nome</b></label>
                         <label style={{ width: '15%', display: 'flex' }}><b>CPF</b></label>
-                        <label style={{ width: '15%', display: 'flex' }}><b>Celular</b></label>
-                        <label style={{ width: '20%', display: 'flex' }}><b>Email</b></label>
+                        <S.labelCelular><b>Celular</b></S.labelCelular>
+                        <S.labelEmail ><b>Email</b></S.labelEmail>
                         <label style={{ width: '28px', display: 'flex', marginRight: 10 }}>&nbsp;</label>
                     </S.DivTitleListSellers>
 
@@ -212,7 +212,7 @@ export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => 
                 handleContinueAddingSellers={handleContinueAddingSellers}
             />
 
-            
+
 
         </>
     )

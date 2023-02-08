@@ -13,9 +13,9 @@ export const Container = styled.div<DarkModeProps> `
     width: 100%;
     min-height: 82vh;
     padding: 25px;
-   
     flex-wrap: wrap;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+   
    
 `
 export const Header = styled.div`
@@ -47,7 +47,7 @@ export const ButtonAddClient = styled.button <DarkModeProps> `
     justify-content: center;
     gap:0.2rem;
     width: 30%;
-    
+    //min-width: max-content;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8rem;
     border: 1px solid var(--Blue);
@@ -58,6 +58,9 @@ export const ButtonAddClient = styled.button <DarkModeProps> `
      
     &:hover{
         background-color: '#578dff';
+    }
+    @media screen and (max-width:930px) {
+        min-width: 0;
     }
 
 `
@@ -114,7 +117,46 @@ export const DivAlterPage = styled.div `
     align-items: flex-start;
 `
 
+export const labelNomeRazao = styled.label `
+     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 25%;
+`
+export const labelCpfCnpj = styled.label `
+    width: 15%;
+    display: flex;
+`
+export const labelCelular = styled.label `
+    width: 15%;
+    display: flex;
+    @media screen and (max-width:930px) {
+        display: none;
+    }
+    
 
+`
+export const labelEmail = styled.label `
+    width: 20%;
+    display: flex;
+    @media screen and (max-width:930px) {
+        display: none;
+    }
+`
+export const labelEdit = styled.label `
+    width: 2.5rem; 
+    display: flex; 
+    @media screen and (max-width:930px) {
+        width: 1.4rem; 
+    }
+`
+export const labelExcluir = styled.label `
+    width: 2.5rem;
+    display: flex;
+    @media screen and (max-width:930px) {
+        width: 1.5rem; 
+    }
+`
 
 
 

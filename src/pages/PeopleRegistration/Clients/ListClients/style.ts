@@ -18,14 +18,15 @@ export const Container = styled.div <ActiveProps>`
     width:100%;
     display: flex;
     align-items: center;
-    justify-content: space-between; 
+    justify-content: space-between;
+    
     font-size: 0.85rem;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 0px 0px;
     &:hover{
         background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f7f7f8')};
     }
     @media screen and (max-width:930px) {
-        font-size: 0.5rem;
+        font-size: 0.7rem;
         padding:5px;
     }
    
@@ -37,20 +38,22 @@ export const LabelNumber = styled.label `
     white-space: nowrap;
     color:#5fcd0e;
     width: 15%;
-   
     color:#485059;
+    @media screen and (max-width:930px) {
+        display: none;
+    }
     
 `
 
 export const LabelMail= styled.label `
+    display: flex;
     color:#5fcd0e;
-    max-width: 10%;
+    width: 20%;
     /* min-width:20%; */
     color:#485059;
     @media screen and (max-width:930px) {
        display: none;
     }
-    
 `
 export const bMail= styled.b `
     overflow: hidden;
@@ -64,8 +67,6 @@ export const LabelCpf = styled.label <DarkModeProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    border-radius: 10px;
-    padding: 5px;
     width:15%;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
 `
@@ -74,7 +75,6 @@ export const LabelNameClient = styled.label <DarkModeProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 10%;
     width: 25%;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
     
@@ -86,6 +86,7 @@ export const ButtonEdit= styled.button `
     background: none;
     border:none;
     color:gold;
+    width:min-content;
 `
 export const ButtonInfo = styled.button `
     text-decoration: none;
