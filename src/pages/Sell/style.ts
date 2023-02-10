@@ -36,6 +36,33 @@ export const Header = styled.div<DarkModeProps>`
         width:90%
     }
 `
+
+export const labelSeller = styled.label `
+display: flex; 
+width: 48%; 
+align-items: flex-end; 
+justify-content: space-around;
+@media screen and (max-width:930px) {
+        width:100%;
+    }
+`
+export const labelClient = styled.label `
+display: flex; 
+width: 48%; 
+align-items: flex-end; 
+justify-content: space-around;
+@media screen and (max-width:930px) {
+        width:100%;
+    }
+`
+export const DivInputs = styled.div `
+width: 100%; 
+display: flex;
+justify-content: space-between;
+@media screen and (max-width:930px) {
+        display: block;
+    }
+`
 // export const Header = styled.div<DarkModeProps>`
 //     margin: 0 auto;
    
@@ -159,6 +186,7 @@ export const ButtonPrint = styled.button`
     border-radius: 13px;
     font-size:18px;
     width:9rem;
+     min-width: max-content;
     height:40px;
     //border:1px solid silver;
     border:none;
@@ -190,7 +218,9 @@ export const DivModalIconsPayment = styled.div`
         width: 30px;
         height:30px;
     }
-    
+    @media screen and (max-width:930px) {
+        flex-wrap: wrap;
+    }
 `
 export const LabelIconsModal = styled.div <DarkModeProps>`
     cursor:pointer;
@@ -203,6 +233,9 @@ export const LabelIconsModal = styled.div <DarkModeProps>`
 `
 export const PHeaderModal = styled.p`
     font-size: 1.1rem;
+    @media screen and (max-width:930px) {
+        font-size: 1rem;
+    }
 `
 
 export const InputModal = styled.input`

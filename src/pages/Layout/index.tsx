@@ -63,26 +63,32 @@ export default function LayoutDefault(props: Props) {
   const handleHome = () => {
     navigate('/home');
     setActualPage('Página Inicial')
+    setMobileOpen(!mobileOpen)
   }
   const handleSell = () => {
     navigate('/sell');
-    setActualPage('Realizar Vendas')
+    setActualPage('Realizar Vendas');
+    setMobileOpen(!mobileOpen)
   }
   const handleSalesControl = () => {
     navigate('/salescontrol');
     setActualPage('Controle de Vendas')
+    setMobileOpen(!mobileOpen)
   }
   const handleTansactions = () => {
     navigate('/transactions');
     setActualPage('Movimentações')
+    setMobileOpen(!mobileOpen)
   }
   const handleInventoryManagement = () => {
     navigate('/inventorymanagement');
     setActualPage('Gestão de Estoque')
+    setMobileOpen(!mobileOpen)
   }
   const handlePeopleRegistration = () => {
     navigate('/peopleregistration');
     setActualPage('Pessoas')
+    setMobileOpen(!mobileOpen)
   }
   const handleVoid = () => {
   }

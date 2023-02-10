@@ -385,10 +385,10 @@ export const Sell = () => {
                     {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" /> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
                     {isSellEnded ? '' :
                         <div>
-                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                            <S.DivInputs>
 
 
-                                <label style={{ display: 'flex', width: "48%", alignItems: 'flex-end', justifyContent: 'space-around' }}>
+                                <S.labelClient>
                                     <BsFillPersonFill size="22" color="#5d5c5c" />
                                     <Autocomplete
                                         style={{ width: '84%' }}
@@ -412,11 +412,11 @@ export const Sell = () => {
                                         renderInput={(params) => (
                                             <TextField {...params} label="Cliente" variant="standard" />
                                         )}
-                                    /> </label>
+                                    /> </S.labelClient>
 
 
 
-                                <label style={{ display: 'flex', width: "48%", alignItems: 'flex-end', justifyContent: 'space-around' }}>
+                                <S.labelSeller>
                                     <BsPersonBadge size="22" color="#5d5c5c" />
                                     <Autocomplete
                                         style={{ width: '84%' }}
@@ -435,8 +435,8 @@ export const Sell = () => {
                                             <TextField {...params} label="Vendedor" variant="standard" />
                                         )}
                                     />
-                                </label>
-                            </div>
+                                </S.labelSeller>
+                            </S.DivInputs>
 
                             <S.PHeaderModal>Qual será a forma de pagamento?</S.PHeaderModal>
                         </div>

@@ -13,7 +13,7 @@ interface ActiveProps {
 export const Container = styled.div <ActiveProps>`
     text-decoration:${props => (props.isProductActive? '' : 'line-through' )} ;
     opacity: ${props => (props.isProductActive? '' : '0.6' )};
-    min-width: min-content;
+    //min-width: min-content;
     padding:20px;
     width:100%;
     display: flex;
@@ -24,7 +24,10 @@ export const Container = styled.div <ActiveProps>`
     &:hover{
         background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f7f7f8')};
     }
-   
+   @media screen and (max-width:930px) {
+        padding: 5px;
+    }
+    box-sizing: border-box;
 `
 
 export const LabelDate = styled.label `
@@ -36,23 +39,32 @@ export const LabelDate = styled.label `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    @media screen and (max-width:930px) {
+        display: none;
+    }
 `
 export const LabelStatus = styled.label <DarkModeProps>`
     border-radius: 10px;
     padding: 5px;
-    //display: flex;
+    display: flex;
     justify-content: center;
     width:15%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    @media screen and (max-width:930px) {
+        width:20%
+    }
 `
 export const LabelValue = styled.label <DarkModeProps> `
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    display: flex;
+    //display: flex;
     justify-content: center;
     width:10%;
-    min-width: max-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    //min-width: max-content;
 `
 export const LabelNameProduct = styled.label <DarkModeProps>`
     overflow: hidden;
@@ -89,8 +101,9 @@ export const ButtonInfo = styled.button `
     border:none;
     display: flex;
     justify-content: center;
-    min-width: min-content;
-    width:min-content;
+    //min-width: min-content;
+    
+    //max-width: 5%;
 `
 
 export const ButtonTrash = styled.button `
@@ -98,10 +111,11 @@ export const ButtonTrash = styled.button `
     color:red;
     background: none;
     border:none;
-    display: flex;
+    //display: flex;
     justify-content: center;
     min-width: min-content;
     width:min-content;
+     max-width: 2%;
 `
 
 export const DivModalProduct = styled.div `

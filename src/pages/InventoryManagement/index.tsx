@@ -145,9 +145,6 @@ export const InventoryManagement = () => {
     return (
         <>
         <S.Container isDarkMode={Theme.DarkMode}>
-        
-
-        
 
             <S.Header>
                 <S.LabelSearchProduct>  
@@ -179,13 +176,15 @@ export const InventoryManagement = () => {
             <S.DivListProducts>
         
                 <S.DivTitleListProducts isDarkMode={Theme.DarkMode}>
-                    <label style={{width:'20px', display:'flex'}}></label>
-                    <label style={{width:'30%', display:'flex'}}><b>Produto</b></label>
-                    <label style={{width:'15%', display:'flex'}}><b>Status</b></label>
-                    <label style={{width:'15%', display:'flex',justifyContent:'center'}}><b>Saldo</b></label>
-                    <label style={{width:'10%', display:'flex'}}><b>Valor</b></label>
-                    <label style={{width:'20%', display:'flex'}}><b>Criado em</b></label>
-                    <label style={{width:'32px', display:'flex'}}></label>
+                    <S.labelEdit></S.labelEdit>
+                    <S.labelProduct><b>Produto</b></S.labelProduct>
+                    <S.labelStatus><b>Status</b></S.labelStatus>
+                    <S.labelQuantity><b>Saldo</b></S.labelQuantity>
+                    <S.labelValue><b>Valor</b></S.labelValue>
+                    <S.labelCriadoEm ><b>Criado em</b></S.labelCriadoEm>
+                    <S.labelTrash></S.labelTrash>
+                    <S.labelTrash></S.labelTrash>
+                    
                 </S.DivTitleListProducts>
         
             
@@ -251,7 +250,7 @@ export const InventoryManagement = () => {
             </S.DivListProducts>
 
             {/******     Modals Start  *********/}
-
+            
             <ModalTransactionsProducts
                 dataTransactionsProductsReturnApi= {dataTransactionsProductsReturnApi}
                 isModalTransactionsProductsOpen = { isModalTransactionsProductsOpen }
@@ -351,13 +350,7 @@ export const InventoryManagement = () => {
                         </S.DivModalSucess>  
                     <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalSucess}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
                 </Box>
-            </Modal>
-
-
-
-            
-
-
+            </Modal>     
         </S.Container> 
         </>
     )

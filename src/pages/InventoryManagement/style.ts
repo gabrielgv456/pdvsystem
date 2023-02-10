@@ -14,6 +14,10 @@ export const Container = styled.div<DarkModeProps> `
     min-height: 82vh;
     padding: 25px;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+    box-sizing: border-box;
+    @media screen and (max-width:930px) {
+        padding: 10px;
+    }
 
 `
 export const Header = styled.div`
@@ -29,6 +33,9 @@ export const LabelSearchProduct = styled.label `
     width:40%;
     height:3.2rem;
     align-items:center;
+    @media screen and (max-width:930px) {
+        width: 50%;
+    }
 `
 export const ButtonAddProduct = styled.button <DarkModeProps> `
     flex-wrap: wrap;
@@ -93,7 +100,7 @@ export const DivListProducts = styled.div `
     }
 `
 export const DivTitleListProducts = styled.div <DarkModeProps>`
-    min-width: min-content;
+    //min-width: min-content;
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};
     //border: ${props => (props.isDarkMode ? '1px solid gray' : '1px solid silver')}; 
     border-radius: 10px;
@@ -105,6 +112,10 @@ export const DivTitleListProducts = styled.div <DarkModeProps>`
     justify-content: space-between; 
     font-size: 0.85rem;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
+    @media screen and (max-width:930px) {
+        padding: 5px;
+    }
+    box-sizing: border-box;
 `
 export const DivFooterListProducts = styled.div <DarkModeProps>`
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};
@@ -122,6 +133,48 @@ export const DivAlterPage = styled.div `
     justify-content: space-between;
     align-items: flex-start;
 `
+export const labelCriadoEm = styled.label `
+    width:20%; 
+    display:flex;
+    @media screen and (max-width:930px) {
+        display: none ;
+    }
+`
+export const labelProduct = styled.label `
+width:30%;
+//display:flex;
+@media screen and (max-width:930px){
+        width: 15%;
+    }
+`
+export const labelStatus = styled.label `
+width:15%;
+display:flex;
+@media screen and (max-width:930px) {
+        width:20%
+    }
+`
+export const labelQuantity = styled.label `
+width:15%; 
+display:flex;
+justify-content:center;
+@media screen and (max-width:930px){
+        width: 5%;
+    }
+`
+export const labelValue = styled.label `
+width:10%; 
+display:flex;
+`
+export const labelEdit = styled.label `
+width:25px; 
+//display:flex;
+`
+export const labelTrash = styled.label `
+width:20px;
+//display:flex
+`
+
 export const DivModalSucess = styled.div ` 
     width: 100%;
     display: flex;

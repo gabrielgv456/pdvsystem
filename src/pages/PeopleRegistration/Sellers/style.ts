@@ -14,9 +14,6 @@ export const Container = styled.div<DarkModeProps> `
     min-height: 82vh;
     padding: 25px;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
-    @media screen and (max-width:930px){
-        width: 95%;
-    }
 
 `
 export const Header = styled.div`
@@ -47,7 +44,7 @@ export const ButtonAddSeller = styled.button <DarkModeProps> `
     justify-content: center;
     gap:0.2rem;
     width: 30%;
-    min-width: max-content;
+    //min-width: max-content;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8rem;
     border: 1px solid var(--Blue);
@@ -55,13 +52,12 @@ export const ButtonAddSeller = styled.button <DarkModeProps> `
     padding: 0.8rem;
     background-color: var(--Blue);
     color: #fff;
-     
     &:hover{
         background-color: '#578dff';
     }
-    @media screen and (max-width:930px) {
+    /* @media screen and (max-width:930px) {
         min-width: 0;
-    }
+    } */
 `
 
 export const ButtonAddSellerModal = styled.button <DarkModeProps> `

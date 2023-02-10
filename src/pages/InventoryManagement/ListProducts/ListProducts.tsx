@@ -162,8 +162,8 @@ export const ListProducts = (props:ListProductsProps) => {
             <S.ButtonTrash onClick={()=>setisModalMasterKeyOpen(true)}  title="Excluir Produto" ><BsTrash size="16" /></S.ButtonTrash>
            
         </S.Container>
-
-
+            
+       
         
 
 

@@ -6,6 +6,10 @@ export const Label = styled.label `
     display: flex;
     align-items: center;
     justify-content: center;
+    @media screen and (max-width:930px) {
+        font-size: 0.7rem;
+        width:40%
+    }
 `
 export const InputModal = styled.input `
     
@@ -27,7 +31,7 @@ export const DivPaymentMethods = styled.div `
     align-items: center;
 	margin-top:3px;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
-
+    
 
 `
 export const ButtonDelete = styled.button `
