@@ -53,12 +53,12 @@ export function Listagem(props: Props) {
          <S.DivTitle>
             <S.DivTipo>
                {dataSell}
-               <label>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.item.sellValue)}</label>
+               <label>Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.item.sellValue)}</label>
             </S.DivTipo>
          </S.DivTitle>
          <S.DivContent>
-            <S.span>
-               <S.bItem>Qtd</S.bItem>
+            <S.span isDarkMode={Theme.DarkMode}>
+               <S.bItem isDarkMode={Theme.DarkMode}>Qtd</S.bItem>
                <S.DivListQuantity>
                   {props.listSellsProducts.map((products) => (
                      products.sellId === props.item.id &&
@@ -66,8 +66,8 @@ export function Listagem(props: Props) {
                   ))}
                </S.DivListQuantity>
             </S.span>
-            <S.span>
-               <S.bItem>Produtos</S.bItem>
+            <S.span isDarkMode={Theme.DarkMode}>
+               <S.bItem isDarkMode={Theme.DarkMode}>Produtos</S.bItem>
                <S.DivListItens isDarkMode={Theme.DarkMode}>
                   {props.listSellsProducts.map((products) => (
                      products.sellId === props.item.id &&
@@ -75,20 +75,20 @@ export function Listagem(props: Props) {
                   ))}
                </S.DivListItens>
             </S.span>
-            <S.span>
-               <S.bItem>Valor</S.bItem> <S.DivListItens isDarkMode={Theme.DarkMode}>
+            <S.span isDarkMode={Theme.DarkMode}>
+               <S.bItem isDarkMode={Theme.DarkMode}>Valor</S.bItem> <S.DivListItens isDarkMode={Theme.DarkMode}>
                   {props.listSellsProducts.map((products) => (
                      products.sellId === props.item.id &&
                      <S.LabelItem isDarkMode={Theme.DarkMode}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalValue)} </S.LabelItem>
                   ))}
                </S.DivListItens>
             </S.span>
-            <S.span>
-               <S.bItem>Cliente</S.bItem>
+            <S.span isDarkMode={Theme.DarkMode}>
+               <S.bItem isDarkMode={Theme.DarkMode}>Cliente</S.bItem>
                <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.clientName ?? "Não informado"}</S.LabelItem>
             </S.span>
-            <S.span>
-               <S.bItem>Vendedor</S.bItem>
+            <S.span isDarkMode={Theme.DarkMode}>
+               <S.bItem isDarkMode={Theme.DarkMode}>Vendedor</S.bItem>
                <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.sellerName ?? "Não informado"}</S.LabelItem>
             </S.span>
             {/* <S.ButtonEdit title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>

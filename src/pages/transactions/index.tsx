@@ -99,7 +99,7 @@ export const Transactions = () => {
     const searchTransactions = async () => {
         if (InitialDate > FinalDate) {
             alert('ERRO: Data inicial maior do que a final!')
-        }
+        } 
         else {
             const data = await findTransactions(datafindTransactions)
             setTransactionsReturnApi(data)

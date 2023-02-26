@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API
+    baseURL: process.env.REACT_APP_API,
+    headers: {
+        Authorization: 'Basic ' + process.env.REACT_APP_TOKEN_REST
+      }
 });
 
 export const useApi = () => ({

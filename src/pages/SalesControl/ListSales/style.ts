@@ -5,13 +5,13 @@ interface DarkModeProps {
 }
 export const Container = styled.div <DarkModeProps>`
 
-    background-color: #fff;
     width: 100%;
     border-radius: 5px;
     margin-bottom: 10px;
     font-family: sans-serif;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
-`
+    background-color: ${props=>props.isDarkMode ? 'var(--DarkMode)' : '#fff'};
+`   
 // export const Container = styled.div <DarkModeProps>`
 //     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
 //     box-shadow: ${props => (props.isDarkMode ? '' : '0px 0px 5px #CCC')}; 
@@ -30,21 +30,22 @@ export const Container = styled.div <DarkModeProps>`
 //     }
 // `
 
-export const span = styled.span `
-    border-right: 0.1px solid #e8e8e8;
+export const span = styled.span <DarkModeProps>`
+    border-right: ${props=>props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : '0.1px solid #e8e8e8' } ;
+    border: ${props=>props.isDarkMode ?  '0.1px solid var(--backgroundDarkMode)' : '' };
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-grow: 1;
 `
 
-export const bItem = styled.b `
-    background-color:#efefef;
+export const bItem = styled.b <DarkModeProps> `
+    background-color: ${props=>props.isDarkMode ? 'var(--backgroundDarkMode)' : '#efefef' } ;
     border-radius: 1px;
     width:100%;
     display: flex;
     justify-content: center;
-    padding: 8px;
+    padding: 5px;
     font-size: 0.8rem;
     @media screen and (max-width:930px) {
         padding: 4px;
@@ -55,7 +56,7 @@ export const DivTitle = styled.div `
     border-bottom: 1px solid silver;
     box-sizing: border-box;
     padding: 10px 10px 5px 10px;
-    background-color: var(--AppBar);
+    background-color: var(--Blue);
     color:#fff;
     border-radius: 5px 5px 0px 0px;
 `
