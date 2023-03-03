@@ -160,7 +160,7 @@ export default function LayoutDefault(props: Props) {
       <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : '', width: '60%', margin: '0 auto' }} />
       <div style={{ display: 'flex', width: "100%", justifyContent: 'center', flexDirection: 'column', alignItems: 'center', margin:'2.5rem 0 1rem 0' }}>
        
-        <S.BNameLogo isDarkMode={Theme.DarkMode}>Smart Store®</S.BNameLogo>
+        <S.BNameLogo isDarkMode={Theme.DarkMode}>Safyra®</S.BNameLogo>
         <img src={logo} style={{ width: 150, height: 94 }} />
 
         </div>

@@ -7,9 +7,10 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const [user, setUser] = useState<User | null>(null);
     const [idUser, setidUser] = useState(0)
     const [isUserValid, setUserValid] = useState(false)
-    const [masterkey,setmasterkey] = useState("")
+    const [masterkey, setmasterkey] = useState("")
+    const [codEmailValidate,setCodEmailValidate] = useState("")
     const api = useApi();
-    const [isLoading,setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const validateToken = async () => {
@@ -27,8 +28,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                     setUserValid(true);
                 }
                 if (!data.valid) {
-                    
-                }   
+
+                }
             }
             else {
                 setUserValid(false)
@@ -39,32 +40,36 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }, []);
 
     const signin = async (email: string, password: string) => {
-        const data = await api.signin(email, password);
-        if (data.user && data.token ) {
-            console.log(data.user.id)
-            setUser(data.user);
-            setToken(data.token);
-            setidUser(data.user.id);
-            setmasterkey(data.user.masterkey)
-            setUserValid(true)
-            return true;
+        const data = await api.signin(email, password);  
+        if (data.user && data.token) {
+            setCodEmailValidate(data.user.codEmailValidate)
+            setidUser(data.user.id)
+            if (!data.user.isEmailValid) {
+                return 'invalidMail'
+            } else {
+                setUser(data.user);
+                setToken(data.token);       
+                setmasterkey(data.user.masterkey)
+                setUserValid(true)
+                return 'true';
+            }
         }
-        return false;
+        return 'false';
     }
 
     const signout = async () => {
         setUser(null);
         setUserValid(false)
         setToken('');
-        await api.logout({userId: idUser});
+        await api.logout({ userId: idUser });
     }
 
     const setToken = async (token: string) => {
-       localStorage.setItem('authToken', token);
+        localStorage.setItem('authToken', token);
     }
 
     return (
-        <AuthContext.Provider value={{ user, idUser, signin, signout, isUserValid, masterkey,isLoading }}>
+        <AuthContext.Provider value={{ user, idUser, signin, signout, isUserValid, masterkey, isLoading, codEmailValidate }}>
             {children}
         </AuthContext.Provider>
     );

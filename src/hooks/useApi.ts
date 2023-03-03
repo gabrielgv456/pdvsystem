@@ -11,12 +11,15 @@ export const useApi = () => ({
     
     validateToken: async (token: string) => {
         const response = await api.post('/validate', { token });
-        return response.data;
-        
+        return response.data;       
     },
     signin: async (email: string, password: string) => {
         const response = await api.post('/signin', { email, password });
         return response.data;
+    },
+    validateMail:async(userId:number) => {
+        const response = await api.post('/validatemail',{userId})
+        return response.data
     },
     logout: async (dataLogOutUser: object) => {
         const response = await api.post('/logout', {dataLogOutUser});

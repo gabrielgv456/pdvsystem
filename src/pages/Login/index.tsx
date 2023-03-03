@@ -4,7 +4,7 @@ import { AuthContext } from "../../contexts/Auth/AuthContext";
 import { HiOutlineMail } from 'react-icons/hi'
 import { RiLock2Line } from 'react-icons/ri'
 import * as S from './style'
-
+import { ModalValidateEmail, SuccessModalValidateEmail } from "./Modals/validateEmail";
 
 
 export const Login = () => {
@@ -15,6 +15,8 @@ export const Login = () => {
     const [password, setPassword] = useState('');
     const [isEmailWrong, setEmailWrong] = useState(false)
     const [isPasswordWrong, setPasswordWrong] = useState(false)
+    const [isModalValidateEmailOpen, setIsModalValidateEmailOpen] = useState(false)
+    const [isSuccessModalValidateEmailOpen, setisSuccessModalValidateEmailOpen] = useState(false)
 
     const handleVerifyInputEmail = () => {
         email.includes('@') ? setEmailWrong(false) : setEmailWrong(true)
@@ -79,10 +81,12 @@ export const Login = () => {
 
         if (email !== '' && email.includes('@') && email.includes('.') && password !== '' && password.length >= 8) {
             try {
-                const isLogged = await auth.signin(email, password);
-                if (isLogged) {
+                const isLogged = await auth.signin(email, password, setIsModalValidateEmailOpen);
+                if (isLogged === 'true') {
                     navigate('/home');
-                } else {
+                } else if (isLogged === 'invalidMail') {
+                    setIsModalValidateEmailOpen(true)
+                } else if (isLogged === 'false') {
                     alert("Dados incorretos, verifique seu e-mail ou senha !");
                 }
             }
@@ -96,7 +100,7 @@ export const Login = () => {
         <div>
             <S.Container>
                 <S.BoxLogin>
-                    <S.H2>Smart Store</S.H2>
+                    <S.H2>Safyra®</S.H2>
                     <S.Div>
                         <HiOutlineMail size={20} className="icon_login" />
                         <S.InputMail
@@ -129,6 +133,17 @@ export const Login = () => {
                 <S.BoxBackgroundLogin>
                 </S.BoxBackgroundLogin>
             </S.Container>
+
+            <ModalValidateEmail
+                isModalValidateEmailOpen={isModalValidateEmailOpen}
+                setIsModalValidateEmailOpen={setIsModalValidateEmailOpen}
+                setisSuccessModalValidateEmailOpen={setisSuccessModalValidateEmailOpen}
+                email={email}
+            />
+            <SuccessModalValidateEmail
+                isSuccessModalValidateEmailOpen={isSuccessModalValidateEmailOpen}
+                setisSuccessModalValidateEmailOpen={setisSuccessModalValidateEmailOpen}
+            />
         </div>
     );
 }
