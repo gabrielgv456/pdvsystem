@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
-import { MdLibraryAdd, MdPending } from "react-icons/md"
+import { MdPending} from "react-icons/md"
 import { HiBadgeCheck } from "react-icons/hi"
 import { AiFillPrinter, AiOutlineClose } from "react-icons/ai"
 import { FaCheckCircle, FaMoneyBillWave } from "react-icons/fa"
@@ -70,8 +70,8 @@ export const Sell = () => {
     const [isSellEnded, setisSellEnded] = useState(false)
     const [inputSeller, setInputSeller] = useState<SellersandClientsType | null>(null)
     const [inputClient, setInputClient] = useState<SellersandClientsType | null>(null)
-    const [isClientNecessary, setisClientNecessary] = useState(false)
-    const [isSellerNecessary, setisSellerNecessary] = useState(false)
+    // const [isClientNecessary, setisClientNecessary] = useState(false)
+    // const [isSellerNecessary, setisSellerNecessary] = useState(false)
 
     useEffect(() => {
         const Productsresult = async () => {

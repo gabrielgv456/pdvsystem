@@ -1,10 +1,6 @@
-import { Link } from 'react-router-dom'
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 import sellers from "../../images/sellers.png"
-import { LoadingSpinner } from '../../spinners';
 import { BarChart } from './Graphs/Bar';
 import { DoughnutChart } from './Graphs/Doughnut';
 import { AreaChart } from './Graphs/Area';
@@ -15,7 +11,6 @@ import { HorizontalChart } from './Graphs/Horizontal';
 
 
 export const Home = () => {
-    const auth = useContext(AuthContext);
     const Theme = useDarkMode();
     
     return (
@@ -56,7 +51,7 @@ export const Home = () => {
                 <S.Box isDarkMode={Theme.DarkMode} widthBox='40%'>
                     <S.HeaderBox style={{flexDirection:'row',backgroundColor: 'var(--Green)',borderRadius: '5px 5px 0px 0px',color:'#fff', fontSize:'0.95rem',justifyContent:"space-between", height: '3rem'}}>
                         Melhores Vendedores
-                        <img src={sellers} style={{width:'8rem',height:'8rem', marginTop: '-65px' }}/>
+                        <img src={sellers} style={{width:'130px',height:'130px', marginTop: '-65px' , zIndex:2}}/>
                     </S.HeaderBox>
                     <div style={{ width: '100%', padding: 10 }}>
                         <BestSellers/>

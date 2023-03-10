@@ -1,5 +1,3 @@
-
-import {Link} from 'react-router-dom'
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
@@ -15,7 +13,6 @@ import { AiOutlineClose,  } from 'react-icons/ai';
 import Switch from '@mui/material/Switch';
 import { CurrencyMask } from '../../masks/CurrencyMask';
 import { ModalTransactionsProducts } from './Modals';
-import { useLayout } from '../../contexts/Layout/layoutContext';
 
 
 interface ProductsReturnApiProps{

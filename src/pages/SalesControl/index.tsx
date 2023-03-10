@@ -1,14 +1,12 @@
-import {Link} from 'react-router-dom'
+
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
-import {SiMicrosoftexcel} from "react-icons/si"
 import {RiMoneyDollarCircleFill} from "react-icons/ri"
 import {BsFileEarmarkPdf, BsFillBagFill} from "react-icons/bs"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 import {FaSearch, FaShoppingCart} from "react-icons/fa"
 import {Listagem} from './ListSales/ListSales'
 import {useState, useContext,  KeyboardEvent, useEffect} from "react"
-import { scopedCssBaselineClasses } from '@mui/material';
 import { useApi } from '../../hooks/useApi';
 
 // start imports menu MUI //
@@ -264,7 +262,7 @@ export const SalesControl = () => {
             
 
         </S.SubHeader>
-     {listSells.length != 0 ? 
+     {listSells.length !== 0 ? 
        ''
       : 
       <S.DivMenuNotSells isDarkMode={Theme.DarkMode}> 

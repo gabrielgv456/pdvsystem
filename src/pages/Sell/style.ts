@@ -5,9 +5,9 @@ import { darken } from 'polished'
 interface DarkModeProps {
     isDarkMode: boolean;
 }
-interface NeedReturnCashProps {
-    needReturnCash: string;
-}
+// interface NeedReturnCashProps {
+//     needReturnCash: string;
+// }
 
 
 

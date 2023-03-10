@@ -1,5 +1,4 @@
 import React from "react";
-import { formatDiagnosticsWithColorAndContext } from "typescript";
 
 export const CurrencyMask = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     let format = e.target.value

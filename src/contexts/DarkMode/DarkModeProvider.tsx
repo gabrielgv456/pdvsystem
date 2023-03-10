@@ -1,4 +1,4 @@
-import { useState, createContext, ReactNode, useContext, useEffect } from "react"
+import {  createContext, ReactNode, useContext} from "react"
 import {usePersistedDarkMode} from "../../hooks/usePersistedState"
 
 type DarkModeProps = {

@@ -1,6 +1,3 @@
-import { BsTrash } from 'react-icons/bs'
-import { HiOutlinePencilAlt } from 'react-icons/hi'
-import { AiFillPrinter } from 'react-icons/ai'
 import * as S from "./style";
 import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider"
 import { GeneratePDFSalesControl } from "../../../hooks/useGeneratePDF";
@@ -29,7 +26,7 @@ export function Listagem(props: Props) {
    }
 
    const dataSell = new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(props.item.created_at))
-   const gethoursSell_title = new Date(props.item.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })
+   //const gethoursSell_title = new Date(props.item.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })
    const searchvaluesthisSell = props.listSellsProducts.filter(item => item.sellId === props.item.id)
    const sumtotalValuethisSell = searchvaluesthisSell.map(item => item.totalValue).reduce((prev, curr) => prev + curr, 0);
    const sumtotalQuantitythisSell = searchvaluesthisSell.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);

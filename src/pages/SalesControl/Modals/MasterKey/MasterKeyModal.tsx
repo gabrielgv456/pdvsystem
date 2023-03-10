@@ -6,7 +6,7 @@ import { AuthContext } from "../../../../contexts/Auth/AuthContext";
 import { useContext , useState} from "react";
 import TextField from '@mui/material/TextField';
 import { RiAdminLine } from "react-icons/ri";
-import { AiOutlineClose, AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineClose} from "react-icons/ai";
 
 
 interface ModalMasterKeyEditProps {

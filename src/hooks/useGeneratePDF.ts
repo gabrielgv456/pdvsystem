@@ -1,6 +1,5 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { User } from "../types/User";
 
 function ReturnData () {
     let data = new Date();

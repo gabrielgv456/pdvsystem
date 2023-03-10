@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import * as S from "./style"
 import { useDarkMode } from '../../../contexts/DarkMode/DarkModeProvider';
-import { MdAdd, MdChevronLeft, MdChevronRight, MdFileDownloadDone } from 'react-icons/md';
+import { MdAdd, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useApi } from '../../../hooks/useApi';

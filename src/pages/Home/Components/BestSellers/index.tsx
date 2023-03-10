@@ -5,6 +5,7 @@ import * as S from "./style"
 import { useApi } from "../../../../hooks/useApi"
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../../../../contexts/Auth/AuthContext"
+import { useDarkMode } from "../../../../contexts/DarkMode/DarkModeProvider"
 
 interface BestSellersType {
     id: number,
@@ -19,6 +20,7 @@ export const BestSellers = () => {
     const auth = useContext(AuthContext)
     const [sellers,setSellers] = useState<BestSellersType[]>([])
     const [consulted,setConsulted] = useState(false)
+    const Theme = useDarkMode()
 
     useEffect(()=>{
         const searchDataBestSellers = async () => {
@@ -39,10 +41,10 @@ export const BestSellers = () => {
         <>
             {
             sellers.length === 0 && consulted ? 
-                <S.DivContainer>Nenhum vendedor encontrado no Ranking</S.DivContainer>
+                <S.DivContainer isDarkMode={Theme.DarkMode}>Nenhum vendedor encontrado no Ranking</S.DivContainer>
             :
             sellers.map((seller,index) => 
-                <S.DivContainer>
+                <S.DivContainer isDarkMode={Theme.DarkMode}>
                     <div style={{width:'10%'}}>
                         {index === 0 && <img src={gold} width="35" height="45"></img>}
                         {index === 1 && <img src={silver} width="35" height="45"></img>}

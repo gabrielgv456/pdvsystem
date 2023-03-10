@@ -1,6 +1,4 @@
-import {useEffect, useState} from "react"
 import { BsTrash } from 'react-icons/bs'
-import {HiOutlinePencilAlt} from 'react-icons/hi'
 import {IoMdRemoveCircleOutline, IoMdAddCircleOutline} from 'react-icons/io'
 import * as S from "./style";
 import {useDarkMode} from "../../../contexts/DarkMode/DarkModeProvider"

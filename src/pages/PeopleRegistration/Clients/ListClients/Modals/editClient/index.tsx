@@ -2,7 +2,6 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import * as S from "./style"
 import TextField from '@mui/material/TextField';
-import Switch from '@mui/material/Switch';
 import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvider';
 import { AiOutlineClose, AiOutlineEdit } from 'react-icons/ai';
 import { useApi } from '../../../../../../hooks/useApi';
@@ -62,7 +61,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
     const [valueInputClientAdressCity, setvalueInputClientAdressCity] = useState(props.client.adressCity)
     const [valueInputClientAdressState, setvalueInputClientAdressState] = useState(props.client.adressState)
     const [valueInputClientAdressCep, setvalueInputClientAdressCep] = useState(cepformated)
-    const [valueInputClientActive, setvalueInputClientActive] = useState(props.client.active)
+    //const [valueInputClientActive, setvalueInputClientActive] = useState(props.client.active)
     const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
 
 

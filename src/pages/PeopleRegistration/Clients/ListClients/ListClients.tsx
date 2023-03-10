@@ -1,4 +1,4 @@
-import { BsCheckCircle, BsTrash } from "react-icons/bs";
+import { BsTrash } from "react-icons/bs";
 import { useDarkMode } from "../../../../contexts/DarkMode/DarkModeProvider";
 import * as S from "./style"
 import { HiOutlinePencilAlt } from "react-icons/hi";
@@ -27,12 +27,12 @@ export const ListClients = (props: ListClientsProps) => {
     const auth = useContext(AuthContext)
     const Theme = useDarkMode();
     const [isModalEditClientOpen, setisModalEditClientOpen] = useState(false);
-    const [inputMasterKey, setinputMasterKey] = useState("")
+    //const [inputMasterKey, setinputMasterKey] = useState("")
     const [isModalDeleteClientOpen, setisModalDeleteClientOpen] = useState(false)
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false)
     const cpfcnpjFormated = props.client.cpf.length === 11 ? props.client.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4") : props.client.cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "$1.$2.$3/$4-$5")
     const cellFormated =  props.client.cellNumber !== null && props.client.cellNumber.replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3")
-    const telFormated = props.client.phoneNumber !== null ? props.client.phoneNumber.replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3") : ""
+    //const telFormated = props.client.phoneNumber !== null ? props.client.phoneNumber.replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3") : ""
     const linkwhatsapp = `https://wa.me/55${props.client.cellNumber}`
     const linkmailto = `mailto:${props.client.email}`
 

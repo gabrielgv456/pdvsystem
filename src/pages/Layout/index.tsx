@@ -23,7 +23,7 @@ import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import { DrawerStyle } from '../Layout/stylemui';
 import * as S from '../Layout/style'
-import { useDarkMode, useDarkModeLocalStorage } from '../../contexts/DarkMode/DarkModeProvider';
+import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
 import logo from '../../images/logo.png'
@@ -45,7 +45,7 @@ interface Props {
 
 export default function LayoutDefault(props: Props) {
   const [drawerWidth, setdrawerWidth] = React.useState(240);
-  const [PeopleMode, setPeopleMode] = React.useState('Clients')
+  //const [PeopleMode, setPeopleMode] = React.useState('Clients')
   const classes = DrawerStyle();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);

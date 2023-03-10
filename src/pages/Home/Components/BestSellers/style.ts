@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
-export const DivContainer = styled.div `
+interface DarkModeProps {
+    isDarkMode:boolean
+}
+
+export const DivContainer = styled.div <DarkModeProps>`
     padding:10px;
     display:flex;
     justify-content:space-around;
@@ -9,7 +13,7 @@ export const DivContainer = styled.div `
     border-bottom: 1px solid #eaecf0;
 
     &:hover{
-        background-color: #fafafb;
+        background-color: ${props=>(props.isDarkMode? '' : '#fafafb')};
     }
 `
 

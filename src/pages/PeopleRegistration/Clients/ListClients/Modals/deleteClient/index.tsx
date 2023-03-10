@@ -16,7 +16,7 @@ interface indextoModalDeleteClient {
 export const ModalDeleteClient = (props: indextoModalDeleteClient) => {
 
     const Theme = useDarkMode()
-    const auth = useContext(AuthContext)
+    //const auth = useContext(AuthContext)
 
     function handleCloseModalDeleteClient() {
         props.setisModalDeleteClientOpen(false)
