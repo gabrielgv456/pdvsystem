@@ -126,9 +126,24 @@ export const DivFooterListProducts = styled.div <DarkModeProps>`
     justify-content: space-between;
 
 `
+export const DivRightFooterProducts = styled.div `
+ gap:5px;
+ font-size: 0.85rem; 
+ color: #67636d; 
+ display: flex; 
+ width: 47%; 
+ justify-content: space-between; 
+ min-width: max-content; 
+ align-items: center;
+@media screen and (max-width:930px) {
+    font-size: 0.7rem;
+}
+`
+
+
 export const DivAlterPage = styled.div `
     min-width: max-content;
-    width: 25%;
+    width: 10%;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;

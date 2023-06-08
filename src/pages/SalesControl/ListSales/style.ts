@@ -76,17 +76,21 @@ export const DivContent = styled.div `
 `
 
 
-export const ButtonPrint= styled.button `
+export const ButtonPrint= styled.button <DarkModeProps>`
     text-decoration: none;
     background: none;
     border:none;
     color:#007fff;
+     border-right: ${props=>props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : '0.1px solid #e8e8e8' } ;
+    border: ${props=>props.isDarkMode ?  '0.1px solid var(--backgroundDarkMode)' : '' };
 `
-export const ButtonEdit= styled.button `
+export const ButtonEdit= styled.button <DarkModeProps> `
     text-decoration: none;
     background: none;
     border:none;
     color:gold;
+     border-right: ${props=>props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : '0.1px solid #e8e8e8' } ;
+    border: ${props=>props.isDarkMode ?  '0.1px solid var(--backgroundDarkMode)' : '' };
 `
 
 export const ButtonTrash = styled.button `

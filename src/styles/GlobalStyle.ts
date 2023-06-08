@@ -40,7 +40,7 @@ button{
 }
 
 body {
-    overflow: auto!important;
+    overflow: auto !important;
     margin: 0;
     padding: 0;
     box-sizing: border-box;

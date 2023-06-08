@@ -20,7 +20,9 @@ function App() {
   const Theme = useDarkMode();
 
   const ThemeMui = createTheme({
-   
+
+
+
     breakpoints: {
       values: {
         xs: 300, // phone
@@ -29,7 +31,7 @@ function App() {
         lg: 1200, // desktop
         xl: 1536 // large screens
       }
-    }, 
+    },
 
     typography: {
       allVariants: {
@@ -44,8 +46,12 @@ function App() {
     //}
     //},
     components: {
-      MuiInputLabel:{
-        styleOverrides: { root:{color: Theme.DarkMode ? "#fff" : '#000'} }},
+      MuiCssBaseline: {
+        styleOverrides: { body: { overflow: 'auto !important' } }
+      },
+      MuiInputLabel: {
+        styleOverrides: { root: { color: Theme.DarkMode ? "#fff" : '#000' } }
+      },
       MuiOutlinedInput: {
         styleOverrides: {
           notchedOutline: { borderColor: Theme.DarkMode ? '#757575' : '' }, // ALTERAR BORDA DOS TEXTFIELDS

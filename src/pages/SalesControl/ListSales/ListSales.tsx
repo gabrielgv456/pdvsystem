@@ -2,7 +2,9 @@ import * as S from "./style";
 import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider"
 import { GeneratePDFSalesControl } from "../../../hooks/useGeneratePDF";
 import { Sell, SellsProductsReceiveApi } from "../index"
-
+import { HiOutlinePencilAlt } from "react-icons/hi";
+import { AiFillPrinter } from "react-icons/ai";
+import { BsTrash } from "react-icons/bs";
 
 
 interface Props {
@@ -54,6 +56,7 @@ export function Listagem(props: Props) {
             </S.DivTipo>
          </S.DivTitle>
          <S.DivContent>
+         <S.ButtonEdit isDarkMode={Theme.DarkMode} title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
             <S.span isDarkMode={Theme.DarkMode}>
                <S.bItem isDarkMode={Theme.DarkMode}>Qtd</S.bItem>
                <S.DivListQuantity>
@@ -88,16 +91,22 @@ export function Listagem(props: Props) {
                <S.bItem isDarkMode={Theme.DarkMode}>Vendedor</S.bItem>
                <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.sellerName ?? "Não informado"}</S.LabelItem>
             </S.span>
-            {/* <S.ButtonEdit title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+           
+           
+               <S.ButtonPrint isDarkMode={Theme.DarkMode} title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.ButtonPrint>
+               <S.ButtonTrash title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.ButtonTrash>
+            
+            {/* 
             <S.LabelDate title={gethoursSell_title}>{dataSell}</S.LabelDate>
             <S.DivListQuantity>
                {props.listSellsProducts.map((products) => (
                   products.sellId === props.item.id &&
                   <S.LabelQuantaty>{products.quantity}</S.LabelQuantaty>
-
-
-               ))}
-            </S.DivListQuantity>
+                  ))}
+            </S.DivListQuantity> 
+ 
+               
+            
             <S.DivListItens isDarkMode={Theme.DarkMode}>
                {props.listSellsProducts.map((products) => (
                   products.sellId === props.item.id &&
