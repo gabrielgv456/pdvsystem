@@ -19,6 +19,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
+import SettingsIcon from '@mui/icons-material/Settings';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import { DrawerStyle } from '../Layout/stylemui';
@@ -60,44 +61,19 @@ export default function LayoutDefault(props: Props) {
     //window.location.href = window.location.href;
     navigate('/');
   }
-  const handleHome = () => {
-    navigate('/home');
-    setActualPage('Página Inicial')
-    setMobileOpen(!mobileOpen)
-  }
-  const handleSell = () => {
-    navigate('/sell');
-    setActualPage('Realizar Vendas');
-    setMobileOpen(!mobileOpen)
-  }
-  const handleSalesControl = () => {
-    navigate('/salescontrol');
-    setActualPage('Controle de Vendas')
-    setMobileOpen(!mobileOpen)
-  }
-  const handleTansactions = () => {
-    navigate('/transactions');
-    setActualPage('Movimentações')
-    setMobileOpen(!mobileOpen)
-  }
-  const handleInventoryManagement = () => {
-    navigate('/inventorymanagement');
-    setActualPage('Gestão de Estoque')
-    setMobileOpen(!mobileOpen)
-  }
-  const handlePeopleRegistration = () => {
-    navigate('/peopleregistration');
-    setActualPage('Pessoas')
-    setMobileOpen(!mobileOpen)
-  }
+  
   const handleVoid = () => {
+  }
+
+  const openPage = (page:string,description:string) => {
+    navigate(page)
+    setActualPage(description)
+    setMobileOpen(!mobileOpen)
   }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-
 
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
@@ -106,15 +82,16 @@ export default function LayoutDefault(props: Props) {
       <Toolbar><Typography variant="h6" noWrap component="div">{auth.user?.name}</Typography></Toolbar>
       <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} />
       <List sx={{ marginBottom: '1rem' }}>
-        {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações', 'Pessoas', 'Gestão de Estoque'].map((text, index) => (
+        {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações', 'Pessoas', 'Gestão de Estoque','Ajustes'].map((text, index) => (
           <ListItem button key={text}
-            onClick={
-              index === 0 ? handleHome :
-                index === 1 ? handleSell :
-                  index === 2 ? handleSalesControl :
-                    index === 3 ? handleTansactions :
-                      index === 4 ? handlePeopleRegistration :
-                        index === 5 ? handleInventoryManagement : handleVoid
+            onClick={ () => 
+              index === 0 ? openPage('/home',text) :
+                index === 1 ? openPage('/sell',text) :
+                  index === 2 ? openPage('/salesControl',text) :
+                    index === 3 ? openPage('/transactions',text):
+                      index === 4 ? openPage('/peopleRegistration',text):
+                        index === 5 ? openPage('/inventoryManagement',text) :
+                          index === 6 ? openPage('/settings',text) : handleVoid 
             } className="ListItem">
             <ListItemIcon>
               {index === 0 && <HomeIcon className="Icons" />}
@@ -123,6 +100,7 @@ export default function LayoutDefault(props: Props) {
               {index === 3 && <PaidIcon className="Icons" />}
               {index === 4 && <BsFillPeopleFill size="22" className="Icons" />}
               {index === 5 && <PieChartIcon className="Icons" />}
+              {index === 6 && <SettingsIcon className="Icons"/>}
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>

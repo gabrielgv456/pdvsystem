@@ -15,6 +15,7 @@ import { AuthRedirect } from './pages/Login/AuthRedirect';
 import { ClientsRegistration } from './pages/PeopleRegistration/Clients';
 import { SellersRegistration } from './pages/PeopleRegistration/Sellers';
 import { useState } from 'react';
+import { Settings } from './pages/Settings';
 
 function App() {
   const Theme = useDarkMode();
@@ -80,6 +81,7 @@ function App() {
             <Route path="/transactions" element={<RequireAuth><Transactions /></RequireAuth>} />
             <Route path="/inventorymanagement" element={<RequireAuth><InventoryManagement /></RequireAuth>} />
             <Route path="/peopleregistration" element={<RequireAuth>{PeopleMode === 'Clients' ? <ClientsRegistration PeopleMode={PeopleMode} setPeopleMode={setPeopleMode} /> : <SellersRegistration PeopleMode={PeopleMode} setPeopleMode={setPeopleMode} />}</RequireAuth>} />
+            <Route path="/settings" element={<RequireAuth><Settings/></RequireAuth>}/>
           </Route>
 
           <Route path="*" element={<NotFound />} />
