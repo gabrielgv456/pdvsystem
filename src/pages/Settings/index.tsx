@@ -5,6 +5,9 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useState } from 'react';
+import { TabMyProfile } from './tabs/MyProfile';
+import { TabFiscalParameters } from './tabs/FiscalParameters';
+import { TabSystem } from './tabs/System';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -63,13 +66,13 @@ export const Settings = () => {
                     </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
-                    Meu Perfil
+                    <TabMyProfile/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    Parâmetros Fiscais
+                    <TabFiscalParameters/>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    Configurações do sistema
+                    <TabSystem/>
                 </TabPanel>
             </Box>
         </S.Container>
