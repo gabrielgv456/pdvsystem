@@ -7,6 +7,7 @@ import { useContext , useState} from "react";
 import TextField from '@mui/material/TextField';
 import { RiAdminLine } from "react-icons/ri";
 import { AiOutlineClose} from "react-icons/ai";
+import { useMessageBoxContext } from "../../../../contexts/MessageBox/MessageBoxContext";
 
 
 interface ModalMasterKeyEditProps {
@@ -20,6 +21,8 @@ export const ModalMasterKeyEdit = (props: ModalMasterKeyEditProps) => {
 const auth = useContext(AuthContext)
 const Theme = useDarkMode()
 const [inputMasterKey,setinputMasterKey] = useState("")
+const {MessageBox} = useMessageBoxContext()
+
 
 const handleCloseModalMasterKey = async () => {
     props.setismodalMasterkeyOpen(false)
@@ -34,7 +37,7 @@ async function handleVerifyMasterKey(){
         
     }
     else{
-        alert('Senha de Administrador incorreta!')
+        MessageBox('error','Senha de Administrador incorreta!')
     }
 }
 
@@ -95,6 +98,7 @@ export const ModalMasterKeyDelete = (props: ModalMasterKeyDeleteProps) => {
     const auth = useContext(AuthContext)
     const Theme = useDarkMode()
     const [inputMasterKey,setinputMasterKey] = useState("")
+    const {MessageBox} = useMessageBoxContext()
     
     const handleCloseModalMasterKey = async () => {
         props.setismodalMasterkeyOpen(false)
@@ -109,7 +113,7 @@ export const ModalMasterKeyDelete = (props: ModalMasterKeyDeleteProps) => {
             
         }
         else{
-            alert('Senha de Administrador incorreta!')
+            MessageBox('error','Senha de Administrador incorreta!')
         }
     }
     

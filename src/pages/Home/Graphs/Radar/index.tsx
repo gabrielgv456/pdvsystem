@@ -11,6 +11,7 @@ import {
 import { Radar } from 'react-chartjs-2';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../hooks/useApi';
+import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 
 interface radarChartType {
     typepayment: string,
@@ -31,6 +32,7 @@ export const RadarChart = () => {
     const auth = React.useContext(AuthContext)
     const { findRadarChartData } = useApi()
     const [radarChartdata, setRadarChartData] = React.useState<radarChartType[]>([])
+    const {MessageBox} = useMessageBoxContext()
 
     React.useEffect(() => {
         const searchDataRadarChart = async () => {
@@ -40,10 +42,10 @@ export const RadarChart = () => {
                     setRadarChartData(dataRadarChart.Payments)
                 }
                 else {
-                    alert(`Erro ao consultar dados do gráfico radar! ${dataRadarChart.erro}`)
+                    MessageBox('warning',`Erro ao consultar dados do gráfico radar! ${dataRadarChart.erro}`)
                 }
             } catch (error) {
-                alert(`Erro ao consultar dados do gráfico radar! ${error}`)
+                MessageBox('warning',`Erro ao consultar dados do gráfico radar! ${error}`)
             }
         }
         searchDataRadarChart();

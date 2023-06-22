@@ -17,6 +17,7 @@ import { useApi } from "../../hooks/useApi";
 import { PaymentMethods } from "./PaymentMethods/PaymentMethods";
 import { GeneratePDF } from "../../hooks/useGeneratePDF";
 import { RiAddCircleFill } from "react-icons/ri";
+import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 
 export const Sell = () => {
 
@@ -70,6 +71,7 @@ export const Sell = () => {
     const [isSellEnded, setisSellEnded] = useState(false)
     const [inputSeller, setInputSeller] = useState<SellersandClientsType | null>(null)
     const [inputClient, setInputClient] = useState<SellersandClientsType | null>(null)
+    const {MessageBox} = useMessageBoxContext()
     // const [isClientNecessary, setisClientNecessary] = useState(false)
     // const [isSellerNecessary, setisSellerNecessary] = useState(false)
 
@@ -85,7 +87,7 @@ export const Sell = () => {
                 //setSellers(sellers.filter(seller=>seller.name))
             }
             else {
-                alert(data.erro)
+                MessageBox('error',data.erro)
             }
         }
         const ClientsSearch = async () => {
@@ -95,7 +97,7 @@ export const Sell = () => {
                 //setSellers(sellers.filter(seller=>seller.name))
             }
             else {
-                alert(data.erro)
+                MessageBox('error',data.erro)
             }
         }
         ClientsSearch();
@@ -223,7 +225,7 @@ export const Sell = () => {
                     newList[i].totalvalue = newList[i].totalvalue + newList[i].initialvalue
                 }
                 else {
-                    alert(`Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
+                    MessageBox('info',`Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
                 }
             }
         }
@@ -316,15 +318,15 @@ export const Sell = () => {
 
     const handleSendtoApi = async (valuesSelltoSendApi: object) => {
         if (listMethods.length == 0) {
-            alert("ERRO: Insira um método de pagamento!")
+            MessageBox('warning'," Insira um método de pagamento!")
         }
         else {
             if (listMethods.some(method => Number.isNaN(method.value)) || listMethods.some(method => method.value === 0)) {
-                alert('ERRO: Existe método de pagamento vazio, remova ou insira o valor!')
+                MessageBox('warning','Existe método de pagamento vazio, remova ou insira o valor!')
             }
             else {
                 if (needReturnCash === 'N') {
-                    alert(`ERRO: Restam ${formatedmissvalue} a serem recebidos!`)
+                    MessageBox('warning',` Restam ${formatedmissvalue} a serem recebidos!`)
                 }
 
                 if (needReturnCash === 'Y') {
@@ -335,7 +337,7 @@ export const Sell = () => {
                                 setisSellEnded(true)
                             }
                             if (data.Success === false) {
-                                alert(`ERRO: ${JSON.stringify(data.Erro)}`)
+                                MessageBox('error',` ${JSON.stringify(data.Erro)}`)
                             }
                         }
                     }
@@ -347,7 +349,7 @@ export const Sell = () => {
                             setisSellEnded(true)
                         }
                         if (data.Success === false) {
-                            alert(`ERRO: ${JSON.stringify(data.Erro)}`)
+                            MessageBox('error',`${JSON.stringify(data.Erro)}`)
                         }
                     }
                 }

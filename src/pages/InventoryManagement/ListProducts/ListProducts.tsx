@@ -14,6 +14,7 @@ import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import { RiAdminLine } from "react-icons/ri";
 import {TransactionsProductsReturnApi} from "../index"
 import { CurrencyMask } from "../../../masks/CurrencyMask"
+import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
 
 interface ListProductsProps{
     id: number;
@@ -51,6 +52,7 @@ export const ListProducts = (props:ListProductsProps) => {
     const [finalvalueProduct,setfinalvalueProduct] = useState(props.value)
     const [valueInputProductQuantity,setvalueInputProductQuantity]=useState(props.quantity)
     const [valueInputProductActive,setvalueInputProductActive]=useState(props.active)
+    const {MessageBox} = useMessageBoxContext()
     const finaldataEditProductsToSendApi = {
         id:props.id,
         name:valueInputProductName, 
@@ -85,7 +87,7 @@ export const ListProducts = (props:ListProductsProps) => {
             setisModalDeleteProductOpen(true)
         }
         else{
-            alert('Senha de Administrador incorreta!')
+            MessageBox('error','Senha de Administrador incorreta!')
         }
     }
     const handleDeleteProductApi = async () => {
@@ -95,7 +97,7 @@ export const ListProducts = (props:ListProductsProps) => {
             setisModalSucessOpen(true)
         }
         else {
-            alert(data.Erro)
+            MessageBox('error',data.Erro)
         }
         
        
@@ -115,7 +117,7 @@ export const ListProducts = (props:ListProductsProps) => {
             setisModalSucessOpen(true)
         }
         else {
-            alert(data.erro)
+            MessageBox('error',data.erro)
         }
         
     }

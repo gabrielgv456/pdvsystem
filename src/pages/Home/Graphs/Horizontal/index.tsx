@@ -11,6 +11,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../hooks/useApi';
+import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 
 ChartJS.register(
     CategoryScale,
@@ -32,7 +33,7 @@ export const HorizontalChart = () => {
     const auth = useContext(AuthContext)
     const { findTopSellingProducts } = useApi()
     const [topSellingProducts, setTopSellingProducts] = useState<HorizontalChartType[]>([])
-
+    const {MessageBox} = useMessageBoxContext()
     useEffect(() => {
         const SearchDatafindTopSellingProducts = async () => {
             try {
@@ -41,11 +42,11 @@ export const HorizontalChart = () => {
                     setTopSellingProducts(datafindTopSellingProducts.topSellingProducts)
                 }
                 else {
-                    alert(`Erro ao consultar dados do gráfico horizontal ${datafindTopSellingProducts.erro}`)
+                    MessageBox('warning',`Erro ao consultar dados do gráfico horizontal ${datafindTopSellingProducts.erro}`)
                 }
             }
             catch (error) {
-                alert(`Erro ao consultar dados do gráfico horizontal ${error}`)
+                MessageBox('warning',`Erro ao consultar dados do gráfico horizontal ${error}`)
             }
 
     }

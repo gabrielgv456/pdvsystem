@@ -11,6 +11,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { useApi } from '../../../../hooks/useApi';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
+import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 
 
 interface dataBarType {
@@ -20,11 +21,10 @@ interface dataBarType {
 }
 
 export const BarChart = () => {
-
+    const {MessageBox} = useMessageBoxContext()
     async function addMonths(dataBarChart: dataBarType[]) {
 
         const month : string[]= [];
-
         dataBarChart.map((data) => {
             console.log(data.month)
             switch (data.month) {
@@ -71,6 +71,7 @@ export const BarChart = () => {
     }
 
     useEffect(() => {
+        
         const searchApiData = async () => {
             try {
                 const dataBar = await findBarChartData(auth.idUser)
@@ -80,11 +81,11 @@ export const BarChart = () => {
                     setLabels(returnMonths)
                 }
                 else {
-                    alert('Falha ao buscar dados do grafico de Barras')
+                    MessageBox('warning','Falha ao buscar dados do grafico de Barras')
                 }
             }
-            catch (error) {
-                alert(error)
+            catch (error:any) {
+                MessageBox('warning',error.message)
             }
         }
         searchApiData()

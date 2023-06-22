@@ -18,6 +18,7 @@ import { ModalDelete } from './Modals/DeleteSell/ModalDelete';
 import { ModalMasterKeyEdit, ModalMasterKeyDelete } from './Modals/MasterKey/MasterKeyModal';
 import { ModalSuccess } from './Modals/Success/ModalSucess';
 import { ModalEditSell } from './Modals/EditSell/ModalEditSell';
+import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 // end imports menu MUI //
 
 export interface SellsProductsReceiveApi {
@@ -68,7 +69,7 @@ export const SalesControl = () => {
         const [ismodalSuccessOpen, setismodalSuccessOpen] = useState(false)
         const [ismodalEditSellOpen, setismodalEditSellOpen] = useState(false)
         const [idselltoEdit, setidselltoEdit] = useState(0)
-        
+        const {MessageBox} = useMessageBoxContext()
         const {findSells, findSellers, findClients} = useApi()  
         const [sellers, setSellers] = useState<SellersandClientsType[]>([])
         const [clients, setClients] = useState<SellersandClientsType[]>([])  
@@ -88,11 +89,11 @@ export const SalesControl = () => {
             setAnchorEl(null);
         };
         const handleExportExcel = () => {
-            alert("excel")
+            MessageBox("info","excel")
             handleClose()
         }
         const handleExportPDF = () => {
-            alert("PDF")
+            MessageBox('info',"PDF")
             handleClose()
         }
         const defaultSendtoApi = async () => {
@@ -117,7 +118,7 @@ export const SalesControl = () => {
     }
         const handleSendtoApi = async () => {
             if (InitialDate > FinalDate) {
-                alert('ERRO: Data inicial maior do que a data final!')
+                MessageBox('info',' Data inicial maior do que a data final!')
             } 
             else {
                 const data = await findSells(dataToSendApi)
@@ -154,14 +155,14 @@ export const SalesControl = () => {
             setSellers(resultSellers.findSellers)
         }
         else{
-            alert(`ERRO: ${resultSellers.erro}`)
+            MessageBox('error',` ${resultSellers.erro}`)
         }
         const resultClients = await findClients(auth.idUser)
         if(resultClients.Success){
             setClients(resultClients.findClients)
         }
         else {
-            alert(`ERRO: ${resultClients.erro}`)
+            MessageBox('error',` ${resultClients.erro}`)
         }
     }
     async function filterSellerandClient (idSellertoEdit:number|null,idClienttoEdit:number|null) {

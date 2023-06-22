@@ -6,6 +6,7 @@ import { useApi } from "../../../../hooks/useApi"
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../../../../contexts/Auth/AuthContext"
 import { useDarkMode } from "../../../../contexts/DarkMode/DarkModeProvider"
+import { useMessageBoxContext } from "../../../../contexts/MessageBox/MessageBoxContext"
 
 interface BestSellersType {
     id: number,
@@ -21,6 +22,7 @@ export const BestSellers = () => {
     const [sellers,setSellers] = useState<BestSellersType[]>([])
     const [consulted,setConsulted] = useState(false)
     const Theme = useDarkMode()
+    const {MessageBox} = useMessageBoxContext()
 
     useEffect(()=>{
         const searchDataBestSellers = async () => {
@@ -30,7 +32,7 @@ export const BestSellers = () => {
                 setConsulted(true)
             }
             else {
-                alert(`Falha ao buscar dados dos melhores vendedores! Erro: ${dataBestSellers.erro}`)
+                MessageBox('warning',`Falha ao buscar dados dos melhores vendedores! Erro: ${dataBestSellers.erro}`)
             }
         }
         searchDataBestSellers();

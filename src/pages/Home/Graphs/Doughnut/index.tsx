@@ -5,6 +5,7 @@ import {useEffect, useContext, useState} from 'react'
 import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../hooks/useApi';
+import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -19,8 +20,9 @@ export const DoughnutChart = () => {
     const auth = useContext(AuthContext)
     const {findDoughnutChartData} = useApi()
     const [dataDoughnutChart,setdataDoughnutChart] = useState<DoughnutChartType | null>(null)
-
+    const {MessageBox} = useMessageBoxContext()
     useEffect(()=>{
+        
         const SearchData = async () => {
             try{
                 const dataDoughnut = await findDoughnutChartData(auth.idUser)
@@ -28,11 +30,11 @@ export const DoughnutChart = () => {
                     setdataDoughnutChart(dataDoughnut.doughnutData)
                 }
                 else {
-                    alert(dataDoughnut.erro)
+                    MessageBox('warning',dataDoughnut.erro)
                 }
             }
             catch (error){
-                alert('Erro ao consultar dados do gráfico de rosca !' + error)
+                MessageBox('warning','Erro ao consultar dados do gráfico de rosca !' + error)
             }
         }
         SearchData()

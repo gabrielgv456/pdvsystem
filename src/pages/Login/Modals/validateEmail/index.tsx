@@ -9,6 +9,7 @@ import { IoCloseSharp } from 'react-icons/io5'
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { useApi } from '../../../../hooks/useApi';
+import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 
 interface validateEmailProps {
     isModalValidateEmailOpen: boolean,
@@ -21,6 +22,7 @@ export const ModalValidateEmail = (props: validateEmailProps) => {
     const Theme = useDarkMode();
     const { codEmailValidate,idUser } = useContext(AuthContext)
     const { validateMail } = useApi();
+    const {MessageBox} = useMessageBoxContext()
 
     const VerifyCode = async () => {
         if (inputCode === codEmailValidate) {
@@ -33,10 +35,10 @@ export const ModalValidateEmail = (props: validateEmailProps) => {
                     throw new Error('Falha ao concluir validação de e-mail!')
                 }
             } catch (error: any) {
-                alert(error.message)
+                MessageBox('error',error.message)
             }
         } else {
-            alert('Código de verificação incorreto!');
+            MessageBox('error','Código de verificação incorreto!');
         }
     }
 

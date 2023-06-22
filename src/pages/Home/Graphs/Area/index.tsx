@@ -13,6 +13,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import { useApi } from '../../../../hooks/useApi';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
+import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 
 ChartJS.register(
     CategoryScale,
@@ -35,6 +36,7 @@ export const AreaChart = () => {
     const auth = useContext(AuthContext)
     const {findAreaChartData} = useApi()
     const [areaChartData,setAreaChartData] = useState<AreaChartDataType[]>([])
+    const {MessageBox} = useMessageBoxContext()
 
     useEffect(()=>{
         const SearchDataAreaChart = async () => {
@@ -43,12 +45,12 @@ export const AreaChart = () => {
                 if (dataAreaChart.Success){
                     setAreaChartData(dataAreaChart.SellsChartArea)
                 } else {
-                    alert(`Houve uma falha ao consultar dados do banco de dados: ${dataAreaChart.erro}`)
+                    MessageBox('warning',`Houve uma falha ao consultar dados do banco de dados: ${dataAreaChart.erro}`)
                 }
             }
             catch (error)
             {
-                alert(`Erro ao realizar requisição do gráfico de area ${error}`)
+                MessageBox('warning',`Erro ao realizar requisição do gráfico de area ${error}`)
             }
 
         }

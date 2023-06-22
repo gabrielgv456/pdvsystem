@@ -6,6 +6,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { useApi } from '../../../../../../hooks/useApi';
 import { useContext } from 'react';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
+import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 
 interface indextoDeleteSellerModal {
     isModalDeleteSellerOpen: boolean;
@@ -19,7 +20,7 @@ export const ModalDeleteSeller = (props: indextoDeleteSellerModal) => {
     const Theme = useDarkMode()
     const {deleteSeller} = useApi()
     const auth = useContext(AuthContext)
-    
+    const {MessageBox} = useMessageBoxContext()
     function handleCloseModalDeleteSeller() {
         props.setisModalDeleteSellerOpen(false)
     }
@@ -31,7 +32,7 @@ export const ModalDeleteSeller = (props: indextoDeleteSellerModal) => {
             props.setisModalSucessOpen(true)
         }
         else {
-            alert(data.erro)
+            MessageBox('error',data.erro)
         }
     }
 

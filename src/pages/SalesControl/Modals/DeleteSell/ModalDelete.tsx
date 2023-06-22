@@ -6,6 +6,7 @@ import { useContext, useState } from "react";
 import { useDarkMode } from "../../../../contexts/DarkMode/DarkModeProvider";
 import { AuthContext } from "../../../../contexts/Auth/AuthContext";
 import { useApi } from "../../../../hooks/useApi";
+import { useMessageBoxContext } from "../../../../contexts/MessageBox/MessageBoxContext";
 
 interface ModalDeleteProps {
     ismodalDeleteOpen : boolean,
@@ -33,6 +34,7 @@ export const ModalDelete = (props : ModalDeleteProps) => {
     const auth = useContext(AuthContext);
     const {deleteSell} = useApi()
     const [isCheckBoxChecked,setisCheckBoxChecked] = useState(true)
+    const {MessageBox} = useMessageBoxContext()
 
     async function handleCloseModalDelete() {
         props.setismodalDeleteOpen(false)
@@ -53,7 +55,7 @@ export const ModalDelete = (props : ModalDeleteProps) => {
             props.defaultSendtoApi()
 
         } else if (!data.Sucess) {
-            alert(`ERRO:${data.erro}`)
+            MessageBox('error',`${data.erro}`)
         }
 
     }

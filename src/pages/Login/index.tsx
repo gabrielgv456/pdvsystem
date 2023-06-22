@@ -5,6 +5,7 @@ import { HiOutlineMail } from 'react-icons/hi'
 import { RiLock2Line } from 'react-icons/ri'
 import * as S from './style'
 import { ModalValidateEmail, SuccessModalValidateEmail } from "./Modals/validateEmail";
+import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 
 
 export const Login = () => {
@@ -27,6 +28,7 @@ export const Login = () => {
                 break
         }
     }
+    const {MessageBox} = useMessageBoxContext()
     const handleVerifyInputPassword = () => {
         if (password.length < 8) {
             setPasswordWrong(true)
@@ -87,11 +89,11 @@ export const Login = () => {
                 } else if (isLogged === 'invalidMail') {
                     setIsModalValidateEmailOpen(true)
                 } else if (isLogged === 'false') {
-                    alert("Dados incorretos, verifique seu e-mail ou senha !");
+                    MessageBox('error',"Dados incorretos, verifique seu e-mail ou senha !");
                 }
             }
             catch (error) {
-                alert("Falha de conexão com servidor remoto" + error)
+                MessageBox('warning',"Falha de conexão com servidor remoto" + error)
             }
         }
     }

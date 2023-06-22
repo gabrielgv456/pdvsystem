@@ -11,6 +11,7 @@ import { ClientsReturnApiProps } from '../index'
 import { ModalDeleteClient } from "./Modals/deleteClient";
 import { ModalSuccessDeleteClient } from "./Modals/successDeleteClient";
 import { MdOutlineMail } from "react-icons/md";
+import { useMessageBoxContext } from "../../../../contexts/MessageBox/MessageBoxContext";
 
 interface ListClientsProps {
     client: ClientsReturnApiProps;
@@ -35,7 +36,7 @@ export const ListClients = (props: ListClientsProps) => {
     //const telFormated = props.client.phoneNumber !== null ? props.client.phoneNumber.replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3") : ""
     const linkwhatsapp = `https://wa.me/55${props.client.cellNumber}`
     const linkmailto = `mailto:${props.client.email}`
-
+    const {MessageBox} = useMessageBoxContext()
     
    
    
@@ -46,7 +47,7 @@ export const ListClients = (props: ListClientsProps) => {
             setisModalSucessOpen(true)
         }
         else {
-            alert(data.erro)
+            MessageBox('error',data.erro)
         }
 
 

@@ -11,6 +11,7 @@ import { ListTransactions } from './ListTransactions/ListTransactions';
 import { HiTrendingDown, HiTrendingUp } from 'react-icons/hi';
 import { MdAddTask, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { CurrencyMask } from '../../masks/CurrencyMask';
+import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 
 export interface TransactionsReturnApiProps {
     id: number,
@@ -58,7 +59,7 @@ export const Transactions = () => {
     const sumValueTransactionsFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueEntriesTransactions)
     const sumExitsTransactionsFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueExitsTransactions)
     const totalTransactionsFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueEntriesTransactions - sumValueExitsTransactions)
-    
+    const {MessageBox} = useMessageBoxContext()
     const changeValueInputExit = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 
         setinputvalueExit(e.target.value)
@@ -98,7 +99,7 @@ export const Transactions = () => {
 
     const searchTransactions = async () => {
         if (InitialDate > FinalDate) {
-            alert('ERRO: Data inicial maior do que a final!')
+            MessageBox('info','Data inicial maior do que a final!')
         } 
         else {
             const data = await findTransactions(datafindTransactions)
@@ -141,10 +142,10 @@ export const Transactions = () => {
                 searchTransactions()
             }
             else {
-                alert(JSON.stringify(dataExit))
+                MessageBox('error',JSON.stringify(dataExit))
             }
         } else {
-            alert('Insira todos dados corretamente!')
+            MessageBox('error','Insira todos dados corretamente!')
         }
     }
 
@@ -159,10 +160,10 @@ export const Transactions = () => {
                 searchTransactions()
             }
             else {
-                alert(JSON.stringify(dataEntry))
+                MessageBox('error',JSON.stringify(dataEntry))
             }
         } else {
-            alert('Insira todos dados corretamente!')
+            MessageBox('error','Insira todos dados corretamente!')
         }
     }
 

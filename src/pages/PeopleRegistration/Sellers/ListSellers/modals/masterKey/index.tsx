@@ -7,6 +7,7 @@ import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvide
 import { TextField } from '@mui/material';
 import { RiAdminLine } from 'react-icons/ri';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 
 interface indextoModalMasterKeyProps {
     setisModalDeleteSellerOpen:(value:boolean)=>void;
@@ -19,7 +20,7 @@ export const ModalMasterKeyDeleteSeller = (props: indextoModalMasterKeyProps) =>
     const [inputMasterKey, setinputMasterKey] = useState("")
     const auth = useContext(AuthContext)
     const Theme = useDarkMode()
-
+    const {MessageBox} = useMessageBoxContext()
     function handleVerifyMasterKey() {
         if (inputMasterKey === auth.masterkey) {
             handleCloseModalMasterKey()
@@ -27,7 +28,7 @@ export const ModalMasterKeyDeleteSeller = (props: indextoModalMasterKeyProps) =>
             props.setisModalDeleteSellerOpen(true)
         }
         else {
-            alert('Senha de Administrador incorreta!')
+            MessageBox('error','Senha de Administrador incorreta!')
         }
     }
 

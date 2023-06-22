@@ -14,6 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
+import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
 
 interface ListSellerstoAddSellerProps {
     isModalAddSellerOpen: boolean;
@@ -46,6 +47,8 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
     const [valueInputSellerAdressCep, setvalueInputSellerAdressCep] = useState("")
     const [valueInputSellerActive, setvalueInputSellerActive] = useState(true)
     const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
+    const {MessageBox} = useMessageBoxContext()
+    
     function eraseValues() {
         setvalueInputSellerName("")
         setvalueInputSellerGender("")
@@ -77,7 +80,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                 const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
-                    alert('CEP invalido')
+                    MessageBox('error','CEP invalido')
                 }
                 else {
                     setvalueInputSellerAdressStreet(data.logradouro)
@@ -130,11 +133,11 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                         eraseValues()
                     }
                     else {
-                        alert(data.erro)
+                        MessageBox('error',data.erro)
                     }
                 }
                 catch (error) {
-                    alert(`Falha ao enviar dados. ERRO:${error}`)
+                    MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
                 }
             }
             else {
@@ -148,20 +151,20 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                             eraseValues()
                         }
                         else {
-                            alert(data.erro)
+                            MessageBox('error',data.erro)
                         }
                     }
                     catch (error) {
-                        alert(`Falha ao enviar dados. ERRO:${error}`)
+                        MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
                     }
                 }
                 else {
-                    alert("Email inválido!")
+                    MessageBox('error',"Email inválido!")
                 }
             }
         }
         else {
-            alert("Campos obrigatórios não preenchidos !")
+            MessageBox('error',"Campos obrigatórios não preenchidos !")
         }
     }
 

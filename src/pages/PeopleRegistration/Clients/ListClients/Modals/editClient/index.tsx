@@ -14,6 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
+import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 
 
 interface ListClientstoEditClientProps {
@@ -77,7 +78,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                 const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
-                    alert('CEP invalido')
+                    MessageBox('warning','CEP invalido')
                 }
                 else {
                     setvalueInputClientAdressStreet(data.logradouro)
@@ -92,7 +93,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
         }
 
     }
-
+    const {MessageBox} = useMessageBoxContext()
     const finaldataEditClientToSendApi = {
         storeId: auth.idUser,
         idClient: props.client.id,
@@ -126,11 +127,11 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                         props.setisModalSucessOpen(true)
                     }
                     else {
-                        alert(data.erro)
+                        MessageBox('error',data.erro)
                     }
                 }
                 catch (error) {
-                    alert(`Falha ao enviar dados. ERRO:${error}`)
+                    MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
                 }
             }
             else {
@@ -142,20 +143,20 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                             props.setisModalSucessOpen(true)
                         }
                         else {
-                            alert(data.erro)
+                            MessageBox('error',data.erro)
                         }
                     }
                     catch (error) {
-                        alert(`Falha ao enviar dados. ERRO:${error}`)
+                        MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
                     }
                 }
                 else {
-                    alert("Email inválido!")
+                    MessageBox('error',"Email inválido!")
                 }
             }
         }
         else {
-            alert("Campos obrigatórios não preenchidos !")
+            MessageBox('info',"Campos obrigatórios não preenchidos !")
         }
     }
 

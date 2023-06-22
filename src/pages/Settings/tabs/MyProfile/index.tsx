@@ -80,7 +80,7 @@ export const TabMyProfile = () => {
                 const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
-                    alert('CEP invalido')
+                    MessageBox('error','CEP invalido')
                 }
                 else {
                     setAdressStreetCorporation(data.logradouro)

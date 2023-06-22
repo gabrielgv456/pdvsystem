@@ -13,6 +13,7 @@ import { AiOutlineClose, } from 'react-icons/ai';
 import Switch from '@mui/material/Switch';
 import { CurrencyMask } from '../../masks/CurrencyMask';
 import { ModalTransactionsProducts } from './Modals';
+import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 
 
 interface ProductsReturnApiProps {
@@ -54,7 +55,7 @@ export const InventoryManagement = () => {
     const StartIndexExtract = atualPageExtract * ItensPerPageExtract
     const EndIndexExtract = StartIndexExtract + ItensPerPageExtract
     const paginedTransactionsReturnApi = ProductsReturnApiFiltered.slice(StartIndexExtract, EndIndexExtract)
-
+    const {MessageBox} = useMessageBoxContext()
 
     const finaldataAddProductsToSendApi = {
         userId: auth.idUser,
@@ -119,13 +120,13 @@ export const InventoryManagement = () => {
                 setisModalSucessOpen(true)
             }
             else {
-                alert(`ERRO: ${JSON.stringify(data)}`)
+                MessageBox('error',`ERRO: ${JSON.stringify(data)}`)
             }
 
         }
 
         else {
-            alert('Insira todos dados corretamente!')
+            MessageBox('error','Insira todos dados corretamente!')
         }
     }
 
