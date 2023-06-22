@@ -16,6 +16,7 @@ import { ClientsRegistration } from './pages/PeopleRegistration/Clients';
 import { SellersRegistration } from './pages/PeopleRegistration/Sellers';
 import { useState } from 'react';
 import { Settings } from './pages/Settings';
+import CustomizedSnackbars from './utils/utils';
 
 function App() {
   const Theme = useDarkMode();
@@ -72,6 +73,7 @@ function App() {
     <div className="App">
       <GlobalStyle isDarkMode={Theme.DarkMode} />
       <ThemeProvider theme={ThemeMui}>
+      <CustomizedSnackbars/>
         <Routes>
           <Route path="/" element={<AuthRedirect><LayoutDefault /></AuthRedirect>} >
             <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />

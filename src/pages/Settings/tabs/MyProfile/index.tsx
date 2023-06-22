@@ -5,6 +5,9 @@ import axios from 'axios';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Divider } from "@mui/material";
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
+import { useApi } from '../../../../hooks/useApi';
+import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
+
 
 export const TabMyProfile = () => {
 
@@ -25,7 +28,26 @@ export const TabMyProfile = () => {
     const [confirmNewPass, setConfirmNewPass] = useState('') 
     const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
     const auth = useContext(AuthContext)
+    const {changePassword} = useApi()
+    const {MessageBox} = useMessageBoxContext()
 
+    async function handleChangePass(){
+        try{
+            if (!newPass||!actualPass||!confirmNewPass){
+                throw new Error("Informe todos campos!")
+            }
+            const dataChangePass = await changePassword(finalDataChangePass)
+            if (!dataChangePass.Success){
+                throw new Error("Erro ao atualizar senha! " + dataChangePass.erro)
+            }
+            MessageBox('success','Senha atualizada com sucesso!')
+            setNewPass('')
+            setActualPass('')
+            setConfirmNewPass('')
+        }catch(error:any){
+            MessageBox('error',error.message)
+        }
+    }
     
     const finalDataChangeAboutCorporation = {
         storeId: auth.idUser,
@@ -44,6 +66,7 @@ export const TabMyProfile = () => {
     }
 
     const finalDataChangePass = {
+        storeId:auth.idUser,
         actualPass,
         newPass,
         confirmNewPass
@@ -347,8 +370,11 @@ export const TabMyProfile = () => {
                     sx={{ width: '250px' }} />
 
             </S.DivChangePass>
-            <S.ButtonSave ><b>Salvar</b></S.ButtonSave>
+            <S.ButtonSave onClick={()=>handleChangePass()}><b>Salvar</b></S.ButtonSave>
 
         </S.Container>
+
+
+        
     )
 }

@@ -21,6 +21,10 @@ export const useApi = () => ({
         const response = await api.post('/validatemail',{userId})
         return response.data
     },
+    changePassword:async(data:object) => {
+        const response = await api.patch('/changepass', {data})
+        return response.data
+    },
     logout: async (dataLogOutUser: object) => {
         const response = await api.post('/logout', {dataLogOutUser});
         return response.data;

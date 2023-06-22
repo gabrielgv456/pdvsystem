@@ -8,6 +8,7 @@ import { AuthProvider } from './contexts/Auth/AuthProvider';
 import { DarkModeProvider } from './contexts/DarkMode/DarkModeProvider';
 import { TestProvider } from './contexts/VariableTest';
 import { LayoutProvider } from './contexts/Layout/layoutContext';
+import { MessageBoxProvider } from './contexts/MessageBox/MessageBoxContext';
 
 interface apireceivepostType {
   id: number;
@@ -46,7 +47,9 @@ ReactDOM.render(
         <DarkModeProvider>
           <TestProvider>
             <LayoutProvider>
-              <App />
+              <MessageBoxProvider>
+                <App />
+              </MessageBoxProvider>
             </LayoutProvider>
           </TestProvider>
         </DarkModeProvider>
