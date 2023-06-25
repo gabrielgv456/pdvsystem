@@ -20,6 +20,7 @@ interface ProductsReturnApiProps {
     id: number;
     name: string;
     value: number;
+    totalValue: number;
     created_at: Date;
     active: boolean;
     quantity: number;
@@ -220,7 +221,7 @@ export const InventoryManagement = () => {
                         </select>
                         <S.DivRightFooterProducts>
                             <label>Qtd Total: {ProductsReturnApi.reduce((acc, item) => { return acc + item.quantity }, 0)}</label>
-                            <label>Valor Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(ProductsReturnApi.reduce((acc, item) => { return acc + item.value }, 0))}</label>
+                            <label>Valor Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(ProductsReturnApi.reduce((acc, item) => { return acc + item.totalValue }, 0))}</label>
                          
                             {PagesExtract > 0 ? <label> Página {atualPageExtract + 1} de {PagesExtract}</label> : <label></label>}
 
