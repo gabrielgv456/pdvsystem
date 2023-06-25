@@ -45,8 +45,8 @@ export const HorizontalChart = () => {
                     MessageBox('warning',`Erro ao consultar dados do gráfico horizontal ${datafindTopSellingProducts.erro}`)
                 }
             }
-            catch (error) {
-                MessageBox('warning',`Erro ao consultar dados do gráfico horizontal ${error}`)
+            catch (error:any) {
+                MessageBox('warning',`Erro ao consultar dados do gráfico horizontal ${error.message}`)
             }
 
     }

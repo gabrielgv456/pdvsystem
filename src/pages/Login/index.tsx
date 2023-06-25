@@ -92,8 +92,8 @@ export const Login = () => {
                     MessageBox('error',"Dados incorretos, verifique seu e-mail ou senha !");
                 }
             }
-            catch (error) {
-                MessageBox('warning',"Falha de conexão com servidor remoto" + error)
+            catch (error:any) {
+                MessageBox('warning',"Falha de conexão com servidor remoto" + error.message)
             }
         }
     }

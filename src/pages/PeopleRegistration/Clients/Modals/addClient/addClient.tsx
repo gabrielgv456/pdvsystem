@@ -15,6 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
+import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat } from '../../../../../utils/utils';
 
 
 
@@ -92,8 +93,8 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                     setvalueInputClientAdressState(data.uf)
                 }
             }
-            catch (error) {
-                console.log(error)
+            catch (error:any) {
+                MessageBox('info',error.message)
             }
         }
 
@@ -138,8 +139,8 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         MessageBox('error',data.erro)
                     }
                 }
-                catch (error) {
-                    MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
+                catch (error:any) {
+                    MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
                 }
             }
             else {
@@ -156,8 +157,8 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                             MessageBox('error',data.erro)
                         }
                     }
-                    catch (error) {
-                        MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
+                    catch (error:any) {
+                        MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
                     }
                 }
                 else {
@@ -253,17 +254,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         <TextField
                             value={valueInputClientCpfCnpj}
                             onChange={(e) => {
-                                setvalueInputClientCpfCnpj(e.target.value.replace(/\D/g, '').length === 11 ?
-                                    e.target.value.replace(/[^0-9]/g, '')
-                                        .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
-                                    : e.target.value.replace(/\D/g, '').length === 14 ?
-                                        e.target.value.replace(/[^0-9]/g, '')
-                                            .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "$1.$2.$3/$4-$5")
-                                        : e.target.value.replace(/[^0-9]/g, '').length > 14 ?
-                                            valueInputClientCpfCnpj
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '')
-                                )
+                                setvalueInputClientCpfCnpj(cpfCnpjFormat(e.target.value,valueInputClientCpfCnpj))
                             }}
                             label={valueInputClientCpfCnpj.length === 0 ?
                                 "CPF/CNPJ *"
@@ -329,21 +320,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         <TextField
                             value={valueInputClientPhoneNumber}
                             onChange={(e) => {
-                                setvalueInputClientPhoneNumber(
-                                    e.target.value.replace(/[^0-9]/g, '').length === 2 ?
-                                        e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length === 3 ?
-                                            e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '').length === 10 ?
-                                                e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3")
-                                                :
-                                                e.target.value.replace(/[^0-9]/g, '').length > 10 ?
-                                                    valueInputClientPhoneNumber
-                                                    :
-                                                    e.target.value.replace(/[^0-9]/g, '')
-                                )
+                                setvalueInputClientPhoneNumber(phoneNumberFormat(e.target.value,valueInputClientPhoneNumber))
                             }}
                             id="outlined-basic"
                             label="Telefone"
@@ -354,21 +331,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         <TextField
                             value={valueInputClientCellNumber}
                             onChange={(e) => {
-                                setvalueInputClientCellNumber(
-                                    e.target.value.replace(/[^0-9]/g, '').length === 2 ?
-                                        e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length === 3 ?
-                                            e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '').length === 11 ?
-                                                e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3")
-                                                :
-                                                e.target.value.replace(/[^0-9]/g, '').length > 11 ?
-                                                    valueInputClientCellNumber
-                                                    :
-                                                    e.target.value.replace(/[^0-9]/g, '')
-                                )
+                                setvalueInputClientCellNumber(cellNumberFormat(e.target.value,valueInputClientCellNumber))
                             }}
                             id="outlined-basic"
                             label="Celular"
@@ -383,14 +346,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         <TextField
                             value={valueInputClientAdressCep}
                             onChange={(e) => {
-                                setvalueInputClientAdressCep(
-                                    e.target.value.replace(/[^0-9]/g, '').length === 8 ?
-                                        e.target.value.toString().replace(/(\d{5})(\d{3})/g, "$1-$2")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length > 8 ?
-                                            valueInputClientAdressCep
-                                            :
-                                            e.target.value)
+                                setvalueInputClientAdressCep(cepFormat(e.target.value,valueInputClientAdressCep))
                             }}
                             onBlur={(e) => handleConsultCep(e.target.value)}
                             id="outlined-basic"

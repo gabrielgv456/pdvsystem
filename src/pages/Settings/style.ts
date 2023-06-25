@@ -11,11 +11,8 @@ export const Container = styled.div<DarkModeProps> `
     border-radius: 10px;
     width: 100%;
     min-height: 82vh;
-    padding: 25px;
+    padding: 0px;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
     box-sizing: border-box;
-    @media screen and (max-width:930px) {
-        padding: 10px;
-    }
 
 `

@@ -48,9 +48,9 @@ export const AreaChart = () => {
                     MessageBox('warning',`Houve uma falha ao consultar dados do banco de dados: ${dataAreaChart.erro}`)
                 }
             }
-            catch (error)
+            catch (error:any)
             {
-                MessageBox('warning',`Erro ao realizar requisição do gráfico de area ${error}`)
+                MessageBox('warning',`Erro ao realizar requisição do gráfico de area ${error.message}`)
             }
 
         }

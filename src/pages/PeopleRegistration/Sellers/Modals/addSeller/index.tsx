@@ -15,6 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
+import { cellNumberFormat, cepFormat, phoneNumberFormat } from '../../../../../utils/utils';
 
 interface ListSellerstoAddSellerProps {
     isModalAddSellerOpen: boolean;
@@ -89,8 +90,8 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                     setvalueInputSellerAdressState(data.uf)
                 }
             }
-            catch (error) {
-                console.log(error)
+            catch (error:any) {
+                MessageBox('info',error.message)
             }
         }
 
@@ -136,8 +137,8 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                         MessageBox('error',data.erro)
                     }
                 }
-                catch (error) {
-                    MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
+                catch (error:any) {
+                    MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
                 }
             }
             else {
@@ -154,8 +155,8 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                             MessageBox('error',data.erro)
                         }
                     }
-                    catch (error) {
-                        MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
+                    catch (error:any) {
+                        MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
                     }
                 }
                 else {
@@ -293,20 +294,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                             value={valueInputSellerPhoneNumber}
                             onChange={(e) => {
                                 setvalueInputSellerPhoneNumber(
-                                    e.target.value.replace(/[^0-9]/g, '').length === 2 ?
-                                        e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length === 3 ?
-                                            e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '').length === 10 ?
-                                                e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3")
-                                                :
-                                                e.target.value.replace(/[^0-9]/g, '').length > 10 ?
-                                                    valueInputSellerPhoneNumber
-                                                    :
-                                                    e.target.value.replace(/[^0-9]/g, '')
-                                )
+                                    phoneNumberFormat(e.target.value,valueInputSellerPhoneNumber) )
                             }}
                             id="outlined-basic"
                             label="Telefone"
@@ -317,21 +305,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                         <TextField
                             value={valueInputSellerCellNumber}
                             onChange={(e) => {
-                                setvalueInputSellerCellNumber(
-                                    e.target.value.replace(/[^0-9]/g, '').length === 2 ?
-                                        e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length === 3 ?
-                                            e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '').length === 11 ?
-                                                e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3")
-                                                :
-                                                e.target.value.replace(/[^0-9]/g, '').length > 11 ?
-                                                    valueInputSellerCellNumber
-                                                    :
-                                                    e.target.value.replace(/[^0-9]/g, '')
-                                )
+                                setvalueInputSellerCellNumber(cellNumberFormat(e.target.value,valueInputSellerCellNumber) )
                             }}
                             id="outlined-basic"
                             label="Celular"
@@ -346,14 +320,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                         <TextField
                             value={valueInputSellerAdressCep}
                             onChange={(e) => {
-                                setvalueInputSellerAdressCep(
-                                    e.target.value.replace(/[^0-9]/g, '').length === 8 ?
-                                        e.target.value.toString().replace(/(\d{5})(\d{3})/g, "$1-$2")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length > 8 ?
-                                            valueInputSellerAdressCep
-                                            :
-                                            e.target.value)
+                                setvalueInputSellerAdressCep(cepFormat(e.target.value,valueInputSellerAdressCep))
                             }}
                             onBlur={(e) => handleConsultCep(e.target.value)}
                             id="outlined-basic"

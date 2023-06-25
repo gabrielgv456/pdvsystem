@@ -8,6 +8,10 @@ import { useState } from 'react';
 import { TabMyProfile } from './tabs/MyProfile';
 import { TabFiscalParameters } from './tabs/FiscalParameters';
 import { TabSystem } from './tabs/System';
+import {CgProfile} from 'react-icons/cg';
+import { MdAssignment,MdSettingsInputComponent } from 'react-icons/md';
+import { useMediaQuery } from '@mui/material';
+
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -18,7 +22,7 @@ interface TabPanelProps {
 export const Settings = () => {
 
     const Theme = useDarkMode()
-
+    const isLess900 = useMediaQuery('(max-width:900px)')
     function TabPanel(props: TabPanelProps) {
         const { children, value, index, ...other } = props;
 
@@ -60,11 +64,12 @@ export const Settings = () => {
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange} >
-                        <Tab label="Meu Perfil" {...a11yProps(0)} />
-                        <Tab label="Parâmetros Fiscais" {...a11yProps(1)} />
-                        <Tab label="Configurações do sistema" {...a11yProps(2)} />
+                        <Tab label={ isLess900 ? '' :'Meu Perfil'} title='Meu Perfil' sx={{ borderRadius: '10px 0px 0px 0px'}} {...a11yProps(0)} icon={<CgProfile size={20}/>} iconPosition='start'/>
+                        <Tab label={ isLess900 ? '' :"Parâmetros Fiscais"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20}/>} iconPosition='start' />
+                        <Tab label={ isLess900 ? '' :"Configurações do sistema"} title='Configurações do sistema' {...a11yProps(2)} icon={<MdSettingsInputComponent size={20}/>} iconPosition='start' />
                     </Tabs>
                 </Box>
+                <div style={{padding:'0 25px 25px 25px'}}>
                 <TabPanel value={value} index={0}>
                     <TabMyProfile/>
                 </TabPanel>
@@ -74,6 +79,7 @@ export const Settings = () => {
                 <TabPanel value={value} index={2}>
                     <TabSystem/>
                 </TabPanel>
+                </div>
             </Box>
         </S.Container>
 

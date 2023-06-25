@@ -33,8 +33,8 @@ export const DoughnutChart = () => {
                     MessageBox('warning',dataDoughnut.erro)
                 }
             }
-            catch (error){
-                MessageBox('warning','Erro ao consultar dados do gráfico de rosca !' + error)
+            catch (error:any){
+                MessageBox('warning','Erro ao consultar dados do gráfico de rosca !' + error.message)
             }
         }
         SearchData()

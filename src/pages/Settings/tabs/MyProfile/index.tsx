@@ -1,4 +1,4 @@
-import { useState ,useContext} from 'react';
+import { useState, useContext, useEffect,DragEvent,ChangeEvent } from 'react';
 import * as S from './style'
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
@@ -7,6 +7,8 @@ import { Divider } from "@mui/material";
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../hooks/useApi';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
+import { AiOutlineCloudUpload } from 'react-icons/ai';
+import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat, removeNotNumerics } from '../../../../utils/utils';
 
 
 export const TabMyProfile = () => {
@@ -22,51 +24,122 @@ export const TabMyProfile = () => {
     const [adressNeighborhoodCorporation, setAdressNeighborhoodCorporation] = useState('')
     const [adressCityCorporation, setAdressCityCorporation] = useState('')
     const [adressStateCorporation, setAdressStateCorporation] = useState<string | null>('')
-    const [fantasyNameCorporation,setFantasyNameCorporation] = useState('')
+    const [fantasyNameCorporation, setFantasyNameCorporation] = useState('')
     const [actualPass, setActualPass] = useState('')
     const [newPass, setNewPass] = useState('')
-    const [confirmNewPass, setConfirmNewPass] = useState('') 
+    const [confirmNewPass, setConfirmNewPass] = useState('')
+    const [changeImage, setChangeImage] = useState(false)
     const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
     const auth = useContext(AuthContext)
-    const {changePassword} = useApi()
-    const {MessageBox} = useMessageBoxContext()
+    const { changePassword, changeAboutCorporation, findAboutCorporation } = useApi()
+    const { MessageBox } = useMessageBoxContext()
+    const [dragOver, setDragOver] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<File|null>(null);
+  
+    const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
+      event.preventDefault();
+      setDragOver(true);
+    };
+  
+    const handleDragLeave = (event: DragEvent<HTMLLabelElement>) => {
+      event.preventDefault();
+      setDragOver(false);
+    };
+  
+    const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
+      event.preventDefault();
+      setDragOver(false);
+  
+      const file = event.dataTransfer.files[0];
+      setSelectedImage(file);
+      // Fazer chamada para API
+    };
+  
+    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files && event.target.files[0];
+      setSelectedImage(file);
+      // Fazer chamada para API
+    };
+  
 
-    async function handleChangePass(){
-        try{
-            if (!newPass||!actualPass||!confirmNewPass){
+    useEffect(() => {
+        const searchAboutCorporation = async () => {
+            try {
+                const dataFindAboutCorporation = await findAboutCorporation(auth.idUser)
+                if (!dataFindAboutCorporation.Success) {
+                    throw new Error("Falha ao buscar dados da empresa! " + dataFindAboutCorporation.erro)
+                }
+                const { resultAboutCorporation } = dataFindAboutCorporation
+                setNameCorporation(resultAboutCorporation.name)
+                setCnpjCorporation(cpfCnpjFormat(resultAboutCorporation.cnpj,resultAboutCorporation.cnpj))
+                setEmailCorporation(resultAboutCorporation.email)
+                setPhoneNumberCorporation(phoneNumberFormat(resultAboutCorporation.phone,resultAboutCorporation.phone))
+                setCellNumberCorporation(cellNumberFormat(resultAboutCorporation.cellPhone,resultAboutCorporation.cellPhone))
+                setAdressCepCorporation(cepFormat(resultAboutCorporation.adressCep,resultAboutCorporation.adressCep))
+                setAdressStreetCorporation(resultAboutCorporation.adressStreet)
+                setAdressNumberCorporation(resultAboutCorporation.adressNumber)
+                setAdressNeighborhoodCorporation(resultAboutCorporation.adressNeighborhood)
+                setAdressCityCorporation(resultAboutCorporation.adressCity)
+                setAdressStateCorporation(resultAboutCorporation.adressState)
+                setFantasyNameCorporation(resultAboutCorporation.fantasyName)
+            } catch (error: any) {
+                MessageBox('warning', error.message)
+            }
+
+        }
+        searchAboutCorporation()
+    }, [])
+
+    async function handleChangePass() {
+        try {
+            if (!newPass || !actualPass || !confirmNewPass) {
                 throw new Error("Informe todos campos!")
             }
+            if (newPass !== confirmNewPass){
+                throw new Error("Nova senha não confere com a confirmação da nova senha!")
+            }
             const dataChangePass = await changePassword(finalDataChangePass)
-            if (!dataChangePass.Success){
+            if (!dataChangePass.Success) {
                 throw new Error("Erro ao atualizar senha! " + dataChangePass.erro)
             }
-            MessageBox('success','Senha atualizada com sucesso!')
+            MessageBox('success', 'Senha atualizada com sucesso!')
             setNewPass('')
             setActualPass('')
             setConfirmNewPass('')
-        }catch(error:any){
-            MessageBox('error',error.message)
+        } catch (error: any) {
+            MessageBox('error', error.message)
         }
     }
-    
+    async function handleChangeAboutCorporation() {
+        try {
+            const dataChangeAboutCorporation = await changeAboutCorporation(finalDataChangeAboutCorporation)
+            if (!dataChangeAboutCorporation.Success) {
+                throw new Error("Erro ao atualizar dados da empresa! " + dataChangeAboutCorporation.erro)
+            }
+            MessageBox('success', 'Dados atualizados com sucesso!')
+        } catch (error: any) {
+            MessageBox('error', error.message)
+        }
+    }
+
     const finalDataChangeAboutCorporation = {
         storeId: auth.idUser,
-        nameCorporation,
-        cnpjCorporation,
-        emailCorporation,
-        phoneNumberCorporation,
-        cellNumberCorporation,
-        adressCepCorporation, 
-        adressStreetCorporation, 
-        adressNumberCorporation, 
-        adressNeighborhoodCorporation, 
-        adressCityCorporation, 
-        adressStateCorporation, 
-        fantasyNameCorporation,
+        name: nameCorporation,
+        cnpj: removeNotNumerics(cnpjCorporation),
+        //email: emailCorporation,
+        phone: removeNotNumerics(phoneNumberCorporation),
+        cellPhone: removeNotNumerics(cellNumberCorporation),
+        adressCep: removeNotNumerics(adressCepCorporation),
+        adressStreet: adressStreetCorporation,
+        adressNumber: adressNumberCorporation,
+        adressNeighborhood: adressNeighborhoodCorporation,
+        adressCity: adressCityCorporation,
+        adressState: adressStateCorporation,
+        fantasyName: fantasyNameCorporation,
     }
 
     const finalDataChangePass = {
-        storeId:auth.idUser,
+        storeId: auth.idUser,
         actualPass,
         newPass,
         confirmNewPass
@@ -80,7 +153,7 @@ export const TabMyProfile = () => {
                 const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
-                    MessageBox('error','CEP invalido')
+                    MessageBox('error', 'CEP invalido')
                 }
                 else {
                     setAdressStreetCorporation(data.logradouro)
@@ -89,8 +162,8 @@ export const TabMyProfile = () => {
                     setAdressStateCorporation(data.uf)
                 }
             }
-            catch (error) {
-                console.log(error)
+            catch (error: any) {
+                MessageBox('info', error.message)
             }
         }
 
@@ -100,10 +173,25 @@ export const TabMyProfile = () => {
         <S.Container>
             <S.DivForm>
                 <S.DivPicture>
-                    <img width={100} src="https://s3-sa-east-1.amazonaws.com/projetos-artes/fullsize%2F2013%2F09%2F18%2F23%2FWDL-Logo-31737_33419_054801853_1173429928.jpg"></img>
-                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center',marginLeft:15 }}>
+                    <img width={150} style={{maxHeight:140}} src={selectedImage ? URL.createObjectURL(selectedImage):"https://cdn-icons-png.flaticon.com/512/4194/4194756.png"}></img>
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: 15 }}>
                         <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
-                            <S.ButtonChangeImg><b>Alterar</b></S.ButtonChangeImg>
+
+                            {changeImage ?
+                                < >
+                                <S.labelChangeImg onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                                dragOver={dragOver}>
+                                    <AiOutlineCloudUpload size='30'/>
+                                    Selecione ou arraste uma imagem
+                                <input type='file' onChange={handleFileChange} />
+                                </S.labelChangeImg>
+                                </>
+                                
+                                :
+                                <S.ButtonChangeImg onClick={()=>setChangeImage(true)}><b>Alterar</b></S.ButtonChangeImg>
+                            }
                             <S.ButtonDeletar><b>Deletar</b></S.ButtonDeletar>
                         </div>
                         <S.labelRecomendationsImg> Dimensões recomendadas: 200x200, tamanho maximo: 5mb </S.labelRecomendationsImg>
@@ -136,17 +224,7 @@ export const TabMyProfile = () => {
                     <TextField
                         value={cnpjCorporation}
                         onChange={(e) => {
-                            setCnpjCorporation(e.target.value.replace(/\D/g, '').length === 11 ?
-                                e.target.value.replace(/[^0-9]/g, '')
-                                    .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
-                                : e.target.value.replace(/\D/g, '').length === 14 ?
-                                    e.target.value.replace(/[^0-9]/g, '')
-                                        .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "$1.$2.$3/$4-$5")
-                                    : e.target.value.replace(/[^0-9]/g, '').length > 14 ?
-                                        cnpjCorporation
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '')
-                            )
+                            setCnpjCorporation(cpfCnpjFormat(e.target.value,cnpjCorporation))
                         }}
                         label="CNPJ"
                         id="outlined-basic"
@@ -156,15 +234,15 @@ export const TabMyProfile = () => {
 
                     <TextField
                         value={fantasyNameCorporation}
-                        onChange={(e) => {setFantasyNameCorporation(e.target.value) }}
+                        onChange={(e) => { setFantasyNameCorporation(e.target.value) }}
                         label="Nome Fantasia"
                         id="outlined-basic"
                         variant="outlined"
                         sx={{ width: '49%' }}
                     />
 
-                   
-                   
+
+
                 </label>
 
                 <TextField
@@ -180,6 +258,7 @@ export const TabMyProfile = () => {
                     label="E-mail"
                     variant="outlined"
                     sx={{ width: '100%' }}
+                    disabled={true}
                 />
 
 
@@ -187,21 +266,7 @@ export const TabMyProfile = () => {
                     <TextField
                         value={phoneNumberCorporation}
                         onChange={(e) => {
-                            setPhoneNumberCorporation(
-                                e.target.value.replace(/[^0-9]/g, '').length === 2 ?
-                                    e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
-                                    :
-                                    e.target.value.replace(/[^0-9]/g, '').length === 3 ?
-                                        e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length === 10 ?
-                                            e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3")
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '').length > 10 ?
-                                                phoneNumberCorporation
-                                                :
-                                                e.target.value.replace(/[^0-9]/g, '')
-                            )
+                            setPhoneNumberCorporation(phoneNumberFormat(e.target.value,phoneNumberCorporation))
                         }}
                         id="outlined-basic"
                         label="Telefone"
@@ -212,21 +277,7 @@ export const TabMyProfile = () => {
                     <TextField
                         value={cellNumberCorporation}
                         onChange={(e) => {
-                            setCellNumberCorporation(
-                                e.target.value.replace(/[^0-9]/g, '').length === 2 ?
-                                    e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
-                                    :
-                                    e.target.value.replace(/[^0-9]/g, '').length === 3 ?
-                                        e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length === 11 ?
-                                            e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3")
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '').length > 11 ?
-                                                cellNumberCorporation
-                                                :
-                                                e.target.value.replace(/[^0-9]/g, '')
-                            )
+                            setCellNumberCorporation(cellNumberFormat(e.target.value,cellNumberCorporation))
                         }}
                         id="outlined-basic"
                         label="Celular"
@@ -241,14 +292,7 @@ export const TabMyProfile = () => {
                     <TextField
                         value={adressCepCorporation}
                         onChange={(e) => {
-                            setAdressCepCorporation(
-                                e.target.value.replace(/[^0-9]/g, '').length === 8 ?
-                                    e.target.value.toString().replace(/(\d{5})(\d{3})/g, "$1-$2")
-                                    :
-                                    e.target.value.replace(/[^0-9]/g, '').length > 8 ?
-                                        adressCepCorporation
-                                        :
-                                        e.target.value)
+                            setAdressCepCorporation(cepFormat(e.target.value,adressCepCorporation))
                         }}
                         onBlur={(e) => handleConsultCep(e.target.value)}
                         id="outlined-basic"
@@ -337,7 +381,7 @@ export const TabMyProfile = () => {
                         } />
                 </div>
 
-                <S.ButtonSave ><b>Salvar</b></S.ButtonSave>
+                <S.ButtonSave onClick={() => handleChangeAboutCorporation()} ><b>Salvar</b></S.ButtonSave>
             </S.DivForm>
             <Divider sx={{ width: '100%' }} />
 
@@ -367,14 +411,14 @@ export const TabMyProfile = () => {
                     id="outlined-basic"
                     label="Repita Nova Senha"
                     variant="outlined"
-                    sx={{ width: '250px' }} />
+                    sx={{  width: '250px' }} />
 
             </S.DivChangePass>
-            <S.ButtonSave onClick={()=>handleChangePass()}><b>Salvar</b></S.ButtonSave>
+            <S.ButtonSave onClick={() => handleChangePass()}><b>Salvar</b></S.ButtonSave>
 
         </S.Container>
 
 
-        
+
     )
 }

@@ -124,5 +124,13 @@ export const useApi = () => ({
     findRadarChartData: async (userId:number) => {
         const response = await api.post('/charts/radar', {userId})
         return response.data
+    },
+    changeAboutCorporation: async(data:object) => {
+        const response = await api.patch('/changeaboutcorporation', {data})
+        return response.data
+    },
+    findAboutCorporation: async(userId:number) => {
+        const response = await api.get(`/aboutCorporation?storeId=${userId}`)
+        return response.data
     }
 });

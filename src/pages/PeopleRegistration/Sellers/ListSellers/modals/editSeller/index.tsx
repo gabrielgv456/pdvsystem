@@ -16,6 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
+import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat } from '../../../../../../utils/utils';
 
 interface ListSellerstoEditSellerProps {
     seller: SellersReturnApiProps;
@@ -28,17 +29,7 @@ interface ListSellerstoEditSellerProps {
 
 export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
 
-const cpfcnpjformated =
-        props.seller.cpf.replace(/\D/g, '').length === 11 ?
-            props.seller.cpf.replace(/\D/g, '')
-                .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
-            : props.seller.cpf.replace(/\D/g, '').length === 14 ?
-                props.seller.cpf.replace(/\D/g, '')
-                    .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "$1.$2.$3/$4-$5")
-                : props.seller.cpf.replace(/\D/g, '').length > 14 ?
-                    props.seller.cpf
-                    :
-                    props.seller.cpf;
+    const cpfcnpjformated = cpfCnpjFormat(props.seller.cpf,props.seller.cpf,true);
     const cepformated = props.seller.adressCep !== null ? props.seller.adressCep.toString().replace(/(\d{5})(\d{3})/g, "$1-$2") : ""
     const cellformated = props.seller.cellNumber !== null ? props.seller.cellNumber.replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3") : ""
     const telformated = props.seller.phoneNumber !== null ? props.seller.phoneNumber.replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3") : ""
@@ -86,8 +77,8 @@ const cpfcnpjformated =
                     setvalueInputSellerAdressState(data.uf)
                 }
             }
-            catch (error) {
-                console.log(error)
+            catch (error:any) {
+                MessageBox('info',error.message)
             }
         }
 
@@ -129,8 +120,8 @@ const cpfcnpjformated =
                         MessageBox('error',data.erro)
                     }
                 }
-                catch (error) {
-                    MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
+                catch (error:any) {
+                    MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
                 }
             }
             else {
@@ -145,8 +136,8 @@ const cpfcnpjformated =
                             MessageBox('error',data.erro)
                         }
                     }
-                    catch (error) {
-                        MessageBox('error',`Falha ao enviar dados. ERRO:${error}`)
+                    catch (error:any) {
+                        MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
                     }
                 }
                 else {
@@ -283,21 +274,7 @@ const cpfcnpjformated =
                         <TextField
                             value={valueInputSellerPhoneNumber}
                             onChange={(e) => {
-                                setvalueInputSellerPhoneNumber(
-                                    e.target.value.replace(/[^0-9]/g, '').length === 2 ?
-                                        e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length === 3 ?
-                                            e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '').length === 10 ?
-                                                e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3")
-                                                :
-                                                e.target.value.replace(/[^0-9]/g, '').length > 10 ?
-                                                    valueInputSellerPhoneNumber
-                                                    :
-                                                    e.target.value.replace(/[^0-9]/g, '')
-                                )
+                                setvalueInputSellerPhoneNumber(phoneNumberFormat(e.target.value,valueInputSellerPhoneNumber) )
                             }}
                             id="outlined-basic"
                             label="Telefone"
@@ -308,21 +285,7 @@ const cpfcnpjformated =
                         <TextField
                             value={valueInputSellerCellNumber}
                             onChange={(e) => {
-                                setvalueInputSellerCellNumber(
-                                    e.target.value.replace(/[^0-9]/g, '').length === 2 ?
-                                        e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length === 3 ?
-                                            e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '').length === 11 ?
-                                                e.target.value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3")
-                                                :
-                                                e.target.value.replace(/[^0-9]/g, '').length > 11 ?
-                                                    valueInputSellerCellNumber
-                                                    :
-                                                    e.target.value.replace(/[^0-9]/g, '')
-                                )
+                                setvalueInputSellerCellNumber(cellNumberFormat(e.target.value,valueInputSellerCellNumber))
                             }}
                             id="outlined-basic"
                             label="Celular"
@@ -337,14 +300,7 @@ const cpfcnpjformated =
                         <TextField
                             value={valueInputSellerAdressCep}
                             onChange={(e) => {
-                                setvalueInputSellerAdressCep(
-                                    e.target.value.replace(/[^0-9]/g, '').length === 8 ?
-                                        e.target.value.toString().replace(/(\d{5})(\d{3})/g, "$1-$2")
-                                        :
-                                        e.target.value.replace(/[^0-9]/g, '').length > 8 ?
-                                            valueInputSellerAdressCep
-                                            :
-                                            e.target.value)
+                                setvalueInputSellerAdressCep(cepFormat(e.target.value,valueInputSellerAdressCep))
                             }}
                             onBlur={(e) => handleConsultCep(e.target.value)}
                             id="outlined-basic"

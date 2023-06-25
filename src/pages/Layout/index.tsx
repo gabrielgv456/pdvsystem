@@ -100,7 +100,7 @@ export default function LayoutDefault(props: Props) {
               {index === 3 && <PaidIcon className="Icons" />}
               {index === 4 && <BsFillPeopleFill size="22" className="Icons" />}
               {index === 5 && <PieChartIcon className="Icons" />}
-              {index === 6 && <SettingsIcon className="Icons"/>}
+              {index === 6 && <SettingsIcon style={{fontSize:'23px'}} className="Icons"/>}
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>

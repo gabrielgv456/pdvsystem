@@ -16,7 +16,8 @@ import { ClientsRegistration } from './pages/PeopleRegistration/Clients';
 import { SellersRegistration } from './pages/PeopleRegistration/Sellers';
 import { useState } from 'react';
 import { Settings } from './pages/Settings';
-import CustomizedSnackbars from './utils/utils';
+import { CustomizedSnackbars } from './utils/utils';
+
 
 function App() {
   const Theme = useDarkMode();
@@ -57,6 +58,7 @@ function App() {
       MuiOutlinedInput: {
         styleOverrides: {
           notchedOutline: { borderColor: Theme.DarkMode ? '#757575' : '' }, // ALTERAR BORDA DOS TEXTFIELDS
+          input:{ color: Theme.DarkMode ? '#fff' : '#000'}
           //root:{":hover $notchedOutline": {borderColor:'red'}},
         }
       },
