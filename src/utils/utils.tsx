@@ -6,10 +6,12 @@ import { useMessageBoxContext } from '../contexts/MessageBox/MessageBoxContext';
 
 
 export function removeNotNumerics(text: string) {
+  if (!text) return ''
   return (text.replace(/[^0-9]/g, ''))
 }
 
 export function cellNumberFormat(text: string, max: string) {
+  if (!text) return ''
   return text.replace(/[^0-9]/g, '').length === 2 ?
     text.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
     :
@@ -26,6 +28,7 @@ export function cellNumberFormat(text: string, max: string) {
 }
 
 export function cpfCnpjFormat(text: string, max: string,onlyCpf : boolean = false) {
+  if (!text) return ''
   return text.replace(/\D/g, '').length === 11 ?
     text.replace(/[^0-9]/g, '')
       .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
@@ -39,6 +42,7 @@ export function cpfCnpjFormat(text: string, max: string,onlyCpf : boolean = fals
 }
 
 export function phoneNumberFormat(text: string, max: string) {
+  if (!text) return ''
   return text.replace(/[^0-9]/g, '').length === 2 ?
     text.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
     :
@@ -55,6 +59,7 @@ export function phoneNumberFormat(text: string, max: string) {
 }
 
 export function cepFormat(text: string, max: string) {
+  if (!text) return ''
   return text.replace(/[^0-9]/g, '').length === 8 ?
     text.toString().replace(/(\d{5})(\d{3})/g, "$1-$2")
     :

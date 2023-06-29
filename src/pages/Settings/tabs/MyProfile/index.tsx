@@ -124,18 +124,18 @@ export const TabMyProfile = () => {
 
     const finalDataChangeAboutCorporation = {
         storeId: auth.idUser,
-        name: nameCorporation,
-        cnpj: removeNotNumerics(cnpjCorporation),
+        name: nameCorporation === '' ? null : nameCorporation,
+        cnpj: cnpjCorporation === '' ? null : removeNotNumerics(cnpjCorporation),
         //email: emailCorporation,
-        phone: removeNotNumerics(phoneNumberCorporation),
-        cellPhone: removeNotNumerics(cellNumberCorporation),
-        adressCep: removeNotNumerics(adressCepCorporation),
-        adressStreet: adressStreetCorporation,
-        adressNumber: adressNumberCorporation,
-        adressNeighborhood: adressNeighborhoodCorporation,
-        adressCity: adressCityCorporation,
-        adressState: adressStateCorporation,
-        fantasyName: fantasyNameCorporation,
+        phone: phoneNumberCorporation === '' ? null : removeNotNumerics(phoneNumberCorporation),
+        cellPhone: cellNumberCorporation === '' ? null : removeNotNumerics(cellNumberCorporation),
+        adressCep: adressCepCorporation === '' ? null : removeNotNumerics(adressCepCorporation),
+        adressStreet: adressStreetCorporation === '' ? null : adressStreetCorporation,
+        adressNumber: adressNumberCorporation === '' ? null : adressNumberCorporation,
+        adressNeighborhood: adressNeighborhoodCorporation === '' ? null : adressNeighborhoodCorporation,
+        adressCity: adressCityCorporation === '' ? null : adressCityCorporation,
+        adressState: adressStateCorporation === '' ? null : adressStateCorporation,
+        fantasyName: fantasyNameCorporation === '' ? null : fantasyNameCorporation 
     }
 
     const finalDataChangePass = {

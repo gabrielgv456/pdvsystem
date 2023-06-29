@@ -1,11 +1,11 @@
 import { useState } from "react"
-import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider"
+import { useDarkMode } from "../../../../contexts/DarkMode/DarkModeProvider"
 import * as S from "./style"
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { BsArrowDownLeftCircle, BsArrowUpRightCircle } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
-import { TransactionsProductsReturnApi } from "../index"
+import { TransactionsProductsReturnApi } from "../../index"
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 interface indextoModalTransactionsProducts {
