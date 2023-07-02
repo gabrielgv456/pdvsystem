@@ -1,8 +1,7 @@
-import styled from "styled-components";
-import { darken } from "polished";
+import styled from 'styled-components'
 
-interface DarkModeProps{
-    isDarkMode:boolean
+interface DarkModeProps {
+    isDarkMode: boolean
 }
 
 export const ButtonAddProductModal = styled.button <DarkModeProps> `
@@ -30,14 +29,4 @@ export const DivModalAddProduct = styled.div `
     align-items: center;
     flex-wrap: wrap;
     margin: 0px 0 10px 0;
-`
-
-export const ButtonCloseModal = styled.button <DarkModeProps>`
-    color: ${props => (props.isDarkMode ? '#fff' : '#000')};
-    text-decoration: none;
-    border: none;
-    background: none;
-    &:hover{
-        color: ${darken(0.02, 'gray')}
-    }
 `
