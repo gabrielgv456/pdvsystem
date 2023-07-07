@@ -10,24 +10,24 @@ export const TabFiscal = () => {
 
     return (
         <S.DivModalAddProduct>
-            <b style={{display:'flex',alignSelf:'flex-start'}}>Principal</b>
+            <b style={{ display: 'flex', alignSelf: 'flex-start' }}>Principal</b>
             <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
-                    }}
-                    noOptionsText="Não encontrado"
-                    id="controllable-states-demo"
-                    options={options}
-                    sx={{ width: '48%' }}
-                    renderInput={(params) =>
-                        <TextField
-                            {...params}
-                            label="ICMS Origem"
-                        />
-                    } />
-            
-            <b style={{display:'flex',alignSelf:'flex-start'}}>NFe (Nota Fiscal Eletrônica)</b>
+                value={inputvalueProduct}
+                onChange={(event: any, newValue: string | null) => {
+                    setinputvalueProduct(newValue);
+                }}
+                noOptionsText="Não encontrado"
+                id="controllable-states-demo"
+                options={options}
+                sx={{ width: '48%' }}
+                renderInput={(params) =>
+                    <TextField
+                        {...params}
+                        label="ICMS Origem"
+                    />
+                } />
+
+            <b style={{ display: 'flex', alignSelf: 'flex-start' }}>NFe (Nota Fiscal Eletrônica)</b>
             <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
 
                 <TextField
@@ -37,28 +37,7 @@ export const TabFiscal = () => {
                     id="outlined-basic"
                     label="CFOP"
                     variant="outlined"
-                    sx={{ width: '21%' }} />
-                <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
-                    type="number"
-                    id="outlined-basic"
-                    label="Red. BC ICMS(%)"
-                    variant="outlined"
-                    sx={{ width: '38%' }} disabled />
-
-                <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
-                    type="number"
-                    id="outlined-basic"
-                    label="Alíquota ICMS(%)"
-                    variant="outlined"
-                    sx={{ width: '38%' }} disabled />
-            </section>
-            
-            <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-               
+                    sx={{ width: '49%' }} />
                 <Autocomplete
                     value={inputvalueProduct}
                     onChange={(event: any, newValue: string | null) => {
@@ -67,15 +46,37 @@ export const TabFiscal = () => {
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
                     options={options}
-                    sx={{ width: '48%' }}
+                    sx={{ width: '49%' }}
                     renderInput={(params) =>
                         <TextField
                             {...params}
                             label="ICMS - CST"
                         />
                     } />
+
             </section>
-            <b style={{display:'flex',alignSelf:'flex-start'}}>NFCe (Nota Fiscal ao Consumidor Eletrônica)</b>
+
+            <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <TextField
+                    value={inputProductsModalQuantity}
+                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    type="number"
+                    id="outlined-basic"
+                    label="Red. BC ICMS(%)"
+                    variant="outlined"
+                    sx={{ width: '49%' }} disabled />
+
+                <TextField
+                    value={inputProductsModalQuantity}
+                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    type="number"
+                    id="outlined-basic"
+                    label="Alíquota ICMS(%)"
+                    variant="outlined"
+                    sx={{ width: '49%' }} disabled />
+
+            </section>
+            <b style={{ display: 'flex', alignSelf: 'flex-start' }}>NFCe (Nota Fiscal ao Consumidor Eletrônica)</b>
             <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
 
                 <TextField
@@ -85,28 +86,8 @@ export const TabFiscal = () => {
                     id="outlined-basic"
                     label="CFOP"
                     variant="outlined"
-                    sx={{ width: '21%' }} />
-                <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
-                    type="number"
-                    id="outlined-basic"
-                    label="Red. BC ICMS(%)"
-                    variant="outlined"
-                    sx={{ width: '38%' }} disabled />
+                    sx={{ width: '49%' }} />
 
-                <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
-                    type="number"
-                    id="outlined-basic"
-                    label="Alíquota ICMS(%)"
-                    variant="outlined"
-                    sx={{ width: '38%' }} disabled />
-            </section>
-            
-            <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-               
                 <Autocomplete
                     value={inputvalueProduct}
                     onChange={(event: any, newValue: string | null) => {
@@ -115,13 +96,35 @@ export const TabFiscal = () => {
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
                     options={options}
-                    sx={{ width: '48%' }}
+                    sx={{ width: '49%' }}
                     renderInput={(params) =>
                         <TextField
                             {...params}
                             label="ICMS - CST"
                         />
                     } />
+
+            </section>
+
+            <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <TextField
+                    value={inputProductsModalQuantity}
+                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    type="number"
+                    id="outlined-basic"
+                    label="Red. BC ICMS(%)"
+                    variant="outlined"
+                    sx={{ width: '49%' }} disabled />
+
+                <TextField
+                    value={inputProductsModalQuantity}
+                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    type="number"
+                    id="outlined-basic"
+                    label="Alíquota ICMS(%)"
+                    variant="outlined"
+                    sx={{ width: '49%' }} disabled />
+
             </section>
         </S.DivModalAddProduct>
     )

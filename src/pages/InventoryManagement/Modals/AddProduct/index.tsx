@@ -93,6 +93,7 @@ export const ModalAddProduct = (props: PropsModalAddProduct) => {
                 color: Theme.DarkMode ? '#ffffff' : '#000',
                 border: Theme.DarkMode ? '1px solid silver' : '',
                 boxShadow: 24, p: 4,
+                padding: '15px 10px 0px 10px'
             }}
             >
                     <h3 style={{ width: 'max-content',margin:'0 auto' }}>Cadastro de produto</h3>

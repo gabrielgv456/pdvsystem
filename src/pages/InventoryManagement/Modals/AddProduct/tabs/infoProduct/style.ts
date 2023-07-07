@@ -1,7 +1,12 @@
 import styled from 'styled-components'
+import { lighten } from 'polished'
 
 interface DarkModeProps {
     isDarkMode: boolean
+}
+
+interface DragOverProps{
+    dragOver:boolean
 }
 
 export const ButtonAddProductModal = styled.button <DarkModeProps> `
@@ -25,8 +30,25 @@ export const ButtonAddProductModal = styled.button <DarkModeProps> `
 export const DivModalAddProduct = styled.div `
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     align-items: center;
     flex-wrap: wrap;
     margin: 0px 0 10px 0;
+`
+
+export const labelChangeImg = styled.label <DragOverProps>`
+    font-size: 0.7rem;
+    border: 1px solid var(--Green);
+    align-items: center;
+    flex-direction: column;
+    display:flex;
+    color: var(--Green);
+    padding: 7px;
+    border-radius: 6px;
+    background: ${props=>props.dragOver? lighten(0.42, '#33CC95') :'none'};
+    gap:5px;
+    transition: background-color 0.2s;
+    &:hover{
+        background:${lighten(0.42, '#33CC95')};
+    }
 `

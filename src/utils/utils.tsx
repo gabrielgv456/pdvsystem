@@ -6,12 +6,12 @@ import { useMessageBoxContext } from '../contexts/MessageBox/MessageBoxContext';
 
 
 export function removeNotNumerics(text: string) {
-  if (!text) return ''
+  if (!text) { return '' }
   return (text.replace(/[^0-9]/g, ''))
 }
 
 export function cellNumberFormat(text: string, max: string) {
-  if (!text) return ''
+  if (!text) { return '' }
   return text.replace(/[^0-9]/g, '').length === 2 ?
     text.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
     :
@@ -27,8 +27,8 @@ export function cellNumberFormat(text: string, max: string) {
           text.replace(/[^0-9]/g, '')
 }
 
-export function cpfCnpjFormat(text: string, max: string,onlyCpf : boolean = false) {
-  if (!text) return ''
+export function cpfCnpjFormat(text: string, max: string, onlyCpf: boolean = false) {
+  if (!text) { return '' }
   return text.replace(/\D/g, '').length === 11 ?
     text.replace(/[^0-9]/g, '')
       .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
@@ -38,11 +38,11 @@ export function cpfCnpjFormat(text: string, max: string,onlyCpf : boolean = fals
       : text.replace(/[^0-9]/g, '').length > 14 ?
         max
         :
-       onlyCpf ? max : text.replace(/[^0-9]/g, '')
+        onlyCpf ? max : text.replace(/[^0-9]/g, '')
 }
 
 export function phoneNumberFormat(text: string, max: string) {
-  if (!text) return ''
+  if (!text) { return '' }
   return text.replace(/[^0-9]/g, '').length === 2 ?
     text.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
     :
@@ -59,7 +59,7 @@ export function phoneNumberFormat(text: string, max: string) {
 }
 
 export function cepFormat(text: string, max: string) {
-  if (!text) return ''
+  if (!text) { return '' }
   return text.replace(/[^0-9]/g, '').length === 8 ?
     text.toString().replace(/(\d{5})(\d{3})/g, "$1-$2")
     :
@@ -67,6 +67,26 @@ export function cepFormat(text: string, max: string) {
       max
       :
       text
+}
+export function FormatCurrencytoFloatdb(value: string | null) {
+  if (!value) { return 0 };
+  let formatvalue = value
+  formatvalue = formatvalue.replace(/\D/g, "")
+  formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
+  return (parseFloat(formatvalue))
+}
+
+export function FormatPercent(value: string) {
+  if (!value) { return '' }
+  value = value.replace(/[^\d.]/g, '');
+  const valueInt = parseFloat(value)
+  if (isNaN(valueInt)) { return value}
+  return valueInt.toFixed(2) + '%'
+}
+
+export function currencyRemoveNotNumbers (value:string|null) {
+  if (!value) { return ''}
+  return value.replace(/[^\d.]/g, '')
 }
 
 export function CustomizedSnackbars() {
