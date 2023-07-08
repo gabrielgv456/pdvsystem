@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useMessageBoxContext } from '../contexts/MessageBox/MessageBoxContext';
+import ncm from './NCM.json'
 
 
 export function removeNotNumerics(text: string) {
@@ -80,14 +81,15 @@ export function FormatPercent(value: string) {
   if (!value) { return '' }
   value = value.replace(/[^\d.]/g, '');
   const valueInt = parseFloat(value)
-  if (isNaN(valueInt)) { return value}
+  if (isNaN(valueInt)) { return value }
   return valueInt.toFixed(2) + '%'
 }
 
-export function currencyRemoveNotNumbers (value:string|null) {
-  if (!value) { return ''}
+export function currencyRemoveNotNumbers(value: string | null) {
+  if (!value) { return '' }
   return value.replace(/[^\d.]/g, '')
 }
+
 
 export function CustomizedSnackbars() {
 

@@ -132,5 +132,9 @@ export const useApi = () => ({
     findAboutCorporation: async(userId:number) => {
         const response = await api.get(`/aboutCorporation?storeId=${userId}`)
         return response.data
+    },
+    findNCM: async() => {
+        const response = await api.get(`/listNCM`)
+        return response.data
     }
 });

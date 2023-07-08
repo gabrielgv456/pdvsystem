@@ -3,7 +3,7 @@ import Switch from '@mui/material/Switch';
 import { CurrencyMask, CurrencyMaskValue } from '../../../../../../masks/CurrencyMask';
 import { MdFileDownloadDone } from 'react-icons/md';
 import TextField from '@mui/material/TextField';
-import { useContext, useState, DragEvent, ChangeEvent } from 'react';
+import { useContext, useState, DragEvent, ChangeEvent, useEffect } from 'react';
 import { useApi } from '../../../../../../hooks/useApi';
 import Autocomplete from '@mui/material/Autocomplete';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
@@ -13,26 +13,58 @@ import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { FormatCurrencytoFloatdb, FormatPercent, currencyRemoveNotNumbers, removeNotNumerics } from '../../../../../../utils/utils';
 import { info } from 'console';
 
+
 interface tabInfoProductProps {
     setisModalSucessOpen: (value: boolean) => void;
     setisModalAddProductOpen: (value: boolean) => void
 }
 
+interface ncmType {
+    Codigo: string,
+    Descricao: string
+}
+
 export const TabInfoProduct = (props: tabInfoProductProps) => {
 
-    const { addProducts } = useApi()
+    const { addProducts, findNCM } = useApi()
     const auth = useContext(AuthContext)
     const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(null)
     const [inputCostProduct, setInputCostProduct] = useState<string | null>(null)
     const [inputProfitMargin, setInputProfitMargin] = useState<string | null>(null)
     const [inputProductsModalQuantity, setinputProductsModalQuantity] = useState<number | null>(null)
+    const [inputBarCode, setInputBarCode] = useState<string | null>(null)
+
+    const [selectedItemType, setSelectedItemType] = useState<string | null>(null)
+    const [selectedUnitMeasuremnt, setSelectedUnitMeasurement] = useState<string | null>('UN')
     const [isProductActiveModalAddProduct, setisProductActiveModalAddProduct] = useState(true)
     const [inputProductsModalName, setinputProductsModalName] = useState("")
     const { MessageBox } = useMessageBoxContext()
     const Theme = useDarkMode()
-    const options = ['teste']
+    const optionsItensType = ['00 - Mercadoria para revenda', '01 - Matéria Prima', '02 - Embalagem', '03 - Produto em Processo', '04 - Produto Acabado', '05 - Subproduto', '06 - Produto Intermediario', '07 - Material de uso e consumo', '08 - Ativo imobilizado', '09 - Serviços', '10 - Outros Insumos']
+    const optionsUnitMeasurement = ['UN']
+    const [ncmCode, setNcmCode] = useState<ncmType | null>(null)
+    const [optionsNCM, setOptionsNCM] = useState<ncmType[]>([])
     const [dragOver, setDragOver] = useState(false);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+    useEffect(() => {
+        async function searchNCM() {
+            try {
+                const dataFindNCM = await findNCM()
+                if (!dataFindNCM.Success) {
+                    throw new Error('Falha ao obter lista NCM!')
+                }
+                setOptionsNCM(dataFindNCM.ncmList)
+            }
+            catch (error: any) {
+                MessageBox('info', error.message)
+            }
+        }
+        searchNCM();
+    }, [])
+
+
+
 
     const changeValueProduct = async (value: string) => {
         setinputvalueProduct(CurrencyMaskValue(value))
@@ -49,7 +81,9 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         const costProduct = FormatCurrencytoFloatdb(value ?? '0')
         const profit = valueProduct - costProduct;
         const percentualProft = valueProduct === 0 ? 0 : (profit / costProduct) * 100;
+
         setInputProfitMargin(percentualProft.toFixed(2) + '%')
+
     }
 
     const changeProfitProduct = async (value: string) => {
@@ -62,11 +96,10 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
             return
         }
         const profit = FormatCurrencytoFloatdb(FormatPercent(value) ?? '0')
-        const newValueProduct = costProduct + (costProduct * (profit / 100))
-        setinputvalueProduct(CurrencyMaskValue(newValueProduct + ""))
-       
-    }
+        const newValueProduct = parseFloat((costProduct + (costProduct * (profit / 100))) + "").toFixed(2)
+        setinputvalueProduct("R$" + newValueProduct.replace('.', ','))
 
+    }
 
 
     const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
@@ -98,6 +131,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
 
         if (inputProductsModalName !== ""
             && finaldataAddProductsToSendApi.value > 0
+            && finaldataAddProductsToSendApi.cost > 0
             && inputProductsModalQuantity
             && inputProductsModalQuantity > 0) {
             try {
@@ -125,6 +159,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         userId: auth.idUser,
         name: inputProductsModalName,
         value: FormatCurrencytoFloatdb(inputvalueProduct),
+        cost: FormatCurrencytoFloatdb(inputCostProduct),
         quantity: inputProductsModalQuantity,
         active: isProductActiveModalAddProduct
     }
@@ -150,7 +185,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                     value={inputProductsModalName}
                     onChange={(e) => setinputProductsModalName(e.target.value)}
                     id="outlined-basic"
-                    label="Nome do Produto"
+                    label="Nome do Produto*"
                     variant="outlined"
                     autoFocus
                     sx={{ width: '100%' }} />
@@ -159,23 +194,29 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                         value={inputCostProduct}
                         onChange={(e) => changeCostProduct(e.target.value)}
                         id="outlined-basic"
-                        label="Custo"
+                        label="Custo*"
                         variant="outlined"
-                        sx={{ width: '29%' }} />
+                        sx={{ width: '32%' }} />
                     <TextField
                         value={inputProfitMargin}
                         onChange={(e) => changeProfitProduct(e.target.value)}
                         id="outlined-basic"
-                        label="Margem de Lucro (%)"
+                        label="M. Lucro (%)*"
+                        InputLabelProps={{
+                            shrink: !!inputProfitMargin
+                        }}
                         variant="outlined"
-                        sx={{ width: '38%' }} />
+                        sx={{ width: '32%' }} />
                     <TextField
                         value={inputvalueProduct}
                         onChange={(e) => changeValueProduct(e.target.value)}
                         id="outlined-basic"
-                        label="Valor"
+                        InputLabelProps={{
+                            shrink: !!inputvalueProduct
+                        }}
+                        label="Preço venda*"
                         variant="outlined"
-                        sx={{ width: '29%' }} />
+                        sx={{ width: '32%' }} />
                 </section>
                 <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
 
@@ -184,36 +225,45 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                         onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
                         type="number"
                         id="outlined-basic"
-                        label="Estoque"
+                        label="Estoque*"
                         variant="outlined"
-                        sx={{ width: '25%' }} />
+                        sx={{ width: '22%' }} />
                     <TextField
-                        value={inputProductsModalQuantity}
-                        onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                        value={inputBarCode}
+                        onChange={(e) => setInputBarCode(e.target.value)}
                         type="number"
                         id="outlined-basic"
                         label="Código de barras"
                         variant="outlined"
-                        sx={{ width: '38%' }} />
-                    <TextField
-                        value={inputProductsModalQuantity}
-                        onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
-                        type="number"
-                        id="outlined-basic"
-                        label="Código NCM"
-                        variant="outlined"
-                        sx={{ width: '33%' }} />
+                        sx={{ width: '34%' }} />
+                    <Autocomplete
+                        value={ncmCode}
+                        onChange={(event: any, newValue: ncmType | null) => {
+                            setNcmCode(newValue);
+                        }}
+                        noOptionsText="Não encontrado"
+                        id="controllable-states-demo"
+                        options={optionsNCM}
+                        getOptionLabel={(option) => (option.Codigo + ' ' + option.Descricao)}
+                        sx={{ width: '40%' }}
+                        renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                label="Código NCM"
+                            />
+                        } />
                 </section>
                 <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
 
                     <Autocomplete
-                        value={inputvalueProduct}
+                        value={selectedItemType}
                         onChange={(event: any, newValue: string | null) => {
-                            setinputvalueProduct(newValue);
+                            setSelectedItemType(newValue);
                         }}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
-                        options={options}
+                        options={optionsItensType}
+
                         sx={{ width: '48%' }}
                         renderInput={(params) =>
                             <TextField
@@ -222,13 +272,14 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                             />
                         } />
                     <Autocomplete
-                        value={inputvalueProduct}
+                        value={selectedUnitMeasuremnt}
                         onChange={(event: any, newValue: string | null) => {
-                            setinputvalueProduct(newValue);
+                            setSelectedUnitMeasurement(newValue);
                         }}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
-                        options={options}
+                        disabled
+                        options={optionsUnitMeasurement}
                         sx={{ width: '48%' }}
                         renderInput={(params) =>
                             <TextField
