@@ -52,7 +52,7 @@ export const Transactions = () => {
     const [finalvalueEntry, setfinalvalueEntry] = useState(0)
     const dataAddTransactionExit = { type: 'exit_manual', description: inputdescriptionExit, value: finalvalueExit, UserId: auth.idUser }
     const dataAddTransactionEntry = { type: 'entry_manual', description: inputdescriptionEntry, value: finalvalueEntry, UserId: auth.idUser }
-    const filterExitsTransactions = TransactionsReturnApi.filter(transaction => transaction.type === 'exit' || transaction.type === 'exit_manual')
+    const filterExitsTransactions = TransactionsReturnApi.filter(transaction => transaction.type === 'exit' || transaction.type === 'exit_manual' || transaction.type === 'exit_change')
     const filterEntriesTransactions = TransactionsReturnApi.filter(transaction => transaction.type !== 'exit' && transaction.type !== 'exit_manual')
     const sumValueEntriesTransactions = filterEntriesTransactions.map(item => item.value).reduce((prev, curr) => prev + curr, 0);
     const sumValueExitsTransactions = filterExitsTransactions.map(item => item.value).reduce((prev, curr) => prev + curr, 0);

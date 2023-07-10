@@ -72,14 +72,14 @@ export function cepFormat(text: string, max: string) {
 export function FormatCurrencytoFloatdb(value: string | null) {
   if (!value) { return 0 };
   let formatvalue = value
-  formatvalue = formatvalue.replace(/\D/g, "")
+  formatvalue =  formatvalue.replace(/[^\d.-]/g, '')
   formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
   return (parseFloat(formatvalue))
 }
 
-export function FormatPercent(value: string) {
+export function FormatPercent(value: string|null) {
   if (!value) { return '' }
-  value = value.replace(/[^\d.]/g, '');
+  value = value.replace(/[^\d.-]/g, '');
   const valueInt = parseFloat(value)
   if (isNaN(valueInt)) { return value }
   return valueInt.toFixed(2) + '%'

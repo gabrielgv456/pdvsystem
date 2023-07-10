@@ -97,7 +97,9 @@ export const LabelValue = styled.label `
     width: 20%;
 `
 
-export const LabelQuantaty = styled.label `
+export const LabelQuantaty = styled.section `
     width: 10%;
-    margin-right: 0.8rem;
+    min-width: min-content;
+    margin-right: 0.3rem;
+
 `

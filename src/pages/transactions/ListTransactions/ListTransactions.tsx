@@ -47,7 +47,9 @@ export const ListTransactions = (props:{item:TransactionsReturnApiProps}) => {
             props.item.type === 'entry_manual' ?
             <S.LabelTypePayment title="Entrada Manual" style={{backgroundColor:'#eaf9e0'}} isDarkMode={Theme.DarkMode}><BiArrowFromBottom  size={25} style={{color:'#4daf42'}} /></S.LabelTypePayment> :
             props.item.type === 'exit' ? 
-            <S.LabelTypePayment title="Estorno de venda" style={{backgroundColor:'#ffe2e1'}} isDarkMode={Theme.DarkMode}><BiArrowToBottom  size={25} style={{color:'#b82338'}} /></S.LabelTypePayment> 
+            <S.LabelTypePayment title="Estorno de venda" style={{backgroundColor:'#ffe2e1'}} isDarkMode={Theme.DarkMode}><BiArrowToBottom  size={25} style={{color:'#b82338'}} /></S.LabelTypePayment> :
+            props.item.type === 'exit_change' ? 
+            <S.LabelTypePayment title="Troco de venda" style={{backgroundColor:'#ffe2e1'}} isDarkMode={Theme.DarkMode}><BiArrowToBottom  size={25} style={{color:'#b82338'}} /></S.LabelTypePayment> 
             : ''
 
             }

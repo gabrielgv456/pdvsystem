@@ -23,24 +23,26 @@ interface ncmType {
     Codigo: string,
     Descricao: string
 }
-
+interface itemType{
+    id:number,
+    descricao:string
+}
 export const TabInfoProduct = (props: tabInfoProductProps) => {
 
-    const { addProducts, findNCM } = useApi()
+    const { addProducts, findNCM , findItemType} = useApi()
     const auth = useContext(AuthContext)
     const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(null)
     const [inputCostProduct, setInputCostProduct] = useState<string | null>(null)
     const [inputProfitMargin, setInputProfitMargin] = useState<string | null>(null)
     const [inputProductsModalQuantity, setinputProductsModalQuantity] = useState<number | null>(null)
-    const [inputBarCode, setInputBarCode] = useState<string | null>(null)
-
-    const [selectedItemType, setSelectedItemType] = useState<string | null>(null)
+    const [inputBarCode, setInputBarCode] = useState<string | null>(null)   
     const [selectedUnitMeasuremnt, setSelectedUnitMeasurement] = useState<string | null>('UN')
     const [isProductActiveModalAddProduct, setisProductActiveModalAddProduct] = useState(true)
     const [inputProductsModalName, setinputProductsModalName] = useState("")
     const { MessageBox } = useMessageBoxContext()
     const Theme = useDarkMode()
-    const optionsItensType = ['00 - Mercadoria para revenda', '01 - Matéria Prima', '02 - Embalagem', '03 - Produto em Processo', '04 - Produto Acabado', '05 - Subproduto', '06 - Produto Intermediario', '07 - Material de uso e consumo', '08 - Ativo imobilizado', '09 - Serviços', '10 - Outros Insumos']
+    const [selectedItemType, setSelectedItemType] = useState<itemType | null>(null)
+    const [optionsItensType,setOptionsItensType] = useState<itemType[]>([]) 
     const optionsUnitMeasurement = ['UN']
     const [ncmCode, setNcmCode] = useState<ncmType | null>(null)
     const [optionsNCM, setOptionsNCM] = useState<ncmType[]>([])
@@ -60,6 +62,21 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                 MessageBox('info', error.message)
             }
         }
+
+        async function searchItemType() {
+            try {
+                const dataFindItemType= await findItemType()
+                if (!dataFindItemType.Success) {
+                    throw new Error('Falha ao obter lista de tipos de item!')
+                }
+                setOptionsItensType(dataFindItemType.findItemType)
+            }
+            catch (error: any) {
+                MessageBox('info', error.message)
+            }
+        }
+
+        searchItemType();
         searchNCM();
     }, [])
 
@@ -128,6 +145,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
     };
 
     const AddProductApi = async () => {
+        alert(finaldataAddProductsToSendApi.profitMargin)
 
         if (inputProductsModalName !== ""
             && finaldataAddProductsToSendApi.value > 0
@@ -149,7 +167,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
             }
         }
         else {
-            MessageBox('info', 'Insira todos dados corretamente!')
+            MessageBox('info', 'Insira todos dados obrigatórios corretamente!')
         }
     }
 
@@ -158,10 +176,16 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
     const finaldataAddProductsToSendApi = {
         userId: auth.idUser,
         name: inputProductsModalName,
-        value: FormatCurrencytoFloatdb(inputvalueProduct),
-        cost: FormatCurrencytoFloatdb(inputCostProduct),
+        value: FormatCurrencytoFloatdb(inputvalueProduct),        
         quantity: inputProductsModalQuantity,
-        active: isProductActiveModalAddProduct
+        active: isProductActiveModalAddProduct,
+
+        cost: FormatCurrencytoFloatdb(inputCostProduct),
+        profitMargin: FormatCurrencytoFloatdb(FormatPercent(inputProfitMargin) ?? '0'),
+        barCode: inputBarCode,
+        ncmCode: ncmCode?.Codigo,
+        itemTypeId: selectedItemType?.id,
+        unitMeasuremnt: selectedUnitMeasuremnt
     }
 
 
@@ -257,13 +281,13 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
 
                     <Autocomplete
                         value={selectedItemType}
-                        onChange={(event: any, newValue: string | null) => {
+                        onChange={(event: any, newValue: itemType | null) => {
                             setSelectedItemType(newValue);
                         }}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
                         options={optionsItensType}
-
+                        getOptionLabel={(option) => ( option.descricao)}
                         sx={{ width: '48%' }}
                         renderInput={(params) =>
                             <TextField

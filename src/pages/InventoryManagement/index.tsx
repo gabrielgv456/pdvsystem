@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import { AiOutlineClose, } from 'react-icons/ai';
 import { ModalTransactionsProducts } from './Modals/TransactionsProducts';
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
-import { ModalAddProduct } from "./Modals/AddProduct";
+import { ModalAddEditProduct } from "./Modals/AddEditProduct";
 
 
 interface ProductsReturnApiProps {
@@ -41,17 +41,17 @@ export const InventoryManagement = () => {
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false);
     const [isModalTransactionsProductsOpen, setisModalTransactionsProductsOpen] = useState(false);
     const [isProductCreated, setisProductCreated] = useState(false)
-   
+
     const [inputSearchProduct, setinputSearchProduct] = useState("")
     const inputSearchProductLowwer = inputSearchProduct.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     const [dataTransactionsProductsReturnApi, setdataTransactionsProductsReturnApi] = useState<TransactionsProductsReturnApi[]>([])
     const ProductsReturnApiFiltered = ProductsReturnApi.filter((product) => product.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(inputSearchProductLowwer))
-    
+
     const PagesExtract = Math.ceil(ProductsReturnApiFiltered.length / ItensPerPageExtract)
     const StartIndexExtract = atualPageExtract * ItensPerPageExtract
     const EndIndexExtract = StartIndexExtract + ItensPerPageExtract
     const paginedTransactionsReturnApi = ProductsReturnApiFiltered.slice(StartIndexExtract, EndIndexExtract)
-    
+
 
     useEffect(() => {
         SearchProducts();
@@ -61,7 +61,7 @@ export const InventoryManagement = () => {
         setisModalAddProductOpen(true)
 
     }
- 
+
 
 
     function handleCloseModalSucess() {
@@ -73,7 +73,7 @@ export const InventoryManagement = () => {
         setisModalSucessOpen(false)
     }
 
-    
+
 
 
 
@@ -167,7 +167,7 @@ export const InventoryManagement = () => {
                         <S.DivRightFooterProducts>
                             <label>Qtd Total: {ProductsReturnApi.reduce((acc, item) => { return acc + item.quantity }, 0)}</label>
                             <label>Valor Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(ProductsReturnApi.reduce((acc, item) => { return acc + item.totalValue }, 0))}</label>
-                         
+
                             {PagesExtract > 0 ? <label> Página {atualPageExtract + 1} de {PagesExtract}</label> : <label></label>}
 
                             <S.DivAlterPage>
@@ -204,10 +204,10 @@ export const InventoryManagement = () => {
                     setisModalTransactionsProductsOpen={setisModalTransactionsProductsOpen}
                 />
 
-                <ModalAddProduct 
-                 isModalAddProductOpen={isModalAddProductOpen}
-                 setisModalAddProductOpen={setisModalAddProductOpen}
-                 setisModalSucessOpen={setisModalSucessOpen}
+                <ModalAddEditProduct
+                    isModalAddProductOpen={isModalAddProductOpen}
+                    setisModalAddProductOpen={setisModalAddProductOpen}
+                    setisModalSucessOpen={setisModalSucessOpen}
                 />
 
                 <Modal open={isModalSucessOpen} onClose={handleCloseModalSucess}>

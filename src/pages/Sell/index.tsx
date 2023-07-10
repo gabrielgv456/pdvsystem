@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
-import { MdPending} from "react-icons/md"
+import { MdPending } from "react-icons/md"
 import { HiBadgeCheck } from "react-icons/hi"
 import { AiFillPrinter, AiOutlineClose } from "react-icons/ai"
 import { FaCheckCircle, FaMoneyBillWave } from "react-icons/fa"
@@ -60,6 +60,16 @@ export const Sell = () => {
         cpf: string;
         active: boolean;
     }
+    interface handleChangeProps {
+        UserId: number;
+        totalValue: number;
+        valuePayment: number;
+        changeValue: number | null;
+        sellerId: number | null;
+        clientId: number | null;
+        Products: ProductsType[];
+        Payment: MethodsType[];
+    }
 
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
@@ -71,7 +81,7 @@ export const Sell = () => {
     const [isSellEnded, setisSellEnded] = useState(false)
     const [inputSeller, setInputSeller] = useState<SellersandClientsType | null>(null)
     const [inputClient, setInputClient] = useState<SellersandClientsType | null>(null)
-    const {MessageBox} = useMessageBoxContext()
+    const { MessageBox } = useMessageBoxContext()
     // const [isClientNecessary, setisClientNecessary] = useState(false)
     // const [isSellerNecessary, setisSellerNecessary] = useState(false)
 
@@ -87,7 +97,7 @@ export const Sell = () => {
                 //setSellers(sellers.filter(seller=>seller.name))
             }
             else {
-                MessageBox('error',data.erro)
+                MessageBox('error', data.erro)
             }
         }
         const ClientsSearch = async () => {
@@ -97,7 +107,7 @@ export const Sell = () => {
                 //setSellers(sellers.filter(seller=>seller.name))
             }
             else {
-                MessageBox('error',data.erro)
+                MessageBox('error', data.erro)
             }
         }
         ClientsSearch();
@@ -185,14 +195,13 @@ export const Sell = () => {
             let verifyexistsProduct = newList.some((item) => item.id === inputProducts.id)
             if (verifyexistsProduct) {
                 if (window.confirm("Produto já incluso, deseja inserir mais uma unidade?")) {
-                    handleEditItem(inputProducts.id, 0)
+                    handleEditItem(inputProducts.id, 0, 1, 'add')
                     setinputProducts(null)
                 } else {
                     setinputProducts(null)
                 }
 
-            }
-            if (!verifyexistsProduct) {
+            } else {
                 newList.push({
                     name: inputProducts.name,
                     id: inputProducts.id,
@@ -203,7 +212,6 @@ export const Sell = () => {
                 })
                 setListProducts(newList)
                 setinputProducts(null)
-
             }
         }
     }
@@ -212,20 +220,29 @@ export const Sell = () => {
 
         setListProducts(filteredtasks)
     }
-    function handleEditItem(id: number, item: number) {
+    function handleEditItem(id: number, item: number, quantity: number, type: 'add' | 'change') {
         let verifyQuantityProducts = Products.find(product => product.id === id)
-        console.log(verifyQuantityProducts)
 
+        quantity = quantity === 0 ? 1 : quantity
         let newList = [...listProducts]
-
         for (let i in newList) {
             if (newList[i].id === id) {
-                if (verifyQuantityProducts !== undefined && newList[i].quantity < verifyQuantityProducts.quantity) {
-                    newList[i].quantity = newList[i].quantity + 1
-                    newList[i].totalvalue = newList[i].totalvalue + newList[i].initialvalue
-                }
-                else {
-                    MessageBox('info',`Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
+                if (type === 'add') {
+                    if (verifyQuantityProducts !== undefined && newList[i].quantity < verifyQuantityProducts.quantity) {
+                        newList[i].quantity = newList[i].quantity + quantity
+                        newList[i].totalvalue = newList[i].totalvalue + newList[i].initialvalue
+                    }
+                    else {
+                        MessageBox('info', `Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
+                    }
+                } if (type === 'change') {
+                    if (verifyQuantityProducts !== undefined && quantity <= verifyQuantityProducts.quantity) {
+                        newList[i].totalvalue = quantity * (newList[i].totalvalue / newList[i].quantity)
+                        newList[i].quantity = quantity;
+                    }
+                    else {
+                        MessageBox('info', `Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
+                    }
                 }
             }
         }
@@ -310,34 +327,36 @@ export const Sell = () => {
         UserId: auth.idUser,
         totalValue: sumvalue,
         valuePayment: sumpayvalue,
+        changeValue:null,
         sellerId: inputSeller ? inputSeller.id : null,
         clientId: inputClient ? inputClient.id : null,
         Products: [...listProducts],
         Payment: [...listMethods],
     }
 
-    const handleSendtoApi = async (valuesSelltoSendApi: object) => {
+    const handleSendtoApi = async (valuesSelltoSendApi: handleChangeProps) => {
         if (listMethods.length == 0) {
-            MessageBox('warning'," Insira um método de pagamento!")
+            MessageBox('warning', " Insira um método de pagamento!")
         }
         else {
             if (listMethods.some(method => Number.isNaN(method.value)) || listMethods.some(method => method.value === 0)) {
-                MessageBox('warning','Existe método de pagamento vazio, remova ou insira o valor!')
+                MessageBox('warning', 'Existe método de pagamento vazio, remova ou insira o valor!')
             }
             else {
                 if (needReturnCash === 'N') {
-                    MessageBox('warning',` Restam ${formatedmissvalue} a serem recebidos!`)
+                    MessageBox('warning', ` Restam ${formatedmissvalue} a serem recebidos!`)
                 }
 
                 if (needReturnCash === 'Y') {
                     if (window.confirm(`Confirma o troco de ${formatedmissvalue} ?`)) {
                         if (listMethods.length !== 0 && calculatemissvalue <= 0) {
+                            valuesSelltoSendApi.changeValue = Math.abs(calculatemissvalue) //convert negative to positive       
                             const data = await addsell(valuesSelltoSendApi)
                             if (data.Success === true) {
                                 setisSellEnded(true)
                             }
                             if (data.Success === false) {
-                                MessageBox('error',` ${JSON.stringify(data.Erro)}`)
+                                MessageBox('error', ` ${JSON.stringify(data.Erro)}`)
                             }
                         }
                     }
@@ -349,7 +368,7 @@ export const Sell = () => {
                             setisSellEnded(true)
                         }
                         if (data.Success === false) {
-                            MessageBox('error',`${JSON.stringify(data.Erro)}`)
+                            MessageBox('error', `${JSON.stringify(data.Erro)}`)
                         }
                     }
                 }

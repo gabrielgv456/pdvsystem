@@ -2,11 +2,8 @@
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
-import { useContext, useState } from 'react';
-import { useApi } from '../../../../hooks/useApi';
+import { useState } from 'react';
 import * as S from './style'
-import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
-import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { AiOutlineClose } from 'react-icons/ai';
 import {FiPackage} from 'react-icons/fi'
 import { TabInfoProduct } from './tabs/infoProduct';
@@ -31,7 +28,7 @@ interface TabPanelProps {
     value: number;
 }
 
-export const ModalAddProduct = (props: PropsModalAddProduct) => {
+export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
 
     const Theme = useDarkMode()
     const isLess900 = useMediaQuery('(max-width:100px)')
@@ -101,7 +98,7 @@ export const ModalAddProduct = (props: PropsModalAddProduct) => {
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange}  >
                             <Tab label={isLess900 ? '' : 'Principal'} title='Meu Perfil' sx={{ borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<FiPackage size={20} />} iconPosition='start' />
-                            <Tab label={isLess900 ? '' : "Fiscal"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />
+                            {/* REMOVE COMMENT TO ENABLE FISCAL TAB <Tab label={isLess900 ? '' : "Fiscal"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' /> */}
                         </Tabs>
                     </Box>
                     <div>

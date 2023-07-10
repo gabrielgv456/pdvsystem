@@ -134,7 +134,11 @@ export const useApi = () => ({
         return response.data
     },
     findNCM: async() => {
-        const response = await api.get(`/listNCM`)
+        const response = await api.get('/listNCM')
+        return response.data
+    },
+    findItemType: async() => {
+        const response = await api.get('/listitemtype')
         return response.data
     }
 });
