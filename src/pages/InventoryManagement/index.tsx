@@ -22,7 +22,15 @@ interface ProductsReturnApiProps {
     created_at: Date;
     active: boolean;
     quantity: number;
+    barCode: string,
+    cost: number,
+    itemTypeId: number,
+    cfopId: number,
+    ncmCode: string,
+    profitMargin: number,
+    unitMeasuremnt:string
 }
+
 export interface TransactionsProductsReturnApi {
     type: string;
     description: string;
@@ -30,6 +38,7 @@ export interface TransactionsProductsReturnApi {
     quantity: number;
     totalQuantity: number;
 }
+
 export const InventoryManagement = () => {
     const { findProducts } = useApi()
     const auth = useContext(AuthContext);
@@ -37,16 +46,13 @@ export const InventoryManagement = () => {
     const [ProductsReturnApi, setProductsReturnApi] = useState<ProductsReturnApiProps[]>([])
     const [ItensPerPageExtract, SetItensPerPageExtract] = useState(10)
     const [atualPageExtract, SetAtualPageExtract] = useState(0)
-    const [isModalAddProductOpen, setisModalAddProductOpen] = useState(false);
+    const [isModalAddEditProductOpen, setisModalAddEditProductOpen] = useState(false);
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false);
     const [isModalTransactionsProductsOpen, setisModalTransactionsProductsOpen] = useState(false);
-    const [isProductCreated, setisProductCreated] = useState(false)
-
     const [inputSearchProduct, setinputSearchProduct] = useState("")
     const inputSearchProductLowwer = inputSearchProduct.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     const [dataTransactionsProductsReturnApi, setdataTransactionsProductsReturnApi] = useState<TransactionsProductsReturnApi[]>([])
     const ProductsReturnApiFiltered = ProductsReturnApi.filter((product) => product.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(inputSearchProductLowwer))
-
     const PagesExtract = Math.ceil(ProductsReturnApiFiltered.length / ItensPerPageExtract)
     const StartIndexExtract = atualPageExtract * ItensPerPageExtract
     const EndIndexExtract = StartIndexExtract + ItensPerPageExtract
@@ -58,24 +64,17 @@ export const InventoryManagement = () => {
     }, [])
 
     function handleOpenModalConfirmSell() {
-        setisModalAddProductOpen(true)
-
+        setisModalAddEditProductOpen(true)
     }
-
-
 
     function handleCloseModalSucess() {
         SearchProducts()
         setisModalSucessOpen(false)
     }
     function handleContinueAddingProducts() {
-        setisModalAddProductOpen(true)
+        setisModalAddEditProductOpen(true)
         setisModalSucessOpen(false)
     }
-
-
-
-
 
     const EditItensPerPage = (ItensPerPage: number) => {
         SetItensPerPageExtract(ItensPerPage)
@@ -141,6 +140,13 @@ export const InventoryManagement = () => {
                             value={item.value}
                             quantity={item.quantity}
                             active={item.active}
+                            barCode= {item.barCode}
+                            cost= {item.cost}
+                            itemTypeId= {item.itemTypeId}
+                            cfopId= {item.cfopId}
+                            ncmCode= {item.ncmCode}
+                            profitMargin= {item.profitMargin}
+                            unitMeasuremnt={item.unitMeasuremnt}
                             isModalTransactionsProductsOpen={isModalTransactionsProductsOpen}
                             setisModalTransactionsProductsOpen={setisModalTransactionsProductsOpen}
                             searchProduct={SearchProducts}
@@ -205,9 +211,10 @@ export const InventoryManagement = () => {
                 />
 
                 <ModalAddEditProduct
-                    isModalAddProductOpen={isModalAddProductOpen}
-                    setisModalAddProductOpen={setisModalAddProductOpen}
+                    isModalAddEditProductOpen={isModalAddEditProductOpen}
+                    setisModalAddEditProductOpen={setisModalAddEditProductOpen}
                     setisModalSucessOpen={setisModalSucessOpen}
+                    type="Add"
                 />
 
                 <Modal open={isModalSucessOpen} onClose={handleCloseModalSucess}>

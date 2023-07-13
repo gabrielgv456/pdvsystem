@@ -12,37 +12,46 @@ import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvide
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { FormatCurrencytoFloatdb, FormatPercent, currencyRemoveNotNumbers, removeNotNumerics } from '../../../../../../utils/utils';
 import { info } from 'console';
+import { ListProductsProps } from '../../../../ListProducts/ListProducts';
 
 
 interface tabInfoProductProps {
     setisModalSucessOpen: (value: boolean) => void;
-    setisModalAddProductOpen: (value: boolean) => void
+    setisModalAddEditProductOpen: (value: boolean) => void,
+    type: 'Add' | 'Edit',
+    itemData?: ListProductsProps;
 }
 
 interface ncmType {
     Codigo: string,
     Descricao: string
 }
-interface itemType{
-    id:number,
-    descricao:string
+interface itemType {
+    id: number,
+    descricao: string
+}
+interface cfopType {
+    id: number,
+    descricao: string
 }
 export const TabInfoProduct = (props: tabInfoProductProps) => {
 
-    const { addProducts, findNCM , findItemType} = useApi()
+    const { addProducts, findNCM, findItemType, findCfop, editProducts } = useApi()
     const auth = useContext(AuthContext)
-    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(null)
-    const [inputCostProduct, setInputCostProduct] = useState<string | null>(null)
-    const [inputProfitMargin, setInputProfitMargin] = useState<string | null>(null)
-    const [inputProductsModalQuantity, setinputProductsModalQuantity] = useState<number | null>(null)
-    const [inputBarCode, setInputBarCode] = useState<string | null>(null)   
-    const [selectedUnitMeasuremnt, setSelectedUnitMeasurement] = useState<string | null>('UN')
-    const [isProductActiveModalAddProduct, setisProductActiveModalAddProduct] = useState(true)
-    const [inputProductsModalName, setinputProductsModalName] = useState("")
+    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.value ?? 0)))
+    const [inputCostProduct, setInputCostProduct] = useState<string | null>(CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.cost ?? 0)))
+    const [inputProfitMargin, setInputProfitMargin] = useState<string | null>((props.itemData?.profitMargin) !== undefined ? (props.itemData?.profitMargin + "%") : null)
+    const [inputProductsModalQuantity, setinputProductsModalQuantity] = useState<number | null>(props.itemData?.quantity ?? null)
+    const [inputBarCode, setInputBarCode] = useState<string | null>(props.itemData?.barCode ?? null)
+    const [selectedUnitMeasuremnt, setSelectedUnitMeasurement] = useState<string | null>(props.itemData?.unitMeasuremnt ?? 'UN')
+    const [isProductActiveModalAddProduct, setisProductActiveModalAddProduct] = useState<boolean>(props.itemData?.active ?? true)
+    const [inputProductsModalName, setinputProductsModalName] = useState<string | null>(props.itemData?.name ?? null)
     const { MessageBox } = useMessageBoxContext()
     const Theme = useDarkMode()
+    const [optionsItensType, setOptionsItensType] = useState<itemType[]>([])
     const [selectedItemType, setSelectedItemType] = useState<itemType | null>(null)
-    const [optionsItensType,setOptionsItensType] = useState<itemType[]>([]) 
+    const [optionsCfop, setOptionsCfop] = useState<itemType[]>([])
+    const [selectedCfop, setSelectedCfop] = useState<itemType | null>(null)
     const optionsUnitMeasurement = ['UN']
     const [ncmCode, setNcmCode] = useState<ncmType | null>(null)
     const [optionsNCM, setOptionsNCM] = useState<ncmType[]>([])
@@ -57,6 +66,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                     throw new Error('Falha ao obter lista NCM!')
                 }
                 setOptionsNCM(dataFindNCM.ncmList)
+                setNcmCode(dataFindNCM.ncmList.find((item:ncmType)=>item.Codigo === props.itemData?.ncmCode))
             }
             catch (error: any) {
                 MessageBox('info', error.message)
@@ -65,7 +75,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
 
         async function searchItemType() {
             try {
-                const dataFindItemType= await findItemType()
+                const dataFindItemType = await findItemType()
                 if (!dataFindItemType.Success) {
                     throw new Error('Falha ao obter lista de tipos de item!')
                 }
@@ -76,7 +86,22 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
             }
         }
 
-        searchItemType();
+        async function searchCfop() {
+            try {
+                const dataFindCfop = await findCfop()
+                if (!dataFindCfop.Success) {
+                    throw new Error('Falha ao obter lista de tipos de item!')
+                }
+                setOptionsCfop(dataFindCfop.findCfop)
+                setSelectedCfop(dataFindCfop.findCfop.find((item : cfopType)=> item.id === props.itemData?.cfopId))
+            }
+            catch (error: any) {
+                MessageBox('info', error.message)
+            }
+        }
+
+        //searchItemType();
+        searchCfop();
         searchNCM();
     }, [])
 
@@ -145,7 +170,6 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
     };
 
     const AddProductApi = async () => {
-        alert(finaldataAddProductsToSendApi.profitMargin)
 
         if (inputProductsModalName !== ""
             && finaldataAddProductsToSendApi.value > 0
@@ -157,7 +181,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                 if (!data.Sucess) {
                     throw new Error('Falha ao adicionar produto! ' + data.erro)
                 }
-                props.setisModalAddProductOpen(false)
+                props.setisModalAddEditProductOpen(false)
                 setinputProductsModalName("")
                 setinputProductsModalQuantity(null)
                 setinputvalueProduct(null)
@@ -171,12 +195,24 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         }
     }
 
-
+    const EditProductApi = async () => {
+        try {
+            const data = await editProducts(finaldataAddProductsToSendApi)
+            if (!data.Sucess) {
+                throw new Error('Falha ao editar produto! ' + data.erro)
+            }
+            props.setisModalAddEditProductOpen(false)
+            props.setisModalSucessOpen(true)
+        }
+        catch (error: any) {
+            MessageBox('error', error.message)
+        }
+    }
 
     const finaldataAddProductsToSendApi = {
         userId: auth.idUser,
         name: inputProductsModalName,
-        value: FormatCurrencytoFloatdb(inputvalueProduct),        
+        value: FormatCurrencytoFloatdb(inputvalueProduct),
         quantity: inputProductsModalQuantity,
         active: isProductActiveModalAddProduct,
 
@@ -185,6 +221,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         barCode: inputBarCode,
         ncmCode: ncmCode?.Codigo,
         itemTypeId: selectedItemType?.id,
+        cfopId: selectedCfop?.id,
         unitMeasuremnt: selectedUnitMeasuremnt
     }
 
@@ -192,8 +229,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
     return (
         <>
             <S.DivModalAddProduct>
-                {/*
-                REMOVE COMMENT TO ENABLE PICTURE PRODUCT
+                {/* REMOVE COMMENT TO ENABLE PICTURE PRODUCT */}
                 {selectedImage ?
                     <img width={100} style={{ maxHeight: 140 }} src={URL.createObjectURL(selectedImage)}></img> :
                     <S.labelChangeImg onDragOver={handleDragOver}
@@ -204,7 +240,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                         Selecione ou arraste uma imagem
                         <input type='file' onChange={handleFileChange} />
                     </S.labelChangeImg>
-                } */}
+                }
                 <TextField
                     value={inputProductsModalName}
                     onChange={(e) => setinputProductsModalName(e.target.value)}
@@ -280,19 +316,19 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                 <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
 
                     <Autocomplete
-                        value={selectedItemType}
-                        onChange={(event: any, newValue: itemType | null) => {
-                            setSelectedItemType(newValue);
+                        value={selectedCfop}
+                        onChange={(event: any, newValue: cfopType | null) => {
+                            setSelectedCfop(newValue);
                         }}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
-                        options={optionsItensType}
-                        getOptionLabel={(option) => ( option.descricao)}
+                        options={optionsCfop}
+                        getOptionLabel={(option) => (option.id + ' - ' + option.descricao)}
                         sx={{ width: '48%' }}
                         renderInput={(params) =>
                             <TextField
                                 {...params}
-                                label="Tipo de item"
+                                label="CFOP"
                             />
                         } />
                     <Autocomplete
@@ -319,9 +355,13 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                     <Switch checked={isProductActiveModalAddProduct} onChange={(e) => { setisProductActiveModalAddProduct(e.target.checked) }} />
                 </section>
             </S.DivModalAddProduct>
-            <S.ButtonAddProductModal onClick={AddProductApi} isDarkMode={Theme.DarkMode} style={{ margin: '0 auto' }}>
+            <S.ButtonAddProductModal onClick={props.type === 'Add' ? AddProductApi : EditProductApi} isDarkMode={Theme.DarkMode} style={{ margin: '0 auto' }}>
                 <MdFileDownloadDone size="22" />
-                <b>ADICIONAR PRODUTO</b>
+                {props.type === 'Add' ?
+                    <b>ADICIONAR PRODUTO</b>
+                    :
+                    <b>EDITAR PRODUTO</b>
+                }
             </S.ButtonAddProductModal>
         </>
     )

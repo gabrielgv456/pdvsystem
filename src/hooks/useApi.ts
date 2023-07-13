@@ -140,5 +140,9 @@ export const useApi = () => ({
     findItemType: async() => {
         const response = await api.get('/listitemtype')
         return response.data
+    },
+    findCfop: async() => {
+        const response = await api.get('/listCfop')
+        return response.data
     }
 });

@@ -1,7 +1,7 @@
 import { BsCheckCircle, BsTrash } from "react-icons/bs";
 import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider";
 import * as S from "./style"
-import {BiTransfer} from "react-icons/bi"
+import { BiTransfer } from "react-icons/bi"
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
@@ -12,21 +12,29 @@ import { AiOutlineClose, AiOutlineEdit } from "react-icons/ai";
 import { useApi } from "../../../hooks/useApi";
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import { RiAdminLine } from "react-icons/ri";
-import {TransactionsProductsReturnApi} from "../index"
+import { TransactionsProductsReturnApi } from "../index"
 import { CurrencyMask } from "../../../masks/CurrencyMask"
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
+import { ModalAddEditProduct } from "../Modals/AddEditProduct";
 
-interface ListProductsProps{
+export interface ListProductsProps {
     id: number;
     name: string;
     value: number;
-    created_at:Date;
+    created_at: Date;
     active: boolean;
     quantity: number;
+    barCode: string,
+    cost: number,
+    itemTypeId: number,
+    cfopId:number,
+    ncmCode: string,
+    profitMargin: number,
+    unitMeasuremnt:string,
     dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[];
     isModalTransactionsProductsOpen: boolean;
-    setisModalTransactionsProductsOpen:(isModalTransactionsProductsOpen:boolean) => void;
-    setdataTransactionsProductsReturnApi:(dataTransactionsProductsReturnApi:TransactionsProductsReturnApi[]) =>void;
+    setisModalTransactionsProductsOpen: (isModalTransactionsProductsOpen: boolean) => void;
+    setdataTransactionsProductsReturnApi: (dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[]) => void;
     searchProduct: () => void;
 }
 
@@ -34,10 +42,10 @@ interface ListProductsProps{
 
 
 
-export const ListProducts = (props:ListProductsProps) => {
+export const ListProducts = (props: ListProductsProps) => {
 
 
-    const {editProducts, deleteProducts, findTransactionsProducts} = useApi()
+    const { editProducts, deleteProducts, findTransactionsProducts } = useApi()
     const auth = useContext(AuthContext)
     const Theme = useDarkMode();
     const gethoursTransactions = new Date(props.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })
@@ -45,20 +53,20 @@ export const ListProducts = (props:ListProductsProps) => {
     const [isModalEditProductOpen, setisModalEditProductOpen] = useState(false);
     const [isModalMasterKeyOpen, setisModalMasterKeyOpen] = useState(false)
     const [inputMasterKey, setinputMasterKey] = useState("")
-    const [isModalDeleteProductOpen,setisModalDeleteProductOpen] = useState(false)
+    const [isModalDeleteProductOpen, setisModalDeleteProductOpen] = useState(false)
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false)
-    const [inputvalueProduct, setinputvalueProduct] = useState<string|null>(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.value))
-    const [valueInputProductName,setvalueInputProductName]=useState(props.name)
-    const [finalvalueProduct,setfinalvalueProduct] = useState(props.value)
-    const [valueInputProductQuantity,setvalueInputProductQuantity]=useState(props.quantity)
-    const [valueInputProductActive,setvalueInputProductActive]=useState(props.active)
-    const {MessageBox} = useMessageBoxContext()
+    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.value))
+    const [valueInputProductName, setvalueInputProductName] = useState(props.name)
+    const [finalvalueProduct, setfinalvalueProduct] = useState(props.value)
+    const [valueInputProductQuantity, setvalueInputProductQuantity] = useState(props.quantity)
+    const [valueInputProductActive, setvalueInputProductActive] = useState(props.active)
+    const { MessageBox } = useMessageBoxContext()
     const finaldataEditProductsToSendApi = {
-        id:props.id,
-        name:valueInputProductName, 
-        value:finalvalueProduct,
-        quantity:valueInputProductQuantity,
-        active:valueInputProductActive,
+        id: props.id,
+        name: valueInputProductName,
+        value: finalvalueProduct,
+        quantity: valueInputProductQuantity,
+        active: valueInputProductActive,
         userId: auth.idUser
     }
     const changeInputValueProduct = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -80,27 +88,27 @@ export const ListProducts = (props:ListProductsProps) => {
     function handleCloseModalDeleteProduct() {
         setisModalDeleteProductOpen(false)
     }
-    function handleVerifyMasterKey(){
-        if(inputMasterKey === auth.masterkey){
+    function handleVerifyMasterKey() {
+        if (inputMasterKey === auth.masterkey) {
             handleCloseModalMasterKey()
             setinputMasterKey("")
             setisModalDeleteProductOpen(true)
         }
-        else{
-            MessageBox('error','Senha de Administrador incorreta!')
+        else {
+            MessageBox('error', 'Senha de Administrador incorreta!')
         }
     }
     const handleDeleteProductApi = async () => {
-        const data = await deleteProducts({id:props.id})
-        if (data.Sucess){
+        const data = await deleteProducts({ id: props.id })
+        if (data.Sucess) {
             setisModalDeleteProductOpen(false)
             setisModalSucessOpen(true)
         }
         else {
-            MessageBox('error',data.Erro)
+            MessageBox('error', data.Erro)
         }
-        
-       
+
+
     }
     function handleCloseModalEditProduct() {
         setvalueInputProductName(props.name)
@@ -110,67 +118,63 @@ export const ListProducts = (props:ListProductsProps) => {
         setinputvalueProduct(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.value))
         setisModalEditProductOpen(false)
     }
-    const EditProductApi = async () => {
-        const data = await editProducts(finaldataEditProductsToSendApi)
-        if (data.Sucess){
-            setisModalEditProductOpen(false)
-            setisModalSucessOpen(true)
-        }
-        else {
-            MessageBox('error',data.erro)
-        }
-        
-    }
+    
     const handleOpenModalTransactionsProducts = async () => {
         props.setisModalTransactionsProductsOpen(true)
-        const data = await findTransactionsProducts({id:props.id, storeId:auth.idUser})
+        const data = await findTransactionsProducts({ id: props.id, storeId: auth.idUser })
         props.setdataTransactionsProductsReturnApi(data.findTransactionsProducts)
     }
-    
+
 
     return (
         <>
-        <S.Container isDarkMode={Theme.DarkMode} isProductActive={props.active}>
+            <S.Container isDarkMode={Theme.DarkMode} isProductActive={props.active}>
 
-            <S.ButtonEdit onClick={() => setisModalEditProductOpen(true)} title="Editar Produto"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+                <S.ButtonEdit onClick={() => setisModalEditProductOpen(true)} title="Editar Produto"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
 
-            <S.LabelNameProduct isDarkMode={Theme.DarkMode}>
-                <b>{props.name}</b>
-            </S.LabelNameProduct>
+                <S.LabelNameProduct isDarkMode={Theme.DarkMode}>
+                    <b>{props.name}</b>
+                </S.LabelNameProduct>
 
-            {props.quantity > 0 ?
-            <S.LabelStatus style={Theme.DarkMode ?{color:'#4daf42'} : {backgroundColor:'#eaf9e0',color:'#4daf42'}} isDarkMode={Theme.DarkMode}>
-                <b>Em estoque</b>
-            </S.LabelStatus>
-            : 
-            <S.LabelStatus style={Theme.DarkMode ? {color:'#b82338'} : {backgroundColor:'#ffe2e1',color:'#b82338'}} isDarkMode={Theme.DarkMode}>
-                <b>Sem estoque</b>
-            </S.LabelStatus>
-            }
+                {props.quantity > 0 ?
+                    <S.LabelStatus style={Theme.DarkMode ? { color: '#4daf42' } : { backgroundColor: '#eaf9e0', color: '#4daf42' }} isDarkMode={Theme.DarkMode}>
+                        <b>Em estoque</b>
+                    </S.LabelStatus>
+                    :
+                    <S.LabelStatus style={Theme.DarkMode ? { color: '#b82338' } : { backgroundColor: '#ffe2e1', color: '#b82338' }} isDarkMode={Theme.DarkMode}>
+                        <b>Sem estoque</b>
+                    </S.LabelStatus>
+                }
 
-            <S.LabelQuantity isDarkMode={Theme.DarkMode}>
-                <b>{props.quantity}</b>
-            </S.LabelQuantity>
+                <S.LabelQuantity isDarkMode={Theme.DarkMode}>
+                    <b>{props.quantity}</b>
+                </S.LabelQuantity>
 
-            <S.LabelValue isDarkMode={Theme.DarkMode}>
-            <b>{formatedItemValue}</b>
-            </S.LabelValue>
+                <S.LabelValue isDarkMode={Theme.DarkMode}>
+                    <b>{formatedItemValue}</b>
+                </S.LabelValue>
 
-            <S.LabelDate >
-                <b>{gethoursTransactions}</b>
-            </S.LabelDate>
+                <S.LabelDate >
+                    <b>{gethoursTransactions}</b>
+                </S.LabelDate>
 
-            <S.ButtonInfo onClick={handleOpenModalTransactionsProducts} title="Movimentações"><BiTransfer size="16" /></S.ButtonInfo>
-            <S.ButtonTrash onClick={()=>setisModalMasterKeyOpen(true)}  title="Excluir Produto" ><BsTrash size="16" /></S.ButtonTrash>
-           
-        </S.Container>
-            
-       
-        
+                <S.ButtonInfo onClick={handleOpenModalTransactionsProducts} title="Movimentações"><BiTransfer size="16" /></S.ButtonInfo>
+                <S.ButtonTrash onClick={() => setisModalMasterKeyOpen(true)} title="Excluir Produto" ><BsTrash size="16" /></S.ButtonTrash>
+
+            </S.Container>
 
 
 
-        <Modal open={isModalEditProductOpen} onClose={handleCloseModalEditProduct}>
+
+            <ModalAddEditProduct
+                isModalAddEditProductOpen={isModalEditProductOpen}
+                setisModalAddEditProductOpen={handleCloseModalEditProduct}
+                setisModalSucessOpen={setisModalSucessOpen}
+                type="Edit"
+                itemData={props}
+            />
+
+            {/* <Modal open={isModalEditProductOpen} onClose={handleCloseModalEditProduct}>
                 <Box sx={{
                     position: 'absolute' as 'absolute',
                     top: '50%',
@@ -236,7 +240,7 @@ export const ListProducts = (props:ListProductsProps) => {
 
 
                 </Box>
-            </Modal>
+            </Modal> */}
 
 
 
@@ -262,22 +266,22 @@ export const ListProducts = (props:ListProductsProps) => {
                 }}
                 >
                     <S.DivRestrictAcessModal>
-                    <h3 style={{alignSelf:'center'}}>Acesso Restrito</h3>
-                    <label style={{display:'flex',alignItems:'center'}}>
-                    <RiAdminLine size="32" color='#485059' style={{marginRight:5}}/>
-                     <TextField 
-                       value={inputMasterKey}
-                       onChange={(e)=>setinputMasterKey(e.target.value)}
-                        type="password" 
-                        
-                        label="Senha de administrador" 
-                        variant="filled" 
-                        sx={{width:'80%', borderRadius:'0 !important'}} /> 
+                        <h3 style={{ alignSelf: 'center' }}>Acesso Restrito</h3>
+                        <label style={{ display: 'flex', alignItems: 'center' }}>
+                            <RiAdminLine size="32" color='#485059' style={{ marginRight: 5 }} />
+                            <TextField
+                                value={inputMasterKey}
+                                onChange={(e) => setinputMasterKey(e.target.value)}
+                                type="password"
 
-                        <S.ButtonRestrictAcessModal onClick={handleVerifyMasterKey}>OK</S.ButtonRestrictAcessModal>
+                                label="Senha de administrador"
+                                variant="filled"
+                                sx={{ width: '80%', borderRadius: '0 !important' }} />
+
+                            <S.ButtonRestrictAcessModal onClick={handleVerifyMasterKey}>OK</S.ButtonRestrictAcessModal>
                         </label>
                     </S.DivRestrictAcessModal>
-                    <S.ButtonCloseModal  isDarkMode={Theme.DarkMode} onClick={handleCloseModalMasterKey}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                    <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalMasterKey}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
                 </Box>
             </Modal>
 
@@ -301,13 +305,13 @@ export const ListProducts = (props:ListProductsProps) => {
                     boxShadow: 24, p: 4,
                 }}
                 >
-                        <S.DivDeleteProductModal>
-                            <h3 style={{alignSelf:'center'}}>Deseja realmente excluir o produto?</h3>
-                            <div style={{display:'flex',justifyContent:'space-between', width:'40%'}}>
-                                <S.ButtonYesDeleteProductModal onClick={handleDeleteProductApi}><b>SIM</b></S.ButtonYesDeleteProductModal> 
-                                <S.ButtonNoDeleteProductModal onClick={handleCloseModalDeleteProduct}><b>NÃO</b></S.ButtonNoDeleteProductModal>
-                            </div>
-                        </S.DivDeleteProductModal>            
+                    <S.DivDeleteProductModal>
+                        <h3 style={{ alignSelf: 'center' }}>Deseja realmente excluir o produto?</h3>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '40%' }}>
+                            <S.ButtonYesDeleteProductModal onClick={handleDeleteProductApi}><b>SIM</b></S.ButtonYesDeleteProductModal>
+                            <S.ButtonNoDeleteProductModal onClick={handleCloseModalDeleteProduct}><b>NÃO</b></S.ButtonNoDeleteProductModal>
+                        </div>
+                    </S.DivDeleteProductModal>
                     <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalDeleteProduct}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
                 </Box>
             </Modal>
@@ -334,10 +338,10 @@ export const ListProducts = (props:ListProductsProps) => {
                     boxShadow: 24, p: 4,
                 }}
                 >
-                        <S.DivDeleteProductModal>
-                            <h3 style={{alignSelf:'center'}}>Procedimento realizado com sucesso!</h3>
-                            <BsCheckCircle color="var(--Green)" size="50" className="IconSucess"/>
-                        </S.DivDeleteProductModal>  
+                    <S.DivDeleteProductModal>
+                        <h3 style={{ alignSelf: 'center' }}>Procedimento realizado com sucesso!</h3>
+                        <BsCheckCircle color="var(--Green)" size="50" className="IconSucess" />
+                    </S.DivDeleteProductModal>
                     <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalSucess}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
                 </Box>
             </Modal>
@@ -353,6 +357,6 @@ export const ListProducts = (props:ListProductsProps) => {
 
 
 
-            )
+    )
 
 }

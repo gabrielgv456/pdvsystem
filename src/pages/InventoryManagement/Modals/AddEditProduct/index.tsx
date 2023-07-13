@@ -5,7 +5,7 @@ import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
 import { useState } from 'react';
 import * as S from './style'
 import { AiOutlineClose } from 'react-icons/ai';
-import {FiPackage} from 'react-icons/fi'
+import { FiPackage } from 'react-icons/fi'
 import { TabInfoProduct } from './tabs/infoProduct';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -14,18 +14,21 @@ import { CgProfile } from 'react-icons/cg';
 import { MdAssignment, MdSettingsInputComponent } from 'react-icons/md';
 import { useMediaQuery } from '@mui/material';
 import { TabFiscal } from './tabs/infoFiscalNfe';
+import { ListProductsProps } from '../../ListProducts/ListProducts';
 
 
 interface PropsModalAddProduct {
-    isModalAddProductOpen: boolean;
-    setisModalAddProductOpen: (value: boolean) => void;
-    setisModalSucessOpen: (value: boolean) => void
+    isModalAddEditProductOpen: boolean;
+    setisModalAddEditProductOpen: (value: boolean) => void;
+    setisModalSucessOpen: (value: boolean) => void;
+    type: 'Add' | 'Edit';
+    itemData?: ListProductsProps;
 }
 
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
-    value: number;
+    value: number;   
 }
 
 export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
@@ -35,7 +38,7 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
     const [value, setValue] = useState(0);
 
     function handleCloseModalAddProduct() {
-        props.setisModalAddProductOpen(false)
+        props.setisModalAddEditProductOpen(false)
     }
 
     function TabPanel(props: TabPanelProps) {
@@ -72,7 +75,7 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
 
     return (
 
-        <Modal open={props.isModalAddProductOpen} onClose={handleCloseModalAddProduct}>
+        <Modal open={props.isModalAddEditProductOpen} onClose={handleCloseModalAddProduct}>
             <Box sx={{
                 position: 'absolute' as 'absolute',
                 top: '50%',
@@ -81,9 +84,9 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                 width: {
                     xs: '80%', // phone
                     sm: '80%', // tablets
-                    md: 500, // small laptop
-                    lg: 500, // desktop
-                    xl: 500 // large screens
+                    md: 600, // small laptop
+                    lg: 600, // desktop
+                    xl: 600 // large screens
                 },
                 //width: '80%',
                 bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
@@ -93,23 +96,26 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                 padding: '15px 10px 0px 10px'
             }}
             >
-                    <h3 style={{ width: 'max-content',margin:'0 auto' }}>Cadastro de produto</h3>
-                    
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs value={value} onChange={handleChange}  >
-                            <Tab label={isLess900 ? '' : 'Principal'} title='Meu Perfil' sx={{ borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<FiPackage size={20} />} iconPosition='start' />
-                            {/* REMOVE COMMENT TO ENABLE FISCAL TAB <Tab label={isLess900 ? '' : "Fiscal"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' /> */}
-                        </Tabs>
-                    </Box>
-                    <div>
-                        <TabPanel value={value} index={0}>
-                            <TabInfoProduct setisModalSucessOpen={props.setisModalSucessOpen}
-                                setisModalAddProductOpen={props.setisModalAddProductOpen} />
-                        </TabPanel>
-                        <TabPanel value={value} index={1}>
-                            <TabFiscal/>
-                        </TabPanel>
-                    </div>
+                <h3 style={{ width: 'max-content', margin: '0 auto' }}>{props.type === 'Add' ? 'Cadastro de produto' : 'Edição de produto'}</h3>
+
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={value} onChange={handleChange}  >
+                        <Tab label={isLess900 ? '' : 'Principal'} title='Principal' sx={{ borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<FiPackage size={20} />} iconPosition='start' />
+                         REMOVE COMMENT TO ENABLE FISCAL TAB <Tab label={isLess900 ? '' : "Tributos"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' /> 
+                    </Tabs>
+                </Box>
+                <div>
+                    <TabPanel value={value} index={0}>
+                        <TabInfoProduct setisModalSucessOpen={props.setisModalSucessOpen}
+                            setisModalAddEditProductOpen={props.setisModalAddEditProductOpen} 
+                            type={props.type}
+                            itemData= {props.itemData}
+                            />
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <TabFiscal />
+                    </TabPanel>
+                </div>
                 <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalAddProduct}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
             </Box>
         </Modal>
