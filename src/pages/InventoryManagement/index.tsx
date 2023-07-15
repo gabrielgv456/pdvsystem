@@ -28,7 +28,7 @@ interface ProductsReturnApiProps {
     cfopId: number,
     ncmCode: string,
     profitMargin: number,
-    unitMeasuremnt:string
+    unitMeasurement:string
 }
 
 export interface TransactionsProductsReturnApi {
@@ -146,7 +146,7 @@ export const InventoryManagement = () => {
                             cfopId= {item.cfopId}
                             ncmCode= {item.ncmCode}
                             profitMargin= {item.profitMargin}
-                            unitMeasuremnt={item.unitMeasuremnt}
+                            unitMeasurement={item.unitMeasurement}
                             isModalTransactionsProductsOpen={isModalTransactionsProductsOpen}
                             setisModalTransactionsProductsOpen={setisModalTransactionsProductsOpen}
                             searchProduct={SearchProducts}

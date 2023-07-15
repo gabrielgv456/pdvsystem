@@ -30,7 +30,7 @@ export interface ListProductsProps {
     cfopId:number,
     ncmCode: string,
     profitMargin: number,
-    unitMeasuremnt:string,
+    unitMeasurement:string,
     dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[];
     isModalTransactionsProductsOpen: boolean;
     setisModalTransactionsProductsOpen: (isModalTransactionsProductsOpen: boolean) => void;

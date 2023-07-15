@@ -101,7 +101,7 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange}  >
                         <Tab label={isLess900 ? '' : 'Principal'} title='Principal' sx={{ borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<FiPackage size={20} />} iconPosition='start' />
-                         REMOVE COMMENT TO ENABLE FISCAL TAB <Tab label={isLess900 ? '' : "Tributos"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' /> 
+                         {/* REMOVE COMMENT TO ENABLE FISCAL TAB <Tab label={isLess900 ? '' : "Tributos"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />  */}
                     </Tabs>
                 </Box>
                 <div>

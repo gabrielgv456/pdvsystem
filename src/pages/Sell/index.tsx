@@ -27,12 +27,14 @@ export const Sell = () => {
         value: number;
         active: boolean;
         quantity: number;
+        cost: number;
 
     }
     interface ProductsTypeOptions {
         id: number;
         name: string;
         value: number;
+        cost: number;
         firstLetter: string;
 
     }
@@ -42,6 +44,8 @@ export const Sell = () => {
         totalvalue: number;
         initialvalue: number;
         quantity: number;
+        totalCost: number;
+        initialCost:number
     };
     interface MethodsType {
         id: number;
@@ -189,7 +193,7 @@ export const Sell = () => {
     const [inputProducts, setinputProducts] = useState<ProductsTypeOptions | null>(null)
 
     const handleAddProduct = () => {
-        console.log(inputProducts)
+
         let newList = [...listProducts]
         if (inputProducts) {
             let verifyexistsProduct = newList.some((item) => item.id === inputProducts.id)
@@ -208,7 +212,8 @@ export const Sell = () => {
                     quantity: 1,
                     initialvalue: inputProducts.value,
                     totalvalue: inputProducts.value,
-
+                    initialCost:inputProducts.cost,
+                    totalCost:inputProducts.cost
                 })
                 setListProducts(newList)
                 setinputProducts(null)
@@ -229,8 +234,9 @@ export const Sell = () => {
             if (newList[i].id === id) {
                 if (type === 'add') {
                     if (verifyQuantityProducts !== undefined && newList[i].quantity < verifyQuantityProducts.quantity) {
-                        newList[i].quantity = newList[i].quantity + quantity
+                        newList[i].quantity   = newList[i].quantity   + quantity
                         newList[i].totalvalue = newList[i].totalvalue + newList[i].initialvalue
+                        newList[i].totalCost  = newList[i].totalCost  + newList[i].totalCost
                     }
                     else {
                         MessageBox('info', `Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
@@ -238,7 +244,8 @@ export const Sell = () => {
                 } if (type === 'change') {
                     if (verifyQuantityProducts !== undefined && quantity <= verifyQuantityProducts.quantity) {
                         newList[i].totalvalue = quantity * (newList[i].totalvalue / newList[i].quantity)
-                        newList[i].quantity = quantity;
+                        newList[i].totalCost  = quantity * (newList[i].totalCost / newList[i].quantity)
+                        newList[i].quantity   = quantity;
                     }
                     else {
                         MessageBox('info', `Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
@@ -293,6 +300,7 @@ export const Sell = () => {
 
     const sumquantity = listProducts.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
     const sumvalue = listProducts.map(item => item.totalvalue).reduce((prev, curr) => prev + curr, 0);
+    const sumCost =  listProducts.map(item => item.totalCost).reduce((prev, curr) => prev + curr, 0);
     const sumvalueformated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumvalue);
     const [value, setValue] = useState([0])
 
@@ -328,6 +336,7 @@ export const Sell = () => {
         totalValue: sumvalue,
         valuePayment: sumpayvalue,
         changeValue:null,
+        totalCost:sumCost,
         sellerId: inputSeller ? inputSeller.id : null,
         clientId: inputClient ? inputClient.id : null,
         Products: [...listProducts],

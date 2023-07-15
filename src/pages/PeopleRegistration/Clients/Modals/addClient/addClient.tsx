@@ -136,7 +136,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         eraseValues()
                     }
                     else {
-                        MessageBox('error',data.erro)
+                        throw new Error(data.erro)
                     }
                 }
                 catch (error:any) {
@@ -158,7 +158,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         }
                     }
                     catch (error:any) {
-                        MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
+                        //MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
                     }
                 }
                 else {

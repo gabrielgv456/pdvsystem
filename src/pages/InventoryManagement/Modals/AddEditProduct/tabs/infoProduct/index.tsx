@@ -40,10 +40,10 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
     const auth = useContext(AuthContext)
     const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.value ?? 0)))
     const [inputCostProduct, setInputCostProduct] = useState<string | null>(CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.cost ?? 0)))
-    const [inputProfitMargin, setInputProfitMargin] = useState<string | null>((props.itemData?.profitMargin) !== undefined ? (props.itemData?.profitMargin + "%") : null)
+    const [inputProfitMargin, setInputProfitMargin] = useState<string | null>((props.itemData?.profitMargin) !== (undefined || null) ? ((props.itemData?.profitMargin) + "%") : null)
     const [inputProductsModalQuantity, setinputProductsModalQuantity] = useState<number | null>(props.itemData?.quantity ?? null)
     const [inputBarCode, setInputBarCode] = useState<string | null>(props.itemData?.barCode ?? null)
-    const [selectedUnitMeasuremnt, setSelectedUnitMeasurement] = useState<string | null>(props.itemData?.unitMeasuremnt ?? 'UN')
+    const [selectedUnitMeasurement, setSelectedUnitMeasurement] = useState<string | null>(props.itemData?.unitMeasurement ?? 'UN')
     const [isProductActiveModalAddProduct, setisProductActiveModalAddProduct] = useState<boolean>(props.itemData?.active ?? true)
     const [inputProductsModalName, setinputProductsModalName] = useState<string | null>(props.itemData?.name ?? null)
     const { MessageBox } = useMessageBoxContext()
@@ -66,7 +66,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                     throw new Error('Falha ao obter lista NCM!')
                 }
                 setOptionsNCM(dataFindNCM.ncmList)
-                setNcmCode(dataFindNCM.ncmList.find((item:ncmType)=>item.Codigo === props.itemData?.ncmCode))
+                setNcmCode(dataFindNCM.ncmList.find((item: ncmType) => item.Codigo === props.itemData?.ncmCode))
             }
             catch (error: any) {
                 MessageBox('info', error.message)
@@ -93,7 +93,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                     throw new Error('Falha ao obter lista de tipos de item!')
                 }
                 setOptionsCfop(dataFindCfop.findCfop)
-                setSelectedCfop(dataFindCfop.findCfop.find((item : cfopType)=> item.id === props.itemData?.cfopId))
+                setSelectedCfop(dataFindCfop.findCfop.find((item: cfopType) => item.id === props.itemData?.cfopId))
             }
             catch (error: any) {
                 MessageBox('info', error.message)
@@ -169,34 +169,38 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         // Fazer chamada para API
     };
 
-    const AddProductApi = async () => {
-
-        if (inputProductsModalName !== ""
+    function validateFields() {
+        if (!(inputProductsModalName !== ""
             && finaldataAddProductsToSendApi.value > 0
             && finaldataAddProductsToSendApi.cost > 0
-            && inputProductsModalQuantity
-            && inputProductsModalQuantity > 0) {
-            try {
-                const data = await addProducts(finaldataAddProductsToSendApi)
-                if (!data.Sucess) {
-                    throw new Error('Falha ao adicionar produto! ' + data.erro)
-                }
-                props.setisModalAddEditProductOpen(false)
-                setinputProductsModalName("")
-                setinputProductsModalQuantity(null)
-                setinputvalueProduct(null)
-                props.setisModalSucessOpen(true)
-            } catch (error: any) {
-                MessageBox('error', error.message)
-            }
+            && finaldataAddProductsToSendApi.profitMargin 
+            && (finaldataAddProductsToSendApi.quantity ?? 0) > 0
+        )) {
+            throw new Error('Informe todos os campos obrigatórios!')
         }
-        else {
-            MessageBox('info', 'Insira todos dados obrigatórios corretamente!')
+    }
+
+    const AddProductApi = async () => {
+        try {
+            validateFields()
+            delete finaldataAddProductsToSendApi.id
+            const data = await addProducts(finaldataAddProductsToSendApi)
+            if (!data.Sucess) {
+                throw new Error('Falha ao adicionar produto! ' + data.erro)
+            }
+            props.setisModalAddEditProductOpen(false)
+            setinputProductsModalName("")
+            setinputProductsModalQuantity(null)
+            setinputvalueProduct(null)
+            props.setisModalSucessOpen(true)
+        } catch (error: any) {
+            MessageBox('error', error.message)
         }
     }
 
     const EditProductApi = async () => {
         try {
+            validateFields()
             const data = await editProducts(finaldataAddProductsToSendApi)
             if (!data.Sucess) {
                 throw new Error('Falha ao editar produto! ' + data.erro)
@@ -210,19 +214,19 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
     }
 
     const finaldataAddProductsToSendApi = {
+        id: props.itemData?.id ,
         userId: auth.idUser,
         name: inputProductsModalName,
         value: FormatCurrencytoFloatdb(inputvalueProduct),
         quantity: inputProductsModalQuantity,
         active: isProductActiveModalAddProduct,
-
         cost: FormatCurrencytoFloatdb(inputCostProduct),
         profitMargin: FormatCurrencytoFloatdb(FormatPercent(inputProfitMargin) ?? '0'),
         barCode: inputBarCode,
-        ncmCode: ncmCode?.Codigo,
-        itemTypeId: selectedItemType?.id,
-        cfopId: selectedCfop?.id,
-        unitMeasuremnt: selectedUnitMeasuremnt
+        ncmCode: ncmCode?.Codigo ?? null,
+        //itemTypeId: selectedItemType?.id,
+        cfopId: selectedCfop?.id ?? null,
+        unitMeasurement: 'UN'//selectedUnitMeasurement
     }
 
 
@@ -230,7 +234,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         <>
             <S.DivModalAddProduct>
                 {/* REMOVE COMMENT TO ENABLE PICTURE PRODUCT */}
-                {selectedImage ?
+                {/* {selectedImage ?
                     <img width={100} style={{ maxHeight: 140 }} src={URL.createObjectURL(selectedImage)}></img> :
                     <S.labelChangeImg onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
@@ -240,7 +244,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                         Selecione ou arraste uma imagem
                         <input type='file' onChange={handleFileChange} />
                     </S.labelChangeImg>
-                }
+                } */}
                 <TextField
                     value={inputProductsModalName}
                     onChange={(e) => setinputProductsModalName(e.target.value)}
@@ -332,7 +336,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                             />
                         } />
                     <Autocomplete
-                        value={selectedUnitMeasuremnt}
+                        value={selectedUnitMeasurement}
                         onChange={(event: any, newValue: string | null) => {
                             setSelectedUnitMeasurement(newValue);
                         }}
