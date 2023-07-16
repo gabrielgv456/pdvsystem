@@ -65,8 +65,9 @@ export const SalesControl = () => {
     const sumItens = listSellsProducts.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
     const sumCash = listSells.map(item => item.sellValue).reduce((prev, curr) => prev + curr, 0);
     const sumCashFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumCash)
-    const sumCost = listSells.map(item => item.cost).reduce((prev, curr) => prev + curr, 0);
-    const sumCostFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumCost)
+    const listSellFiltered = listSells.filter(sell=>sell.cost > 0) 
+    const sumProfit = listSellFiltered.map(item => item.sellValue).reduce((prev, curr) => prev + curr, 0) - listSellFiltered.map(item => item.cost).reduce((prev, curr) => prev + curr, 0) ;
+    const sumProfitFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumProfit)
     const [ismodalDeleteOpen, setismodalDeleteOpen] = useState(false)
     const [ismodalMasterkeyEditOpen, setismodalMasterkeyEditOpen] = useState(false)
     const [ismodalMasterkeyDeleteOpen, setismodalMasterkeyDeleteOpen] = useState(false)
@@ -272,7 +273,7 @@ export const SalesControl = () => {
                         <MdOutlineTrendingUp size="2.5rem" color="var(--AppBar)" />
                         <label>
                             <section>Lucro</section>
-                            <S.SectionValuesBoxResume>{sumCostFormated }</S.SectionValuesBoxResume>
+                            <S.SectionValuesBoxResume>{sumProfitFormated }</S.SectionValuesBoxResume>
                         </label>
                     </S.BoxResume>
                 </S.BoxResumeGroup>

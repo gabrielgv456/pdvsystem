@@ -29,6 +29,7 @@ interface AreaChartDataType{
     totalSells: number,
     day: number,
     nameDay: string,
+    totalProfit: number
 }
 
 export const AreaChart = () => {
@@ -78,6 +79,23 @@ export const AreaChart = () => {
     const data = {
         labels,
         datasets: [
+
+            {
+                fill: true,
+                label: 'Lucro',
+                data: areaChartData.map((value,index) => 
+                index === 0 ?  value.totalProfit :
+                index === 1 ?  value.totalProfit :
+                index === 2 ?  value.totalProfit :
+                index === 3 ?  value.totalProfit :
+                index === 4 ?  value.totalProfit :
+                index === 5 ?  value.totalProfit :
+                index === 6 ?  value.totalProfit :
+                0 
+                ),
+                borderColor: '#33CC95',
+                backgroundColor: '#33cc9449',
+            },
             {
                 fill: true,
                 label: 'Valor',
@@ -91,10 +109,12 @@ export const AreaChart = () => {
                 index === 6 ?  value.totalSells :
                 0 
                 ),
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                borderColor: 'rgba(53, 162, 235, 0.984)',
+                backgroundColor: 'rgba(53, 162, 235, 0.234)',
             },
-            
+        
+            //borderColor: 'rgb(53, 162, 235)',
+            // backgroundColor: 'rgba(53, 162, 235, 0.5)',
             
         ],
     };

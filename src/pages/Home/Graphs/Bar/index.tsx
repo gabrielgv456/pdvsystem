@@ -17,7 +17,8 @@ import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBox
 interface dataBarType {
     sumSells: number,
     month: number,
-    medTicket: number
+    medTicket: number,
+    totalProfit:number
 }
 
 export const BarChart = () => {
@@ -135,6 +136,11 @@ export const BarChart = () => {
                 label: 'Valor Total',
                 data: dataBar.map((data) => data.sumSells),
                 backgroundColor: '#3181ed',
+            },
+            {
+                label: 'Lucro Total',
+                data: dataBar.map((data) => data.totalProfit),
+                backgroundColor: '#33CC95',
             },
         ],
     };
