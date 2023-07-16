@@ -77,7 +77,6 @@ export const Transactions = () => {
         let formatvalue = e.target.value
         formatvalue = formatvalue.replace(/\D/g, "")
         formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
-        console.log(formatvalue)
         setfinalvalueEntry(parseFloat(formatvalue))
     }
 

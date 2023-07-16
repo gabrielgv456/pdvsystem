@@ -10,7 +10,7 @@ import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvider';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { FormatCurrencytoFloatdb, FormatPercent, currencyRemoveNotNumbers, removeNotNumerics } from '../../../../../../utils/utils';
+import { FormatChangePercent, FormatCurrencytoFloatdb, FormatPercent, currencyRemoveNotNumbers, removeNotNumerics } from '../../../../../../utils/utils';
 import { info } from 'console';
 import { ListProductsProps } from '../../../../ListProducts/ListProducts';
 
@@ -38,9 +38,9 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
 
     const { addProducts, findNCM, findItemType, findCfop, editProducts } = useApi()
     const auth = useContext(AuthContext)
-    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.value ?? 0)))
-    const [inputCostProduct, setInputCostProduct] = useState<string | null>(CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.cost ?? 0)))
-    const [inputProfitMargin, setInputProfitMargin] = useState<string | null>((props.itemData?.profitMargin) !== (undefined || null) ? ((props.itemData?.profitMargin) + "%") : null)
+    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(props.itemData?.value ? CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.value ?? 0)) : null)
+    const [inputCostProduct, setInputCostProduct] = useState<string | null>(props.itemData?.cost ? CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.cost ?? 0)) : null)
+    const [inputProfitMargin, setInputProfitMargin] = useState<string | null>((props.itemData?.profitMargin) ? ((props.itemData?.profitMargin) + '') : null)
     const [inputProductsModalQuantity, setinputProductsModalQuantity] = useState<number | null>(props.itemData?.quantity ?? null)
     const [inputBarCode, setInputBarCode] = useState<string | null>(props.itemData?.barCode ?? null)
     const [selectedUnitMeasurement, setSelectedUnitMeasurement] = useState<string | null>(props.itemData?.unitMeasurement ?? 'UN')
@@ -105,16 +105,15 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         searchNCM();
     }, [])
 
-
-
-
     const changeValueProduct = async (value: string) => {
         setinputvalueProduct(CurrencyMaskValue(value))
         const valueProduct = FormatCurrencytoFloatdb(value ?? '0')
         const costProduct = FormatCurrencytoFloatdb(inputCostProduct ?? '0')
         const profit = valueProduct - costProduct;
         const percentualProft = costProduct === 0 ? 0 : (profit / costProduct) * 100;
-        setInputProfitMargin(percentualProft.toFixed(2) + '%')
+        if (costProduct !== 0) {
+            setInputProfitMargin(FormatChangePercent(percentualProft + ''))
+        }
     }
 
     const changeCostProduct = async (value: string) => {
@@ -123,8 +122,9 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         const costProduct = FormatCurrencytoFloatdb(value ?? '0')
         const profit = valueProduct - costProduct;
         const percentualProft = valueProduct === 0 ? 0 : (profit / costProduct) * 100;
-
-        setInputProfitMargin(percentualProft.toFixed(2) + '%')
+        if (valueProduct !== 0) {
+            setInputProfitMargin(FormatChangePercent(percentualProft + ''))
+        }
 
     }
 
@@ -173,7 +173,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         if (!(inputProductsModalName !== ""
             && finaldataAddProductsToSendApi.value > 0
             && finaldataAddProductsToSendApi.cost > 0
-            && finaldataAddProductsToSendApi.profitMargin 
+            && finaldataAddProductsToSendApi.profitMargin
             && (finaldataAddProductsToSendApi.quantity ?? 0) > 0
         )) {
             throw new Error('Informe todos os campos obrigatórios!')
@@ -214,14 +214,14 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
     }
 
     const finaldataAddProductsToSendApi = {
-        id: props.itemData?.id ,
+        id: props.itemData?.id,
         userId: auth.idUser,
         name: inputProductsModalName,
         value: FormatCurrencytoFloatdb(inputvalueProduct),
         quantity: inputProductsModalQuantity,
         active: isProductActiveModalAddProduct,
         cost: FormatCurrencytoFloatdb(inputCostProduct),
-        profitMargin: FormatCurrencytoFloatdb(FormatPercent(inputProfitMargin) ?? '0'),
+        profitMargin: FormatCurrencytoFloatdb(FormatChangePercent(inputProfitMargin) ?? '0'),
         barCode: inputBarCode,
         ncmCode: ncmCode?.Codigo ?? null,
         //itemTypeId: selectedItemType?.id,

@@ -170,7 +170,6 @@ export const Sell = () => {
             }
 
             setMethods(newMethods)
-            console.log(finallistapi)
         }
 
 
@@ -265,11 +264,10 @@ export const Sell = () => {
             }
         }
         setListProducts(newList)
-        console.log(listProducts)
 
     }
     const handleKeyUP = (e: KeyboardEvent) => {
-        console.log(e.code)
+
         if (e.code === 'Enter' || e.code === 'NumpadEnter' && inputProducts) {
 
             handleAddProduct()
@@ -310,8 +308,6 @@ export const Sell = () => {
             ValuePayment
         )
         setValue(newvalue)
-
-        console.log(listProducts)
     }
     const sumpayvalue = listMethods.filter(item => Number.isNaN(item.value) === false).map(item => item.value).reduce((prev, curr) => prev + curr, 0);
     const calculatemissvalue = sumvalue - sumpayvalue
@@ -327,7 +323,7 @@ export const Sell = () => {
         if (sumvalue - sumpayvalue < 0) { setNeedReturnCash('Y') };
         if (sumvalue - sumpayvalue === 0) { setNeedReturnCash('OK') };
         if (sumvalue - sumpayvalue > 0) { setNeedReturnCash('N') };
-        console.log(sumpayvalue, listMethods)
+
     }, [formatedmissvalue])
 
     //const finallistapi = JSON.stringify({Products: {...listProducts}, Payment: {...listMethods}})

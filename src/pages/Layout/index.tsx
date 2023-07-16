@@ -153,7 +153,6 @@ export default function LayoutDefault(props: Props) {
 
 
   const container = window !== undefined ? () => window().document.body : undefined;
-  console.log(container)
 
   return (
     <Box sx={{ display: 'flex' }}>

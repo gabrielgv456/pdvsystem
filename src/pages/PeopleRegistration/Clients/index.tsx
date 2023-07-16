@@ -91,7 +91,6 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
         event: React.MouseEvent<HTMLElement>,
         newAlignment: string,
     ) => {
-        console.log(newAlignment)
         if (newAlignment !== null) {
             props.setPeopleMode(newAlignment);
         }

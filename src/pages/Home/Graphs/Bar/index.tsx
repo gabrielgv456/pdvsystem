@@ -26,7 +26,6 @@ export const BarChart = () => {
 
         const month : string[]= [];
         dataBarChart.map((data) => {
-            console.log(data.month)
             switch (data.month) {
                 case 1:
                     month.push('Janeiro');
@@ -47,7 +46,7 @@ export const BarChart = () => {
                     month.push('Junho')
                     break;
                 case 7:
-                    month.push('Junho')
+                    month.push('Julho')
                     break;
                 case 8:
                     month.push('Agosto')

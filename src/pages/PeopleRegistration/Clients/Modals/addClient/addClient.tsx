@@ -121,7 +121,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
     }
 
     const AddClientApi = async () => {
-        console.log(JSON.stringify(finaldataAddClientToSendApi))
+       
         if (valueInputClientCpfCnpj && valueInputClientName && valueInputClientBirthDate &&
             valueInputClientCpfCnpj !== "" && valueInputClientName !== "" && valueInputClientBirthDate !== "" &&
             (valueInputClientCpfCnpj.length === 14 || valueInputClientCpfCnpj.length === 18)

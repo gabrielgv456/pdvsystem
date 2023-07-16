@@ -150,7 +150,8 @@ export const SalesControl = () => {
         setidSellDeleteModal(id)
         const filter = listSellsProducts.filter(product => product.sellId === id)
         setlistProductstoModifyQntFiltered(filter)
-        setismodalMasterkeyDeleteOpen(true)
+        //setismodalMasterkeyDeleteOpen(true)
+        setismodalDeleteOpen(true)
         //defaultSendtoApi();
 
     }

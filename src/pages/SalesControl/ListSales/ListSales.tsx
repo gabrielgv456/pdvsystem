@@ -27,7 +27,16 @@ export function Listagem(props: Props) {
       props.handleRemoveTask(props.item.id, props.item.sellValue)
    }
 
-   const dataSell = new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(props.item.created_at))
+   const dataSellPrint = new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(props.item.created_at))
+   const dataSell = new Date(props.item.created_at).toLocaleDateString('pt-br',{
+      year: 'numeric',
+      month: ('long' || 'short' || 'numeric'),
+      weekday: ('long' || 'short'),
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      timeZone: 'UTC'
+  })
    //const gethoursSell_title = new Date(props.item.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })
    const searchvaluesthisSell = props.listSellsProducts.filter(item => item.sellId === props.item.id)
    const sumtotalValuethisSell = searchvaluesthisSell.map(item => item.totalValue).reduce((prev, curr) => prev + curr, 0);
@@ -36,7 +45,7 @@ export function Listagem(props: Props) {
 
 
    const handlePrint = () => {
-      GeneratePDFSalesControl(props.listSellsProducts, sumtotalValuethisSellFormated, sumtotalQuantitythisSell, dataSell, props.item.id)
+      GeneratePDFSalesControl(props.listSellsProducts, sumtotalValuethisSellFormated, sumtotalQuantitythisSell, dataSellPrint, props.item.id)
    }
    const handleEdit = async () => {
 

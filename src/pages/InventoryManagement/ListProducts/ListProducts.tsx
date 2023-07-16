@@ -159,11 +159,9 @@ export const ListProducts = (props: ListProductsProps) => {
                 </S.LabelDate>
 
                 <S.ButtonInfo onClick={handleOpenModalTransactionsProducts} title="Movimentações"><BiTransfer size="16" /></S.ButtonInfo>
-                <S.ButtonTrash onClick={() => setisModalMasterKeyOpen(true)} title="Excluir Produto" ><BsTrash size="16" /></S.ButtonTrash>
+                <S.ButtonTrash onClick={() => setisModalDeleteProductOpen(true)} title="Excluir Produto" ><BsTrash size="16" /></S.ButtonTrash>
 
             </S.Container>
-
-
 
 
             <ModalAddEditProduct

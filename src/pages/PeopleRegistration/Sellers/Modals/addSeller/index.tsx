@@ -118,8 +118,6 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
     }
 
     const AddSellerApi = async () => {
-        console.log(valueInputSellerBirthDate)
-        console.log(JSON.stringify(finaldataAddSellerToSendApi))
         if (valueInputSellerCpf && valueInputSellerName && valueInputSellerBirthDate && valueInputSellerGender &&
             valueInputSellerCpf !== "" && valueInputSellerName !== "" && valueInputSellerBirthDate !== "" &&
             (valueInputSellerCpf.length === 14 || valueInputSellerCpf.length === 18)

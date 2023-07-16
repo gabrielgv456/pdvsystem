@@ -77,13 +77,22 @@ export function FormatCurrencytoFloatdb(value: string | null) {
   return (parseFloat(formatvalue))
 }
 
-export function FormatPercent(value: string|null) {
+export function FormatChangePercent(value: string|null) {
   if (!value) { return '' }
   value = value.replace(/[^\d.-]/g, '');
   const valueInt = parseFloat(value)
   if (isNaN(valueInt)) { return value }
-  return valueInt.toFixed(2) + '%'
+  return valueInt.toFixed(2) + ''
 }
+
+export function FormatPercent(value: string|null) {
+  if (!value) { return '' }
+  value = value.replace(/\D/g, "")
+  value = value.replace(/(\d)(\d{2})$/, "$1.$2")
+  value = value.replace(/(?=(\d{3})+(\D))\B/g, ".");
+  return value
+}
+
 
 export function currencyRemoveNotNumbers(value: string | null) {
   if (!value) { return '' }

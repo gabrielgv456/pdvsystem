@@ -42,7 +42,7 @@ return (
 }}
 >
         <S.DivModalSucess>
-            <h3 style={{alignSelf:'center'}}>Produto adicionado com sucesso!</h3>
+            <h3 style={{alignSelf:'center'}}>Procedimento realizado com sucesso!</h3>
             <BsCheckCircle color="var(--Green)" size="50" className="IconSucess"/>
             
         </S.DivModalSucess>  
