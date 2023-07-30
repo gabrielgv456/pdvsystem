@@ -117,7 +117,7 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
                             }}
                             placeholder="Localizar Consumidor..."></input>
                     </S.LabelSearchClient>
-                    <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '5%' }}>
+                    <section style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '5%' }}>
                         <ToggleButtonGroup
 
                             color="info"
@@ -136,7 +136,7 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
                             <MdAdd size="22" />
                             <b>NOVO CLIENTE</b>
                         </S.ButtonAddClient>
-                    </label>
+                    </section>
 
                 </S.Header>
 

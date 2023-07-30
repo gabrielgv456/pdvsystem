@@ -28,7 +28,7 @@ export function Listagem(props: Props) {
    }
 
    const dataSellPrint = new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(props.item.created_at))
-   const dataSell = new Date(props.item.created_at).toLocaleDateString('pt-br',{
+   const dataSell = new Date(props.item.created_at).toLocaleDateString('pt-br', {
       year: 'numeric',
       month: ('long' || 'short' || 'numeric'),
       weekday: ('long' || 'short'),
@@ -36,7 +36,7 @@ export function Listagem(props: Props) {
       hour: 'numeric',
       minute: 'numeric',
       timeZone: 'UTC'
-  })
+   })
    //const gethoursSell_title = new Date(props.item.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })
    const searchvaluesthisSell = props.listSellsProducts.filter(item => item.sellId === props.item.id)
    const sumtotalValuethisSell = searchvaluesthisSell.map(item => item.totalValue).reduce((prev, curr) => prev + curr, 0);
@@ -60,12 +60,13 @@ export function Listagem(props: Props) {
       <S.Container isDarkMode={Theme.DarkMode}>
          <S.DivTitle>
             <S.DivTipo>
-               {dataSell}
+               {/* {dataSell} */}
+               {(props.item.codRef ? props.item.codRef + ' - ' : '') + dataSell}
                <label>Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.item.sellValue)}</label>
             </S.DivTipo>
          </S.DivTitle>
          <S.DivContent>
-         <S.ButtonEdit isDarkMode={Theme.DarkMode} title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+            <S.ButtonEdit isDarkMode={Theme.DarkMode} title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
             <S.span isDarkMode={Theme.DarkMode}>
                <S.bItem isDarkMode={Theme.DarkMode}>Qtd</S.bItem>
                <S.DivListQuantity>
@@ -85,10 +86,18 @@ export function Listagem(props: Props) {
                </S.DivListItens>
             </S.span>
             <S.span isDarkMode={Theme.DarkMode}>
-               <S.bItem isDarkMode={Theme.DarkMode}>Valor</S.bItem> <S.DivListItens isDarkMode={Theme.DarkMode}>
+               <S.bItem isDarkMode={Theme.DarkMode}>Preço Venda</S.bItem> <S.DivListItens isDarkMode={Theme.DarkMode}>
                   {props.listSellsProducts.map((products) => (
                      products.sellId === props.item.id &&
                      <S.LabelItem isDarkMode={Theme.DarkMode}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalValue)} </S.LabelItem>
+                  ))}
+               </S.DivListItens>
+            </S.span>
+            <S.span isDarkMode={Theme.DarkMode}>
+               <S.bItem isDarkMode={Theme.DarkMode}>Custo</S.bItem> <S.DivListItens isDarkMode={Theme.DarkMode}>
+                  {props.listSellsProducts.map((products) => (
+                     products.sellId === props.item.id &&
+                     <S.LabelItem isDarkMode={Theme.DarkMode}>{(products.totalCost || products.totalCost === 0) ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalCost) : '-'} </S.LabelItem>
                   ))}
                </S.DivListItens>
             </S.span>
@@ -100,11 +109,11 @@ export function Listagem(props: Props) {
                <S.bItem isDarkMode={Theme.DarkMode}>Vendedor</S.bItem>
                <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.sellerName ?? "Não informado"}</S.LabelItem>
             </S.span>
-           
-           
-               <S.ButtonPrint isDarkMode={Theme.DarkMode} title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.ButtonPrint>
-               <S.ButtonTrash title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.ButtonTrash>
-            
+
+
+            <S.ButtonPrint isDarkMode={Theme.DarkMode} title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.ButtonPrint>
+            <S.ButtonTrash title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.ButtonTrash>
+
             {/* 
             <S.LabelDate title={gethoursSell_title}>{dataSell}</S.LabelDate>
             <S.DivListQuantity>

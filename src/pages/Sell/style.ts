@@ -123,7 +123,11 @@ export const LabelConfirm = styled.label`
 cursor:pointer;
 
 `
-
+export const SectionMConfirmSell = styled.section `
+    flex-direction: column;
+    display: flex;
+    gap:5px;
+`
 export const DivList = styled.div`
 width: 45%;
 @media screen and (max-width:900px) {

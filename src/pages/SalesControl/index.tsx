@@ -20,6 +20,7 @@ import { ModalSuccess } from './Modals/Success/ModalSucess';
 import { ModalEditSell } from './Modals/EditSell/ModalEditSell';
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import { MdOutlineTrendingUp } from "react-icons/md";
+import { ReturnData } from "../../utils/utils";
 // end imports menu MUI //
 
 export interface SellsProductsReceiveApi {
@@ -30,6 +31,7 @@ export interface SellsProductsReceiveApi {
     quantity: number,
     valueProduct: number;
     totalValue: number;
+    totalCost: number;
     descriptionProduct: string;
     created_at: Date;
 };
@@ -45,6 +47,7 @@ export interface Sell {
     cost:number;
     valuePayment: number;
     created_at: Date;
+    codRef: number
 };
 export interface SellersandClientsType {
     id: number;
@@ -65,8 +68,8 @@ export const SalesControl = () => {
     const sumItens = listSellsProducts.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
     const sumCash = listSells.map(item => item.sellValue).reduce((prev, curr) => prev + curr, 0);
     const sumCashFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumCash)
-    const listSellFiltered = listSells.filter(sell=>sell.cost > 0) 
-    const sumProfit = listSellFiltered.map(item => item.sellValue).reduce((prev, curr) => prev + curr, 0) - listSellFiltered.map(item => item.cost).reduce((prev, curr) => prev + curr, 0) ;
+    const listSellFiltered = listSellsProducts.filter(sell=>sell.totalCost > 0) 
+    const sumProfit = listSellFiltered.map(item => item.totalValue).reduce((prev, curr) => prev + curr, 0) - listSellFiltered.map(item => item.totalCost).reduce((prev, curr) => prev + curr, 0) ;
     const sumProfitFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumProfit)
     const [ismodalDeleteOpen, setismodalDeleteOpen] = useState(false)
     const [ismodalMasterkeyEditOpen, setismodalMasterkeyEditOpen] = useState(false)
@@ -113,15 +116,7 @@ export const SalesControl = () => {
         defaultSendtoApi()
     }, [])
 
-    function ReturnData() {
-        let data = new Date();
-        let day = String(data.getDate()).padStart(2, '0');
-        let mes = String(data.getMonth() + 1).padStart(2, '0');
-        let year = data.getFullYear();
-        const CurrentData = year + '-' + mes + '-' + day;
-
-        return (CurrentData)
-    }
+    
     const handleSendtoApi = async () => {
         if (InitialDate > FinalDate) {
             MessageBox('info', ' Data inicial maior do que a data final!')

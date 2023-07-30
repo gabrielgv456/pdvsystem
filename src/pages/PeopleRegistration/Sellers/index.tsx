@@ -113,7 +113,7 @@ export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => 
                             }}
                             placeholder="Localizar Colaborador..."></input>
                     </S.LabelSearchSeller>
-                    <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '5%' }}>
+                    <section style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '5%' }}>
                         <ToggleButtonGroup
                             color="primary"
                             value={props.PeopleMode}
@@ -128,7 +128,7 @@ export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => 
                             <MdAdd size="22" />
                             <b>NOVO VENDEDOR</b>
                         </S.ButtonAddSeller>
-                    </label>
+                    </section>
 
                 </S.Header>
                 <S.DivListSellers>

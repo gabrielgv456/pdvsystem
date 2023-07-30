@@ -12,6 +12,7 @@ import { HiTrendingDown, HiTrendingUp } from 'react-icons/hi';
 import { MdAddTask, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { CurrencyMask } from '../../masks/CurrencyMask';
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
+import { ReturnData } from "../../utils/utils";
 
 export interface TransactionsReturnApiProps {
     id: number,
@@ -86,15 +87,6 @@ export const Transactions = () => {
         searchTransactions()
     }, [])
 
-    function ReturnData() {
-        let data = new Date();
-        let day = String(data.getDate()).padStart(2, '0');
-        let mes = String(data.getMonth() + 1).padStart(2, '0');
-        let year = data.getFullYear();
-        const CurrentData = year + '-' + mes + '-' + day;
-
-        return (CurrentData)
-    }
 
     const searchTransactions = async () => {
         if (InitialDate > FinalDate) {

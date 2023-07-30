@@ -1,15 +1,6 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-
-function ReturnData() {
-    let data = new Date();
-    let day = String(data.getDate()).padStart(2, '0');
-    let mes = String(data.getMonth() + 1).padStart(2, '0');
-    let year = data.getFullYear();
-    const CurrentData = day + '/' + mes + '/' + year;
-
-    return (CurrentData)
-}
+import { ReturnData } from "../utils/utils";
 
 interface ProductsType {
     name: string;
@@ -146,7 +137,7 @@ export const GeneratePDF = (listProducts: ProductsType[], sumvalueformated: stri
 
 
 export const GeneratePDFSalesControl = (listProducts: SellsProductsReceiveApi[], sumvalueformated: string, sumquantity: number, dataSell: String, UserStore: number) => {
-    const CurrentData = ReturnData()
+
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 
     const ProductsData = listProducts.map((product) => {

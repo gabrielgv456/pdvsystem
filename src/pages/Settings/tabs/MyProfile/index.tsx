@@ -98,6 +98,9 @@ export const TabMyProfile = () => {
             if (newPass !== confirmNewPass){
                 throw new Error("Nova senha não confere com a confirmação da nova senha!")
             }
+            if (newPass.length < 8) {
+                throw new Error("Nova senha precisa ter no minimo 8 digitos!")
+            }
             const dataChangePass = await changePassword(finalDataChangePass)
             if (!dataChangePass.Success) {
                 throw new Error("Erro ao atualizar senha! " + dataChangePass.erro)

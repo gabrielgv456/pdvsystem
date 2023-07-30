@@ -45,7 +45,7 @@ export const Sell = () => {
         initialvalue: number;
         quantity: number;
         totalCost: number;
-        initialCost:number
+        initialCost: number
     };
     interface MethodsType {
         id: number;
@@ -85,6 +85,7 @@ export const Sell = () => {
     const [isSellEnded, setisSellEnded] = useState(false)
     const [inputSeller, setInputSeller] = useState<SellersandClientsType | null>(null)
     const [inputClient, setInputClient] = useState<SellersandClientsType | null>(null)
+    const [codRefSell, setCodRefSell] = useState<number | null>(null)
     const { MessageBox } = useMessageBoxContext()
     // const [isClientNecessary, setisClientNecessary] = useState(false)
     // const [isSellerNecessary, setisSellerNecessary] = useState(false)
@@ -211,8 +212,8 @@ export const Sell = () => {
                     quantity: 1,
                     initialvalue: inputProducts.value,
                     totalvalue: inputProducts.value,
-                    initialCost:inputProducts.cost,
-                    totalCost:inputProducts.cost
+                    initialCost: inputProducts.cost,
+                    totalCost: inputProducts.cost
                 })
                 setListProducts(newList)
                 setinputProducts(null)
@@ -233,9 +234,9 @@ export const Sell = () => {
             if (newList[i].id === id) {
                 if (type === 'add') {
                     if (verifyQuantityProducts !== undefined && newList[i].quantity < verifyQuantityProducts.quantity) {
-                        newList[i].quantity   = newList[i].quantity   + quantity
+                        newList[i].quantity = newList[i].quantity + quantity
                         newList[i].totalvalue = newList[i].totalvalue + newList[i].initialvalue
-                        newList[i].totalCost  = newList[i].totalCost  + newList[i].totalCost
+                        newList[i].totalCost = newList[i].totalCost + newList[i].initialCost
                     }
                     else {
                         MessageBox('info', `Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
@@ -243,8 +244,8 @@ export const Sell = () => {
                 } if (type === 'change') {
                     if (verifyQuantityProducts !== undefined && quantity <= verifyQuantityProducts.quantity) {
                         newList[i].totalvalue = quantity * (newList[i].totalvalue / newList[i].quantity)
-                        newList[i].totalCost  = quantity * (newList[i].totalCost / newList[i].quantity)
-                        newList[i].quantity   = quantity;
+                        newList[i].totalCost = quantity * (newList[i].totalCost / newList[i].quantity)
+                        newList[i].quantity = quantity;
                     }
                     else {
                         MessageBox('info', `Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
@@ -261,6 +262,7 @@ export const Sell = () => {
             if (newList[i].id === id) {
                 newList[i].quantity = newList[i].quantity - 1
                 newList[i].totalvalue = newList[i].totalvalue - newList[i].initialvalue
+                newList[i].totalCost = newList[i].totalCost - newList[i].initialCost
             }
         }
         setListProducts(newList)
@@ -298,7 +300,7 @@ export const Sell = () => {
 
     const sumquantity = listProducts.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
     const sumvalue = listProducts.map(item => item.totalvalue).reduce((prev, curr) => prev + curr, 0);
-    const sumCost =  listProducts.map(item => item.totalCost).reduce((prev, curr) => prev + curr, 0);
+    const sumCost = listProducts.map(item => item.totalCost).reduce((prev, curr) => prev + curr, 0);
     const sumvalueformated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumvalue);
     const [value, setValue] = useState([0])
 
@@ -331,8 +333,8 @@ export const Sell = () => {
         UserId: auth.idUser,
         totalValue: sumvalue,
         valuePayment: sumpayvalue,
-        changeValue:null,
-        totalCost:sumCost,
+        changeValue: null,
+        totalCost: sumCost,
         sellerId: inputSeller ? inputSeller.id : null,
         clientId: inputClient ? inputClient.id : null,
         Products: [...listProducts],
@@ -356,24 +358,30 @@ export const Sell = () => {
                     if (window.confirm(`Confirma o troco de ${formatedmissvalue} ?`)) {
                         if (listMethods.length !== 0 && calculatemissvalue <= 0) {
                             valuesSelltoSendApi.changeValue = Math.abs(calculatemissvalue) //convert negative to positive       
-                            const data = await addsell(valuesSelltoSendApi)
-                            if (data.Success === true) {
+                            try {
+                                const data = await addsell(valuesSelltoSendApi)
+                                if (!data.Success) {
+                                    throw new Error(data.Erro)
+                                }
                                 setisSellEnded(true)
-                            }
-                            if (data.Success === false) {
-                                MessageBox('error', ` ${JSON.stringify(data.Erro)}`)
+                                setCodRefSell(data.codRef)
+                            } catch (error: any) {
+                                MessageBox('error', error.message)
                             }
                         }
                     }
                 }
                 if (needReturnCash === 'OK') {
                     if (listMethods.length !== 0 && calculatemissvalue <= 0) {
-                        const data = await addsell(valuesSelltoSendApi)
-                        if (data.Success === true) {
+                        try {
+                            const data = await addsell(valuesSelltoSendApi)
+                            if (!data.Success) {
+                                throw new Error(data.Erro)
+                            }
                             setisSellEnded(true)
-                        }
-                        if (data.Success === false) {
-                            MessageBox('error', `${JSON.stringify(data.Erro)}`)
+                            setCodRefSell(data.codRef)
+                        } catch (error: any) {
+                            MessageBox('error', error.message)
                         }
                     }
                 }
@@ -402,13 +410,18 @@ export const Sell = () => {
                     bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
                     color: Theme.DarkMode ? '#ffffff' : '#000',
                     border: Theme.DarkMode ? '1px solid silver' : '',
+                    borderRadius: '6px',
                     boxShadow: 24, p: 4,
                 }}>
-                    <div style={{ fontSize: '1.1rem', marginBottom: '10px' }}><b>Total:</b> {sumvalueformated}</div>
-                    {needReturnCash === 'N' ? <div style={{ fontSize: '1.1rem' }}><b>Restante:</b> {formatedmissvalue}</div> : ''}
-                    {needReturnCash === 'Y' && <div style={{ fontSize: '1.1rem', color: 'red' }}><b>Troco:</b> {formatedmissvalue}</div>}
-                    {needReturnCash === 'OK' && <div style={{ fontSize: '1.1rem', color: 'green' }}><b>Restante:</b> {formatedmissvalue}</div>}
+                    <S.SectionMConfirmSell>
+                        {(isSellEnded && codRefSell) && <div style={{ fontSize: '1.1rem' }}><b>Código da venda: </b> {codRefSell}</div>}
+                        <div style={{ fontSize: '1.1rem', marginBottom: '0px' }}><b>Total:</b> {sumvalueformated}</div>
+                        {needReturnCash === 'N' ? <div style={{ fontSize: '1.1rem' }}><b>Restante:</b> {formatedmissvalue}</div> : ''}
+                        {needReturnCash === 'Y' && <div style={{ fontSize: '1.1rem', color: 'red' }}><b>Troco:</b> {formatedmissvalue}</div>}
+                        {needReturnCash === 'OK' && <div style={{ fontSize: '1.1rem', color: 'green' }}><b>Restante:</b> {formatedmissvalue}</div>}
+                    </S.SectionMConfirmSell>
                     {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" /> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
+
                     {isSellEnded ? '' :
                         <div>
                             <S.DivInputs>

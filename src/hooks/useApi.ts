@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { TypeDeliveriesRequest } from '../pages/Deliveries';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -146,6 +147,10 @@ export const useApi = () => ({
     },
     findCfop: async () => {
         const response = await api.get('/listCfop')
+        return response.data
+    },
+    findDeliveries: async (data:TypeDeliveriesRequest) => {
+        const response = await api.get(`/deliveries?storeId=${data.userID}?initialDate=${data.InitialDate}?finalDate=${data.FinalDate}`)
         return response.data
     }
 });

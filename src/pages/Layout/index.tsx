@@ -20,6 +20,7 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import SettingsIcon from '@mui/icons-material/Settings';
+import LocalShippingRoundedIcon from '@mui/icons-material/LocalShippingRounded';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import { DrawerStyle } from '../Layout/stylemui';
@@ -61,11 +62,11 @@ export default function LayoutDefault(props: Props) {
     //window.location.href = window.location.href;
     navigate('/');
   }
-  
+
   const handleVoid = () => {
   }
 
-  const openPage = (page:string,description:string) => {
+  const openPage = (page: string, description: string) => {
     navigate(page)
     setActualPage(description)
     setMobileOpen(!mobileOpen)
@@ -82,25 +83,27 @@ export default function LayoutDefault(props: Props) {
       <Toolbar><Typography variant="h6" noWrap component="div">{auth.user?.name}</Typography></Toolbar>
       <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} />
       <List sx={{ marginBottom: '1rem' }}>
-        {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Movimentações', 'Pessoas', 'Gestão de Estoque','Ajustes'].map((text, index) => (
+        {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Entregas', 'Movimentações', 'Pessoas', 'Gestão de Estoque', 'Ajustes'].map((text, index) => (
           <ListItem button key={text}
-            onClick={ () => 
-              index === 0 ? openPage('/home',text) :
-                index === 1 ? openPage('/sell',text) :
-                  index === 2 ? openPage('/salesControl',text) :
-                    index === 3 ? openPage('/transactions',text):
-                      index === 4 ? openPage('/peopleRegistration',text):
-                        index === 5 ? openPage('/inventoryManagement',text) :
-                          index === 6 ? openPage('/settings',text) : handleVoid 
+            onClick={() =>
+              index === 0 ? openPage('/home', text) :
+                index === 1 ? openPage('/sell', text) :
+                  index === 2 ? openPage('/salesControl', text) :
+                    index === 3 ? openPage('/deliveries', text) :
+                      index === 4 ? openPage('/transactions', text) :
+                        index === 5 ? openPage('/peopleRegistration', text) :
+                          index === 6 ? openPage('/inventoryManagement', text) :
+                            index === 7 ? openPage('/settings', text) : handleVoid
             } className="ListItem">
             <ListItemIcon>
               {index === 0 && <HomeIcon className="Icons" />}
               {index === 1 && <StorefrontIcon className="Icons" />}
               {index === 2 && <ReceiptLongIcon className="Icons" />}
-              {index === 3 && <PaidIcon className="Icons" />}
-              {index === 4 && <BsFillPeopleFill size="22" className="Icons" />}
-              {index === 5 && <PieChartIcon className="Icons" />}
-              {index === 6 && <SettingsIcon style={{fontSize:'23px'}} className="Icons"/>}
+              {index === 3 && <LocalShippingRoundedIcon className="Icons" />}
+              {index === 4 && <PaidIcon className="Icons" />}
+              {index === 5 && <BsFillPeopleFill size="22" className="Icons" />}
+              {index === 6 && <PieChartIcon className="Icons" />}
+              {index === 7 && <SettingsIcon style={{ fontSize: '23px' }} className="Icons" />}
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
@@ -136,18 +139,18 @@ export default function LayoutDefault(props: Props) {
 
 
       <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : '', width: '60%', margin: '0 auto' }} />
-      <div style={{ display: 'flex', width: "100%", justifyContent: 'center', flexDirection: 'column', alignItems: 'center', margin:'2.5rem 0 1rem 0' }}>
-       
-        <S.BNameLogo isDarkMode={Theme.DarkMode}>Safyra®</S.BNameLogo>
-        <img src={logo} style={{ width: 150, height: 94 }} />
+      <div style={{ display: 'flex',gap:'2px', width: "100%", justifyContent: 'center', flexDirection: 'column', alignItems: 'center', margin: '2.5rem 0 1rem 0' }}>
 
-        </div>
+        <S.BNameLogo isDarkMode={Theme.DarkMode}>Safyra®</S.BNameLogo>
+        <img src={logo} style={{ width: 120, height: 75 }} />
+
+      </div>
       <S.DivSwitch isDarkMode={Theme.DarkMode}>
-        <BiSun color="#727272"/>
+        <BiSun color="#727272" />
         <Switch checked={Theme.DarkMode} onChange={e => Theme.setDarkMode(e.target.checked)} sx={{ display: 'flex' }} />
-        <BiMoon color="#727272"/>
+        <BiMoon color="#727272" />
       </S.DivSwitch>
-      
+
     </S.Div>
   );
 

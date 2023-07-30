@@ -3,12 +3,22 @@ import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useMessageBoxContext } from '../contexts/MessageBox/MessageBoxContext';
-import ncm from './NCM.json'
 
 
 export function removeNotNumerics(text: string) {
   if (!text) { return '' }
   return (text.replace(/[^0-9]/g, ''))
+}
+
+
+export function ReturnData() {
+  let data = new Date();
+  let day = String(data.getDate()).padStart(2, '0');
+  let mes = String(data.getMonth() + 1).padStart(2, '0');
+  let year = data.getFullYear();
+  const CurrentData = year + '-' + mes + '-' + day;
+
+  return (CurrentData)
 }
 
 export function cellNumberFormat(text: string, max: string) {

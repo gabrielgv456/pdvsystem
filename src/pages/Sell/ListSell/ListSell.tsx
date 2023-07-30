@@ -38,7 +38,7 @@ export function ListSell(props: Props) {
 
          <S.Container isDarkMode={Theme.DarkMode}>
             <S.DivButtonsAddRemove>
-               <S.LabelQuantaty><input style={{ width: '30px', border: 0, outline: 'none'}} value={props.item.quantity} onChange={(e) => ItemAdd(Number(e.target.value), 'change')}></input></S.LabelQuantaty>
+               <S.LabelQuantaty><input style={{ width: '30px', border: 0, outline: 'none', color:Theme.DarkMode?'white':'', backgroundColor: Theme.DarkMode? 'var(--backgroundDarkMode)':''}} value={props.item.quantity} onChange={(e) => ItemAdd(Number(e.target.value), 'change')}></input></S.LabelQuantaty>
                <S.ButtonAdd onClick={() => ItemAdd(1, 'add')}><IoMdAddCircleOutline size="20" /></S.ButtonAdd>
                {props.item.quantity > 1 ?
                   <S.ButtonRemove onClick={ItemRemove}><IoMdRemoveCircleOutline size="20" /></S.ButtonRemove>

@@ -69,7 +69,7 @@ export const DoughnutChart = () => {
                     
                     '#409ae9',
                     '#7e57c2',
-                    '#cacaca',
+                    '#f7f6f6',
                     
                 ],
                 borderColor:`${Theme.DarkMode ? '#29292b' : '#fff' }`
