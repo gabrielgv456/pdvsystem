@@ -31,6 +31,7 @@ import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
 import logo from '../../images/logo.png'
 import { useLayout } from '../../contexts/Layout/layoutContext';
 import { BiMoon, BiSun } from 'react-icons/bi';
+import { FaTruck } from 'react-icons/fa';
 
 
 
@@ -99,7 +100,7 @@ export default function LayoutDefault(props: Props) {
               {index === 0 && <HomeIcon className="Icons" />}
               {index === 1 && <StorefrontIcon className="Icons" />}
               {index === 2 && <ReceiptLongIcon className="Icons" />}
-              {index === 3 && <LocalShippingRoundedIcon className="Icons" />}
+              {index === 3 && <FaTruck  style={{ fontSize: '22px' }} className="Icons"/>}
               {index === 4 && <PaidIcon className="Icons" />}
               {index === 5 && <BsFillPeopleFill size="22" className="Icons" />}
               {index === 6 && <PieChartIcon className="Icons" />}

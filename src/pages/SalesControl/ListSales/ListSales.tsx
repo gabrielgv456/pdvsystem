@@ -61,7 +61,7 @@ export function Listagem(props: Props) {
          <S.DivTitle>
             <S.DivTipo>
                {/* {dataSell} */}
-               {(props.item.codRef ? props.item.codRef + ' - ' : '') + dataSell}
+               <label><b>{(props.item.codRef ? props.item.codRef + ' - ' : '')} </b> {dataSell}</label>
                <label>Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.item.sellValue)}</label>
             </S.DivTipo>
          </S.DivTitle>

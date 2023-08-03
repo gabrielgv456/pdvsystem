@@ -1,18 +1,38 @@
-import {darken} from 'polished'
-
-import styled from "styled-components";
+import styled from 'styled-components'
+import { darken } from 'polished'
 
 interface DarkModeProps {
-    isDarkMode:boolean;
-}
+    isDarkMode : boolean
+} 
 
 export const Container = styled.div<DarkModeProps> `
+    background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
+    color: ${props => (props.isDarkMode ? 'white' : '')};
     font-family: 'Poppins', sans-serif;
+    border-radius: 10px;
     width: 100%;
     min-height: 82vh;
-    border: 0px solid;
-    color: ${props => (props.isDarkMode ? 'white' : '')};
-  
+    padding: 0px;
+    box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
+    box-sizing: border-box;
+
+`
+
+export const Input = styled.input <DarkModeProps> `
+    background-color: ${props=>(props.isDarkMode ? 'var(--backgroundInputDarkMode)':'')};
+    border: solid silver ${props=>(props.isDarkMode ? '0px' : '1px')};
+    color: ${props=>(props.isDarkMode ? '#fff' : '')};
+    border-radius: 5px;
+    width: 100%;
+    height:1.8rem;
+
+`
+
+export const Box = styled.div `
+width: 40%;
+height: min-content;
+padding: 10px;
+border-radius: 5px;
 `
 export const Header = styled.div<DarkModeProps>`
     margin: 0 auto;
@@ -24,6 +44,7 @@ export const Header = styled.div<DarkModeProps>`
     height: min-content;
     display:flex;
     justify-content: center;
+    margin-bottom: 20px;
     align-items: flex-end;
     margin-top: -23px;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
@@ -33,22 +54,9 @@ export const Header = styled.div<DarkModeProps>`
 
 `
 
-export const Box = styled.div `
-width: 40%;
-height: min-content;
-padding: 10px;
-border-radius: 5px;
-`
-    
-export const Input = styled.input <DarkModeProps> `
-    background-color: ${props=>(props.isDarkMode ? 'var(--backgroundInputDarkMode)':'')};
-    border: solid silver ${props=>(props.isDarkMode ? '0px' : '1px')};
-    color: ${props=>(props.isDarkMode ? '#fff' : '')};
-    border-radius: 5px;
-    width: 100%;
-    height:1.8rem;
 
-`
+    
+
 export const Button = styled.button `
 
 font-family: 'Poppins', sans-serif;
@@ -69,20 +77,3 @@ font-family: 'Poppins', sans-serif;
         background-color: ${darken(0.02,'#34cc96')}
     }
 `
-export const Main = styled.div <DarkModeProps>`
-background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
-//box-shadow: ${props => (props.isDarkMode ? '' : '0px 0px 5px #CCC')}; 
-border: ${props => (props.isDarkMode ? '1px solid gray' : '')}; 
-border-radius: 10px;
-padding:10px 20px 10px 20px;
-width:100%;
-display: flex;
-flex-wrap: wrap;
-justify-content: space-between;
-box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
-
-`
-
-
-
-
