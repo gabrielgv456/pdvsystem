@@ -1,91 +1,58 @@
 import { useContext, useState, KeyboardEvent, useEffect } from "react";
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
-import { MdPending } from "react-icons/md"
-import { HiBadgeCheck } from "react-icons/hi"
-import { AiFillPrinter, AiOutlineClose } from "react-icons/ai"
-import { FaCheckCircle, FaMoneyBillWave } from "react-icons/fa"
-import { BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill, BsPersonBadge, BsFillPersonFill } from "react-icons/bs"
+import { FaCheckCircle } from "react-icons/fa"
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { ListSell } from "./ListSell/ListSell";
-import PixIcon from '@mui/icons-material/Pix';
 import { useApi } from "../../hooks/useApi";
-import { PaymentMethods } from "./PaymentMethods/PaymentMethods";
-import { GeneratePDF } from "../../hooks/useGeneratePDF";
 import { RiAddCircleFill } from "react-icons/ri";
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
+import { ModalCheckOut } from "./Modals/CheckOut";
+
+interface ProductsTypeReturnApi {
+    id: number;
+    name: string;
+    value: number;
+    active: boolean;
+    quantity: number;
+    cost: number;
+
+}
+export interface ProductsTypeOptions {
+    id: number;
+    name: string;
+    value: number;
+    cost: number;
+    firstLetter: string;
+
+}
+export interface ProductsType {
+    name: string;
+    id: number;
+    totalvalue: number;
+    initialvalue: number;
+    quantity: number;
+    totalCost: number;
+    initialCost: number
+};
+
+export interface MethodsType {
+    id: number;
+    type: string;
+    value: number;
+    valueFormated: string;
+};
 
 export const Sell = () => {
 
-    interface ProductsTypeReturnApi {
-        id: number;
-        name: string;
-        value: number;
-        active: boolean;
-        quantity: number;
-        cost: number;
-
-    }
-    interface ProductsTypeOptions {
-        id: number;
-        name: string;
-        value: number;
-        cost: number;
-        firstLetter: string;
-
-    }
-    interface ProductsType {
-        name: string;
-        id: number;
-        totalvalue: number;
-        initialvalue: number;
-        quantity: number;
-        totalCost: number;
-        initialCost: number
-    };
-    interface MethodsType {
-        id: number;
-        type: string;
-        value: number;
-        valueFormated: string;
-
-    };
-    interface SellersOptionType {
-        name: string;
-        code: number;
-    }
-    interface SellersandClientsType {
-        id: number;
-        name: string;
-        cpf: string;
-        active: boolean;
-    }
-    interface handleChangeProps {
-        UserId: number;
-        totalValue: number;
-        valuePayment: number;
-        changeValue: number | null;
-        sellerId: number | null;
-        clientId: number | null;
-        Products: ProductsType[];
-        Payment: MethodsType[];
-    }
-
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
-    const [sellers, setSellers] = useState<SellersandClientsType[]>([])
-    const [clients, setClients] = useState<SellersandClientsType[]>([])
-    const { addsell, findProducts, findSellers, findClients } = useApi();
+    const { findProducts, } = useApi();
     const [Products, setProducts] = useState<ProductsTypeReturnApi[]>([])
     const [NoFilteredProducts, setNoFilteredProducts] = useState<ProductsTypeReturnApi[]>([])
-    const [isSellEnded, setisSellEnded] = useState(false)
-    const [inputSeller, setInputSeller] = useState<SellersandClientsType | null>(null)
-    const [inputClient, setInputClient] = useState<SellersandClientsType | null>(null)
-    const [codRefSell, setCodRefSell] = useState<number | null>(null)
+
     const { MessageBox } = useMessageBoxContext()
     // const [isClientNecessary, setisClientNecessary] = useState(false)
     // const [isSellerNecessary, setisSellerNecessary] = useState(false)
@@ -95,29 +62,7 @@ export const Sell = () => {
             const data = await findProducts(auth.idUser);
             setNoFilteredProducts(data.listProducts)
         }
-        const SellersSearch = async () => {
-            const data = await findSellers(auth.idUser);
-            if (data.Success) {
-                setSellers(data.findSellers)
-                //setSellers(sellers.filter(seller=>seller.name))
-            }
-            else {
-                MessageBox('error', data.erro)
-            }
-        }
-        const ClientsSearch = async () => {
-            const data = await findClients(auth.idUser);
-            if (data.Success) {
-                setClients(data.findClients)
-                //setSellers(sellers.filter(seller=>seller.name))
-            }
-            else {
-                MessageBox('error', data.erro)
-            }
-        }
-        ClientsSearch();
         Productsresult();
-        SellersSearch();
     }, [])
 
     useEffect(() => {
@@ -139,53 +84,8 @@ export const Sell = () => {
 
     // FUNCTIONS FOR PAYMENT METHODS //
 
-    const [listMethods, setMethods] = useState<MethodsType[]>([])
-
-    const handleAddMethod = (valuetype: string) => {
-        const alreadyexistMethod = verifyifexistsMethod(valuetype)
-        if (!alreadyexistMethod) {
-            let newMethods = [...listMethods]
-            newMethods.push({
-                id: listMethods.length + 1,
-                type: valuetype,
-                value: 0,
-                valueFormated: ""
-
-            })
-            setMethods(newMethods)
-
-        }
-    }
-    function handleRemoveMethod(id: number) {
-        let filteredmethods = listMethods.filter(method => method.id !== id)
-
-        setMethods(filteredmethods)
-    }
-    function handleEditMethod(id: number, value: number, valueformated: string) {
-        let newMethods = [...listMethods]
-
-        for (let i in newMethods) {
-            if (newMethods[i].id === id) {
-                newMethods[i].value = value
-                newMethods[i].valueFormated = valueformated
-            }
-
-            setMethods(newMethods)
-        }
 
 
-    }
-    function handleRemoveOneMethod(id: number, value: number) {
-
-        let newMethods = [...listMethods]
-        for (let i in newMethods) {
-            if (newMethods[i].id === id) {
-                newMethods[i].value = newMethods[i].value - 25
-            }
-        }
-        setMethods(newMethods)
-
-    }
 
     //FUNCTIONS FOR PRODUCTS LIST//
 
@@ -276,50 +176,23 @@ export const Sell = () => {
         }
     }
     const [isModalConfirmSellOpen, setisModalConfirmSellOpen] = useState(false);
+    
     function handleOpenModalConfirmSell() {
         if (listProducts.length > 0) {
             setisModalConfirmSellOpen(true)
         }
     }
-    function handleCloseModalConfirmSell() {
-        if (isSellEnded) {
-            setListProducts([])
-            setMethods([])
-            setNeedReturnCash('N')
-            setValue([0])
-            setinputProducts(null)
-            setisModalConfirmSellOpen(false)
-            setisSellEnded(false)
 
-        } else {
-            setisModalConfirmSellOpen(false)
-        }
-
-    }
-
-
+    const [listMethods, setMethods] = useState<MethodsType[]>([])
     const sumquantity = listProducts.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
     const sumvalue = listProducts.map(item => item.totalvalue).reduce((prev, curr) => prev + curr, 0);
-    const sumCost = listProducts.map(item => item.totalCost).reduce((prev, curr) => prev + curr, 0);
     const sumvalueformated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumvalue);
-    const [value, setValue] = useState([0])
-
-    function onChangeValuePayment(ValuePayment: number) {
-        let newvalue = value
-        newvalue.push(
-            ValuePayment
-        )
-        setValue(newvalue)
-    }
     const sumpayvalue = listMethods.filter(item => Number.isNaN(item.value) === false).map(item => item.value).reduce((prev, curr) => prev + curr, 0);
     const calculatemissvalue = sumvalue - sumpayvalue
     let formatedmissvalue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(calculatemissvalue).replace('-', "")
     const [needReturnCash, setNeedReturnCash] = useState('N')
+    const sumCost = listProducts.map(item => item.totalCost).reduce((prev, curr) => prev + curr, 0);
 
-    const verifyifexistsMethod = (method: string) => {
-        const existsMethod = listMethods.some((item) => item.type === method)
-        return existsMethod
-    }
 
     useEffect(() => {
         if (sumvalue - sumpayvalue < 0) { setNeedReturnCash('Y') };
@@ -329,185 +202,15 @@ export const Sell = () => {
     }, [formatedmissvalue])
 
     //const finallistapi = JSON.stringify({Products: {...listProducts}, Payment: {...listMethods}})
-    const finallistapi = {
-        UserId: auth.idUser,
-        totalValue: sumvalue,
-        valuePayment: sumpayvalue,
-        changeValue: null,
-        totalCost: sumCost,
-        sellerId: inputSeller ? inputSeller.id : null,
-        clientId: inputClient ? inputClient.id : null,
-        Products: [...listProducts],
-        Payment: [...listMethods],
-    }
 
-    const handleSendtoApi = async (valuesSelltoSendApi: handleChangeProps) => {
-        if (listMethods.length == 0) {
-            MessageBox('warning', " Insira um método de pagamento!")
-        }
-        else {
-            if (listMethods.some(method => Number.isNaN(method.value)) || listMethods.some(method => method.value === 0)) {
-                MessageBox('warning', 'Existe método de pagamento vazio, remova ou insira o valor!')
-            }
-            else {
-                if (needReturnCash === 'N') {
-                    MessageBox('warning', ` Restam ${formatedmissvalue} a serem recebidos!`)
-                }
 
-                if (needReturnCash === 'Y') {
-                    if (window.confirm(`Confirma o troco de ${formatedmissvalue} ?`)) {
-                        if (listMethods.length !== 0 && calculatemissvalue <= 0) {
-                            valuesSelltoSendApi.changeValue = Math.abs(calculatemissvalue) //convert negative to positive       
-                            try {
-                                const data = await addsell(valuesSelltoSendApi)
-                                if (!data.Success) {
-                                    throw new Error(data.Erro)
-                                }
-                                setisSellEnded(true)
-                                setCodRefSell(data.codRef)
-                            } catch (error: any) {
-                                MessageBox('error', error.message)
-                            }
-                        }
-                    }
-                }
-                if (needReturnCash === 'OK') {
-                    if (listMethods.length !== 0 && calculatemissvalue <= 0) {
-                        try {
-                            const data = await addsell(valuesSelltoSendApi)
-                            if (!data.Success) {
-                                throw new Error(data.Erro)
-                            }
-                            setisSellEnded(true)
-                            setCodRefSell(data.codRef)
-                        } catch (error: any) {
-                            MessageBox('error', error.message)
-                        }
-                    }
-                }
-            }
-        }
-    }
+
 
 
 
 
     return (
         <>
-            <Modal open={isModalConfirmSellOpen} onClose={handleCloseModalConfirmSell}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '80%', // phone
-                        sm: '80%', // tablets
-                        md: 500, // small laptop
-                        lg: 500, // desktop
-                        xl: 500 // large screens
-                    },
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    borderRadius: '6px',
-                    boxShadow: 24, p: 4,
-                }}>
-                    <S.SectionMConfirmSell>
-                        {(isSellEnded && codRefSell) && <div style={{ fontSize: '1.1rem' }}><b>Código da venda: </b> {codRefSell}</div>}
-                        <div style={{ fontSize: '1.1rem', marginBottom: '0px' }}><b>Total:</b> {sumvalueformated}</div>
-                        {needReturnCash === 'N' ? <div style={{ fontSize: '1.1rem' }}><b>Restante:</b> {formatedmissvalue}</div> : ''}
-                        {needReturnCash === 'Y' && <div style={{ fontSize: '1.1rem', color: 'red' }}><b>Troco:</b> {formatedmissvalue}</div>}
-                        {needReturnCash === 'OK' && <div style={{ fontSize: '1.1rem', color: 'green' }}><b>Restante:</b> {formatedmissvalue}</div>}
-                    </S.SectionMConfirmSell>
-                    {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" /> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
-
-                    {isSellEnded ? '' :
-                        <div>
-                            <S.DivInputs>
-
-
-                                <S.labelClient>
-                                    <BsFillPersonFill size="22" color="#5d5c5c" />
-                                    <Autocomplete
-                                        style={{ width: '84%' }}
-                                        options={clients}
-                                        value={inputClient}
-                                        onChange={(event: any, newValue: SellersandClientsType | null) => {
-                                            setInputClient(newValue);
-                                        }}
-                                        getOptionLabel={(option) =>
-                                            (option.name)
-                                                .concat(" - ")
-                                                .concat(option.cpf)
-                                                .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "($1.$2.$3-$4)")
-
-                                        }
-                                        //getOptionLabel={ (option: SellersOptionType) => option.name}
-                                        id="autocomplete_clients"
-                                        autoComplete
-                                        noOptionsText="Nenhum resultado"
-                                        includeInputInList
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Cliente" variant="standard" />
-                                        )}
-                                    /> </S.labelClient>
-
-
-
-                                <S.labelSeller>
-                                    <BsPersonBadge size="22" color="#5d5c5c" />
-                                    <Autocomplete
-                                        style={{ width: '84%' }}
-                                        options={sellers.filter(seller => seller.active)}
-                                        getOptionLabel={(option) => option.name}
-                                        value={inputSeller}
-                                        onChange={(event: any, newValue: SellersandClientsType | null) => {
-                                            setInputSeller(newValue);
-                                        }}
-                                        //getOptionLabel={ (option: SellersOptionType) => option.name}
-                                        id="autocomplete_sellers"
-                                        autoComplete
-                                        includeInputInList
-                                        noOptionsText="Nenhum resultado"
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Vendedor" variant="standard" />
-                                        )}
-                                    />
-                                </S.labelSeller>
-                            </S.DivInputs>
-
-                            <S.PHeaderModal>Qual será a forma de pagamento?</S.PHeaderModal>
-                        </div>
-
-                    }
-                    {isSellEnded ? '' :
-                        <S.DivModalIconsPayment>
-                            <S.LabelIconsModal onClick={() => handleAddMethod('money')} isDarkMode={Theme.DarkMode} ><FaMoneyBillWave className="hoverbutton" size={25} style={{ color: '#23591b' }} />Dinheiro</S.LabelIconsModal>
-                            <S.LabelIconsModal onClick={() => handleAddMethod('debitcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCardFill className="hoverbutton" size={25} style={{ color: '#f1b917' }} />Cartão de Débito</S.LabelIconsModal>
-                            <S.LabelIconsModal onClick={() => handleAddMethod('creditcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCard2FrontFill className="hoverbutton" size={25} style={{ color: '#da506e' }} />Cartão de Crédito</S.LabelIconsModal>
-                            <S.LabelIconsModal onClick={() => handleAddMethod('pix')} isDarkMode={Theme.DarkMode}><PixIcon className="hoverbutton" style={{ color: '#5cbcb1' }} /> &nbsp; PIX &nbsp;</S.LabelIconsModal>
-                            <S.LabelIconsModal onClick={() => handleAddMethod('others')} isDarkMode={Theme.DarkMode}><MdPending className="hoverbutton" size={25} style={{ color: '#7a3c3c' }} />Outros</S.LabelIconsModal>
-                        </S.DivModalIconsPayment>
-                    }
-                    {listMethods.map((item) => (
-                        <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item} handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} value={value} onChangeValuePayment={onChangeValuePayment} />
-                    ))}
-
-                    <S.DivModalButtons>
-                        {isSellEnded ?
-                            <S.ButtonPrint onClick={(e) => GeneratePDF(listProducts, sumvalueformated, sumquantity)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
-                            : ''}
-                        {isSellEnded ? '' :
-                            <S.ButtonEndSell onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</S.ButtonEndSell>
-                        }
-                    </S.DivModalButtons>
-
-                    <S.ButtonClose isDarkMode={Theme.DarkMode} onClick={handleCloseModalConfirmSell}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonClose>
-
-                </Box>
-            </Modal>
-
 
             <S.Container isDarkMode={Theme.DarkMode}>
                 <S.Header isDarkMode={Theme.DarkMode}>
@@ -524,6 +227,7 @@ export const Sell = () => {
                             renderInput={(params) => <TextField {...params}
                                 sx={{ borderColor: '#fff' }}
                                 onKeyUp={handleKeyUP}
+                                onSelect={handleAddProduct}
                                 label="Selecione um produto"
                                 autoFocus />}
                         />
@@ -553,10 +257,25 @@ export const Sell = () => {
                     </S.Checkout>
 
                 </S.Main>
-
-
-
             </S.Container>
+            <ModalCheckOut
+                listMethods={listMethods}
+                setMethods={setMethods}
+                isModalConfirmSellOpen={isModalConfirmSellOpen}
+                setisModalConfirmSellOpen={setisModalConfirmSellOpen}
+                needReturnCash={needReturnCash}
+                setListProducts={setListProducts}
+                setinputProducts={setinputProducts}
+                setNeedReturnCash={setNeedReturnCash}
+                sumvalue={sumvalue}
+                sumpayvalue={sumpayvalue}
+                sumCost={sumCost}
+                listProducts={listProducts}
+                formatedmissvalue={formatedmissvalue}
+                calculatemissvalue={calculatemissvalue}
+                sumvalueformated={sumvalueformated}
+                sumquantity={sumquantity}
+            />
         </>
     )
 }

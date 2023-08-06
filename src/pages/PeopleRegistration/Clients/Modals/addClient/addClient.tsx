@@ -15,7 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
-import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat } from '../../../../../utils/utils';
+import { cellNumberFormat, cepFormat, cpfCnpjFormat, optionsUF, phoneNumberFormat } from '../../../../../utils/utils';
 
 
 
@@ -51,7 +51,6 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
     const [valueInputClientAdressState, setvalueInputClientAdressState] = useState<string | null>(null)
     const [valueInputClientAdressCep, setvalueInputClientAdressCep] = useState("")
     const [valueInputClientActive, setvalueInputClientActive] = useState(true)
-    const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
     const {MessageBox} = useMessageBoxContext()
     function eraseValues() {
         setvalueInputClientName("")

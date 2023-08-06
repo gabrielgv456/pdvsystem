@@ -115,9 +115,9 @@ export const Deliveries = () => {
                 <Box sx={{ width: '100%' }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange} >
-                            <Tab label={isLess900 ? '' : 'Pendentes'} title='Meu Perfil' sx={{ borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<AiOutlineClockCircle size={20} />} iconPosition='start' />
-                            <Tab label={isLess900 ? '' : "Em entrega"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<FaTruckFast size={20} />} iconPosition='start' />
-                            <Tab label={isLess900 ? '' : "Entregues"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<LuCheckCircle size={20} />} iconPosition='start' />
+                            <Tab label={isLess900 ? '' : 'Pendentes'} title='Meu Perfil' sx={{minWidth:'33.33%',borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<AiOutlineClockCircle size={20} />} iconPosition='start' />
+                            <Tab label={isLess900 ? '' : "Em entrega"} title='Parâmetros Fiscais' sx={{minWidth:'33.33%'}} {...a11yProps(1)} icon={<FaTruckFast size={20} />} iconPosition='start' />
+                            <Tab label={isLess900 ? '' : "Entregues"} title='Parâmetros Fiscais' sx={{minWidth:'33.33%'}}  {...a11yProps(1)} icon={<LuCheckCircle size={20} />} iconPosition='start' />
                         </Tabs>
                     </Box>
                     {/* <div style={{ padding: '0 25px 25px 25px' }}> */}

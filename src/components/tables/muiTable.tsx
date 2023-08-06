@@ -18,7 +18,7 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {GreenButton} from '../buttons/greenButton'
+import {DefaultButton} from '../buttons/defaultButton'
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 
@@ -26,6 +26,7 @@ interface Data {
   sell: string,
   client: string,
   address: string,
+  product:string,
   status: string
 }
 interface MuiTableProps {
@@ -35,18 +36,21 @@ function createData(
   sell: string,
   client: string,
   address: string,
+  product:string,
   status: string
 ): Data {
   return {
     sell,
     client,    
     address,
+    product,
     status
   };
 }
 
 const rows = [
-  createData('1','2','3','4')
+  createData('1002','Fulano de Tal','Rua dos bobos','tenis nike','03 de agosto de 3023 as 21:41'),
+  createData('1005','John Doe','time square','tenis adidas','01 de agosto de 2023')
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -104,6 +108,12 @@ const headCells: readonly HeadCell[] = [
     label: 'Venda',
   },
   {
+    id: 'product',
+    numeric:false,
+    disablePadding: true,
+    label: 'Produto'
+  },
+  {
     id: 'client',
     numeric: false,
     disablePadding: true,
@@ -119,7 +129,7 @@ const headCells: readonly HeadCell[] = [
     id: 'status',
     numeric: false,
     disablePadding: true,
-    label: 'Status',
+    label: 'Data agendada',
   }
 ];
 
@@ -221,9 +231,18 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
       {numSelected > 0 ? (
         //<Tooltip title="Realizar entrega">
-           <GreenButton>
-            Realizar entrega
-            </GreenButton>
+        <section style={{display:'flex',gap:5}}>
+           <DefaultButton selectedColor='--Green'>
+            Iniciar
+            </DefaultButton>
+            <DefaultButton selectedColor='--Blue'>
+            Concluir
+            </DefaultButton>
+            <DefaultButton selectedColor='--Red'>
+            Cancelar
+            </DefaultButton>
+            
+          </section>
         //      <DeleteIcon /> 
         // </Tooltip>
       ) : (
@@ -367,7 +386,8 @@ export default function MuiTable(props:MuiTableProps) {
                     </TableCell>
                    
                     <TableCell>{row.client}</TableCell>
-                    <TableCell>{row.address}</TableCell>
+                    <TableCell>{row.product}</TableCell>
+                    <TableCell>{row.address}</TableCell>    
                     <TableCell>{row.status}</TableCell>
                   </TableRow>
                 );

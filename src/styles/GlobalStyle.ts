@@ -16,6 +16,7 @@ export const GlobalStyle = createGlobalStyle<DarkModeProps>`
     --AppBar: #5429CC;
     --Green: #33CC95;
     --Blue: #437fff;
+    --Red: #ff0000;
 
 }
 
