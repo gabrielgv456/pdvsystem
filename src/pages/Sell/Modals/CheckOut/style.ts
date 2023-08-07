@@ -12,7 +12,7 @@ export const SectionMConfirmSell = styled.section `
 `
 export const labelSeller = styled.label `
 display: flex; 
-width: 48%; 
+width: 100%; 
 align-items: flex-end; 
 justify-content: space-around;
 @media screen and (max-width:930px) {
@@ -32,7 +32,7 @@ export const ButtonClose = styled.button <DarkModeProps>`
 export const DivInputs = styled.div `
 width: 100%; 
 margin-bottom: 5px;
-display: flex;
+display: block;
 justify-content: space-between;
 @media screen and (max-width:930px) {
         display: block;
@@ -49,7 +49,7 @@ export const PHeaderModal = styled.section`
 
 export const labelClient = styled.label `
 display: flex; 
-width: 48%; 
+width: 100%; 
 align-items: flex-end; 
 justify-content: space-around;
 @media screen and (max-width:930px) {

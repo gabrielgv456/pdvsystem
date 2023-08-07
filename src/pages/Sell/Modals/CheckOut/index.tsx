@@ -53,6 +53,37 @@ interface SellersandClientsType {
     cpf: string;
     active: boolean;
 }
+export interface ClientsType {
+    id: number;
+    name: string;
+    gender: string;
+    cpf: string;
+    email: string | null;
+    created_at: Date;
+    active: boolean;
+    birthDate: Date,
+    phoneNumber: string | null,
+    cellNumber: string | null,
+    adressStreet: string | null,
+    adressNumber: string | null,
+    adressNeighborhood: string,
+    adressComplement: string | null,
+    adressCity: string | null,
+    adressState: string | null,
+    adressCep: string | null,
+    adressUF: string | null
+}
+
+export interface deliveryAddressClientType {
+    adressStreet: string | null,
+    adressNumber: string | null,
+    adressNeighborhood: string | null,
+    adressComplement: string | null,
+    adressCity: string | null,
+    adressState: string | null,
+    adressCep: string | null,
+    adressUF: string | null
+}
 
 interface ModalCheckOutProps {
     listMethods: MethodsType[]
@@ -82,23 +113,22 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const { addsell, findSellers, findClients } = useApi()
     const [isSellEnded, setisSellEnded] = useState(false)
     const [inputSeller, setInputSeller] = useState<SellersandClientsType | null>(null)
-    const [inputClient, setInputClient] = useState<SellersandClientsType | null>(null)
+    const [inputClient, setInputClient] = useState<ClientsType | null>(null)
     const [codRefSell, setCodRefSell] = useState<number | null>(null)
     const [value, setValue] = useState([0])
     const [sellers, setSellers] = useState<SellersandClientsType[]>([])
-    const [clients, setClients] = useState<SellersandClientsType[]>([])
-    const [selectedValue, setSelectedValue] = useState('a');
+    const [clients, setClients] = useState<ClientsType[]>([])
+    const [selectedDeliveryType, setSelectedDeliveryType] = useState('instantDelivery');
+    const [addressDeliveryClient, setDeliveryClientType] = useState<deliveryAddressClientType>({ adressCep: '', adressCity: '', adressComplement: '', adressNeighborhood: '', adressNumber: '', adressState: '', adressStreet: '', adressUF: '' })
+    // const [valueInputClientAdressStreet, setvalueInputClientAdressStreet] = useState("")
+    // const [valueInputClientAdressNumber, setvalueInputClientAdressNumber] = useState("")
+    // const [valueInputClientAdressNeighborhood, setvalueInputClientAdressNeighborhood] = useState("")
+    // const [valueInputClientAdressCity, setvalueInputClientAdressCity] = useState("")
+    // const [valueInputClientAdressState, setvalueInputClientAdressState] = useState<string | null>(null)
+    // const [valueInputClientAdressCep, setvalueInputClientAdressCep] = useState("")
 
-    const [valueInputClientAdressStreet, setvalueInputClientAdressStreet] = useState("")
-    const [valueInputClientAdressNumber, setvalueInputClientAdressNumber] = useState("")
-    const [valueInputClientAdressNeighborhood, setvalueInputClientAdressNeighborhood] = useState("")
-    const [valueInputClientAdressComplement, setvalueInputClientAdressComplement] = useState("")
-    const [valueInputClientAdressCity, setvalueInputClientAdressCity] = useState("")
-    const [valueInputClientAdressState, setvalueInputClientAdressState] = useState<string | null>(null)
-    const [valueInputClientAdressCep, setvalueInputClientAdressCep] = useState("")
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedValue(event.target.value);
+    const handleChangeDeliveryType = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedDeliveryType(event.target.value);
     };
 
     useEffect(() => {
@@ -299,14 +329,14 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                                     style={{ width: '84%' }}
                                     options={clients}
                                     value={inputClient}
-                                    onChange={(event: any, newValue: SellersandClientsType | null) => {
+                                    onChange={(event: any, newValue: ClientsType | null) => {
                                         setInputClient(newValue);
                                     }}
                                     getOptionLabel={(option) =>
-                                        (option.name)
+                                        (option.cpf)
+                                            .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
                                             .concat(" - ")
-                                            .concat(option.cpf)
-                                            .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "($1.$2.$3-$4)")
+                                            .concat(option.name)
 
                                     }
                                     //getOptionLabel={ (option: SellersOptionType) => option.name}
@@ -340,43 +370,43 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                             </S.labelSeller>
                         </S.DivInputs>
                         <div>
-                        <S.PHeaderModal>Qual será o tipo de entrega?</S.PHeaderModal>
-
-                        
+                            <S.PHeaderModal>Qual será o tipo de entrega?</S.PHeaderModal>
                             <Radio
-                                checked={selectedValue === 'a'}
-                                onChange={handleChange}
-                                value="a"
+                                checked={selectedDeliveryType === 'instantDelivery'}
+                                onChange={handleChangeDeliveryType}
+                                value="instantDelivery"
                                 name="radio-buttons"
                                 inputProps={{ 'aria-label': 'A' }}
                             />
                             Entrega Imediata
                             <Radio
-                                checked={selectedValue === 'b'}
-                                onChange={handleChange}
-                                value="b"
+                                checked={selectedDeliveryType === 'futureDelivery'}
+                                onChange={handleChangeDeliveryType}
+                                value="futureDelivery"
                                 name="radio-buttons"
                                 inputProps={{ 'aria-label': 'B' }}
                             />
                             Entrega Futura
                         </div>
-                        <DeliveryAddressClient
-                          setvalueInputClientAdressStreet = {setvalueInputClientAdressStreet}
-                          setvalueInputClientAdressNeighborhood = {setvalueInputClientAdressNeighborhood}
-                          setvalueInputClientAdressCity = {setvalueInputClientAdressCity}
-                          setvalueInputClientAdressState = {setvalueInputClientAdressState}
-                          setvalueInputClientAdressCep = {setvalueInputClientAdressCep}
-                          setvalueInputClientAdressNumber = {setvalueInputClientAdressNumber}
-                          valueInputClientAdressCep = {valueInputClientAdressCep}
-                          valueInputClientAdressStreet = {valueInputClientAdressStreet}
-                          valueInputClientAdressNumber = {valueInputClientAdressNumber}
-                          valueInputClientAdressNeighborhood = {valueInputClientAdressNeighborhood }
-                          valueInputClientAdressCity = {valueInputClientAdressCity}
-                          valueInputClientAdressState ={valueInputClientAdressState}
-                        />
-
-
-
+                        {selectedDeliveryType === 'futureDelivery' &&
+                            <DeliveryAddressClient
+                                // setvalueInputClientAdressStreet={setvalueInputClientAdressStreet}
+                                // setvalueInputClientAdressNeighborhood={setvalueInputClientAdressNeighborhood}
+                                // setvalueInputClientAdressCity={setvalueInputClientAdressCity}
+                                // setvalueInputClientAdressState={setvalueInputClientAdressState}
+                                // setvalueInputClientAdressCep={setvalueInputClientAdressCep}
+                                // setvalueInputClientAdressNumber={setvalueInputClientAdressNumber}
+                                // valueInputClientAdressCep={valueInputClientAdressCep}
+                                // valueInputClientAdressStreet={valueInputClientAdressStreet}
+                                // valueInputClientAdressNumber={valueInputClientAdressNumber}
+                                // valueInputClientAdressNeighborhood={valueInputClientAdressNeighborhood}
+                                // valueInputClientAdressCity={valueInputClientAdressCity}
+                                // valueInputClientAdressState={valueInputClientAdressState}
+                                setDeliveryClientType={setDeliveryClientType}
+                                addressDeliveryClient={addressDeliveryClient}
+                                inputClient={inputClient}
+                            />
+                        }
                         <S.PHeaderModal>Qual será a forma de pagamento?</S.PHeaderModal>
                     </div>
 
