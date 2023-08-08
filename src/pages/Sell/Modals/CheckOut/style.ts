@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import {darken} from 'polished'
+import { darken } from 'polished'
 
 interface DarkModeProps {
     isDarkMode: boolean;
 }
 
-export const SectionMConfirmSell = styled.section `
+export const SectionMConfirmSell = styled.section`
     flex-direction: column;
     display: flex;
     gap:5px;
 `
-export const labelSeller = styled.label `
+export const labelSeller = styled.label`
 display: flex; 
 width: 100%; 
 align-items: flex-end; 
@@ -29,7 +29,7 @@ export const ButtonClose = styled.button <DarkModeProps>`
     }
 `
 
-export const DivInputs = styled.div `
+export const DivInputs = styled.div`
 width: 100%; 
 margin-bottom: 5px;
 display: block;
@@ -47,7 +47,7 @@ export const PHeaderModal = styled.section`
     }
 `
 
-export const labelClient = styled.label `
+export const labelClient = styled.label`
 display: flex; 
 width: 100%; 
 align-items: flex-end; 
@@ -81,6 +81,17 @@ export const LabelIconsModal = styled.div <DarkModeProps>`
     height: 50px;
 `
 
+export const LabelDeliveryIconsModal = styled.div <DarkModeProps>`
+    cursor:pointer;
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 50px;
+   
+`
+
 export const DivModalIconsPayment = styled.div`
     font-size:0.8rem;
     display: flex;
@@ -94,6 +105,35 @@ export const DivModalIconsPayment = styled.div`
         width: 30px;
         height:30px;
     }
+    .deliveryIcon{
+	-webkit-animation: slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	        animation: slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    }
+    @-webkit-keyframes slide-in-right {
+  0% {
+    -webkit-transform: translateX(1000px);
+            transform: translateX(1000px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes slide-in-right {
+  0% {
+    -webkit-transform: translateX(1000px);
+            transform: translateX(1000px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+    opacity: 1;
+  }
+}
+
     @media screen and (max-width:930px) {
         flex-wrap: wrap;
     }

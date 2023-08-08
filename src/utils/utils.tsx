@@ -75,7 +75,7 @@ export function cepFormat(text: string, max: string) {
   return text.replace(/[^0-9]/g, '').length === 8 ?
     text.toString().replace(/(\d{5})(\d{3})/g, "$1-$2")
     :
-    text.replace(/[^0-9]/g, '').length > 8 ?
+    text.length > 9 ?
       max
       :
       text

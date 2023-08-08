@@ -8,7 +8,7 @@ import { BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill, B
 import { PaymentMethods } from "../../PaymentMethods/PaymentMethods";
 import { GeneratePDF } from "../../../../hooks/useGeneratePDF";
 import PixIcon from '@mui/icons-material/Pix';
-import { FaMoneyBillWave } from "react-icons/fa"
+import { FaMoneyBillWave, FaTruck } from "react-icons/fa"
 import * as S from './style'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -75,14 +75,15 @@ export interface ClientsType {
 }
 
 export interface deliveryAddressClientType {
-    adressStreet: string | null,
-    adressNumber: string | null,
-    adressNeighborhood: string | null,
-    adressComplement: string | null,
-    adressCity: string | null,
-    adressState: string | null,
-    adressCep: string | null,
-    adressUF: string | null
+    addressStreet: string | null,
+    addressNumber: string | null,
+    addressNeighborhood: string | null,
+    addressComplement: string | null,
+    addressCity: string | null,
+    addressState: string | null,
+    addressCep: string,
+    addressUF: string | null,
+    scheduledDate: Date | null
 }
 
 interface ModalCheckOutProps {
@@ -119,17 +120,26 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const [sellers, setSellers] = useState<SellersandClientsType[]>([])
     const [clients, setClients] = useState<ClientsType[]>([])
     const [selectedDeliveryType, setSelectedDeliveryType] = useState('instantDelivery');
-    const [addressDeliveryClient, setDeliveryClientType] = useState<deliveryAddressClientType>({ adressCep: '', adressCity: '', adressComplement: '', adressNeighborhood: '', adressNumber: '', adressState: '', adressStreet: '', adressUF: '' })
-    // const [valueInputClientAdressStreet, setvalueInputClientAdressStreet] = useState("")
-    // const [valueInputClientAdressNumber, setvalueInputClientAdressNumber] = useState("")
-    // const [valueInputClientAdressNeighborhood, setvalueInputClientAdressNeighborhood] = useState("")
-    // const [valueInputClientAdressCity, setvalueInputClientAdressCity] = useState("")
-    // const [valueInputClientAdressState, setvalueInputClientAdressState] = useState<string | null>(null)
-    // const [valueInputClientAdressCep, setvalueInputClientAdressCep] = useState("")
-
+    const [addressDeliveryClient, setDeliveryClientType] = useState<deliveryAddressClientType>({ addressCep: '', addressCity: '', addressComplement: '', addressNeighborhood: '', addressNumber: '', addressState: '', addressStreet: '', addressUF: '', scheduledDate: null })
     const handleChangeDeliveryType = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDeliveryType(event.target.value);
     };
+
+
+    async function handleChangeClient(newClient: ClientsType | null) {
+        setInputClient(newClient);
+        setDeliveryClientType({
+            ...addressDeliveryClient,
+            addressCep: newClient?.adressCep ?? '',
+            addressCity: newClient?.adressCity ?? '',
+            addressComplement: newClient?.adressComplement ?? '',
+            addressNeighborhood: newClient?.adressNeighborhood ?? '',
+            addressNumber: newClient?.adressNumber ?? '',
+            addressState: newClient?.adressState ?? '',
+            addressStreet: newClient?.adressStreet ?? '',
+            addressUF: newClient?.adressUF ?? ''
+        })
+    }
 
     useEffect(() => {
 
@@ -137,7 +147,6 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             const data = await findSellers(auth.idUser);
             if (data.Success) {
                 setSellers(data.findSellers)
-                //setSellers(sellers.filter(seller=>seller.name))
             }
             else {
                 MessageBox('error', data.erro)
@@ -147,7 +156,6 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             const data = await findClients(auth.idUser);
             if (data.Success) {
                 setClients(data.findClients)
-                //setSellers(sellers.filter(seller=>seller.name))
             }
             else {
                 MessageBox('error', data.erro)
@@ -241,10 +249,12 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
         clientId: inputClient ? inputClient.id : null,
         Products: [...props.listProducts],
         Payment: [...props.listMethods],
+        isDelivery: (selectedDeliveryType === 'futureDelivery'),
+        delivery: { ...addressDeliveryClient, scheduledDate: new Date() }
     }
 
     const handleSendtoApi = async (valuesSelltoSendApi: handleChangeProps) => {
-        if (props.listMethods.length == 0) {
+        if (props.listMethods.length === 0) {
             MessageBox('warning', " Insira um método de pagamento!")
         }
         else {
@@ -299,11 +309,11 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: {
-                    xs: '80%', // phone
-                    sm: '80%', // tablets
-                    md: 600, // small laptop
-                    lg: 600, // desktop
-                    xl: 600 // large screens
+                    xs: '90%', // phone
+                    sm: '90%', // tablets
+                    md: 650, // small laptop
+                    lg: 650, // desktop
+                    xl: 650 // large screens
                 },
                 bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
                 color: Theme.DarkMode ? '#ffffff' : '#000',
@@ -330,14 +340,13 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                                     options={clients}
                                     value={inputClient}
                                     onChange={(event: any, newValue: ClientsType | null) => {
-                                        setInputClient(newValue);
+                                        handleChangeClient(newValue)
                                     }}
                                     getOptionLabel={(option) =>
                                         (option.cpf)
                                             .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
                                             .concat(" - ")
                                             .concat(option.name)
-
                                     }
                                     //getOptionLabel={ (option: SellersOptionType) => option.name}
                                     id="autocomplete_clients"
@@ -390,24 +399,12 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                         </div>
                         {selectedDeliveryType === 'futureDelivery' &&
                             <DeliveryAddressClient
-                                // setvalueInputClientAdressStreet={setvalueInputClientAdressStreet}
-                                // setvalueInputClientAdressNeighborhood={setvalueInputClientAdressNeighborhood}
-                                // setvalueInputClientAdressCity={setvalueInputClientAdressCity}
-                                // setvalueInputClientAdressState={setvalueInputClientAdressState}
-                                // setvalueInputClientAdressCep={setvalueInputClientAdressCep}
-                                // setvalueInputClientAdressNumber={setvalueInputClientAdressNumber}
-                                // valueInputClientAdressCep={valueInputClientAdressCep}
-                                // valueInputClientAdressStreet={valueInputClientAdressStreet}
-                                // valueInputClientAdressNumber={valueInputClientAdressNumber}
-                                // valueInputClientAdressNeighborhood={valueInputClientAdressNeighborhood}
-                                // valueInputClientAdressCity={valueInputClientAdressCity}
-                                // valueInputClientAdressState={valueInputClientAdressState}
                                 setDeliveryClientType={setDeliveryClientType}
                                 addressDeliveryClient={addressDeliveryClient}
                                 inputClient={inputClient}
                             />
                         }
-                        <S.PHeaderModal>Qual será a forma de pagamento?</S.PHeaderModal>
+                        <S.PHeaderModal>Qual a forma de pagamento?</S.PHeaderModal>
                     </div>
 
                 }
@@ -418,6 +415,10 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                         <S.LabelIconsModal onClick={() => handleAddMethod('creditcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCard2FrontFill className="hoverbutton" size={25} style={{ color: '#da506e' }} />Cartão de Crédito</S.LabelIconsModal>
                         <S.LabelIconsModal onClick={() => handleAddMethod('pix')} isDarkMode={Theme.DarkMode}><PixIcon className="hoverbutton" style={{ color: '#5cbcb1' }} /> &nbsp; PIX &nbsp;</S.LabelIconsModal>
                         <S.LabelIconsModal onClick={() => handleAddMethod('others')} isDarkMode={Theme.DarkMode}><MdPending className="hoverbutton" size={25} style={{ color: '#7a3c3c' }} />Outros</S.LabelIconsModal>
+
+                        {selectedDeliveryType === 'futureDelivery' &&
+                            <S.LabelDeliveryIconsModal className='deliveryIcon' onClick={() => handleAddMethod('delivery')} isDarkMode={Theme.DarkMode}><FaTruck className="hoverbutton" size={25} style={{ color: 'var(--Blue)' }} />Na entrega</S.LabelDeliveryIconsModal>
+                        }
                     </S.DivModalIconsPayment>
                 }
                 {props.listMethods.map((item) => (

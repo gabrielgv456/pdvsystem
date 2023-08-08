@@ -6,20 +6,12 @@ import axios from 'axios';
 import * as S from './style'
 import { useEffect } from 'react';
 import { ClientsType, deliveryAddressClientType } from '../..';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import ptBR from 'dayjs/locale/pt-br'
 
 interface DeliveryAddressClientProps {
-    // setvalueInputClientAdressStreet: (value: string) => void
-    // setvalueInputClientAdressNeighborhood: (value: string) => void
-    // setvalueInputClientAdressCity: (value: string) => void
-    // setvalueInputClientAdressState: (value: string | null) => void
-    // setvalueInputClientAdressCep: (value: string) => void
-    // setvalueInputClientAdressNumber: (value: string) => void
-    // valueInputClientAdressCep: string
-    // valueInputClientAdressStreet: string
-    // valueInputClientAdressNumber: string
-    // valueInputClientAdressNeighborhood: string
-    // valueInputClientAdressCity: string
-    // valueInputClientAdressState: string | null
     setDeliveryClientType: (value: deliveryAddressClientType) => void
     addressDeliveryClient: deliveryAddressClientType
     inputClient: ClientsType | null
@@ -30,13 +22,7 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
 
     const { MessageBox } = useMessageBoxContext()
 
-    useEffect(() => {
-        //props.
-    }, [props.inputClient?.id])
-
-    async function SearchAddressClient() {
-
-    }
+    
 
     async function handleConsultCep(cep: string) {
         const cepformated = cep.replace(/[^0-9]/g, '')
@@ -51,20 +37,17 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                 else {
                     if (props.addressDeliveryClient) {
                         props.setDeliveryClientType({
-                            adressNeighborhood: data.bairro,
-                            adressState: data.uf,
-                            adressStreet: data.logradouro,
-                            adressCity: data.localidade,
-                            adressCep: props.addressDeliveryClient.adressCep,
-                            adressComplement: '',
-                            adressNumber: '',
-                            adressUF: data.uf
+                            ...props.addressDeliveryClient,
+                            addressNeighborhood: data.bairro,
+                            addressState: data.uf,
+                            addressStreet: data.logradouro,
+                            addressCity: data.localidade,
+                            addressCep: props.addressDeliveryClient.addressCep,
+                            addressComplement: '',
+                            addressNumber: '',
+                            addressUF: data.uf
                         })
                     }
-                    // props.setvalueInputClientAdressStreet(data.logradouro)
-                    // props.setvalueInputClientAdressNeighborhood(data.bairro)
-                    // props.setvalueInputClientAdressCity(data.localidade)
-                    // props.setvalueInputClientAdressState(data.uf)
                 }
             }
             catch (error: any) {
@@ -76,102 +59,96 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
 
     return (
         <S.DivModal>
-            <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
+            <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ptBR}>
+                    <DatePicker
+                        label={"Data de Entrega"}
+                        openTo="day"
+                        views={['year', 'month', 'day']}
+
+                        value={props.addressDeliveryClient.scheduledDate}
+                        onChange={(newValue) => {
+                            props.setDeliveryClientType({ ...props.addressDeliveryClient, scheduledDate: newValue });
+                        }}
+                        renderInput={(params) => <TextField size="small" sx={{ width: '30%' }} {...params} />}
+                    />
+                </LocalizationProvider>
 
                 <TextField
-                    value={props.addressDeliveryClient.adressCep}
+                    value={props.addressDeliveryClient.addressCep}
                     onChange={(e) => {
-                        props.setDeliveryClientType({ ...props.addressDeliveryClient, adressCep: e.target.value })
-                        //props.addressDeliveryClient.adressCep = e.target.value
-                        //props.setvalueInputClientAdressCep(cepFormat(e.target.value, props.addressDeliveryClient?.adressCep))
+                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressCep: cepFormat(e.target.value, props.addressDeliveryClient.addressCep) })
                     }}
                     onBlur={(e) => handleConsultCep(e.target.value)}
+                    size='small'
                     id="outlined-basic"
                     label="CEP"
                     variant="outlined"
-                    sx={{ width: '27%' }}
+                    sx={{ width: '18%' }}
                 />
 
                 <TextField
-                    value={props.addressDeliveryClient.adressStreet}
+                    value={props.addressDeliveryClient.addressStreet}
                     onChange={(e) => {
-                        // props.setvalueInputClientAdressStreet(
-                        //     e.target.value.length > 50 ?
-                        //         props.valueInputClientAdressStreet
-                        //         :
-                        //         e.target.value
-                        // )
-                        props.addressDeliveryClient.adressStreet = e.target.value
+                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressStreet: `${e.target.value.length > 50 ? props.addressDeliveryClient.addressStreet : e.target.value}` })
                     }}
                     id="outlined-basic"
                     label="Endereço"
+                    size='small'
                     variant="outlined"
-                    sx={{ width: '57%' }}
+                    sx={{ width: '40%' }}
                 />
 
                 <TextField
-                    value={props.addressDeliveryClient.adressNumber}
+                    value={props.addressDeliveryClient.addressNumber}
                     onChange={(e) => {
-                        // props.setvalueInputClientAdressNumber(
-                        //     e.target.value.length > 5 ?
-                        //         props.valueInputClientAdressNumber
-                        //         :
-                        //         e.target.value
-                        // )
-                        props.addressDeliveryClient.adressNumber = e.target.value
+                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressNumber: `${e.target.value.length > 5 ? props.addressDeliveryClient.addressNumber : e.target.value}` })
                     }}
                     id="outlined-basic"
                     label="Nº"
                     variant="outlined"
-                    sx={{ width: '13%' }}
+                    size='small'
+                    sx={{ width: '10%' }}
                 />
 
             </label>
 
-            <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
+            <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                 <TextField
-                    value={props.addressDeliveryClient.adressNeighborhood}
+                    value={props.addressDeliveryClient.addressNeighborhood}
                     onChange={(e) =>
-                        // props.setvalueInputClientAdressNeighborhood(
-                        // e.target.value.length > 30 ?
-                        //     props.valueInputClientAdressNeighborhood
-                        //     :
-                        //     e.target.value)
-                        props.addressDeliveryClient.adressNeighborhood = e.target.value
+                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressNeighborhood: `${e.target.value.length > 30 ? props.addressDeliveryClient.addressNeighborhood : e.target.value}` })
                     }
                     type="text"
                     id="outlined-basic"
+                    size='small'
                     label="Bairro"
                     variant="outlined"
-                    sx={{ width: '40%' }} />
+                    sx={{ width: '35%' }} />
 
                 <TextField
-                    value={props.addressDeliveryClient.adressCity}
+                    value={props.addressDeliveryClient.addressCity}
                     onChange={(e) =>
-                        // props.setvalueInputClientAdressCity(
-                        // e.target.value.length > 30 ?
-                        //     props.valueInputClientAdressCity
-                        //     :
-                        //     e.target.value)
-                        props.addressDeliveryClient.adressCity = e.target.value
+                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressCity: `${e.target.value.length > 30 ? props.addressDeliveryClient.addressCity : e.target.value}` })
                     }
                     type="text"
                     id="outlined-basic"
                     label="Cidade"
                     variant="outlined"
-                    sx={{ width: '40%' }} />
-
+                    size='small'
+                    sx={{ width: '45%' }} />
 
                 <Autocomplete
-                    value={props.addressDeliveryClient.adressState}
+                    value={props.addressDeliveryClient.addressState}
                     onChange={(event: any, newValue: string | null) => {
-                        //props.setvalueInputClientAdressState(newValue);
-                        props.addressDeliveryClient.adressState = newValue
+                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressState: newValue })
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
                     options={optionsUF}
-                    sx={{ width: '18%' }}
+                    size='small'
+                    sx={{ width: '19%' }}
                     renderInput={(params) =>
                         <TextField
                             {...params}
