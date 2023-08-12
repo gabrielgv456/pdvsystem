@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { TypeDeliveriesRequest } from '../pages/Deliveries';
+import { TypeChangeStatusDeliveriesRequest } from '../components/tables/muiDeliveryTable';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
     headers: {
         Authorization: 'Basic ' + process.env.REACT_APP_TOKEN_REST
-    }, 
+    },
     validateStatus(status) {
         return true
     }
@@ -149,8 +150,18 @@ export const useApi = () => ({
         const response = await api.get('/listCfop')
         return response.data
     },
-    findDeliveries: async (data:TypeDeliveriesRequest) => {
-        const response = await api.get(`/deliveries?storeId=${data.userID}?initialDate=${data.InitialDate}?finalDate=${data.FinalDate}`)
+    findDeliveries: async (data: TypeDeliveriesRequest) => {
+        const response = await api.get('/deliveries', {
+            params: {
+                storeId: data.userID,
+                initialDate: data.initialDate,
+                finalDate: data.finalDate
+            }
+        })
+        return response.data
+    },
+    changeStatusDeliveries: async (dataChangeStatusDeliveries: TypeChangeStatusDeliveriesRequest) => {
+        const response = await api.patch('/changeStatusDeliveries', { dataChangeStatusDeliveries })
         return response.data
     }
 });

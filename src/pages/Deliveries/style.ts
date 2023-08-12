@@ -28,14 +28,16 @@ export const Input = styled.input <DarkModeProps> `
 
 `
 
-export const Box = styled.div `
+export const Box = styled.div <DarkModeProps> `
 width: 40%;
 height: min-content;
 padding: 10px;
 border-radius: 5px;
+color:${props=>props.isDarkMode ? '#fff' : '#000'}
 `
 export const Header = styled.div<DarkModeProps>`
     margin: 0 auto;
+    color:'#fff';
     background-color: ${props => (props.isDarkMode ?  'var(--backgroundDarkMode)': '#fff' )} ;
     border-radius: 0 0 20px 20px;
     padding: 0.5rem 0.2rem 1rem 0.2rem;

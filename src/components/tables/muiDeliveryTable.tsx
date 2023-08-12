@@ -18,40 +18,47 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {DefaultButton} from '../buttons/defaultButton'
+import { DefaultButton } from '../buttons/defaultButton'
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { DeliveriesReturnApiProps } from '../../pages/Deliveries';
+import { DeliveryAddressClient } from '../../pages/Sell/Modals/CheckOut/Components/AddressClient';
+import { useMessageBoxContext } from '../../contexts/MessageBox/MessageBoxContext';
+import { useApi } from '../../hooks/useApi';
+import { AuthContext } from '../../contexts/Auth/AuthContext';
 
 interface Data {
+  itemSell: string
   sell: string,
   client: string,
   address: string,
-  product:string,
-  status: string
+  product: string,
+  scheduledDate: string
 }
 interface MuiTableProps {
-    width: string
+  width: string
+  DeliveriesPending: DeliveriesReturnApiProps[],
+  rows: Data[],
+  searchDeliveries:()=>void
 }
 function createData(
+  itemSell: string,
   sell: string,
   client: string,
   address: string,
-  product:string,
-  status: string
+  product: string,
+  scheduledDate: string
 ): Data {
   return {
+    itemSell,
     sell,
-    client,    
+    client,
     address,
     product,
-    status
+    scheduledDate
   };
 }
 
-const rows = [
-  createData('1002','Fulano de Tal','Rua dos bobos','tenis nike','03 de agosto de 3023 as 21:41'),
-  createData('1005','John Doe','time square','tenis adidas','01 de agosto de 2023')
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -109,7 +116,7 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'product',
-    numeric:false,
+    numeric: false,
     disablePadding: true,
     label: 'Produto'
   },
@@ -126,7 +133,7 @@ const headCells: readonly HeadCell[] = [
     label: 'Endereço',
   },
   {
-    id: 'status',
+    id: 'scheduledDate',
     numeric: false,
     disablePadding: true,
     label: 'Data agendada',
@@ -192,79 +199,108 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  selected: readonly string[]
+  searchDeliveries:()=>void
 }
+
+export interface TypeChangeStatusDeliveriesRequest {
+  storeId: number,
+  itensSellToChange:  number[],
+  newStatus: 'Pending' | 'Shipping' | 'Done',
+}
+
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
-  
+  const { changeStatusDeliveries } = useApi()
+  const { MessageBox } = useMessageBoxContext()
+  const { idUser } = React.useContext(AuthContext)
+
+  async function handleChangeStatusDelivery(newStatus: 'Pending' | 'Shipping' | 'Done') {
+    try {
+      const itensSelected = props.selected.map(item => parseInt(item))
+      const dataChangeStatus = await changeStatusDeliveries({ storeId: idUser, itensSellToChange: itensSelected, newStatus })
+      if (!dataChangeStatus.Success) {
+        throw new Error(dataChangeStatus.Erro)
+      }
+      MessageBox('success', 'Status da(s) entrega(s) atualizado com sucesso!')
+      props.searchDeliveries()
+    } catch (error: any) {
+      MessageBox('error', 'Falha ao atualizar status da entrega! ' + error.message)
+    }
+  }
+
   return (
     <>
-    {numSelected > 0 && ( 
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
+      {numSelected > 0 && (
+        <Toolbar
+          sx={{
+            pl: { sm: 2 },
+            pr: { xs: 1, sm: 1 },
+            ...(numSelected > 0 && {
+              bgcolor: (theme) =>
+                alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+            }),
+          }}
         >
-          {numSelected} selecionado(s)
-        </Typography>
-      ) : ( ''
-        // <Typography
-        //   sx={{ flex: '1 1 100%' }}
-        //   variant="h6"
-        //   id="tableTitle"
-        //   component="div"
-        // >
-        //   Entregas
-        // </Typography>
-      )}
-      {numSelected > 0 ? (
-        //<Tooltip title="Realizar entrega">
-        <section style={{display:'flex',gap:5}}>
-           <DefaultButton selectedColor='--Green'>
-            Iniciar
-            </DefaultButton>
-            <DefaultButton selectedColor='--Blue'>
-            Concluir
-            </DefaultButton>
-            <DefaultButton selectedColor='--Red'>
-            Cancelar
-            </DefaultButton>
-            
-          </section>
-        //      <DeleteIcon /> 
-        // </Tooltip>
-      ) : (
-        ''
-        // <Tooltip title="Filter list">
-        //   <IconButton>
-        //     <FilterListIcon />
-        //   </IconButton>
-        // </Tooltip>
-      )}
-    </Toolbar>)}
+          {numSelected > 0 ? (
+            <Typography
+              sx={{ flex: '1 1 100%' }}
+              color="inherit"
+              variant="subtitle1"
+              component="div"
+            >
+              {numSelected} selecionado(s)
+            </Typography>
+          ) : (''
+            // <Typography
+            //   sx={{ flex: '1 1 100%' }}
+            //   variant="h6"
+            //   id="tableTitle"
+            //   component="div"
+            // >
+            //   Entregas
+            // </Typography>
+          )}
+          {numSelected > 0 ? (
+            //<Tooltip title="Realizar entrega">
+            <section style={{ display: 'flex', gap: 5 }}>
+              <DefaultButton selectedColor='--Green' onClick={() => handleChangeStatusDelivery('Shipping')}>
+                Iniciar
+              </DefaultButton>
+              <DefaultButton selectedColor='--Blue'>
+                Concluir
+              </DefaultButton>
+              <DefaultButton selectedColor='--Red'>
+                Cancelar
+              </DefaultButton>
+
+            </section>
+            //      <DeleteIcon /> 
+            // </Tooltip>
+          ) : (
+            ''
+            // <Tooltip title="Filter list">
+            //   <IconButton>
+            //     <FilterListIcon />
+            //   </IconButton>
+            // </Tooltip>
+          )}
+        </Toolbar>)}
     </>
   );
 }
 
-export default function MuiTable(props:MuiTableProps) {
+
+
+export default function MuiTable(props: MuiTableProps) {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('sell');
+  const [orderBy, setOrderBy] = React.useState<keyof Data>('itemSell');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -277,7 +313,7 @@ export default function MuiTable(props:MuiTableProps) {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.sell);
+      const newSelected = props.rows.map((n) => n.itemSell);
       setSelected(newSelected);
       return;
     }
@@ -321,24 +357,26 @@ export default function MuiTable(props:MuiTableProps) {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(props.rows, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
     [order, orderBy, page, rowsPerPage],
   );
 
+
+
   return (
-    <Box sx={{ width: props.width}}>
+    <Box sx={{ width: props.width }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} searchDeliveries={props.searchDeliveries}/>
         <TableContainer>
           <Table
-           // sx={{ minWidth: 750 }}
+            // sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
           >
@@ -348,24 +386,24 @@ export default function MuiTable(props:MuiTableProps) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={props.rows.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.sell);
+                const isItemSelected = isSelected(row.itemSell);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.sell)}
+                    onClick={(event) => handleClick(event, row.itemSell)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.sell}
+                    key={row.itemSell}
                     selected={isItemSelected}
                     sx={{ cursor: 'pointer' }}
-                    
+
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -376,7 +414,7 @@ export default function MuiTable(props:MuiTableProps) {
                         }}
                       />
                     </TableCell>
-                    <TableCell 
+                    <TableCell
                       component="th"
                       id={labelId}
                       scope="row"
@@ -384,11 +422,10 @@ export default function MuiTable(props:MuiTableProps) {
                     >
                       {row.sell}
                     </TableCell>
-                   
-                    <TableCell>{row.client}</TableCell>
                     <TableCell>{row.product}</TableCell>
-                    <TableCell>{row.address}</TableCell>    
-                    <TableCell>{row.status}</TableCell>
+                    <TableCell>{row.client}</TableCell>
+                    <TableCell>{row.address}</TableCell>
+                    <TableCell>{row.scheduledDate}</TableCell>
                   </TableRow>
                 );
               })}
@@ -407,12 +444,13 @@ export default function MuiTable(props:MuiTableProps) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={props.rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           labelRowsPerPage='Linhas por página:'
+          labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count !== -1 ? count : `more than ${to}`}`}
         />
       </Paper>
       <FormControlLabel

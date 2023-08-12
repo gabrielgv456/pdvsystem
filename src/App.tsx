@@ -60,6 +60,15 @@ function App() {
       }, MuiToggleButton: {
         styleOverrides: { root: { color: Theme.DarkMode ? "#706e6e" : '' } }
       },
+      MuiTableCell :{
+        styleOverrides: { root: { color: Theme.DarkMode ? "#e8e7e7" : '#000' } }
+      },
+      MuiTable :{
+        styleOverrides: { root: { backgroundColor : Theme.DarkMode ? "var(--backgroundDarkMode2)" : '#fff' } }
+      },
+      MuiTablePagination :{
+        styleOverrides: { root: { backgroundColor : Theme.DarkMode ? "var(--backgroundDarkMode2)" : '#fff' , color: Theme.DarkMode ? "#fff" : '#000' } }
+      },
       MuiOutlinedInput: {
         styleOverrides: {
           notchedOutline: { borderColor: Theme.DarkMode ? '#757575' : '' }, // ALTERAR BORDA DOS TEXTFIELDS

@@ -250,7 +250,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
         Products: [...props.listProducts],
         Payment: [...props.listMethods],
         isDelivery: (selectedDeliveryType === 'futureDelivery'),
-        delivery: { ...addressDeliveryClient, scheduledDate: new Date() }
+        delivery: { ...addressDeliveryClient }
     }
 
     const handleSendtoApi = async (valuesSelltoSendApi: handleChangeProps) => {

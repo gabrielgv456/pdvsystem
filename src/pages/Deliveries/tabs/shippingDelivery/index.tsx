@@ -5,7 +5,7 @@ import MuiTable from "../../../../components/tables/muiDeliveryTable";
 import { DeliveriesReturnApiProps } from "../..";
 
 interface DeliveriesPendingProps {
-    DeliveriesPending: DeliveriesReturnApiProps[],
+    DeliveriesPending: DeliveriesReturnApiProps[]
     searchDeliveries: () => void
 }
 interface Data {
@@ -17,7 +17,7 @@ interface Data {
     scheduledDate: string
 }
 
-export const TabPendingDeliveries = ({ DeliveriesPending, searchDeliveries }: DeliveriesPendingProps) => {
+export const TabShippingDeliveries = ({ DeliveriesPending, searchDeliveries }: DeliveriesPendingProps) => {
     const Theme = useDarkMode();
     const rows: Array<Data> = [];
     DeliveriesPending.map(delivery => {
