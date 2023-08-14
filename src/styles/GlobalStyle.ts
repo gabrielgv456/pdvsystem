@@ -17,7 +17,8 @@ export const GlobalStyle = createGlobalStyle<DarkModeProps>`
     --Green: #33CC95;
     --Blue: #437fff;
     --Red: #ff0000;
-
+    --Gold : gold;
+    --Orange: #f1b445;
 }
 
 

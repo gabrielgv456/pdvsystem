@@ -66,7 +66,6 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                         label={"Data de Entrega"}
                         openTo="day"
                         views={['year', 'month', 'day']}
-
                         value={props.addressDeliveryClient.scheduledDate}
                         onChange={(newValue) => {
                             props.setDeliveryClientType({ ...props.addressDeliveryClient, scheduledDate: newValue });

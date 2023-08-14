@@ -21,11 +21,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { DefaultButton } from '../buttons/defaultButton'
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import { DeliveriesReturnApiProps } from '../../pages/Deliveries';
+import { Deliveries, DeliveriesReturnApiProps } from '../../pages/Deliveries';
 import { DeliveryAddressClient } from '../../pages/Sell/Modals/CheckOut/Components/AddressClient';
 import { useMessageBoxContext } from '../../contexts/MessageBox/MessageBoxContext';
 import { useApi } from '../../hooks/useApi';
 import { AuthContext } from '../../contexts/Auth/AuthContext';
+import { GeneratePDFDeliveryList } from '../../hooks/useGeneratePDF';
+import { User } from '../../types/User';
 
 interface Data {
   itemSell: string
@@ -37,9 +39,10 @@ interface Data {
 }
 interface MuiTableProps {
   width: string
-  DeliveriesPending: DeliveriesReturnApiProps[],
+  Deliveries: DeliveriesReturnApiProps[],
   rows: Data[],
-  searchDeliveries:()=>void
+  searchDeliveries: () => void
+  type: 'Pending' | 'Shipping' | 'Done'
 }
 function createData(
   itemSell: string,
@@ -58,7 +61,6 @@ function createData(
     scheduledDate
   };
 }
-
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -200,12 +202,15 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 interface EnhancedTableToolbarProps {
   numSelected: number;
   selected: readonly string[]
-  searchDeliveries:()=>void
+  searchDeliveries: () => void
+  typeDelivery: 'Pending' | 'Done' | 'Shipping'
+  deliveries: DeliveriesReturnApiProps[]
+  user : User | null
 }
 
 export interface TypeChangeStatusDeliveriesRequest {
   storeId: number,
-  itensSellToChange:  number[],
+  itensSellToChange: number[],
   newStatus: 'Pending' | 'Shipping' | 'Done',
 }
 
@@ -215,19 +220,25 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { changeStatusDeliveries } = useApi()
   const { MessageBox } = useMessageBoxContext()
   const { idUser } = React.useContext(AuthContext)
+  const itensSelected = props.selected.map(item => parseInt(item))
+  const deliveriesFiltered = props.deliveries.filter(delivery => itensSelected.includes(delivery.itemSell.id)); // Filter selected deliveries
 
   async function handleChangeStatusDelivery(newStatus: 'Pending' | 'Shipping' | 'Done') {
     try {
-      const itensSelected = props.selected.map(item => parseInt(item))
       const dataChangeStatus = await changeStatusDeliveries({ storeId: idUser, itensSellToChange: itensSelected, newStatus })
       if (!dataChangeStatus.Success) {
         throw new Error(dataChangeStatus.Erro)
       }
-      MessageBox('success', 'Status da(s) entrega(s) atualizado com sucesso!')
+      MessageBox('success', `Status da(s) entrega(s) atualizado com sucesso! ${newStatus === 'Shipping' ? 'Roteiro Impresso': ''}`)
+      GeneratePDFDeliveryList(deliveriesFiltered,props.user?.name ?? '')
       props.searchDeliveries()
     } catch (error: any) {
       MessageBox('error', 'Falha ao atualizar status da entrega! ' + error.message)
     }
+  }
+
+  async function handleDeliveryListPrint(){
+    GeneratePDFDeliveryList(deliveriesFiltered,props.user?.name ?? '')
   }
 
   return (
@@ -265,15 +276,32 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           {numSelected > 0 ? (
             //<Tooltip title="Realizar entrega">
             <section style={{ display: 'flex', gap: 5 }}>
-              <DefaultButton selectedColor='--Green' onClick={() => handleChangeStatusDelivery('Shipping')}>
-                Iniciar
-              </DefaultButton>
-              <DefaultButton selectedColor='--Blue'>
-                Concluir
-              </DefaultButton>
-              <DefaultButton selectedColor='--Red'>
+              {props.typeDelivery === 'Pending' &&
+                <>
+                  <DefaultButton selectedColor='--Green' onClick={() => handleChangeStatusDelivery('Shipping')}>
+                    Iniciar Entrega
+                  </DefaultButton>
+                  <DefaultButton selectedColor='--Gold'  >
+                    Editar
+                  </DefaultButton>
+                </>
+              }
+              {props.typeDelivery === 'Shipping' &&
+                <>
+                  <DefaultButton selectedColor='--Blue' onClick={() => handleChangeStatusDelivery('Done')}>
+                    Concluir
+                  </DefaultButton>
+                  <DefaultButton selectedColor='--Orange' onClick={() => handleDeliveryListPrint()}>
+                    Imprimrir Roteiro
+                  </DefaultButton>
+                </>
+              }
+              {/* {props.typeDelivery === 'Pending' &&
+                
+              } */}
+              {/* <DefaultButton selectedColor='--Red'>
                 Cancelar
-              </DefaultButton>
+              </DefaultButton> */}
 
             </section>
             //      <DeleteIcon /> 
@@ -286,7 +314,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             //   </IconButton>
             // </Tooltip>
           )}
-        </Toolbar>)}
+        </Toolbar >)
+      }
     </>
   );
 }
@@ -300,7 +329,8 @@ export default function MuiTable(props: MuiTableProps) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
+  const {user} = React.useContext(AuthContext)
+ 
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -373,7 +403,14 @@ export default function MuiTable(props: MuiTableProps) {
   return (
     <Box sx={{ width: props.width }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} searchDeliveries={props.searchDeliveries}/>
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          selected={selected}
+          searchDeliveries={props.searchDeliveries}
+          typeDelivery={props.type}
+          deliveries={props.Deliveries} 
+          user={user}
+          />
         <TableContainer>
           <Table
             // sx={{ minWidth: 750 }}

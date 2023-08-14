@@ -42,9 +42,11 @@ export interface DeliveriesReturnApiProps {
     itemSell: {
         id: number,
         descriptionProduct: string,
+        totalValue:number,
         sell: {
             codRef: number
-        }
+        },
+        quantity: number
     }
 }
 
@@ -140,13 +142,13 @@ export const Deliveries = () => {
                     </Box>
                     {/* <div style={{ padding: '0 25px 25px 25px' }}> */}
                     <TabPanel value={value} index={0}>
-                        <TabPendingDeliveries DeliveriesPending={DeliveriesReturnApi.filter(item => item.status === 'Pending')} searchDeliveries={searchDeliveries} />
+                        <TabPendingDeliveries Deliveries={DeliveriesReturnApi.filter(item => item.status === 'Pending')} searchDeliveries={searchDeliveries}  />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        <TabShippingDeliveries DeliveriesPending={DeliveriesReturnApi.filter(item => item.status === 'Shipping')} searchDeliveries={searchDeliveries} />
+                        <TabShippingDeliveries Deliveries={DeliveriesReturnApi.filter(item => item.status === 'Shipping')} searchDeliveries={searchDeliveries}  />
                     </TabPanel>
                     <TabPanel value={value} index={2}>
-                        <TabDoneDeliveries DeliveriesPending={DeliveriesReturnApi.filter(item => item.status === 'Done')} searchDeliveries={searchDeliveries} />
+                        <TabDoneDeliveries Deliveries={DeliveriesReturnApi.filter(item => item.status === 'Done')} searchDeliveries={searchDeliveries}  />
                     </TabPanel>
                     {/* </div> */}
                 </Box>

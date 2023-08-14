@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import {darken} from 'polished'
 
 interface selectedColorProps {
-    selectedColor: '--Green'|'--Blue'|'--Red'
+    selectedColor: '--Green'|'--Blue'|'--Red'|'--Gold'|'--Orange'
 } 
 
 export const DefaultButton = styled.button <selectedColorProps>  `
@@ -16,7 +16,12 @@ export const DefaultButton = styled.button <selectedColorProps>  `
     color: #fff;
     transition: background-color 0.2s;
     &:hover{
-        background-color:${props=>(darken(0.02,props.selectedColor === '--Green' ? '#33CC95' :
-        props.selectedColor === '--Blue' ? '#437fff' : '#ff0000' ))}
+        background-color:${props=>(darken(0.04,props.selectedColor === '--Green' ? '#33CC95' :
+        props.selectedColor === '--Blue' ? '#437fff' : 
+        props.selectedColor === '--Red' ? '#ff0000'  :
+        props.selectedColor === '--Gold' ? 'gold' :
+        props.selectedColor === '--Orange' ? '#f1b445' : ''
+        
+        ))}
     }
 `

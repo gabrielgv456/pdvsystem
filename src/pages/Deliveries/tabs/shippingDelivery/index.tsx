@@ -4,8 +4,8 @@ import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
 import MuiTable from "../../../../components/tables/muiDeliveryTable";
 import { DeliveriesReturnApiProps } from "../..";
 
-interface DeliveriesPendingProps {
-    DeliveriesPending: DeliveriesReturnApiProps[]
+interface DeliveriesProps {
+    Deliveries: DeliveriesReturnApiProps[]
     searchDeliveries: () => void
 }
 interface Data {
@@ -17,10 +17,10 @@ interface Data {
     scheduledDate: string
 }
 
-export const TabShippingDeliveries = ({ DeliveriesPending, searchDeliveries }: DeliveriesPendingProps) => {
+export const TabShippingDeliveries = ({ Deliveries, searchDeliveries }: DeliveriesProps) => {
     const Theme = useDarkMode();
     const rows: Array<Data> = [];
-    DeliveriesPending.map(delivery => {
+    Deliveries.map(delivery => {
         rows.push({
             itemSell: String(delivery.itemSell.id),
             sell: String(delivery.itemSell.sell.codRef),
@@ -41,7 +41,7 @@ export const TabShippingDeliveries = ({ DeliveriesPending, searchDeliveries }: D
         //  <S.Container isDarkMode={Theme.DarkMode}>
         //      <S.Main isDarkMode={Theme.DarkMode}> 
         <>
-            <MuiTable width="100%" DeliveriesPending={DeliveriesPending} rows={rows} searchDeliveries={searchDeliveries} />
+            <MuiTable width="100%" Deliveries={Deliveries} rows={rows} searchDeliveries={searchDeliveries} type='Shipping' />
         </>
         //     </S.Main> 
         //  </S.Container>
