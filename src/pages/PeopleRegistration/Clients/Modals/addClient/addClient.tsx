@@ -16,6 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
 import { cellNumberFormat, cepFormat, cpfCnpjFormat, optionsUF, phoneNumberFormat } from '../../../../../utils/utils';
+import { ClientsType } from '../../../../Sell/Modals/CheckOut';
 
 
 
@@ -23,8 +24,9 @@ import { cellNumberFormat, cepFormat, cpfCnpjFormat, optionsUF, phoneNumberForma
 interface ListClientstoAddClientProps {
     isModalAddClientOpen: boolean;
     setisModalAddClientOpen: (value: boolean) => void;
-    setisModalSucessOpen: (value: boolean) => void;
-    searchClients: () => void;
+    setisModalSucessOpen?: (value: boolean) => void;
+    searchClients?: () => void;
+    handleChangeClient?: (newClient: ClientsType) => void
 }
 
 
@@ -51,7 +53,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
     const [valueInputClientAdressState, setvalueInputClientAdressState] = useState<string | null>(null)
     const [valueInputClientAdressCep, setvalueInputClientAdressCep] = useState("")
     const [valueInputClientActive, setvalueInputClientActive] = useState(true)
-    const {MessageBox} = useMessageBoxContext()
+    const { MessageBox } = useMessageBoxContext()
     function eraseValues() {
         setvalueInputClientName("")
         setvalueInputClientGender("")
@@ -83,7 +85,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                 const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
-                    MessageBox('error','CEP invalido')
+                    MessageBox('error', 'CEP invalido')
                 }
                 else {
                     setvalueInputClientAdressStreet(data.logradouro)
@@ -92,8 +94,8 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                     setvalueInputClientAdressState(data.uf)
                 }
             }
-            catch (error:any) {
-                MessageBox('info',error.message)
+            catch (error: any) {
+                MessageBox('info', error.message)
             }
         }
 
@@ -120,53 +122,25 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
     }
 
     const AddClientApi = async () => {
-       
-        if (valueInputClientCpfCnpj && valueInputClientName && valueInputClientBirthDate &&
-            valueInputClientCpfCnpj !== "" && valueInputClientName !== "" && valueInputClientBirthDate !== "" &&
-            (valueInputClientCpfCnpj.length === 14 || valueInputClientCpfCnpj.length === 18)
-        ) {
-            if (valueInputClientEmail === null || valueInputClientEmail === "") {
-                try {
-                    const data = await addClient(finaldataAddClientToSendApi)
-                    if (data.Success) {
-                        props.setisModalAddClientOpen(false)
-                        props.setisModalSucessOpen(true)
-                        props.searchClients()
-                        eraseValues()
-                    }
-                    else {
-                        throw new Error(data.erro)
-                    }
-                }
-                catch (error:any) {
-                    MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
-                }
+        try {
+            if (!(valueInputClientCpfCnpj && valueInputClientName && valueInputClientBirthDate &&
+                valueInputClientCpfCnpj !== "" && valueInputClientName !== "" && valueInputClientBirthDate !== "" &&
+                (valueInputClientCpfCnpj.length === 14 || valueInputClientCpfCnpj.length === 18))
+            ) { throw new Error('Campos obrigatórios não informados!') }
+            const data = await addClient(finaldataAddClientToSendApi)
+            if (data.Success) {
+                props.setisModalAddClientOpen(false)
+                if (props.setisModalSucessOpen) { props.setisModalSucessOpen(true) } else { MessageBox('success', 'Cliente cadastrado com sucesso! ') }
+                if (props.searchClients) { props.searchClients() }
+                if (props.handleChangeClient) { props.handleChangeClient(data.dataClient)}
+                eraseValues()
             }
             else {
-                if (valueInputClientEmail !== null && valueInputClientEmail.includes("@" && ".")) {
-                    try {
-                        const data = await addClient(finaldataAddClientToSendApi)
-                        if (data.Success) {
-                            props.setisModalAddClientOpen(false)
-                            props.setisModalSucessOpen(true)
-                            props.searchClients()
-                            eraseValues()
-                        }
-                        else {
-                            MessageBox('error',data.erro)
-                        }
-                    }
-                    catch (error:any) {
-                        //MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
-                    }
-                }
-                else {
-                    MessageBox('error',"Email inválido!")
-                }
+                throw new Error(data.erro)
             }
         }
-        else {
-            MessageBox('error',"Campos obrigatórios não preenchidos !")
+        catch (error: any) {
+            MessageBox('error', 'Falha ao adicionar cliente! ' + error.message)
         }
     }
 
@@ -181,17 +155,19 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                 width: {
                     xs: '80%', // phone
                     sm: '80%', // tablets
-                    md: 500, // small laptop
-                    lg: 500, // desktop
-                    xl: 500 // large screens
+                    md: 600, // small laptop
+                    lg: 600, // desktop
+                    xl: 600 // large screens
                 },
                 //width: '80%',
                 bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
                 color: Theme.DarkMode ? '#ffffff' : '#000',
                 border: Theme.DarkMode ? '1px solid silver' : '',
+                borderRadius: '6px',
                 boxShadow: 24, p: 4,
             }}
             >
+                <h3 style={{ width: 'max-content', margin: '0 auto' }}> Inclusão de Cliente </h3>
                 <S.DivModal>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
@@ -253,7 +229,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         <TextField
                             value={valueInputClientCpfCnpj}
                             onChange={(e) => {
-                                setvalueInputClientCpfCnpj(cpfCnpjFormat(e.target.value,valueInputClientCpfCnpj))
+                                setvalueInputClientCpfCnpj(cpfCnpjFormat(e.target.value, valueInputClientCpfCnpj))
                             }}
                             label={valueInputClientCpfCnpj.length === 0 ?
                                 "CPF/CNPJ *"
@@ -275,7 +251,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ptBR}>
                             <DatePicker
                                 disableFuture
-                                
+
                                 label={valueInputClientCpfCnpj.length === 0 ?
                                     "Nascimento/Fundação *"
                                     :
@@ -293,7 +269,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                                 onChange={(newValue) => {
                                     setvalueInputClientBirthDate(newValue);
                                 }}
-                                renderInput={(params) => <TextField sx={{ width: '49%' }} {...params} variant="outlined"/>}
+                                renderInput={(params) => <TextField sx={{ width: '49%' }} {...params} variant="outlined" />}
                             />
 
                         </LocalizationProvider>
@@ -319,7 +295,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         <TextField
                             value={valueInputClientPhoneNumber}
                             onChange={(e) => {
-                                setvalueInputClientPhoneNumber(phoneNumberFormat(e.target.value,valueInputClientPhoneNumber))
+                                setvalueInputClientPhoneNumber(phoneNumberFormat(e.target.value, valueInputClientPhoneNumber))
                             }}
                             id="outlined-basic"
                             label="Telefone"
@@ -330,7 +306,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         <TextField
                             value={valueInputClientCellNumber}
                             onChange={(e) => {
-                                setvalueInputClientCellNumber(cellNumberFormat(e.target.value,valueInputClientCellNumber))
+                                setvalueInputClientCellNumber(cellNumberFormat(e.target.value, valueInputClientCellNumber))
                             }}
                             id="outlined-basic"
                             label="Celular"
@@ -345,7 +321,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                         <TextField
                             value={valueInputClientAdressCep}
                             onChange={(e) => {
-                                setvalueInputClientAdressCep(cepFormat(e.target.value,valueInputClientAdressCep))
+                                setvalueInputClientAdressCep(cepFormat(e.target.value, valueInputClientAdressCep))
                             }}
                             onBlur={(e) => handleConsultCep(e.target.value)}
                             id="outlined-basic"

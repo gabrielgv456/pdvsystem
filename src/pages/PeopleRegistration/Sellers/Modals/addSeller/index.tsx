@@ -16,12 +16,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
 import { cellNumberFormat, cepFormat, phoneNumberFormat } from '../../../../../utils/utils';
+import { SellersandClientsType } from '../../../../SalesControl';
 
 interface ListSellerstoAddSellerProps {
     isModalAddSellerOpen: boolean;
     setisModalAddSellerOpen: (value: boolean) => void;
-    setisModalSucessOpen: (value: boolean) => void;
-    searchSellers: () => void;
+    setisModalSucessOpen?: (value: boolean) => void;
+    searchSellers?: () => void;
+    handleChangeSeller?: (newSeller: SellersandClientsType) => void
 }
 
 
@@ -48,8 +50,8 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
     const [valueInputSellerAdressCep, setvalueInputSellerAdressCep] = useState("")
     const [valueInputSellerActive, setvalueInputSellerActive] = useState(true)
     const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
-    const {MessageBox} = useMessageBoxContext()
-    
+    const { MessageBox } = useMessageBoxContext()
+
     function eraseValues() {
         setvalueInputSellerName("")
         setvalueInputSellerGender("")
@@ -81,7 +83,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                 const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
-                    MessageBox('error','CEP invalido')
+                    MessageBox('error', 'CEP invalido')
                 }
                 else {
                     setvalueInputSellerAdressStreet(data.logradouro)
@@ -90,8 +92,8 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                     setvalueInputSellerAdressState(data.uf)
                 }
             }
-            catch (error:any) {
-                MessageBox('info',error.message)
+            catch (error: any) {
+                MessageBox('info', error.message)
             }
         }
 
@@ -118,52 +120,20 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
     }
 
     const AddSellerApi = async () => {
-        if (valueInputSellerCpf && valueInputSellerName && valueInputSellerBirthDate && valueInputSellerGender &&
-            valueInputSellerCpf !== "" && valueInputSellerName !== "" && valueInputSellerBirthDate !== "" &&
-            (valueInputSellerCpf.length === 14 || valueInputSellerCpf.length === 18)
-        ) {
-            if (valueInputSellerEmail === null || valueInputSellerEmail === "") {
-                try {
-                    const data = await addSeller(finaldataAddSellerToSendApi)
-                    if (data.Success) {
-                        props.setisModalAddSellerOpen(false)
-                        props.setisModalSucessOpen(true)
-                        props.searchSellers()
-                        eraseValues()
-                    }
-                    else {
-                        MessageBox('error',data.erro)
-                    }
-                }
-                catch (error:any) {
-                    MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
-                }
-            }
-            else {
-                if (valueInputSellerEmail !== null && valueInputSellerEmail.includes("@" && ".")) {
-                    try {
-                        const data = await addSeller(finaldataAddSellerToSendApi)
-                        if (data.Success) {
-                            props.setisModalAddSellerOpen(false)
-                            props.setisModalSucessOpen(true)
-                            props.searchSellers()
-                            eraseValues()
-                        }
-                        else {
-                            MessageBox('error',data.erro)
-                        }
-                    }
-                    catch (error:any) {
-                        MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
-                    }
-                }
-                else {
-                    MessageBox('error',"Email inválido!")
-                }
-            }
+        try {
+            if (!(valueInputSellerCpf && valueInputSellerName && valueInputSellerBirthDate && valueInputSellerGender &&
+                valueInputSellerCpf !== "" && valueInputSellerName !== "" && valueInputSellerBirthDate !== "" &&
+                (valueInputSellerCpf.length === 14 || valueInputSellerCpf.length === 18))) { throw new Error('Campos obrigatórios não informados') }
+            const data = await addSeller(finaldataAddSellerToSendApi)
+            if (!data.Success) { throw new Error(data.erro) }
+            props.setisModalAddSellerOpen(false)
+            if (props.setisModalSucessOpen) props.setisModalSucessOpen(true)
+            if (props.searchSellers) props.searchSellers()
+            if (props.handleChangeSeller) props.handleChangeSeller(data.dataSeller)
+            eraseValues()
         }
-        else {
-            MessageBox('error',"Campos obrigatórios não preenchidos !")
+        catch (error: any) {
+            MessageBox('error', 'Falha ao adicionar vendedor! ' + error.message)
         }
     }
 
@@ -178,17 +148,19 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                 width: {
                     xs: '80%', // phone
                     sm: '80%', // tablets
-                    md: 500, // small laptop
-                    lg: 500, // desktop
-                    xl: 500 // large screens
+                    md: 600, // small laptop
+                    lg: 600, // desktop
+                    xl: 600 // large screens
                 },
                 //width: '80%',
                 bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
                 color: Theme.DarkMode ? '#ffffff' : '#000',
                 border: Theme.DarkMode ? '1px solid silver' : '',
                 boxShadow: 24, p: 4,
+                borderRadius: '6px'
             }}
             >
+                <h3 style={{ width: 'max-content', margin: '0 auto' }}> Inclusão de Vendedor </h3>
                 <S.DivModal>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
@@ -254,7 +226,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                             variant="outlined"
                             sx={{ width: '49%' }}
                         />
-                        
+
                         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ptBR}>
                             <DatePicker
                                 disableFuture
@@ -292,7 +264,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                             value={valueInputSellerPhoneNumber}
                             onChange={(e) => {
                                 setvalueInputSellerPhoneNumber(
-                                    phoneNumberFormat(e.target.value,valueInputSellerPhoneNumber) )
+                                    phoneNumberFormat(e.target.value, valueInputSellerPhoneNumber))
                             }}
                             id="outlined-basic"
                             label="Telefone"
@@ -303,7 +275,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                         <TextField
                             value={valueInputSellerCellNumber}
                             onChange={(e) => {
-                                setvalueInputSellerCellNumber(cellNumberFormat(e.target.value,valueInputSellerCellNumber) )
+                                setvalueInputSellerCellNumber(cellNumberFormat(e.target.value, valueInputSellerCellNumber))
                             }}
                             id="outlined-basic"
                             label="Celular"
@@ -318,7 +290,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                         <TextField
                             value={valueInputSellerAdressCep}
                             onChange={(e) => {
-                                setvalueInputSellerAdressCep(cepFormat(e.target.value,valueInputSellerAdressCep))
+                                setvalueInputSellerAdressCep(cepFormat(e.target.value, valueInputSellerAdressCep))
                             }}
                             onBlur={(e) => handleConsultCep(e.target.value)}
                             id="outlined-basic"

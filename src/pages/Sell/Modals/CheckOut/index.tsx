@@ -1,7 +1,7 @@
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { useState, useEffect, useContext } from 'react';
-import { MdPending } from "react-icons/md"
+import { MdAddCircleOutline, MdPending } from "react-icons/md"
 import { HiBadgeCheck } from "react-icons/hi"
 import { AiFillPrinter, AiOutlineClose } from "react-icons/ai"
 import { BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill, BsPersonBadge, BsFillPersonFill } from "react-icons/bs"
@@ -19,6 +19,9 @@ import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBox
 import { MethodsType, ProductsTypeOptions } from '../..';
 import Radio from '@mui/material/Radio';
 import { DeliveryAddressClient } from './Components/AddressClient';
+import { ModalAddClient } from '../../../PeopleRegistration/Clients/Modals/addClient/addClient';
+import { ModalSuccessClient } from '../../../PeopleRegistration/Clients/Modals/Success/modalSuccess';
+import { ModalAddSeller } from '../../../PeopleRegistration/Sellers/Modals/addSeller';
 
 interface handleChangeProps {
     UserId: number;
@@ -29,6 +32,8 @@ interface handleChangeProps {
     clientId: number | null;
     Products: ProductsType[];
     Payment: MethodsType[];
+    isDelivery: boolean;
+    delivery: deliveryAddressClientType
 }
 
 interface SellersOptionType {
@@ -84,6 +89,7 @@ export interface deliveryAddressClientType {
     addressCep: string,
     addressUF: string | null,
     scheduledDate: Date | null
+    | null
 }
 
 interface ModalCheckOutProps {
@@ -120,11 +126,16 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const [sellers, setSellers] = useState<SellersandClientsType[]>([])
     const [clients, setClients] = useState<ClientsType[]>([])
     const [selectedDeliveryType, setSelectedDeliveryType] = useState('instantDelivery');
+    const [isModalAddClientOpen, setisModalAddClientOpen] = useState(false)
+    const [isModalAddSellerOpen, setisModalAddSellerOpen] = useState(false)
     const [addressDeliveryClient, setDeliveryClientType] = useState<deliveryAddressClientType>({ addressCep: '', addressCity: '', addressComplement: '', addressNeighborhood: '', addressNumber: '', addressState: '', addressStreet: '', addressUF: '', scheduledDate: null })
     const handleChangeDeliveryType = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDeliveryType(event.target.value);
     };
 
+    async function handleChangeSeller(newSeller: SellersandClientsType | null) {
+        setInputSeller(newSeller);
+    }
 
     async function handleChangeClient(newClient: ClientsType | null) {
         setInputClient(newClient);
@@ -229,11 +240,14 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             props.setListProducts([])
             props.setMethods([])
             props.setNeedReturnCash('N')
+            setInputClient(null)
+            setInputSeller(null)
             setValue([0])
+            setSelectedDeliveryType('instantDelivery')
+            setDeliveryClientType({ addressCep: '', addressCity: '', addressComplement: '', addressNeighborhood: '', addressNumber: '', addressState: '', addressStreet: '', addressUF: '', scheduledDate: null })
             props.setinputProducts(null)
             props.setisModalConfirmSellOpen(false)
             setisSellEnded(false)
-
         } else {
             props.setisModalConfirmSellOpen(false)
         }
@@ -256,188 +270,219 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const handleSendtoApi = async (valuesSelltoSendApi: handleChangeProps) => {
         if (props.listMethods.length === 0) {
             MessageBox('warning', " Insira um método de pagamento!")
+            return
         }
-        else {
-            if (props.listMethods.some(method => Number.isNaN(method.value)) || props.listMethods.some(method => method.value === 0)) {
-                MessageBox('warning', 'Existe método de pagamento vazio, remova ou insira o valor!')
+        if (props.listMethods.some(method => Number.isNaN(method.value)) || props.listMethods.some(method => method.value === 0)) {
+            MessageBox('warning', 'Existe método de pagamento vazio, remova ou insira o valor!')
+            return
+        }
+        if (props.needReturnCash === 'N') {
+            MessageBox('warning', ` Restam ${props.formatedmissvalue} a serem recebidos!`)
+            return
+        }
+        if (valuesSelltoSendApi.isDelivery) {
+            try {
+                if (!valuesSelltoSendApi.delivery.addressCep) throw new Error(`Cep obrigatório!`)
+                if (!valuesSelltoSendApi.delivery.addressCity) throw new Error(`Cidade obrigatória!`)
+                if (!valuesSelltoSendApi.delivery.addressNeighborhood) throw new Error(`Bairro obrigatório!`)
+                if (!valuesSelltoSendApi.delivery.addressNumber) throw new Error(`Número residencia obrigatório!`)
+                if (!valuesSelltoSendApi.delivery.addressState) throw new Error(`Estado obrigatório!`)
+                if (!valuesSelltoSendApi.delivery.addressStreet) throw new Error(`Rua obrigatória!`)
+                if (!valuesSelltoSendApi.delivery.scheduledDate) throw new Error(`Data de entrega obrigatória!`)
+            } catch (error: any) {
+                MessageBox('warning', error.message)
+                return
             }
-            else {
-                if (props.needReturnCash === 'N') {
-                    MessageBox('warning', ` Restam ${props.formatedmissvalue} a serem recebidos!`)
-                }
-
-                if (props.needReturnCash === 'Y') {
-                    if (window.confirm(`Confirma o troco de ${props.formatedmissvalue} ?`)) {
-                        if (props.listMethods.length !== 0 && props.calculatemissvalue <= 0) {
-                            valuesSelltoSendApi.changeValue = Math.abs(props.calculatemissvalue) //convert negative to positive       
-                            try {
-                                const data = await addsell(valuesSelltoSendApi)
-                                if (!data.Success) {
-                                    throw new Error(data.Erro)
-                                }
-                                setisSellEnded(true)
-                                setCodRefSell(data.codRef)
-                            } catch (error: any) {
-                                MessageBox('error', error.message)
-                            }
+        }
+        if (props.needReturnCash === 'Y') {
+            if (window.confirm(`Confirma o troco de ${props.formatedmissvalue} ?`)) {
+                if (props.listMethods.length !== 0 && props.calculatemissvalue <= 0) {
+                    valuesSelltoSendApi.changeValue = Math.abs(props.calculatemissvalue) //convert negative to positive       
+                    try {
+                        const data = await addsell(valuesSelltoSendApi)
+                        if (!data.Success) {
+                            throw new Error(data.Erro)
                         }
+                        setisSellEnded(true)
+                        setCodRefSell(data.codRef)
+                    } catch (error: any) {
+                        MessageBox('error', error.message)
                     }
                 }
-                if (props.needReturnCash === 'OK') {
-                    if (props.listMethods.length !== 0 && props.calculatemissvalue <= 0) {
-                        try {
-                            const data = await addsell(valuesSelltoSendApi)
-                            if (!data.Success) {
-                                throw new Error(data.Erro)
-                            }
-                            setisSellEnded(true)
-                            setCodRefSell(data.codRef)
-                        } catch (error: any) {
-                            MessageBox('error', error.message)
-                        }
+            }
+        }
+        if (props.needReturnCash === 'OK') {
+            if (props.listMethods.length !== 0 && props.calculatemissvalue <= 0) {
+                try {
+                    const data = await addsell(valuesSelltoSendApi)
+                    if (!data.Success) {
+                        throw new Error(data.Erro)
                     }
+                    setisSellEnded(true)
+                    setCodRefSell(data.codRef)
+                } catch (error: any) {
+                    MessageBox('error', error.message)
                 }
             }
         }
     }
 
     return (
-        <Modal open={props.isModalConfirmSellOpen} onClose={handleCloseModalConfirmSell}>
-            <Box sx={{
-                position: 'absolute' as 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: {
-                    xs: '90%', // phone
-                    sm: '90%', // tablets
-                    md: 650, // small laptop
-                    lg: 650, // desktop
-                    xl: 650 // large screens
-                },
-                bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                color: Theme.DarkMode ? '#ffffff' : '#000',
-                border: Theme.DarkMode ? '1px solid silver' : '',
-                borderRadius: '6px',
-                boxShadow: 24, p: 4,
-            }}>
-                <S.SectionMConfirmSell>
-                    {(isSellEnded && codRefSell) && <div style={{ fontSize: '1.1rem' }}><b>Código da venda: </b> {codRefSell}</div>}
-                    <div style={{ fontSize: '1.1rem', marginBottom: '0px' }}><b>Total:</b> {props.sumvalueformated}</div>
-                    {props.needReturnCash === 'N' ? <div style={{ fontSize: '1.1rem' }}><b>Restante:</b> {props.formatedmissvalue}</div> : ''}
-                    {props.needReturnCash === 'Y' && <div style={{ fontSize: '1.1rem', color: 'red' }}><b>Troco:</b> {props.formatedmissvalue}</div>}
-                    {props.needReturnCash === 'OK' && <div style={{ fontSize: '1.1rem', color: 'green' }}><b>Restante:</b> {props.formatedmissvalue}</div>}
-                </S.SectionMConfirmSell>
-                {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" /> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
+        <>
+            <Modal open={props.isModalConfirmSellOpen} onClose={handleCloseModalConfirmSell}>
+                <Box sx={{
+                    position: 'absolute' as 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: {
+                        xs: '90%', // phone
+                        sm: '90%', // tablets
+                        md: 650, // small laptop
+                        lg: 650, // desktop
+                        xl: 650 // large screens
+                    },
+                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
+                    color: Theme.DarkMode ? '#ffffff' : '#000',
+                    border: Theme.DarkMode ? '1px solid silver' : '',
+                    borderRadius: '6px',
+                    boxShadow: 24, p: 4,
+                }}>
+                    <S.SectionMConfirmSell>
+                        {(isSellEnded && codRefSell) && <div style={{ fontSize: '1.1rem' }}><b>Código da venda: </b> {codRefSell}</div>}
+                        <div style={{ fontSize: '1.1rem', marginBottom: '0px' }}><b>Total:</b> {props.sumvalueformated}</div>
+                        {props.needReturnCash === 'N' ? <div style={{ fontSize: '1.1rem' }}><b>Restante:</b> {props.formatedmissvalue}</div> : ''}
+                        {props.needReturnCash === 'Y' && <div style={{ fontSize: '1.1rem', color: 'red' }}><b>Troco:</b> {props.formatedmissvalue}</div>}
+                        {props.needReturnCash === 'OK' && <div style={{ fontSize: '1.1rem', color: 'green' }}><b>Restante:</b> {props.formatedmissvalue}</div>}
+                    </S.SectionMConfirmSell>
+                    {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" /> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
 
-                {isSellEnded ? '' :
-                    <div>
-                        <S.DivInputs>
-                            <S.labelClient>
-                                <BsFillPersonFill size="22" color="#5d5c5c" />
-                                <Autocomplete
-                                    style={{ width: '84%' }}
-                                    options={clients}
-                                    value={inputClient}
-                                    onChange={(event: any, newValue: ClientsType | null) => {
-                                        handleChangeClient(newValue)
-                                    }}
-                                    getOptionLabel={(option) =>
-                                        (option.cpf)
-                                            .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
-                                            .concat(" - ")
-                                            .concat(option.name)
-                                    }
-                                    //getOptionLabel={ (option: SellersOptionType) => option.name}
-                                    id="autocomplete_clients"
-                                    autoComplete
-                                    noOptionsText="Nenhum resultado"
-                                    includeInputInList
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Cliente" variant="standard" />
-                                    )}
-                                /> </S.labelClient>
-                            <S.labelSeller>
-                                <BsPersonBadge size="22" color="#5d5c5c" />
-                                <Autocomplete
-                                    style={{ width: '84%' }}
-                                    options={sellers.filter(seller => seller.active)}
-                                    getOptionLabel={(option) => option.name}
-                                    value={inputSeller}
-                                    onChange={(event: any, newValue: SellersandClientsType | null) => {
-                                        setInputSeller(newValue);
-                                    }}
-                                    //getOptionLabel={ (option: SellersOptionType) => option.name}
-                                    id="autocomplete_sellers"
-                                    autoComplete
-                                    includeInputInList
-                                    noOptionsText="Nenhum resultado"
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Vendedor" variant="standard" />
-                                    )}
-                                />
-                            </S.labelSeller>
-                        </S.DivInputs>
-                        <div>
-                            <S.PHeaderModal>Qual será o tipo de entrega?</S.PHeaderModal>
-                            <Radio
-                                checked={selectedDeliveryType === 'instantDelivery'}
-                                onChange={handleChangeDeliveryType}
-                                value="instantDelivery"
-                                name="radio-buttons"
-                                inputProps={{ 'aria-label': 'A' }}
-                            />
-                            Entrega Imediata
-                            <Radio
-                                checked={selectedDeliveryType === 'futureDelivery'}
-                                onChange={handleChangeDeliveryType}
-                                value="futureDelivery"
-                                name="radio-buttons"
-                                inputProps={{ 'aria-label': 'B' }}
-                            />
-                            Entrega Futura
-                        </div>
-                        {selectedDeliveryType === 'futureDelivery' &&
-                            <DeliveryAddressClient
-                                setDeliveryClientType={setDeliveryClientType}
-                                addressDeliveryClient={addressDeliveryClient}
-                                inputClient={inputClient}
-                            />
-                        }
-                        <S.PHeaderModal>Qual a forma de pagamento?</S.PHeaderModal>
-                    </div>
-
-                }
-                {isSellEnded ? '' :
-                    <S.DivModalIconsPayment>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('money')} isDarkMode={Theme.DarkMode} ><FaMoneyBillWave className="hoverbutton" size={25} style={{ color: '#23591b' }} />Dinheiro</S.LabelIconsModal>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('debitcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCardFill className="hoverbutton" size={25} style={{ color: '#f1b917' }} />Cartão de Débito</S.LabelIconsModal>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('creditcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCard2FrontFill className="hoverbutton" size={25} style={{ color: '#da506e' }} />Cartão de Crédito</S.LabelIconsModal>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('pix')} isDarkMode={Theme.DarkMode}><PixIcon className="hoverbutton" style={{ color: '#5cbcb1' }} /> &nbsp; PIX &nbsp;</S.LabelIconsModal>
-                        <S.LabelIconsModal onClick={() => handleAddMethod('others')} isDarkMode={Theme.DarkMode}><MdPending className="hoverbutton" size={25} style={{ color: '#7a3c3c' }} />Outros</S.LabelIconsModal>
-
-                        {selectedDeliveryType === 'futureDelivery' &&
-                            <S.LabelDeliveryIconsModal className='deliveryIcon' onClick={() => handleAddMethod('delivery')} isDarkMode={Theme.DarkMode}><FaTruck className="hoverbutton" size={25} style={{ color: 'var(--Blue)' }} />Na entrega</S.LabelDeliveryIconsModal>
-                        }
-                    </S.DivModalIconsPayment>
-                }
-                {props.listMethods.map((item) => (
-                    <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item} handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} value={value} onChangeValuePayment={onChangeValuePayment} />
-                ))}
-
-                <S.DivModalButtons>
-                    {isSellEnded ?
-                        <S.ButtonPrint onClick={(e) => GeneratePDF(props.listProducts, props.sumvalueformated, props.sumquantity)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
-                        : ''}
                     {isSellEnded ? '' :
-                        <S.ButtonEndSell onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</S.ButtonEndSell>
+                        <div>
+                            <S.DivInputs>
+                                <S.labelClient>
+                                    <BsFillPersonFill size="22" color="#5d5c5c" />
+                                    <Autocomplete
+                                        style={{ width: '84%' }}
+                                        options={clients}
+                                        value={inputClient}
+                                        onChange={(event: any, newValue: ClientsType | null) => {
+                                            handleChangeClient(newValue)
+                                        }}
+                                        getOptionLabel={(option) =>
+                                            (option.cpf)
+                                                .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
+                                                .concat(" - ")
+                                                .concat(option.name)
+                                        }
+                                        //getOptionLabel={ (option: SellersOptionType) => option.name}
+                                        id="autocomplete_clients"
+                                        autoComplete
+                                        noOptionsText="Nenhum resultado"
+                                        includeInputInList
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Cliente" variant="standard" />
+                                        )}
+                                    />
+                                    <button style={{ border: 'none', background: 'none' }}>
+                                        <MdAddCircleOutline size='22' color='var(--Green)' onClick={() => setisModalAddClientOpen(true)} />
+                                    </button>
+                                </S.labelClient>
+                                <S.labelSeller>
+                                    <BsPersonBadge size="22" color="#5d5c5c" />
+                                    <Autocomplete
+                                        style={{ width: '84%' }}
+                                        options={sellers.filter(seller => seller.active)}
+                                        getOptionLabel={(option) => option.name}
+                                        value={inputSeller}
+                                        onChange={(event: any, newValue: SellersandClientsType | null) => {
+                                            handleChangeSeller(newValue)
+                                        }}
+                                        //getOptionLabel={ (option: SellersOptionType) => option.name}
+                                        id="autocomplete_sellers"
+                                        autoComplete
+                                        includeInputInList
+                                        noOptionsText="Nenhum resultado"
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Vendedor" variant="standard" />
+                                        )}
+                                    />
+                                    <button style={{ border: 'none', background: 'none' }}>
+                                        <MdAddCircleOutline size='22' color='var(--Green)' onClick={() => setisModalAddSellerOpen(true)} />
+                                    </button>
+                                </S.labelSeller>
+                            </S.DivInputs>
+                            <div>
+                                <S.PHeaderModal>Qual será o tipo de entrega?</S.PHeaderModal>
+                                <Radio
+                                    checked={selectedDeliveryType === 'instantDelivery'}
+                                    onChange={handleChangeDeliveryType}
+                                    value="instantDelivery"
+                                    name="radio-buttons"
+                                    inputProps={{ 'aria-label': 'A' }}
+                                />
+                                Entrega Imediata
+                                <Radio
+                                    checked={selectedDeliveryType === 'futureDelivery'}
+                                    onChange={handleChangeDeliveryType}
+                                    value="futureDelivery"
+                                    name="radio-buttons"
+                                    inputProps={{ 'aria-label': 'B' }}
+                                />
+                                Entrega Futura
+                            </div>
+                            {selectedDeliveryType === 'futureDelivery' &&
+                                <DeliveryAddressClient
+                                    setDeliveryClientType={setDeliveryClientType}
+                                    addressDeliveryClient={addressDeliveryClient}
+                                    inputClient={inputClient}
+                                />
+                            }
+                            <S.PHeaderModal>Qual a forma de pagamento?</S.PHeaderModal>
+                        </div>
+
                     }
-                </S.DivModalButtons>
+                    {isSellEnded ? '' :
+                        <S.DivModalIconsPayment>
+                            <S.LabelIconsModal onClick={() => handleAddMethod('money')} isDarkMode={Theme.DarkMode} ><FaMoneyBillWave className="hoverbutton" size={25} style={{ color: '#23591b' }} />Dinheiro</S.LabelIconsModal>
+                            <S.LabelIconsModal onClick={() => handleAddMethod('debitcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCardFill className="hoverbutton" size={25} style={{ color: '#f1b917' }} />Cartão de Débito</S.LabelIconsModal>
+                            <S.LabelIconsModal onClick={() => handleAddMethod('creditcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCard2FrontFill className="hoverbutton" size={25} style={{ color: '#da506e' }} />Cartão de Crédito</S.LabelIconsModal>
+                            <S.LabelIconsModal onClick={() => handleAddMethod('pix')} isDarkMode={Theme.DarkMode}><PixIcon className="hoverbutton" style={{ color: '#5cbcb1' }} /> &nbsp; PIX &nbsp;</S.LabelIconsModal>
+                            <S.LabelIconsModal onClick={() => handleAddMethod('others')} isDarkMode={Theme.DarkMode}><MdPending className="hoverbutton" size={25} style={{ color: '#7a3c3c' }} />Outros</S.LabelIconsModal>
 
-                <S.ButtonClose isDarkMode={Theme.DarkMode} onClick={handleCloseModalConfirmSell}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonClose>
+                            {selectedDeliveryType === 'futureDelivery' &&
+                                <S.LabelDeliveryIconsModal className='deliveryIcon' onClick={() => handleAddMethod('delivery')} isDarkMode={Theme.DarkMode}><FaTruck className="hoverbutton" size={25} style={{ color: 'var(--Blue)' }} />Na entrega</S.LabelDeliveryIconsModal>
+                            }
+                        </S.DivModalIconsPayment>
+                    }
+                    {props.listMethods.map((item) => (
+                        <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item} handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} value={value} onChangeValuePayment={onChangeValuePayment} />
+                    ))}
 
-            </Box>
-        </Modal>
+                    <S.DivModalButtons>
+                        {isSellEnded ?
+                            <S.ButtonPrint onClick={(e) => GeneratePDF(props.listProducts, props.sumvalueformated, props.sumquantity)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
+                            : ''}
+                        {isSellEnded ? '' :
+                            <S.ButtonEndSell onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</S.ButtonEndSell>
+                        }
+                    </S.DivModalButtons>
 
+                    <S.ButtonClose isDarkMode={Theme.DarkMode} onClick={handleCloseModalConfirmSell}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonClose>
+
+                </Box>
+            </Modal>
+            <ModalAddClient
+                isModalAddClientOpen={isModalAddClientOpen}
+                setisModalAddClientOpen={setisModalAddClientOpen}
+                handleChangeClient={handleChangeClient}
+            />
+            <ModalAddSeller
+                isModalAddSellerOpen={isModalAddSellerOpen}
+                setisModalAddSellerOpen={setisModalAddSellerOpen}
+                handleChangeSeller={handleChangeSeller}
+            />
+
+        </>
     )
 }
