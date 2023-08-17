@@ -92,6 +92,8 @@ export interface deliveryAddressClientType {
     | null
 }
 
+export type typesPayment = 'money'|'debitcard'|'creditcard'|'pix'|'others'|'onDelivery'
+
 interface ModalCheckOutProps {
     listMethods: MethodsType[]
     setMethods: (value: MethodsType[]) => void
@@ -176,7 +178,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
         SellersSearch();
     }, [])
 
-    const handleAddMethod = (valuetype: string) => {
+    const handleAddMethod = (valuetype: typesPayment) => {
         const alreadyexistMethod = verifyifexistsMethod(valuetype)
         if (!alreadyexistMethod) {
             let newMethods = [...props.listMethods]
@@ -451,7 +453,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                             <S.LabelIconsModal onClick={() => handleAddMethod('others')} isDarkMode={Theme.DarkMode}><MdPending className="hoverbutton" size={25} style={{ color: '#7a3c3c' }} />Outros</S.LabelIconsModal>
 
                             {selectedDeliveryType === 'futureDelivery' &&
-                                <S.LabelDeliveryIconsModal className='deliveryIcon' onClick={() => handleAddMethod('delivery')} isDarkMode={Theme.DarkMode}><FaTruck className="hoverbutton" size={25} style={{ color: 'var(--Blue)' }} />Na entrega</S.LabelDeliveryIconsModal>
+                                <S.LabelDeliveryIconsModal className='deliveryIcon' onClick={() => handleAddMethod('onDelivery')} isDarkMode={Theme.DarkMode}><FaTruck className="hoverbutton" size={25} style={{ color: 'var(--Blue)' }} />Na entrega</S.LabelDeliveryIconsModal>
                             }
                         </S.DivModalIconsPayment>
                     }

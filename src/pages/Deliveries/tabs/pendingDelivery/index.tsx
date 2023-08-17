@@ -1,7 +1,7 @@
 
 import * as S from "./style"
 import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
-import MuiTable from "../../../../components/tables/muiDeliveryTable";
+import MuiTableDeliveries from "../../../../components/tables/muiDeliveryTable";
 import { DeliveriesReturnApiProps } from "../..";
 
 interface DeliveriesProps {
@@ -33,15 +33,14 @@ export const TabPendingDeliveries = ({ Deliveries, searchDeliveries }: Deliverie
                 year: 'numeric',
                 weekday: 'long'
             })
-        }
-        )
+        })
     })
 
     return (
         //  <S.Container isDarkMode={Theme.DarkMode}>
         //      <S.Main isDarkMode={Theme.DarkMode}> 
         <>
-            <MuiTable width="100%" Deliveries={Deliveries} rows={rows} searchDeliveries={searchDeliveries} type='Pending'/>
+            <MuiTableDeliveries width="100%" Deliveries={Deliveries} rows={rows} searchDeliveries={searchDeliveries} type='Pending' />
         </>
         //     </S.Main> 
         //  </S.Container>

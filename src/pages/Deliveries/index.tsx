@@ -18,6 +18,7 @@ import { AiOutlineClockCircle } from 'react-icons/ai';
 import { LuCheckCircle } from 'react-icons/lu'
 import { TabShippingDeliveries } from './tabs/shippingDelivery';
 import { TabDoneDeliveries } from './tabs/doneDelivery';
+import { typesPayment } from '../Sell/Modals/CheckOut';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -30,6 +31,7 @@ export interface DeliveriesReturnApiProps {
     } | null,
     scheduledDate: string,
     status: 'Pending' | 'Shipping' | 'Done',
+    onDeliveryPayValue: number,
     address: {
         addressStreet: string,
         addressNumber: string,
@@ -42,9 +44,14 @@ export interface DeliveriesReturnApiProps {
     itemSell: {
         id: number,
         descriptionProduct: string,
-        totalValue:number,
+        totalValue: number,
         sell: {
-            codRef: number
+            codRef: number,
+            sellValue: number,
+            paymentsells: [{
+                typepayment: typesPayment,
+                value: number,
+            }]
         },
         quantity: number
     }
@@ -142,13 +149,13 @@ export const Deliveries = () => {
                     </Box>
                     {/* <div style={{ padding: '0 25px 25px 25px' }}> */}
                     <TabPanel value={value} index={0}>
-                        <TabPendingDeliveries Deliveries={DeliveriesReturnApi.filter(item => item.status === 'Pending')} searchDeliveries={searchDeliveries}  />
+                        <TabPendingDeliveries Deliveries={DeliveriesReturnApi.filter(item => item.status === 'Pending')} searchDeliveries={searchDeliveries} />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        <TabShippingDeliveries Deliveries={DeliveriesReturnApi.filter(item => item.status === 'Shipping')} searchDeliveries={searchDeliveries}  />
+                        <TabShippingDeliveries Deliveries={DeliveriesReturnApi.filter(item => item.status === 'Shipping')} searchDeliveries={searchDeliveries} />
                     </TabPanel>
                     <TabPanel value={value} index={2}>
-                        <TabDoneDeliveries Deliveries={DeliveriesReturnApi.filter(item => item.status === 'Done')} searchDeliveries={searchDeliveries}  />
+                        <TabDoneDeliveries Deliveries={DeliveriesReturnApi.filter(item => item.status === 'Done')} searchDeliveries={searchDeliveries} />
                     </TabPanel>
                     {/* </div> */}
                 </Box>

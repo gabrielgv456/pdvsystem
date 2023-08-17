@@ -258,14 +258,30 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-    // { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(delivery.itemSell.totalValue) },
-
-    const DeliveriesData = deliveries.map((delivery) => {
+    const lastDeliveries: Array<number> = []
+    const DeliveriesData = deliveries.map((delivery,) => {
+        const countRowSpam = deliveries.reduce((acc, item) => {
+            if (item.itemSell.sell.codRef === delivery.itemSell.sell.codRef) { return acc + 1; } else { return acc; }
+        }, 0);
+        lastDeliveries.push(delivery.itemSell.sell.codRef)
+        const countLastDeliveries = lastDeliveries.reduce((acc, item) => {
+            if (item === delivery.itemSell.sell.codRef) { return acc + 1 } else { return acc }
+        }, 0)
         return [
-            { text: delivery.itemSell.sell.codRef },
+            { text: `${countLastDeliveries <= 1 ? delivery.itemSell.sell.codRef : ''}`, rowSpan: countRowSpam },
+            { text: `${countLastDeliveries <= 1 ? delivery.client?.name ?? 'Não informado' : ''}`, rowSpan: countRowSpam },
+            {
+                text: `${countLastDeliveries <= 1 ?
+                    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(delivery.itemSell.sell.sellValue)
+                    : ''}`, rowSpan: countRowSpam
+            },
+            {
+                text: `${countLastDeliveries <= 1 ?
+                    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(delivery.onDeliveryPayValue)
+                    : ''}`, rowSpan: countRowSpam
+            },
             { text: delivery.itemSell.descriptionProduct },
             { text: delivery.itemSell.quantity },
-            { text: delivery.client?.name ?? 'Não informado' },
             {
                 text: delivery.address.addressStreet + ', '
                     + delivery.address.addressNumber + ', '
@@ -338,7 +354,7 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
                 table: {
                     // widths: ['auto'],
                     body: [
-                        [{ text: 'Venda' }, { text: 'Produto' }, { text: 'Qnt' }, { text: 'Cliente' }, { text: 'Endereço' }, { text: 'Data Agendada' }],
+                        [{ text: 'Venda' }, { text: 'Cliente' }, { text: 'Total' }, { text: 'A receber' }, { text: 'Produto' }, { text: 'Qnt' }, { text: 'Endereço' }, { text: 'Data Agendada' }],
                         ...DeliveriesData,
                         // [{ text: ' ' }, { text: ' ' }, { text: ' ' }],
                         // [{ text: 'VALOR TOTAL:', colSpan: 2 }, {}, { text: 's' }],

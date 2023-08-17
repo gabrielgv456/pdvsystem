@@ -5,6 +5,7 @@ import { MdPending } from 'react-icons/md'
 import PixIcon from '@mui/icons-material/Pix';
 import * as S from "./style"
 import { CurrencyMaskWithOutRS } from "../../../masks/CurrencyMask";
+import { typesPayment } from "../Modals/CheckOut";
 
 interface PaymentMethodsProps {
     value: number[];
@@ -15,7 +16,7 @@ interface PaymentMethodsProps {
     item:
     {
         id: number;
-        type: string;
+        type: typesPayment
         value: number;
         valueFormated: string;
     }
@@ -79,7 +80,7 @@ export const PaymentMethods = (props: PaymentMethodsProps) => {
                                     <S.Label><label style={{ backgroundColor: '#7a3c3c', padding: '0px 8px', color: '#fff', borderRadius: '3px 0px 0px 3px', height: '1.1rem' }}>R$</label><S.InputModal placeholder="0,00" maxLength={12} value={props.item.valueFormated} onChange={(e) => changeValueInput(CurrencyMaskWithOutRS(e))} /></S.Label>
                                     <S.ButtonDelete style={{ color: '#7a3c3c' }} onClick={MethodRemove}><RiCloseCircleLine size={20} /></S.ButtonDelete>
                                 </S.DivPaymentMethods> :
-                                props.item.type === 'delivery' && props.isSellEnded === false ?
+                                props.item.type === 'onDelivery' && props.isSellEnded === false ?
                                     <S.DivPaymentMethods style={{ borderRadius: 5, backgroundColor: '#acc6fc', color: 'var(--Blue)' }}>
                                         <S.Label><FaTruck size={25} /></S.Label>
                                         <S.Label>Na entrega</S.Label>

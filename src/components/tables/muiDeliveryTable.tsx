@@ -322,7 +322,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 
 
-export default function MuiTable(props: MuiTableProps) {
+export default function MuiTableDeliveries(props: MuiTableProps) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('itemSell');
   const [selected, setSelected] = React.useState<readonly string[]>([]);

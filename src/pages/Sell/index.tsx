@@ -9,7 +9,7 @@ import { ListSell } from "./ListSell/ListSell";
 import { useApi } from "../../hooks/useApi";
 import { RiAddCircleFill } from "react-icons/ri";
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
-import { ModalCheckOut } from "./Modals/CheckOut";
+import { ModalCheckOut, typesPayment } from "./Modals/CheckOut";
 
 interface ProductsTypeReturnApi {
     id: number;
@@ -40,7 +40,7 @@ export interface ProductsType {
 
 export interface MethodsType {
     id: number;
-    type: string;
+    type: typesPayment;
     value: number;
     valueFormated: string;
 };
