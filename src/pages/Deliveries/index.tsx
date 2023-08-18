@@ -25,11 +25,15 @@ interface TabPanelProps {
     index: number;
     value: number;
 }
+
+export type TypeDeliveries = 'Pending' | 'Done' | 'Shipping'
+
 export interface DeliveriesReturnApiProps {
     client: {
         name: string
     } | null,
     scheduledDate: string,
+    deliveredDate: string | null,
     status: 'Pending' | 'Shipping' | 'Done',
     onDeliveryPayValue: number,
     address: {

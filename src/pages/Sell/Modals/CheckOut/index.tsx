@@ -22,6 +22,7 @@ import { DeliveryAddressClient } from './Components/AddressClient';
 import { ModalAddClient } from '../../../PeopleRegistration/Clients/Modals/addClient/addClient';
 import { ModalSuccessClient } from '../../../PeopleRegistration/Clients/Modals/Success/modalSuccess';
 import { ModalAddSeller } from '../../../PeopleRegistration/Sellers/Modals/addSeller';
+import { MuiBox } from '../../../../components/box/muiBox';
 
 interface handleChangeProps {
     UserId: number;
@@ -332,24 +333,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     return (
         <>
             <Modal open={props.isModalConfirmSellOpen} onClose={handleCloseModalConfirmSell}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '90%', // phone
-                        sm: '90%', // tablets
-                        md: 650, // small laptop
-                        lg: 650, // desktop
-                        xl: 650 // large screens
-                    },
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    borderRadius: '6px',
-                    boxShadow: 24, p: 4,
-                }}>
+                <MuiBox desktopWidth={650} mobileWidthPercent='90%' padding='20px'>
                     <S.SectionMConfirmSell>
                         {(isSellEnded && codRefSell) && <div style={{ fontSize: '1.1rem' }}><b>Código da venda: </b> {codRefSell}</div>}
                         <div style={{ fontSize: '1.1rem', marginBottom: '0px' }}><b>Total:</b> {props.sumvalueformated}</div>
@@ -472,7 +456,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
                     <S.ButtonClose isDarkMode={Theme.DarkMode} onClick={handleCloseModalConfirmSell}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonClose>
 
-                </Box>
+                </MuiBox>
             </Modal>
             <ModalAddClient
                 isModalAddClientOpen={isModalAddClientOpen}

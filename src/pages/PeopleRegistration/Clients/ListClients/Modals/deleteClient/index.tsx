@@ -6,6 +6,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvider';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
 import { useContext } from 'react';
+import { MuiBox } from '../../../../../../components/box/muiBox';
 
 interface indextoModalDeleteClient {
     setisModalDeleteClientOpen: (value: boolean) => void;
@@ -23,25 +24,7 @@ export const ModalDeleteClient = (props: indextoModalDeleteClient) => {
     }
     return (
         <Modal open={props.isModalDeleteClientOpen} onClose={handleCloseModalDeleteClient}>
-            <Box sx={{
-                position: 'absolute' as 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: {
-                    xs: '80%', // phone
-                    sm: '80%', // tablets
-                    md: 500, // small laptop
-                    lg: 500, // desktop
-                    xl: 500 // large screens
-                },
-                //width: '80%',
-                bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                color: Theme.DarkMode ? '#ffffff' : '#000',
-                border: Theme.DarkMode ? '1px solid silver' : '',
-                boxShadow: 24, p: 4,
-            }}
-            >
+            <MuiBox desktopWidth={500} mobileWidthPercent='80%'>
                 <S.DivDeleteClientModal>
                     <h3 style={{ alignSelf: 'center' }}>Deseja realmente excluir o cliente?</h3>
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '40%' }}>
@@ -50,7 +33,7 @@ export const ModalDeleteClient = (props: indextoModalDeleteClient) => {
                     </div>
                 </S.DivDeleteClientModal>
                 <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalDeleteClient}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-            </Box>
+            </MuiBox>
         </Modal>
 
     )

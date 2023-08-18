@@ -9,6 +9,7 @@ import { useApi } from "../../../../hooks/useApi";
 import { useMessageBoxContext } from "../../../../contexts/MessageBox/MessageBoxContext";
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import { MuiBox } from "../../../../components/box/muiBox";
 
 
 interface ModalDeleteProps {
@@ -85,25 +86,7 @@ export const ModalDelete = (props: ModalDeleteProps) => {
         <>
 
             <Modal open={props.ismodalDeleteOpen} onClose={handleCloseModalDelete}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '80%', // phone
-                        sm: '80%', // tablets
-                        md: 500, // small laptop
-                        lg: 500, // desktop
-                        xl: 500 // large screens
-                    },
-                    //width: '80%',
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    boxShadow: 24, p: 4,
-                }}
-                >
+                <MuiBox desktopWidth={500} mobileWidthPercent="80%">
                     <S.DivDeleteProductModal>
                         <h3 style={{ alignSelf: 'center', marginBottom: '25px' }}>Deseja realmente estornar a venda?</h3>
                         <span style={{ fontSize: '0.85rem', width: '90%' }}>
@@ -135,7 +118,7 @@ export const ModalDelete = (props: ModalDeleteProps) => {
                         </div>
                     </S.DivDeleteProductModal>
                     <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalDelete}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-                </Box>
+                </MuiBox>
             </Modal>
         </>
     )

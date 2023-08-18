@@ -7,6 +7,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useEffect, useState } from "react";
 import TextField from '@mui/material/TextField';
 import {SellersandClientsType} from "../../index"
+import { MuiBox } from "../../../../components/box/muiBox";
 
 
 interface ModalEditSellProps {
@@ -45,25 +46,7 @@ export const ModalEditSell = (props: ModalEditSellProps) => {
     return (
 
         <Modal open={props.ismodalEditSellOpen} onClose={handleCloseModalEditSell}>
-            <Box sx={{
-                position: 'absolute' as 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: {
-                    xs: '80%', // phone
-                    sm: '80%', // tablets
-                    md: 500, // small laptop
-                    lg: 500, // desktop
-                    xl: 500 // large screens
-                },
-                //width: '80%',
-                bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                color: Theme.DarkMode ? '#ffffff' : '#000',
-                border: Theme.DarkMode ? '1px solid silver' : '',
-                boxShadow: 24, p: 4,
-            }}
-            >
+            <MuiBox desktopWidth={500} mobileWidthPercent="80%" >
                 <div style={{ display: 'flex', flexDirection: "column", gap: '15px', padding: '10px', alignItems: 'center' }}>
                     <Autocomplete
                         value={inputSeller}
@@ -102,7 +85,7 @@ export const ModalEditSell = (props: ModalEditSellProps) => {
 
                 </div>
                 <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalEditSell}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-            </Box>
+            </MuiBox>
         </Modal>
     )
 }

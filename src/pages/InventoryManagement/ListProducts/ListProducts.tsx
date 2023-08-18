@@ -16,6 +16,7 @@ import { TransactionsProductsReturnApi } from "../index"
 import { CurrencyMask } from "../../../masks/CurrencyMask"
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
 import { ModalAddEditProduct } from "../Modals/AddEditProduct";
+import { MuiBox } from "../../../components/box/muiBox";
 
 export interface ListProductsProps {
     id: number;
@@ -27,10 +28,10 @@ export interface ListProductsProps {
     barCode: string,
     cost: number,
     itemTypeId: number,
-    cfopId:number,
+    cfopId: number,
     ncmCode: string,
     profitMargin: number,
-    unitMeasurement:string,
+    unitMeasurement: string,
     dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[];
     isModalTransactionsProductsOpen: boolean;
     setisModalTransactionsProductsOpen: (isModalTransactionsProductsOpen: boolean) => void;
@@ -118,7 +119,7 @@ export const ListProducts = (props: ListProductsProps) => {
         setinputvalueProduct(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.value))
         setisModalEditProductOpen(false)
     }
-    
+
     const handleOpenModalTransactionsProducts = async () => {
         props.setisModalTransactionsProductsOpen(true)
         const data = await findTransactionsProducts({ id: props.id, storeId: auth.idUser })
@@ -172,97 +173,8 @@ export const ListProducts = (props: ListProductsProps) => {
                 itemData={props}
             />
 
-            {/* <Modal open={isModalEditProductOpen} onClose={handleCloseModalEditProduct}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '80%', // phone
-                        sm: '80%', // tablets
-                        md: 500, // small laptop
-                        lg: 500, // desktop
-                        xl: 500 // large screens
-                    },
-                    //width: '80%',
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    boxShadow: 24, p: 4,
-                }}
-                >
-                   <S.DivModalProduct>
-                        <TextField 
-                            value={valueInputProductName}
-                            onChange={(e)=>{setvalueInputProductName(e.target.value)}}
-                            id="outlined-basic" 
-                            label="Nome do Produto" 
-                            variant="outlined" 
-                            sx={{width:'90%'}}/>   
-
-                        <label style={{display:'flex', justifyContent:'space-between',width:'90%'}}>
-
-                        <TextField 
-                        value={inputvalueProduct}
-                        onChange={(e) => changeInputValueProduct(CurrencyMask(e))}
-                        id="outlined-basic" 
-                        label="Valor" 
-                        variant="outlined" 
-                        sx={{width:'48%'}}/> 
-
-                        <TextField 
-                        value={valueInputProductQuantity}
-                        onChange={(e)=>{setvalueInputProductQuantity(Number(e.target.value))}}
-                        type="number" 
-                        id="outlined-basic" 
-                        label="Quantidade em Estoque" 
-                        variant="outlined" 
-                        sx={{width:'48%'}}/> 
-
-                        </label>
-                        
-                        <label>
-                            Produto ativo 
-                            <Switch checked={valueInputProductActive} onChange={(e)=>setvalueInputProductActive(e.target.checked)}/>
-                        </label>
-
-                    </S.DivModalProduct>
-                        <S.ButtonProductModal onClick={EditProductApi}  isDarkMode={Theme.DarkMode} style={{margin: '0 auto'}}>
-                            <AiOutlineEdit size="22"/>
-                            <b>FINALIZAR EDIÇÃO</b>
-                        </S.ButtonProductModal>
-
-                        <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalEditProduct}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-
-
-
-                </Box>
-            </Modal> */}
-
-
-
-
             <Modal open={isModalMasterKeyOpen} onClose={handleCloseModalMasterKey}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '80%', // phone
-                        sm: '80%', // tablets
-                        md: 500, // small laptop
-                        lg: 500, // desktop
-                        xl: 500 // large screens
-                    },
-                    //width: '80%',
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    boxShadow: 24, p: 4,
-                }}
-                >
+                <MuiBox desktopWidth={500} mobileWidthPercent="80%">
                     <S.DivRestrictAcessModal>
                         <h3 style={{ alignSelf: 'center' }}>Acesso Restrito</h3>
                         <label style={{ display: 'flex', alignItems: 'center' }}>
@@ -280,29 +192,11 @@ export const ListProducts = (props: ListProductsProps) => {
                         </label>
                     </S.DivRestrictAcessModal>
                     <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalMasterKey}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-                </Box>
+                </MuiBox>
             </Modal>
 
             <Modal open={isModalDeleteProductOpen} onClose={handleCloseModalDeleteProduct}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '80%', // phone
-                        sm: '80%', // tablets
-                        md: 500, // small laptop
-                        lg: 500, // desktop
-                        xl: 500 // large screens
-                    },
-                    //width: '80%',
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    boxShadow: 24, p: 4,
-                }}
-                >
+                <MuiBox desktopWidth={500} mobileWidthPercent="80%">
                     <S.DivDeleteProductModal>
                         <h3 style={{ alignSelf: 'center' }}>Deseja realmente excluir o produto?</h3>
                         <div style={{ display: 'flex', justifyContent: 'space-between', width: '40%' }}>
@@ -311,37 +205,19 @@ export const ListProducts = (props: ListProductsProps) => {
                         </div>
                     </S.DivDeleteProductModal>
                     <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalDeleteProduct}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-                </Box>
+                </MuiBox>
             </Modal>
 
 
 
             <Modal open={isModalSucessOpen} onClose={handleCloseModalSucess}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '80%', // phone
-                        sm: '80%', // tablets
-                        md: 500, // small laptop
-                        lg: 500, // desktop
-                        xl: 500 // large screens
-                    },
-                    //width: '80%',
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    boxShadow: 24, p: 4,
-                }}
-                >
+                <MuiBox desktopWidth={500} mobileWidthPercent="80%" >
                     <S.DivDeleteProductModal>
                         <h3 style={{ alignSelf: 'center' }}>Procedimento realizado com sucesso!</h3>
                         <BsCheckCircle color="var(--Green)" size="50" className="IconSucess" />
                     </S.DivDeleteProductModal>
                     <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalSucess}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-                </Box>
+                </MuiBox>
             </Modal>
 
 

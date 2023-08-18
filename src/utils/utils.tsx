@@ -110,6 +110,17 @@ export function currencyRemoveNotNumbers(value: string | null) {
   return value.replace(/[^\d.]/g, '')
 }
 
+export function DateFormatWeek (value: string|null) {
+  if (!value) return ''
+  return new Date(value).toLocaleString('pt-BR', {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+    weekday: 'long',
+    timeZone: 'UTC'
+})
+}
+
 
 export function CustomizedSnackbars() {
 

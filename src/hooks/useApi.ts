@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { TypeDeliveriesRequest } from '../pages/Deliveries';
-import { TypeChangeStatusDeliveriesRequest } from '../components/tables/muiDeliveryTable';
+import { TypeChangeStatusDeliveriesRequest } from '../pages/Deliveries/components/tables/muiDeliveryTable';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,

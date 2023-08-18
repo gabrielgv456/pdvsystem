@@ -15,6 +15,7 @@ import { MdAssignment, MdSettingsInputComponent } from 'react-icons/md';
 import { useMediaQuery } from '@mui/material';
 import { TabFiscal } from './tabs/infoFiscalNfe';
 import { ListProductsProps } from '../../ListProducts/ListProducts';
+import { MuiBox } from '../../../../components/box/muiBox';
 
 
 interface PropsModalAddProduct {
@@ -28,7 +29,7 @@ interface PropsModalAddProduct {
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
-    value: number;   
+    value: number;
 }
 
 export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
@@ -76,48 +77,29 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
     return (
 
         <Modal open={props.isModalAddEditProductOpen} onClose={handleCloseModalAddProduct}>
-            <Box sx={{
-                position: 'absolute' as 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: {
-                    xs: '80%', // phone
-                    sm: '80%', // tablets
-                    md: 600, // small laptop
-                    lg: 600, // desktop
-                    xl: 600 // large screens
-                },
-                //width: '80%',
-                bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                color: Theme.DarkMode ? '#ffffff' : '#000',
-                border: Theme.DarkMode ? '1px solid silver' : '',
-                boxShadow: 24, p: 4,
-                padding: '15px 10px 0px 10px'
-            }}
-            >
+            <MuiBox desktopWidth={600} mobileWidthPercent='80%' padding='15px 10px 0px 10px' >
                 <h3 style={{ width: 'max-content', margin: '0 auto' }}>{props.type === 'Add' ? 'Cadastro de produto' : 'Edição de produto'}</h3>
 
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange}  >
                         <Tab label={isLess900 ? '' : 'Principal'} title='Principal' sx={{ borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<FiPackage size={20} />} iconPosition='start' />
-                          <Tab label={isLess900 ? '' : "Tributos"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' /> 
+                        <Tab label={isLess900 ? '' : "Tributos"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />
                     </Tabs>
                 </Box>
                 <div>
                     <TabPanel value={value} index={0}>
                         <TabInfoProduct setisModalSucessOpen={props.setisModalSucessOpen}
-                            setisModalAddEditProductOpen={props.setisModalAddEditProductOpen} 
+                            setisModalAddEditProductOpen={props.setisModalAddEditProductOpen}
                             type={props.type}
-                            itemData= {props.itemData}
-                            />
+                            itemData={props.itemData}
+                        />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <TabFiscal />
                     </TabPanel>
                 </div>
                 <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalAddProduct}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-            </Box>
+            </MuiBox>
         </Modal>
     )
 }

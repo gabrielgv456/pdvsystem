@@ -16,6 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat } from '../../../../../../utils/utils';
+import { MuiBox } from '../../../../../../components/box/muiBox';
 
 
 interface ListClientstoEditClientProps {
@@ -154,25 +155,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
     return (
 
         <Modal open={props.isModalEditClientOpen} onClose={handleCloseModalEditClient}>
-            <Box sx={{
-                position: 'absolute' as 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: {
-                    xs: '80%', // phone
-                    sm: '80%', // tablets
-                    md: 500, // small laptop
-                    lg: 500, // desktop
-                    xl: 500 // large screens
-                },
-                //width: '80%',
-                bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                color: Theme.DarkMode ? '#ffffff' : '#000',
-                border: Theme.DarkMode ? '1px solid silver' : '',
-                boxShadow: 24, p: 4,
-            }}
-            >
+            <MuiBox desktopWidth={500} mobileWidthPercent='80%'>
                 <S.DivModal>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
@@ -414,18 +397,13 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                                 />
                             } />
                     </label>
-
-
                 </S.DivModal>
                 <S.ButtonModal onClick={EditClientApi} isDarkMode={Theme.DarkMode} style={{ margin: '0 auto' }}>
                     <AiOutlineEdit size="22" />
                     <b>FINALIZAR EDIÇÃO</b>
                 </S.ButtonModal>
-
                 <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalEditClient}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-
-
-            </Box>
+            </MuiBox>
         </Modal>
     )
 }

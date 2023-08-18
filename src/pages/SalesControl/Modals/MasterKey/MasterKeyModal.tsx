@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import { RiAdminLine } from "react-icons/ri";
 import { AiOutlineClose} from "react-icons/ai";
 import { useMessageBoxContext } from "../../../../contexts/MessageBox/MessageBoxContext";
+import { MuiBox } from "../../../../components/box/muiBox";
 
 
 interface ModalMasterKeyEditProps {
@@ -44,25 +45,7 @@ async function handleVerifyMasterKey(){
 return (
 
     <Modal open={props.ismodalMasterkeyOpen} onClose={handleCloseModalMasterKey}>
-                <Box sx={{
-                    position: 'absolute' as 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: {
-                        xs: '80%', // phone
-                        sm: '80%', // tablets
-                        md: 500, // small laptop
-                        lg: 500, // desktop
-                        xl: 500 // large screens
-                    },
-                    //width: '80%',
-                    bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                    color: Theme.DarkMode ? '#ffffff' : '#000',
-                    border: Theme.DarkMode ? '1px solid silver' : '',
-                    boxShadow: 24, p: 4,
-                }}
-                >
+                <MuiBox desktopWidth={500} mobileWidthPercent="80%">
                     <S.DivRestrictAcessModal>
                     <h3 style={{alignSelf:'center'}}>Acesso Restrito</h3>
                     <label style={{display:'flex',alignItems:'center'}}>
@@ -80,7 +63,7 @@ return (
                         </label>
                     </S.DivRestrictAcessModal>
                     <S.ButtonCloseModal  isDarkMode={Theme.DarkMode} onClick={handleCloseModalMasterKey}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-                </Box>
+                </MuiBox>
             </Modal>
 )
 }
@@ -120,25 +103,7 @@ export const ModalMasterKeyDelete = (props: ModalMasterKeyDeleteProps) => {
     return (
     
         <Modal open={props.ismodalMasterkeyOpen} onClose={handleCloseModalMasterKey}>
-                    <Box sx={{
-                        position: 'absolute' as 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: {
-                            xs: '80%', // phone
-                            sm: '80%', // tablets
-                            md: 500, // small laptop
-                            lg: 500, // desktop
-                            xl: 500 // large screens
-                        },
-                        //width: '80%',
-                        bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                        color: Theme.DarkMode ? '#ffffff' : '#000',
-                        border: Theme.DarkMode ? '1px solid silver' : '',
-                        boxShadow: 24, p: 4,
-                    }}
-                    >
+                    <MuiBox desktopWidth={500} mobileWidthPercent="80%">
                         <S.DivRestrictAcessModal>
                         <h3 style={{alignSelf:'center'}}>Acesso Restrito</h3>
                         <label style={{display:'flex',alignItems:'center'}}>
@@ -156,7 +121,7 @@ export const ModalMasterKeyDelete = (props: ModalMasterKeyDeleteProps) => {
                             </label>
                         </S.DivRestrictAcessModal>
                         <S.ButtonCloseModal  isDarkMode={Theme.DarkMode} onClick={handleCloseModalMasterKey}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-                    </Box>
+                    </MuiBox>
                 </Modal>
     )
     }

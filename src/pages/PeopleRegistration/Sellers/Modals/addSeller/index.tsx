@@ -17,6 +17,7 @@ import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
 import { cellNumberFormat, cepFormat, phoneNumberFormat } from '../../../../../utils/utils';
 import { SellersandClientsType } from '../../../../SalesControl';
+import { MuiBox } from '../../../../../components/box/muiBox';
 
 interface ListSellerstoAddSellerProps {
     isModalAddSellerOpen: boolean;
@@ -140,26 +141,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
     return (
 
         <Modal open={props.isModalAddSellerOpen} onClose={handleCloseModalAddSeller}>
-            <Box sx={{
-                position: 'absolute' as 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: {
-                    xs: '80%', // phone
-                    sm: '80%', // tablets
-                    md: 600, // small laptop
-                    lg: 600, // desktop
-                    xl: 600 // large screens
-                },
-                //width: '80%',
-                bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                color: Theme.DarkMode ? '#ffffff' : '#000',
-                border: Theme.DarkMode ? '1px solid silver' : '',
-                boxShadow: 24, p: 4,
-                borderRadius: '6px'
-            }}
-            >
+            <MuiBox desktopWidth={600} mobileWidthPercent='80%'>
                 <h3 style={{ width: 'max-content', margin: '0 auto' }}> Inclusão de Vendedor </h3>
                 <S.DivModal>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
@@ -387,9 +369,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                 </S.ButtonModal>
 
                 <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalAddSeller}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-
-
-            </Box>
+            </MuiBox>
         </Modal>
     )
 }

@@ -7,6 +7,7 @@ import { BsArrowDownLeftCircle, BsArrowUpRightCircle } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
 import { TransactionsProductsReturnApi } from "../../index"
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MuiBox } from "../../../../components/box/muiBox";
 
 interface indextoModalTransactionsProducts {
     dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[];
@@ -26,7 +27,7 @@ export const ModalTransactionsProducts = (props: indextoModalTransactionsProduct
     const paginedTransactionsReturnApi = props.dataTransactionsProductsReturnApi.slice(StartIndex, EndIndex)
     //END PAGINATION//
     const Theme = useDarkMode()
-    
+
     function handleCloseModalTransactionsProducts() {
         SetAtualPage(0)
         props.setisModalTransactionsProductsOpen(false)
@@ -38,25 +39,7 @@ export const ModalTransactionsProducts = (props: indextoModalTransactionsProduct
 
     return (
         <Modal open={props.isModalTransactionsProductsOpen} onClose={handleCloseModalTransactionsProducts}>
-            <Box sx={{
-                position: 'absolute' as 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: {
-                    xs: '80%', // phone
-                    sm: '80%', // tablets
-                    md: 500, // small laptop
-                    lg: 500, // desktop
-                    xl: 500 // large screens
-                },
-                //width: '80%',
-                bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                color: Theme.DarkMode ? '#ffffff' : '#000',
-                border: Theme.DarkMode ? '1px solid silver' : '',
-                boxShadow: 24, p: 4,
-            }}
-            >
+            <MuiBox desktopWidth={500} mobileWidthPercent="80%">
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#48505e', fontSize: '0.9rem', marginBottom: '10px' }}>
                     <div style={{ width: '20px' }}></div>
                     <div style={{ width: '40%', display: 'flex', justifyContent: 'center' }}>Data</div>
@@ -123,9 +106,8 @@ export const ModalTransactionsProducts = (props: indextoModalTransactionsProduct
                     </div>
 
                 </S.DivFooter>
-
                 <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalTransactionsProducts}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-            </Box>
+            </MuiBox>
         </Modal>
 
     )

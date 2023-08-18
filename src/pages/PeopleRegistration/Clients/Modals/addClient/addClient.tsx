@@ -17,6 +17,7 @@ import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
 import { cellNumberFormat, cepFormat, cpfCnpjFormat, optionsUF, phoneNumberFormat } from '../../../../../utils/utils';
 import { ClientsType } from '../../../../Sell/Modals/CheckOut';
+import { MuiBox } from '../../../../../components/box/muiBox';
 
 
 
@@ -132,7 +133,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                 props.setisModalAddClientOpen(false)
                 if (props.setisModalSucessOpen) { props.setisModalSucessOpen(true) } else { MessageBox('success', 'Cliente cadastrado com sucesso! ') }
                 if (props.searchClients) { props.searchClients() }
-                if (props.handleChangeClient) { props.handleChangeClient(data.dataClient)}
+                if (props.handleChangeClient) { props.handleChangeClient(data.dataClient) }
                 eraseValues()
             }
             else {
@@ -147,26 +148,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
     return (
 
         <Modal open={props.isModalAddClientOpen} onClose={handleCloseModalAddClient}>
-            <Box sx={{
-                position: 'absolute' as 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: {
-                    xs: '80%', // phone
-                    sm: '80%', // tablets
-                    md: 600, // small laptop
-                    lg: 600, // desktop
-                    xl: 600 // large screens
-                },
-                //width: '80%',
-                bgcolor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : 'background.paper',
-                color: Theme.DarkMode ? '#ffffff' : '#000',
-                border: Theme.DarkMode ? '1px solid silver' : '',
-                borderRadius: '6px',
-                boxShadow: 24, p: 4,
-            }}
-            >
+            <MuiBox desktopWidth={600} mobileWidthPercent='80%'>
                 <h3 style={{ width: 'max-content', margin: '0 auto' }}> Inclusão de Cliente </h3>
                 <S.DivModal>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
@@ -418,9 +400,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                 </S.ButtonModal>
 
                 <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalAddClient}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-
-
-            </Box>
+            </MuiBox>
         </Modal>
     )
 }

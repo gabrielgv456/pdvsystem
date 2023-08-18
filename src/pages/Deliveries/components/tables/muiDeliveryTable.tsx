@@ -18,29 +18,31 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DefaultButton } from '../buttons/defaultButton'
+import { DefaultButton } from '../../../../components/buttons/defaultButton'
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import { Deliveries, DeliveriesReturnApiProps } from '../../pages/Deliveries';
-import { DeliveryAddressClient } from '../../pages/Sell/Modals/CheckOut/Components/AddressClient';
-import { useMessageBoxContext } from '../../contexts/MessageBox/MessageBoxContext';
-import { useApi } from '../../hooks/useApi';
-import { AuthContext } from '../../contexts/Auth/AuthContext';
-import { GeneratePDFDeliveryList } from '../../hooks/useGeneratePDF';
-import { User } from '../../types/User';
+import { Deliveries, DeliveriesReturnApiProps, TypeDeliveries } from '../..';
+import { DeliveryAddressClient } from '../../../Sell/Modals/CheckOut/Components/AddressClient';
+import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
+import { useApi } from '../../../../hooks/useApi';
+import { AuthContext } from '../../../../contexts/Auth/AuthContext';
+import { GeneratePDFDeliveryList } from '../../../../hooks/useGeneratePDF';
+import { User } from '../../../../types/User';
+import { ModalDeliveryChanges } from './modals/modalDeliveryChanges';
 
-interface Data {
+export interface DataDeliveryTableType {
   itemSell: string
   sell: string,
   client: string,
   address: string,
   product: string,
-  scheduledDate: string
+  scheduledDate: string,
+  deliveredDate: string
 }
 interface MuiTableProps {
   width: string
   Deliveries: DeliveriesReturnApiProps[],
-  rows: Data[],
+  rows: DataDeliveryTableType[],
   searchDeliveries: () => void
   type: 'Pending' | 'Shipping' | 'Done'
 }
@@ -50,15 +52,17 @@ function createData(
   client: string,
   address: string,
   product: string,
-  scheduledDate: string
-): Data {
+  scheduledDate: string,
+  deliveredDate: string
+): DataDeliveryTableType {
   return {
     itemSell,
     sell,
     client,
     address,
     product,
-    scheduledDate
+    scheduledDate,
+    deliveredDate
   };
 }
 
@@ -104,58 +108,65 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof Data;
+  id: keyof DataDeliveryTableType;
   label: string;
   numeric: boolean;
 }
 
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'sell',
-    numeric: false,
-    disablePadding: true,
-    label: 'Venda',
-  },
-  {
-    id: 'product',
-    numeric: false,
-    disablePadding: true,
-    label: 'Produto'
-  },
-  {
-    id: 'client',
-    numeric: false,
-    disablePadding: true,
-    label: 'Cliente',
-  },
-  {
-    id: 'address',
-    numeric: false,
-    disablePadding: true,
-    label: 'Endereço',
-  },
-  {
-    id: 'scheduledDate',
-    numeric: false,
-    disablePadding: true,
-    label: 'Data agendada',
-  }
-];
 
 interface EnhancedTableProps {
   numSelected: number;
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof DataDeliveryTableType) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
   rowCount: number;
+  deliveryType: TypeDeliveries
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
+  const headCells: readonly HeadCell[] = [
+    {
+      id: 'sell',
+      numeric: false,
+      disablePadding: true,
+      label: 'Venda',
+    },
+    {
+      id: 'product',
+      numeric: false,
+      disablePadding: true,
+      label: 'Produto'
+    },
+    {
+      id: 'client',
+      numeric: false,
+      disablePadding: true,
+      label: 'Cliente',
+    },
+    {
+      id: 'address',
+      numeric: false,
+      disablePadding: true,
+      label: 'Endereço',
+    },
+    {
+      id: 'scheduledDate',
+      numeric: false,
+      disablePadding: true,
+      label: 'Data agendada',
+    },
+    {
+      id: 'deliveredDate',
+      numeric: false,
+      disablePadding: true,
+      label: `${props.deliveryType === 'Done' ? 'Data de entrega' : ''}`
+    }
+  ];
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
     props;
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof DataDeliveryTableType) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -199,14 +210,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-  selected: readonly string[]
-  searchDeliveries: () => void
-  typeDelivery: 'Pending' | 'Done' | 'Shipping'
-  deliveries: DeliveriesReturnApiProps[]
-  user : User | null
-}
 
 export interface TypeChangeStatusDeliveriesRequest {
   storeId: number,
@@ -214,6 +217,16 @@ export interface TypeChangeStatusDeliveriesRequest {
   newStatus: 'Pending' | 'Shipping' | 'Done',
 }
 
+interface EnhancedTableToolbarProps {
+  numSelected: number;
+  selected: readonly string[]
+  searchDeliveries: () => void
+  typeDelivery: TypeDeliveries
+  deliveries: DeliveriesReturnApiProps[]
+  user: User | null
+  isModalDeliveryChangesOpen: boolean,
+  setIsModalDeliveryChangesOpen: (value: boolean) => void
+}
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
@@ -229,16 +242,16 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       if (!dataChangeStatus.Success) {
         throw new Error(dataChangeStatus.Erro)
       }
-      MessageBox('success', `Status da(s) entrega(s) atualizado com sucesso! ${newStatus === 'Shipping' ? 'Roteiro Impresso': ''}`)
-      GeneratePDFDeliveryList(deliveriesFiltered,props.user?.name ?? '')
+      MessageBox('success', `Status da(s) entrega(s) atualizado com sucesso! ${newStatus === 'Shipping' ? 'Roteiro Impresso' : ''}`)
+      GeneratePDFDeliveryList(deliveriesFiltered, props.user?.name ?? '')
       props.searchDeliveries()
     } catch (error: any) {
       MessageBox('error', 'Falha ao atualizar status da entrega! ' + error.message)
     }
   }
 
-  async function handleDeliveryListPrint(){
-    GeneratePDFDeliveryList(deliveriesFiltered,props.user?.name ?? '')
+  async function handleDeliveryListPrint() {
+    GeneratePDFDeliveryList(deliveriesFiltered, props.user?.name ?? '')
   }
 
   return (
@@ -281,7 +294,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                   <DefaultButton selectedColor='--Green' onClick={() => handleChangeStatusDelivery('Shipping')}>
                     Iniciar Entrega
                   </DefaultButton>
-                  <DefaultButton selectedColor='--Gold'  >
+                  <DefaultButton selectedColor='--Gold' onClick={() => props.setIsModalDeliveryChangesOpen(true)} >
                     Editar
                   </DefaultButton>
                 </>
@@ -316,6 +329,9 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           )}
         </Toolbar >)
       }
+      <ModalDeliveryChanges
+        isModalDeliveryChangesOpen={props.isModalDeliveryChangesOpen}
+        setIsModalDeliveryChangesOpen={props.setIsModalDeliveryChangesOpen} />
     </>
   );
 }
@@ -324,17 +340,18 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 export default function MuiTableDeliveries(props: MuiTableProps) {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('itemSell');
+  const [orderBy, setOrderBy] = React.useState<keyof DataDeliveryTableType>('itemSell');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const {user} = React.useContext(AuthContext)
- 
+  const [isModalDeliveryChangesOpen, setIsModalDeliveryChangesOpen] = React.useState(false)
+  const { user } = React.useContext(AuthContext)
+
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data,
+    property: keyof DataDeliveryTableType,
   ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -401,99 +418,109 @@ export default function MuiTableDeliveries(props: MuiTableProps) {
 
 
   return (
-    <Box sx={{ width: props.width }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          selected={selected}
-          searchDeliveries={props.searchDeliveries}
-          typeDelivery={props.type}
-          deliveries={props.Deliveries} 
-          user={user}
+    <>
+      <Box sx={{ width: props.width }}>
+        <Paper sx={{ width: "100%", mb: 2 }}>
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            selected={selected}
+            searchDeliveries={props.searchDeliveries}
+            typeDelivery={props.type}
+            deliveries={props.Deliveries}
+            user={user}
+            isModalDeliveryChangesOpen={isModalDeliveryChangesOpen}
+            setIsModalDeliveryChangesOpen={setIsModalDeliveryChangesOpen}
           />
-        <TableContainer>
-          <Table
-            // sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={props.rows.length}
-            />
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.itemSell);
-                const labelId = `enhanced-table-checkbox-${index}`;
+          <TableContainer>
+            <Table
+              // sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={dense ? 'small' : 'medium'}
+            >
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={props.rows.length}
+                deliveryType={props.type}
+              />
+              <TableBody>
+                {visibleRows.map((row, index) => {
+                  const isItemSelected = isSelected(row.itemSell);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.itemSell)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.itemSell}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row.itemSell)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.itemSell}
+                      selected={isItemSelected}
+                      sx={{ cursor: 'pointer' }}
 
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
                     >
-                      {row.sell}
-                    </TableCell>
-                    <TableCell>{row.product}</TableCell>
-                    <TableCell>{row.client}</TableCell>
-                    <TableCell>{row.address}</TableCell>
-                    <TableCell>{row.scheduledDate}</TableCell>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                      >
+                        {row.sell}
+                      </TableCell>
+                      <TableCell>{row.product}</TableCell>
+                      <TableCell>{row.client}</TableCell>
+                      <TableCell>{row.address}</TableCell>
+                      <TableCell>{row.scheduledDate}</TableCell>
+                      {row.deliveredDate && <TableCell>{row.deliveredDate}</TableCell>}
+                    </TableRow>
+                  );
+                })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (dense ? 33 : 53) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
                   </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={props.rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage='Linhas por página:'
-          labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count !== -1 ? count : `more than ${to}`}`}
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={props.rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage='Linhas por página:'
+            labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count !== -1 ? count : `more than ${to}`}`}
+          />
+        </Paper>
+        <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label="Comprimir"
         />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Comprimir"
-      />
-    </Box>
+
+      </Box>
+
+
+    </>
+
   );
 }
