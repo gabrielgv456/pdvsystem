@@ -18,6 +18,7 @@ import { useMessageBoxContext } from '../../../../../contexts/MessageBox/Message
 import { cellNumberFormat, cepFormat, cpfCnpjFormat, optionsUF, phoneNumberFormat } from '../../../../../utils/utils';
 import { ClientsType } from '../../../../Sell/Modals/CheckOut';
 import { MuiBox } from '../../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../components/buttons/closeButtonModal';
 
 
 
@@ -149,7 +150,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
 
         <Modal open={props.isModalAddClientOpen} onClose={handleCloseModalAddClient}>
             <MuiBox desktopWidth={600} mobileWidthPercent='80%'>
-                <h3 style={{ width: 'max-content', margin: '0 auto' }}> Inclusão de Cliente </h3>
+                <h3 style={{ width: 'max-content', margin: '0 auto' }}> Cadastro de Cliente </h3>
                 <S.DivModal>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
@@ -398,8 +399,9 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
                     <MdFileDownloadDone size="22" />
                     <b>ADICIONAR CLIENTE</b>
                 </S.ButtonModal>
-
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalAddClient}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalAddClient}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
     )

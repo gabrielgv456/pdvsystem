@@ -31,7 +31,7 @@ export const MuiBox = (props: MuiBoxProps) => {
             border: Theme.DarkMode ? '1px solid silver' : '',
             boxShadow: 24, p: 4,
             borderRadius: '6px',
-            padding: props.padding ?? ''
+            padding: props.padding ?? '20px'
         }}
         >
             {props.children}

@@ -7,6 +7,7 @@ import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvide
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
 import { useContext } from 'react';
 import { MuiBox } from '../../../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
 
 interface indextoModalDeleteClient {
     setisModalDeleteClientOpen: (value: boolean) => void;
@@ -32,7 +33,9 @@ export const ModalDeleteClient = (props: indextoModalDeleteClient) => {
                         <S.ButtonNoDeleteClientModal onClick={handleCloseModalDeleteClient}><b>NÃO</b></S.ButtonNoDeleteClientModal>
                     </div>
                 </S.DivDeleteClientModal>
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalDeleteClient}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalDeleteClient}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
 

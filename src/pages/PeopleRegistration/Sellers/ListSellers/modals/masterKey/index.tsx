@@ -9,10 +9,11 @@ import { RiAdminLine } from 'react-icons/ri';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { MuiBox } from '../../../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
 
 interface indextoModalMasterKeyProps {
-    setisModalDeleteSellerOpen:(value:boolean)=>void;
-    setisModalMasterKeyOpen:(value:boolean)=>void;
+    setisModalDeleteSellerOpen: (value: boolean) => void;
+    setisModalMasterKeyOpen: (value: boolean) => void;
     isModalMasterKeyOpen: boolean;
 }
 
@@ -21,7 +22,7 @@ export const ModalMasterKeyDeleteSeller = (props: indextoModalMasterKeyProps) =>
     const [inputMasterKey, setinputMasterKey] = useState("")
     const auth = useContext(AuthContext)
     const Theme = useDarkMode()
-    const {MessageBox} = useMessageBoxContext()
+    const { MessageBox } = useMessageBoxContext()
     function handleVerifyMasterKey() {
         if (inputMasterKey === auth.masterkey) {
             handleCloseModalMasterKey()
@@ -29,7 +30,7 @@ export const ModalMasterKeyDeleteSeller = (props: indextoModalMasterKeyProps) =>
             props.setisModalDeleteSellerOpen(true)
         }
         else {
-            MessageBox('error','Senha de Administrador incorreta!')
+            MessageBox('error', 'Senha de Administrador incorreta!')
         }
     }
 
@@ -58,7 +59,9 @@ export const ModalMasterKeyDeleteSeller = (props: indextoModalMasterKeyProps) =>
                         <S.ButtonRestrictAcessModal onClick={handleVerifyMasterKey}>OK</S.ButtonRestrictAcessModal>
                     </label>
                 </S.DivRestrictAcessModal>
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalMasterKey}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalMasterKey}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
 

@@ -117,7 +117,6 @@ export function DateFormatWeek (value: string|null) {
     month: 'numeric',
     year: 'numeric',
     weekday: 'long',
-    timeZone: 'UTC'
 })
 }
 

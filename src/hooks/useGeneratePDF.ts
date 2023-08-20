@@ -1,6 +1,6 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { ReturnData } from "../utils/utils";
+import { DateFormatWeek, ReturnData } from "../utils/utils";
 import { DeliveriesReturnApiProps } from "../pages/Deliveries";
 
 interface ProductsType {
@@ -290,12 +290,7 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
                     + delivery.address.addressState
             },
             {
-                text: new Date(delivery.scheduledDate).toLocaleString('pt-BR', {
-                    day: 'numeric',
-                    month: 'numeric',
-                    year: 'numeric',
-                    weekday: 'long'
-                })
+                text: DateFormatWeek(delivery.scheduledDate)
             }
         ]
     })

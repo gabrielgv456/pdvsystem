@@ -16,6 +16,7 @@ import { useMediaQuery } from '@mui/material';
 import { TabFiscal } from './tabs/infoFiscalNfe';
 import { ListProductsProps } from '../../ListProducts/ListProducts';
 import { MuiBox } from '../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../components/buttons/closeButtonModal';
 
 
 interface PropsModalAddProduct {
@@ -98,7 +99,9 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                         <TabFiscal />
                     </TabPanel>
                 </div>
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalAddProduct}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalAddProduct}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
     )

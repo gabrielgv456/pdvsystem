@@ -5,14 +5,15 @@ import * as S from "./style"
 import { AiOutlineClose } from 'react-icons/ai';
 import { BsCheckCircle } from 'react-icons/bs';
 import { MuiBox } from '../../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../components/buttons/closeButtonModal';
 
 interface indextomodalSucessSeller {
-    setisModalSucessOpen: (value:boolean) => void;
-    isModalSucessOpen : boolean;
+    setisModalSucessOpen: (value: boolean) => void;
+    isModalSucessOpen: boolean;
     handleContinueAddingSellers: () => void;
 }
 
-export const ModalSuccessSeller = (props:indextomodalSucessSeller) => {
+export const ModalSuccessSeller = (props: indextomodalSucessSeller) => {
 
     const Theme = useDarkMode()
 
@@ -32,7 +33,9 @@ export const ModalSuccessSeller = (props:indextomodalSucessSeller) => {
                         <S.ButtonExitSucessSellerModal onClick={handleCloseModalSucess}><b>Sair</b></S.ButtonExitSucessSellerModal>
                     </div>
                 </S.DivModalSucess>
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalSucess}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalSucess}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
     )

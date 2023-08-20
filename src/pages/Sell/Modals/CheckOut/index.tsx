@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { useState, useEffect, useContext } from 'react';
 import { MdAddCircleOutline, MdPending } from "react-icons/md"
 import { HiBadgeCheck } from "react-icons/hi"
-import { AiFillPrinter, AiOutlineClose } from "react-icons/ai"
+import { AiFillCloseCircle, AiFillPrinter, AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai"
 import { BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill, BsPersonBadge, BsFillPersonFill } from "react-icons/bs"
 import { PaymentMethods } from "../../PaymentMethods/PaymentMethods";
 import { GeneratePDF } from "../../../../hooks/useGeneratePDF";
@@ -23,6 +23,8 @@ import { ModalAddClient } from '../../../PeopleRegistration/Clients/Modals/addCl
 import { ModalSuccessClient } from '../../../PeopleRegistration/Clients/Modals/Success/modalSuccess';
 import { ModalAddSeller } from '../../../PeopleRegistration/Sellers/Modals/addSeller';
 import { MuiBox } from '../../../../components/box/muiBox';
+import { IoMdCloseCircle } from 'react-icons/io';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../components/buttons/closeButtonModal';
 
 interface handleChangeProps {
     UserId: number;
@@ -93,7 +95,7 @@ export interface deliveryAddressClientType {
     | null
 }
 
-export type typesPayment = 'money'|'debitcard'|'creditcard'|'pix'|'others'|'onDelivery'
+export type typesPayment = 'money' | 'debitcard' | 'creditcard' | 'pix' | 'others' | 'onDelivery'
 
 interface ModalCheckOutProps {
     listMethods: MethodsType[]
@@ -275,6 +277,10 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             MessageBox('warning', " Insira um método de pagamento!")
             return
         }
+        if (valuesSelltoSendApi.isDelivery && String(valuesSelltoSendApi.delivery.scheduledDate) === 'Invalid Date') {
+            MessageBox('warning', 'Data de entrega inválida! Corrija e tente novamente')
+            return
+        }
         if (props.listMethods.some(method => Number.isNaN(method.value)) || props.listMethods.some(method => method.value === 0)) {
             MessageBox('warning', 'Existe método de pagamento vazio, remova ou insira o valor!')
             return
@@ -333,7 +339,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     return (
         <>
             <Modal open={props.isModalConfirmSellOpen} onClose={handleCloseModalConfirmSell}>
-                <MuiBox desktopWidth={650} mobileWidthPercent='90%' padding='20px'>
+                <MuiBox desktopWidth={650} mobileWidthPercent='90%' padding='25px'>
                     <S.SectionMConfirmSell>
                         {(isSellEnded && codRefSell) && <div style={{ fontSize: '1.1rem' }}><b>Código da venda: </b> {codRefSell}</div>}
                         <div style={{ fontSize: '1.1rem', marginBottom: '0px' }}><b>Total:</b> {props.sumvalueformated}</div>
@@ -453,9 +459,9 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                             <S.ButtonEndSell onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</S.ButtonEndSell>
                         }
                     </S.DivModalButtons>
-
-                    <S.ButtonClose isDarkMode={Theme.DarkMode} onClick={handleCloseModalConfirmSell}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonClose>
-
+                    <DefaultButtonCloseModal onClick={handleCloseModalConfirmSell}>
+                        <DefaultIconCloseModal />
+                    </DefaultButtonCloseModal>
                 </MuiBox>
             </Modal>
             <ModalAddClient

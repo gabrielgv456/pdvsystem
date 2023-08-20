@@ -5,15 +5,16 @@ import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvide
 import { AiOutlineClose } from 'react-icons/ai';
 import { BsCheckCircle } from 'react-icons/bs';
 import { MuiBox } from '../../../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
 
-interface listSellertoModalSucessOpenProps{
-    searchSeller : () => void,
-    setisModalSucessOpen : (value:boolean) => void
-    isModalSucessOpen : boolean
+interface listSellertoModalSucessOpenProps {
+    searchSeller: () => void,
+    setisModalSucessOpen: (value: boolean) => void
+    isModalSucessOpen: boolean
 }
 
 export const ModalSuccessDeleteSellerOpen = (props: listSellertoModalSucessOpenProps) => {
-    
+
     const Theme = useDarkMode()
     function handleCloseModalSucess() {
         props.searchSeller()
@@ -28,7 +29,9 @@ export const ModalSuccessDeleteSellerOpen = (props: listSellertoModalSucessOpenP
                     <h3 style={{ alignSelf: 'center' }}>Procedimento realizado com sucesso!</h3>
                     <BsCheckCircle color="var(--Green)" size="50" className="IconSucess" />
                 </S.DivSuccessSellerModal>
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalSucess}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalSucess}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
 

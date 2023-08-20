@@ -8,32 +8,33 @@ import { useContext } from 'react';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { MuiBox } from '../../../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
 
 interface indextoDeleteSellerModal {
     isModalDeleteSellerOpen: boolean;
-    setisModalDeleteSellerOpen: (value:boolean) => void;
-    setisModalSucessOpen: (value:boolean) => void;
+    setisModalDeleteSellerOpen: (value: boolean) => void;
+    setisModalSucessOpen: (value: boolean) => void;
     idSeller: Number;
 }
 
 export const ModalDeleteSeller = (props: indextoDeleteSellerModal) => {
 
     const Theme = useDarkMode()
-    const {deleteSeller} = useApi()
+    const { deleteSeller } = useApi()
     const auth = useContext(AuthContext)
-    const {MessageBox} = useMessageBoxContext()
+    const { MessageBox } = useMessageBoxContext()
     function handleCloseModalDeleteSeller() {
         props.setisModalDeleteSellerOpen(false)
     }
 
     const handleDeleteSellerApi = async () => {
-        const data = await deleteSeller({sellerId:props.idSeller, userId:auth.idUser})
-        if (data.Success){
+        const data = await deleteSeller({ sellerId: props.idSeller, userId: auth.idUser })
+        if (data.Success) {
             props.setisModalDeleteSellerOpen(false)
             props.setisModalSucessOpen(true)
         }
         else {
-            MessageBox('error',data.erro)
+            MessageBox('error', data.erro)
         }
     }
 
@@ -47,7 +48,9 @@ export const ModalDeleteSeller = (props: indextoDeleteSellerModal) => {
                         <S.ButtonNoDeleteSellerModal onClick={handleCloseModalDeleteSeller}><b>NÃO</b></S.ButtonNoDeleteSellerModal>
                     </div>
                 </S.DivDeleteSellerModal>
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalDeleteSeller}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalDeleteSeller}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
 

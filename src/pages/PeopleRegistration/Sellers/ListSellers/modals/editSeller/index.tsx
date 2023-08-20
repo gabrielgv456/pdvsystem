@@ -18,6 +18,7 @@ import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat } from '../../../../../../utils/utils';
 import { MuiBox } from '../../../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
 
 interface ListSellerstoEditSellerProps {
     seller: SellersReturnApiProps;
@@ -30,7 +31,7 @@ interface ListSellerstoEditSellerProps {
 
 export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
 
-    const cpfcnpjformated = cpfCnpjFormat(props.seller.cpf,props.seller.cpf,true);
+    const cpfcnpjformated = cpfCnpjFormat(props.seller.cpf, props.seller.cpf, true);
     const cepformated = props.seller.adressCep !== null ? props.seller.adressCep.toString().replace(/(\d{5})(\d{3})/g, "$1-$2") : ""
     const cellformated = props.seller.cellNumber !== null ? props.seller.cellNumber.replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3") : ""
     const telformated = props.seller.phoneNumber !== null ? props.seller.phoneNumber.replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3") : ""
@@ -43,7 +44,7 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
     const [valueInputSellerGender, setvalueInputSellerGender] = useState(props.seller.gender)
     const [valueInputSellerCpfCnpj, setvalueInputSellerCpfCnpj] = useState(cpfcnpjformated)
     const [valueInputSellerEmail, setvalueInputSellerEmail] = useState(props.seller.email)
-    const [valueInputSellerBirthDate, setvalueInputSellerBirthDate] = useState<string|null>(String(props.seller.birthDate))
+    const [valueInputSellerBirthDate, setvalueInputSellerBirthDate] = useState<string | null>(String(props.seller.birthDate))
     const [valueInputSellerPhoneNumber, setvalueInputSellerPhoneNumber] = useState(telformated)
     const [valueInputSellerCellNumber, setvalueInputSellerCellNumber] = useState(cellformated)
     const [valueInputSellerAdressStreet, setvalueInputSellerAdressStreet] = useState(props.seller.adressStreet)
@@ -55,7 +56,7 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
     const [valueInputSellerAdressCep, setvalueInputSellerAdressCep] = useState(cepformated)
     const [valueInputSellerActive, setvalueInputSellerActive] = useState(props.seller.active)
     const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
-    const {MessageBox} = useMessageBoxContext()
+    const { MessageBox } = useMessageBoxContext()
 
     function handleCloseModalEditSeller() {
         props.setisModalEditSellerOpen(false)
@@ -69,7 +70,7 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                 const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
-                    MessageBox('error','CEP invalido')
+                    MessageBox('error', 'CEP invalido')
                 }
                 else {
                     setvalueInputSellerAdressStreet(data.logradouro)
@@ -78,8 +79,8 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                     setvalueInputSellerAdressState(data.uf)
                 }
             }
-            catch (error:any) {
-                MessageBox('info',error.message)
+            catch (error: any) {
+                MessageBox('info', error.message)
             }
         }
 
@@ -118,11 +119,11 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                         props.setisModalSucessOpen(true)
                     }
                     else {
-                        MessageBox('error',data.erro)
+                        MessageBox('error', data.erro)
                     }
                 }
-                catch (error:any) {
-                    MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
+                catch (error: any) {
+                    MessageBox('error', `Falha ao enviar dados. ERRO:${error.message}`)
                 }
             }
             else {
@@ -134,20 +135,20 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                             props.setisModalSucessOpen(true)
                         }
                         else {
-                            MessageBox('error',data.erro)
+                            MessageBox('error', data.erro)
                         }
                     }
-                    catch (error:any) {
-                        MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
+                    catch (error: any) {
+                        MessageBox('error', `Falha ao enviar dados. ERRO:${error.message}`)
                     }
                 }
                 else {
-                    MessageBox('error',"Email inválido!")
+                    MessageBox('error', "Email inválido!")
                 }
             }
         }
         else {
-            MessageBox('warning',"Campos obrigatórios não preenchidos !")
+            MessageBox('warning', "Campos obrigatórios não preenchidos !")
         }
     }
 
@@ -171,34 +172,34 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                             variant="outlined"
                             sx={{ width: '80%' }}
                         />
-                        
-                            <div style={{ display: 'flex', flexDirection: 'column', fontSize: "0.9rem", width: '20%', alignItems: 'center' }}>
 
-                                <section >
+                        <div style={{ display: 'flex', flexDirection: 'column', fontSize: "0.9rem", width: '20%', alignItems: 'center' }}>
 
-                                    Gênero
+                            <section >
 
-                                </section>
-                                <label style={{ fontSize: "0.8rem" }}>
-                                    <input
-                                        type="radio"
+                                Gênero
 
-                                        value="M"
-                                        checked={valueInputSellerGender === 'M'}
-                                        onChange={(e) => setvalueInputSellerGender(e.target.value)}
-                                    />M
+                            </section>
+                            <label style={{ fontSize: "0.8rem" }}>
+                                <input
+                                    type="radio"
 
-                                    <input
-                                        type="radio"
-                                        value="F"
-                                        style={{ marginLeft: "10px" }}
-                                        checked={valueInputSellerGender === 'F'}
-                                        onChange={(e) => setvalueInputSellerGender(e.target.value)}
-                                    />F
-                                </label>
+                                    value="M"
+                                    checked={valueInputSellerGender === 'M'}
+                                    onChange={(e) => setvalueInputSellerGender(e.target.value)}
+                                />M
 
-                            </div>
-                        
+                                <input
+                                    type="radio"
+                                    value="F"
+                                    style={{ marginLeft: "10px" }}
+                                    checked={valueInputSellerGender === 'F'}
+                                    onChange={(e) => setvalueInputSellerGender(e.target.value)}
+                                />F
+                            </label>
+
+                        </div>
+
                     </label>
 
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
@@ -208,18 +209,18 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                                 setvalueInputSellerCpfCnpj(e.target.value.replace(/\D/g, '').length === 11 ?
                                     e.target.value.replace(/[^0-9]/g, '')
                                         .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
-                                        : e.target.value.replace(/[^0-9]/g, '').length > 11 ?
-                                            valueInputSellerCpfCnpj
-                                            :
-                                            e.target.value.replace(/[^0-9]/g, '')
+                                    : e.target.value.replace(/[^0-9]/g, '').length > 11 ?
+                                        valueInputSellerCpfCnpj
+                                        :
+                                        e.target.value.replace(/[^0-9]/g, '')
                                 )
                             }}
-                            label={ "CPF *"}
+                            label={"CPF *"}
                             id="outlined-basic"
                             variant="outlined"
                             sx={{ width: '49%' }}
                         />
-                        
+
                         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ptBR}>
                             <DatePicker
                                 disableFuture
@@ -257,7 +258,7 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                         <TextField
                             value={valueInputSellerPhoneNumber}
                             onChange={(e) => {
-                                setvalueInputSellerPhoneNumber(phoneNumberFormat(e.target.value,valueInputSellerPhoneNumber) )
+                                setvalueInputSellerPhoneNumber(phoneNumberFormat(e.target.value, valueInputSellerPhoneNumber))
                             }}
                             id="outlined-basic"
                             label="Telefone"
@@ -268,7 +269,7 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                         <TextField
                             value={valueInputSellerCellNumber}
                             onChange={(e) => {
-                                setvalueInputSellerCellNumber(cellNumberFormat(e.target.value,valueInputSellerCellNumber))
+                                setvalueInputSellerCellNumber(cellNumberFormat(e.target.value, valueInputSellerCellNumber))
                             }}
                             id="outlined-basic"
                             label="Celular"
@@ -283,7 +284,7 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                         <TextField
                             value={valueInputSellerAdressCep}
                             onChange={(e) => {
-                                setvalueInputSellerAdressCep(cepFormat(e.target.value,valueInputSellerAdressCep))
+                                setvalueInputSellerAdressCep(cepFormat(e.target.value, valueInputSellerAdressCep))
                             }}
                             onBlur={(e) => handleConsultCep(e.target.value)}
                             id="outlined-basic"
@@ -373,20 +374,20 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                     </label>
                     <label>
                         Vendedor Habilitado
-                        <Switch checked={valueInputSellerActive} onChange={(e)=>{setvalueInputSellerActive(e.target.checked)}}/>
-                </label>
+                        <Switch checked={valueInputSellerActive} onChange={(e) => { setvalueInputSellerActive(e.target.checked) }} />
+                    </label>
 
                 </S.DivModal>
-                
+
                 <S.ButtonModal onClick={EditSellerApi} isDarkMode={Theme.DarkMode} style={{ margin: '0 auto' }}>
                     <AiOutlineEdit size="22" />
                     <b>FINALIZAR EDIÇÃO</b>
                 </S.ButtonModal>
-
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalEditSeller}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
-
-
+                <DefaultButtonCloseModal onClick={handleCloseModalEditSeller}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
 
-)}
+    )
+}

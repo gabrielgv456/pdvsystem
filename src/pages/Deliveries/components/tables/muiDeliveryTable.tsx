@@ -44,7 +44,7 @@ interface MuiTableProps {
   Deliveries: DeliveriesReturnApiProps[],
   rows: DataDeliveryTableType[],
   searchDeliveries: () => void
-  type: 'Pending' | 'Shipping' | 'Done'
+  type: TypeDeliveries
 }
 function createData(
   itemSell: string,
@@ -214,7 +214,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 export interface TypeChangeStatusDeliveriesRequest {
   storeId: number,
   itensSellToChange: number[],
-  newStatus: 'Pending' | 'Shipping' | 'Done',
+  newStatus: TypeDeliveries,
 }
 
 interface EnhancedTableToolbarProps {
@@ -236,7 +236,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const itensSelected = props.selected.map(item => parseInt(item))
   const deliveriesFiltered = props.deliveries.filter(delivery => itensSelected.includes(delivery.itemSell.id)); // Filter selected deliveries
 
-  async function handleChangeStatusDelivery(newStatus: 'Pending' | 'Shipping' | 'Done') {
+  async function handleChangeStatusDelivery(newStatus: TypeDeliveries) {
+    if (!window.confirm('Confirma atualização de status da(s) entrega(s) selecionada(s)?')) { return }
     try {
       const dataChangeStatus = await changeStatusDeliveries({ storeId: idUser, itensSellToChange: itensSelected, newStatus })
       if (!dataChangeStatus.Success) {
@@ -248,6 +249,10 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     } catch (error: any) {
       MessageBox('error', 'Falha ao atualizar status da entrega! ' + error.message)
     }
+  }
+
+  async function handleDoneDelivery() {
+      props.setIsModalDeliveryChangesOpen(true)
   }
 
   async function handleDeliveryListPrint() {
@@ -274,7 +279,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
               variant="subtitle1"
               component="div"
             >
-              {numSelected} selecionado(s)
+              {numSelected} selecionado{numSelected > 1 &&'s'}
             </Typography>
           ) : (''
             // <Typography
@@ -291,18 +296,18 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             <section style={{ display: 'flex', gap: 5 }}>
               {props.typeDelivery === 'Pending' &&
                 <>
-                  <DefaultButton selectedColor='--Green' onClick={() => handleChangeStatusDelivery('Shipping')}>
-                    Iniciar Entrega
+                  <DefaultButton selectedColor='--Blue' onClick={() => handleChangeStatusDelivery('Shipping')}>
+                    Iniciar Entrega{numSelected > 1 &&'s'}
                   </DefaultButton>
                   <DefaultButton selectedColor='--Gold' onClick={() => props.setIsModalDeliveryChangesOpen(true)} >
-                    Editar
+                    Editar Entrega{numSelected > 1 &&'s'}
                   </DefaultButton>
                 </>
               }
               {props.typeDelivery === 'Shipping' &&
                 <>
-                  <DefaultButton selectedColor='--Blue' onClick={() => handleChangeStatusDelivery('Done')}>
-                    Concluir
+                  <DefaultButton selectedColor='--Green' onClick={() => handleDoneDelivery()}>
+                    Concluir Entrega{numSelected > 1 &&'s'}
                   </DefaultButton>
                   <DefaultButton selectedColor='--Orange' onClick={() => handleDeliveryListPrint()}>
                     Imprimrir Roteiro
@@ -329,9 +334,15 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           )}
         </Toolbar >)
       }
-      <ModalDeliveryChanges
-        isModalDeliveryChangesOpen={props.isModalDeliveryChangesOpen}
-        setIsModalDeliveryChangesOpen={props.setIsModalDeliveryChangesOpen} />
+      {props.isModalDeliveryChangesOpen &&
+        <ModalDeliveryChanges
+          isModalDeliveryChangesOpen={props.isModalDeliveryChangesOpen}
+          setIsModalDeliveryChangesOpen={props.setIsModalDeliveryChangesOpen}
+          deliveriesFiltered={deliveriesFiltered}
+          searchDeliveries={props.searchDeliveries}
+          typeDelivery={props.typeDelivery}
+        />
+      }
     </>
   );
 }

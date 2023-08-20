@@ -12,6 +12,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import Box from '@mui/material/Box';
 import { TransactionsReturnApiProps } from "../index"
 import { MuiBox } from "../../../components/box/muiBox";
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../../components/buttons/closeButtonModal";
 
 
 
@@ -67,7 +68,9 @@ export const ListTransactions = (props: { item: TransactionsReturnApiProps }) =>
             <Modal open={isModalInfoExtractOpen} onClose={handleCloseModalInfoExtract}>
                 <MuiBox desktopWidth={500} mobileWidthPercent="80%">
                     {props.item.description}
-                    <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalInfoExtract}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                    <DefaultButtonCloseModal onClick={handleCloseModalInfoExtract}>
+                        <DefaultIconCloseModal/>
+                    </DefaultButtonCloseModal>
                 </MuiBox>
             </Modal>
         </S.Container>

@@ -20,12 +20,12 @@ justify-content: space-around;
     }
 `
 export const ButtonClose = styled.button <DarkModeProps>`
-    color: ${props => (props.isDarkMode ? '#fff' : '#000')};
     text-decoration: none;
     border: none;
-    background: none;
+    color:red;
+    background:none;
     &:hover{
-        color: ${darken(0.02, 'gray')}
+        color: ${darken(0.02, 'red')}
     }
 `
 

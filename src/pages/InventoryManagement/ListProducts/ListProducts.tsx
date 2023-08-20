@@ -17,6 +17,7 @@ import { CurrencyMask } from "../../../masks/CurrencyMask"
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
 import { ModalAddEditProduct } from "../Modals/AddEditProduct";
 import { MuiBox } from "../../../components/box/muiBox";
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../../components/buttons/closeButtonModal";
 
 export interface ListProductsProps {
     id: number;
@@ -191,7 +192,9 @@ export const ListProducts = (props: ListProductsProps) => {
                             <S.ButtonRestrictAcessModal onClick={handleVerifyMasterKey}>OK</S.ButtonRestrictAcessModal>
                         </label>
                     </S.DivRestrictAcessModal>
-                    <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalMasterKey}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                    <DefaultButtonCloseModal onClick={handleCloseModalMasterKey}>
+                        <DefaultIconCloseModal />
+                    </DefaultButtonCloseModal>
                 </MuiBox>
             </Modal>
 
@@ -204,7 +207,9 @@ export const ListProducts = (props: ListProductsProps) => {
                             <S.ButtonNoDeleteProductModal onClick={handleCloseModalDeleteProduct}><b>NÃO</b></S.ButtonNoDeleteProductModal>
                         </div>
                     </S.DivDeleteProductModal>
-                    <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalDeleteProduct}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                    <DefaultButtonCloseModal onClick={handleCloseModalDeleteProduct}>
+                        <DefaultIconCloseModal />
+                    </DefaultButtonCloseModal>
                 </MuiBox>
             </Modal>
 
@@ -216,21 +221,12 @@ export const ListProducts = (props: ListProductsProps) => {
                         <h3 style={{ alignSelf: 'center' }}>Procedimento realizado com sucesso!</h3>
                         <BsCheckCircle color="var(--Green)" size="50" className="IconSucess" />
                     </S.DivDeleteProductModal>
-                    <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalSucess}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                    <DefaultButtonCloseModal onClick={handleCloseModalSucess}>
+                        <DefaultIconCloseModal />
+                    </DefaultButtonCloseModal>
                 </MuiBox>
             </Modal>
-
-
-
-
-
-
-
         </>
-
-
-
-
     )
 
 }

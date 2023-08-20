@@ -18,6 +18,7 @@ import { useMessageBoxContext } from '../../../../../contexts/MessageBox/Message
 import { cellNumberFormat, cepFormat, phoneNumberFormat } from '../../../../../utils/utils';
 import { SellersandClientsType } from '../../../../SalesControl';
 import { MuiBox } from '../../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../components/buttons/closeButtonModal';
 
 interface ListSellerstoAddSellerProps {
     isModalAddSellerOpen: boolean;
@@ -142,7 +143,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
 
         <Modal open={props.isModalAddSellerOpen} onClose={handleCloseModalAddSeller}>
             <MuiBox desktopWidth={600} mobileWidthPercent='80%'>
-                <h3 style={{ width: 'max-content', margin: '0 auto' }}> Inclusão de Vendedor </h3>
+                <h3 style={{ width: 'max-content', margin: '0 auto' }}> Cadastro de Vendedor </h3>
                 <S.DivModal>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
@@ -367,8 +368,9 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                     <MdFileDownloadDone size="22" />
                     <b>ADICIONAR VENDEDOR</b>
                 </S.ButtonModal>
-
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalAddSeller}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalAddSeller}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
     )

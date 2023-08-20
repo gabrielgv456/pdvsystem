@@ -12,6 +12,7 @@ import { ModalTransactionsProducts } from './Modals/TransactionsProducts';
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import { ModalAddEditProduct } from "./Modals/AddEditProduct";
 import { MuiBox } from "../../components/box/muiBox";
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../components/buttons/closeButtonModal";
 
 
 interface ProductsReturnApiProps {
@@ -28,7 +29,7 @@ interface ProductsReturnApiProps {
     cfopId: number,
     ncmCode: string,
     profitMargin: number,
-    unitMeasurement:string
+    unitMeasurement: string
 }
 
 export interface TransactionsProductsReturnApi {
@@ -140,12 +141,12 @@ export const InventoryManagement = () => {
                             value={item.value}
                             quantity={item.quantity}
                             active={item.active}
-                            barCode= {item.barCode}
-                            cost= {item.cost}
-                            itemTypeId= {item.itemTypeId}
-                            cfopId= {item.cfopId}
-                            ncmCode= {item.ncmCode}
-                            profitMargin= {item.profitMargin}
+                            barCode={item.barCode}
+                            cost={item.cost}
+                            itemTypeId={item.itemTypeId}
+                            cfopId={item.cfopId}
+                            ncmCode={item.ncmCode}
+                            profitMargin={item.profitMargin}
                             unitMeasurement={item.unitMeasurement}
                             isModalTransactionsProductsOpen={isModalTransactionsProductsOpen}
                             setisModalTransactionsProductsOpen={setisModalTransactionsProductsOpen}
@@ -227,7 +228,9 @@ export const InventoryManagement = () => {
                                 <S.ButtonExitSucessProductModal onClick={handleCloseModalSucess}><b>Sair</b></S.ButtonExitSucessProductModal>
                             </div>
                         </S.DivModalSucess>
-                        <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalSucess}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                        <DefaultButtonCloseModal onClick={handleCloseModalSucess}>
+                            <DefaultIconCloseModal />
+                        </DefaultButtonCloseModal>
                     </MuiBox>
                 </Modal>
             </S.Container>

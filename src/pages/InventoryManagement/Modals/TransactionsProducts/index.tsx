@@ -8,6 +8,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { TransactionsProductsReturnApi } from "../../index"
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { MuiBox } from "../../../../components/box/muiBox";
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../../../components/buttons/closeButtonModal";
 
 interface indextoModalTransactionsProducts {
     dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[];
@@ -106,7 +107,9 @@ export const ModalTransactionsProducts = (props: indextoModalTransactionsProduct
                     </div>
 
                 </S.DivFooter>
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalTransactionsProducts}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalTransactionsProducts}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
 

@@ -29,20 +29,22 @@ interface TabPanelProps {
 export type TypeDeliveries = 'Pending' | 'Done' | 'Shipping'
 
 export interface DeliveriesReturnApiProps {
+    id: number,
     client: {
         name: string
     } | null,
-    scheduledDate: string,
+    scheduledDate: string|null,
     deliveredDate: string | null,
     status: 'Pending' | 'Shipping' | 'Done',
     onDeliveryPayValue: number,
     address: {
+        id: number,
         addressStreet: string,
         addressNumber: string,
         addressNeighborhood: string,
         addressComplement: string,
         addressCity: string,
-        addressState: string,
+        addressState: string | null,
         addressCep: string,
     }
     itemSell: {
@@ -69,7 +71,7 @@ export interface TypeDeliveriesRequest {
 export const Deliveries = () => {
 
     const Theme = useDarkMode()
-    const isLess900 = useMediaQuery('(max-width:500px)')
+    const isLess900 = useMediaQuery('(max-width:900px)')
     const auth = useContext(AuthContext);
     const { findDeliveries } = useApi()
     const atualdata = ReturnData()
@@ -77,8 +79,6 @@ export const Deliveries = () => {
     const [initialDate, setinitialDate] = useState(atualdata)
     const [finalDate, SetfinalDate] = useState(atualdata)
     const { MessageBox } = useMessageBoxContext()
-
-
 
     useEffect(() => {
         searchDeliveries()
@@ -133,6 +133,15 @@ export const Deliveries = () => {
         setValue(newValue);
     };
 
+    const countPending  = DeliveriesReturnApi.reduce((acc, item) => {
+        if (item.status === 'Pending') { return acc + 1; } else { return acc; }
+    }, 0);
+    const countShipping  = DeliveriesReturnApi.reduce((acc, item) => {
+        if (item.status === 'Shipping') { return acc + 1; } else { return acc; }
+    }, 0);
+    const countDone  = DeliveriesReturnApi.reduce((acc, item) => {
+        if (item.status === 'Done') { return acc + 1; } else { return acc; }
+    }, 0);
 
 
     return (
@@ -146,9 +155,9 @@ export const Deliveries = () => {
                 <Box sx={{ width: '100%' }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange} >
-                            <Tab label={isLess900 ? '' : 'Pendentes'} title='Meu Perfil' sx={{ minWidth: '33.33%', borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<AiOutlineClockCircle size={20} />} iconPosition='start' />
-                            <Tab label={isLess900 ? '' : "Em entrega"} title='Parâmetros Fiscais' sx={{ minWidth: '33.33%' }} {...a11yProps(1)} icon={<FaTruckFast size={20} />} iconPosition='start' />
-                            <Tab label={isLess900 ? '' : "Entregues"} title='Parâmetros Fiscais' sx={{ minWidth: '33.33%' }}  {...a11yProps(1)} icon={<LuCheckCircle size={20} />} iconPosition='start' />
+                            <Tab label={isLess900 ? '' : `Pendentes (${countPending})`} title='Pendentes' sx={{ minWidth: '33.33%', borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<AiOutlineClockCircle size={20} />} iconPosition='start' />
+                            <Tab label={isLess900 ? '' : `Em entrega (${countShipping})`} title='Em entrega' sx={{ minWidth: '33.33%' }} {...a11yProps(1)} icon={<FaTruckFast size={20} />} iconPosition='start' />
+                            <Tab label={isLess900 ? '' : `Entregues (${countDone})`} title='Entregues' sx={{ minWidth: '33.33%' }}  {...a11yProps(1)} icon={<LuCheckCircle size={20} />} iconPosition='start' />
                         </Tabs>
                     </Box>
                     {/* <div style={{ padding: '0 25px 25px 25px' }}> */}

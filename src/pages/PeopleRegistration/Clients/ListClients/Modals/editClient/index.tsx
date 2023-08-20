@@ -17,6 +17,7 @@ import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat } from '../../../../../../utils/utils';
 import { MuiBox } from '../../../../../../components/box/muiBox';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
 
 
 interface ListClientstoEditClientProps {
@@ -30,7 +31,7 @@ interface ListClientstoEditClientProps {
 
 export const ModalEditClient = (props: ListClientstoEditClientProps) => {
 
-    const cpfcnpjformated = cpfCnpjFormat(props.client.cpf,props.client.cpf)
+    const cpfcnpjformated = cpfCnpjFormat(props.client.cpf, props.client.cpf)
     const cepformated = props.client.adressCep !== null ? props.client.adressCep.toString().replace(/(\d{5})(\d{3})/g, "$1-$2") : ""
     const cellformated = props.client.cellNumber !== null ? props.client.cellNumber.replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3") : ""
     const telformated = props.client.phoneNumber !== null ? props.client.phoneNumber.replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3") : ""
@@ -70,7 +71,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                 const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
-                    MessageBox('warning','CEP invalido')
+                    MessageBox('warning', 'CEP invalido')
                 }
                 else {
                     setvalueInputClientAdressStreet(data.logradouro)
@@ -79,13 +80,13 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                     setvalueInputClientAdressState(data.uf)
                 }
             }
-            catch (error:any) {
-                MessageBox('info',error.message)
+            catch (error: any) {
+                MessageBox('info', error.message)
             }
         }
 
     }
-    const {MessageBox} = useMessageBoxContext()
+    const { MessageBox } = useMessageBoxContext()
     const finaldataEditClientToSendApi = {
         storeId: auth.idUser,
         idClient: props.client.id,
@@ -119,11 +120,11 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                         props.setisModalSucessOpen(true)
                     }
                     else {
-                        MessageBox('error',data.erro)
+                        MessageBox('error', data.erro)
                     }
                 }
-                catch (error:any) {
-                    MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
+                catch (error: any) {
+                    MessageBox('error', `Falha ao enviar dados. ERRO:${error.message}`)
                 }
             }
             else {
@@ -135,20 +136,20 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                             props.setisModalSucessOpen(true)
                         }
                         else {
-                            MessageBox('error',data.erro)
+                            MessageBox('error', data.erro)
                         }
                     }
-                    catch (error:any) {
-                        MessageBox('error',`Falha ao enviar dados. ERRO:${error.message}`)
+                    catch (error: any) {
+                        MessageBox('error', `Falha ao enviar dados. ERRO:${error.message}`)
                     }
                 }
                 else {
-                    MessageBox('error',"Email inválido!")
+                    MessageBox('error', "Email inválido!")
                 }
             }
         }
         else {
-            MessageBox('info',"Campos obrigatórios não preenchidos !")
+            MessageBox('info', "Campos obrigatórios não preenchidos !")
         }
     }
 
@@ -216,7 +217,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                         <TextField
                             value={valueInputClientCpfCnpj}
                             onChange={(e) => {
-                                setvalueInputClientCpfCnpj(cpfCnpjFormat(e.target.value,valueInputClientCpfCnpj))
+                                setvalueInputClientCpfCnpj(cpfCnpjFormat(e.target.value, valueInputClientCpfCnpj))
                             }}
                             label={valueInputClientCpfCnpj.length === 0 ?
                                 "CPF/CNPJ *"
@@ -283,7 +284,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                         <TextField
                             value={valueInputClientPhoneNumber}
                             onChange={(e) => {
-                                setvalueInputClientPhoneNumber(phoneNumberFormat(e.target.value,valueInputClientPhoneNumber))
+                                setvalueInputClientPhoneNumber(phoneNumberFormat(e.target.value, valueInputClientPhoneNumber))
                             }}
                             id="outlined-basic"
                             label="Telefone"
@@ -294,7 +295,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                         <TextField
                             value={valueInputClientCellNumber}
                             onChange={(e) => {
-                                setvalueInputClientCellNumber(cellNumberFormat(e.target.value,valueInputClientCellNumber))
+                                setvalueInputClientCellNumber(cellNumberFormat(e.target.value, valueInputClientCellNumber))
                             }}
                             id="outlined-basic"
                             label="Celular"
@@ -309,7 +310,7 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                         <TextField
                             value={valueInputClientAdressCep}
                             onChange={(e) => {
-                                setvalueInputClientAdressCep(cepFormat(e.target.value,valueInputClientAdressCep))
+                                setvalueInputClientAdressCep(cepFormat(e.target.value, valueInputClientAdressCep))
                             }}
                             onBlur={(e) => handleConsultCep(e.target.value)}
                             id="outlined-basic"
@@ -402,7 +403,9 @@ export const ModalEditClient = (props: ListClientstoEditClientProps) => {
                     <AiOutlineEdit size="22" />
                     <b>FINALIZAR EDIÇÃO</b>
                 </S.ButtonModal>
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalEditClient}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalEditClient}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
     )

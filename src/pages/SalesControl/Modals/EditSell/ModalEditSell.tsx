@@ -6,8 +6,9 @@ import { AiOutlineClose, AiOutlineEdit } from "react-icons/ai";
 import Autocomplete from '@mui/material/Autocomplete';
 import { useEffect, useState } from "react";
 import TextField from '@mui/material/TextField';
-import {SellersandClientsType} from "../../index"
+import { SellersandClientsType } from "../../index"
 import { MuiBox } from "../../../../components/box/muiBox";
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../../../components/buttons/closeButtonModal";
 
 
 interface ModalEditSellProps {
@@ -16,9 +17,9 @@ interface ModalEditSellProps {
     setismodalEditSellOpen: (value: boolean) => void,
     defaultSendtoApi: () => void;
     sellers: SellersandClientsType[]
-    clients : SellersandClientsType[]
-    sellerfiltered : SellersandClientsType | null;
-    clientfiltered : SellersandClientsType | null;
+    clients: SellersandClientsType[]
+    sellerfiltered: SellersandClientsType | null;
+    clientfiltered: SellersandClientsType | null;
 }
 
 
@@ -30,18 +31,18 @@ export const ModalEditSell = (props: ModalEditSellProps) => {
         props.setismodalEditSellOpen(false)
         props.defaultSendtoApi()
     }
-    
-    const [inputSeller, setinputSeller] = useState<SellersandClientsType | null > (null)
-    const [inputClient, setinputClient] = useState<SellersandClientsType | null > (null)
-    
-        
-    useEffect(()=>{
-        setinputSeller(props.sellerfiltered)
-    },[props.sellerfiltered])
 
-    useEffect(()=>{
+    const [inputSeller, setinputSeller] = useState<SellersandClientsType | null>(null)
+    const [inputClient, setinputClient] = useState<SellersandClientsType | null>(null)
+
+
+    useEffect(() => {
+        setinputSeller(props.sellerfiltered)
+    }, [props.sellerfiltered])
+
+    useEffect(() => {
         setinputClient(props.clientfiltered)
-    },[props.sellerfiltered])
+    }, [props.sellerfiltered])
 
     return (
 
@@ -59,8 +60,8 @@ export const ModalEditSell = (props: ModalEditSellProps) => {
                         noOptionsText="Nenhum resultado"
                         renderInput={(params) => <TextField {...params} label="Vendedor" />}
                     />
-            
-               <Autocomplete
+
+                    <Autocomplete
                         value={inputClient}
                         onChange={(event: any, newValue: SellersandClientsType | null) => setinputClient(newValue)}
                         autoComplete
@@ -84,7 +85,9 @@ export const ModalEditSell = (props: ModalEditSellProps) => {
                     </S.ButtonProductModal>
 
                 </div>
-                <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalEditSell}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                <DefaultButtonCloseModal onClick={handleCloseModalEditSell}>
+                    <DefaultIconCloseModal />
+                </DefaultButtonCloseModal>
             </MuiBox>
         </Modal>
     )

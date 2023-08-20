@@ -10,6 +10,7 @@ import { useMessageBoxContext } from "../../../../contexts/MessageBox/MessageBox
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { MuiBox } from "../../../../components/box/muiBox";
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../../../components/buttons/closeButtonModal";
 
 
 interface ModalDeleteProps {
@@ -117,7 +118,9 @@ export const ModalDelete = (props: ModalDeleteProps) => {
                             <S.ButtonNoDeleteModal onClick={handleCloseModalDelete}><b>NÃO</b></S.ButtonNoDeleteModal>
                         </div>
                     </S.DivDeleteProductModal>
-                    <S.ButtonCloseModal isDarkMode={Theme.DarkMode} onClick={handleCloseModalDelete}><AiOutlineClose style={{ position: "absolute", right: 10, top: 10 }} /></S.ButtonCloseModal>
+                    <DefaultButtonCloseModal onClick={handleCloseModalDelete}>
+                        <DefaultIconCloseModal />
+                    </DefaultButtonCloseModal>
                 </MuiBox>
             </Modal>
         </>
