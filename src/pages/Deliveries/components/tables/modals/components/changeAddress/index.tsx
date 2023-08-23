@@ -1,22 +1,22 @@
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { cepFormat, optionsUF } from '../../../../../../../../utils/utils';
-import { useMessageBoxContext } from '../../../../../../../../contexts/MessageBox/MessageBoxContext';
+import { cepFormat, optionsUF } from '../../../../../../../utils/utils';
+import { useMessageBoxContext } from '../../../../../../../contexts/MessageBox/MessageBoxContext';
 import axios from 'axios';
 import * as S from './style'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
-import { DeliveriesReturnApiProps } from '../../../../../..';
+import { DeliveriesReturnApiProps } from '../../../../..';
 import { useContext, useState } from 'react';
-import { DefaultButton } from '../../../../../../../../components/buttons/defaultButton';
-import { AuthContext } from '../../../../../../../../contexts/Auth/AuthContext';
-import { useApi } from '../../../../../../../../hooks/useApi';
+import { DefaultButton } from '../../../../../../../components/buttons/defaultButton';
+import { AuthContext } from '../../../../../../../contexts/Auth/AuthContext';
+import { useApi } from '../../../../../../../hooks/useApi';
 
 interface DeliveryAddressClientProps {
     selectedDeliveryModal: DeliveriesReturnApiProps,
-    searchDeliveries: () => void
+    moreOneDelivery: boolean
 }
 export interface typeRequestDeliveryAdressChange {
     scheduledDate: string | null;
@@ -53,7 +53,6 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
             const result = await changeAdressDelivery(dataRequestApi)
             if (!result.Success) throw new Error(result.Erro)
             MessageBox('success', 'Dados de entrega atualizados com sucesso!')
-            props.searchDeliveries()
         } catch (error: any) {
             MessageBox('error', 'Falha ao atualizar dados de entrega! ' + error.message)
         }

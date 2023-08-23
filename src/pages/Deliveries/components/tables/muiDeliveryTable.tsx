@@ -29,6 +29,7 @@ import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { GeneratePDFDeliveryList } from '../../../../hooks/useGeneratePDF';
 import { User } from '../../../../types/User';
 import { ModalDeliveryChanges } from './modals/modalDeliveryChanges';
+import { ModalDeliveryDone } from './modals/modalDeliveryDone';
 
 export interface DataDeliveryTableType {
   itemSell: string
@@ -226,6 +227,8 @@ interface EnhancedTableToolbarProps {
   user: User | null
   isModalDeliveryChangesOpen: boolean,
   setIsModalDeliveryChangesOpen: (value: boolean) => void
+  isModalDeliveryDoneOpen: boolean;
+  setIsModalDeliveryDoneOpen: (value: boolean) => void
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
@@ -249,10 +252,6 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     } catch (error: any) {
       MessageBox('error', 'Falha ao atualizar status da entrega! ' + error.message)
     }
-  }
-
-  async function handleDoneDelivery() {
-      props.setIsModalDeliveryChangesOpen(true)
   }
 
   async function handleDeliveryListPrint() {
@@ -279,7 +278,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
               variant="subtitle1"
               component="div"
             >
-              {numSelected} selecionado{numSelected > 1 &&'s'}
+              {numSelected} selecionado{numSelected > 1 && 's'}
             </Typography>
           ) : (''
             // <Typography
@@ -297,17 +296,17 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
               {props.typeDelivery === 'Pending' &&
                 <>
                   <DefaultButton selectedColor='--Blue' onClick={() => handleChangeStatusDelivery('Shipping')}>
-                    Iniciar Entrega{numSelected > 1 &&'s'}
+                    Iniciar Entrega{numSelected > 1 && 's'}
                   </DefaultButton>
                   <DefaultButton selectedColor='--Gold' onClick={() => props.setIsModalDeliveryChangesOpen(true)} >
-                    Editar Entrega{numSelected > 1 &&'s'}
+                    Editar Entrega{numSelected > 1 && 's'}
                   </DefaultButton>
                 </>
               }
               {props.typeDelivery === 'Shipping' &&
                 <>
-                  <DefaultButton selectedColor='--Green' onClick={() => handleDoneDelivery()}>
-                    Concluir Entrega{numSelected > 1 &&'s'}
+                  <DefaultButton selectedColor='--Green' onClick={() => props.setIsModalDeliveryDoneOpen(true)}>
+                    Concluir Entrega{numSelected > 1 && 's'}
                   </DefaultButton>
                   <DefaultButton selectedColor='--Orange' onClick={() => handleDeliveryListPrint()}>
                     Imprimrir Roteiro
@@ -341,6 +340,14 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           deliveriesFiltered={deliveriesFiltered}
           searchDeliveries={props.searchDeliveries}
           typeDelivery={props.typeDelivery}
+        />}
+      {props.isModalDeliveryDoneOpen &&
+        <ModalDeliveryDone
+          deliveriesFiltered={deliveriesFiltered}
+          searchDeliveries={props.searchDeliveries}
+          typeDelivery={props.typeDelivery}
+          isModalDeliveryDoneOpen={props.isModalDeliveryDoneOpen}
+          setIsModalDeliveryDoneOpen={props.setIsModalDeliveryDoneOpen}
         />
       }
     </>
@@ -357,6 +364,7 @@ export default function MuiTableDeliveries(props: MuiTableProps) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [isModalDeliveryChangesOpen, setIsModalDeliveryChangesOpen] = React.useState(false)
+  const [isModalDeliveryDoneOpen, setIsModalDeliveryDoneOpen] = React.useState(false)
   const { user } = React.useContext(AuthContext)
 
 
@@ -441,6 +449,8 @@ export default function MuiTableDeliveries(props: MuiTableProps) {
             user={user}
             isModalDeliveryChangesOpen={isModalDeliveryChangesOpen}
             setIsModalDeliveryChangesOpen={setIsModalDeliveryChangesOpen}
+            isModalDeliveryDoneOpen={isModalDeliveryDoneOpen}
+            setIsModalDeliveryDoneOpen={setIsModalDeliveryDoneOpen}
           />
           <TableContainer>
             <Table

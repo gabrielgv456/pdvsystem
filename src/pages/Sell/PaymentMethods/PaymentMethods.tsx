@@ -8,11 +8,6 @@ import { CurrencyMaskWithOutRS } from "../../../masks/CurrencyMask";
 import { typesPayment } from "../Modals/CheckOut";
 
 interface PaymentMethodsProps {
-    value: number[];
-
-    //value: number;
-    onChangeValuePayment: (newState: number) => void;
-
     item:
     {
         id: number;
@@ -40,8 +35,6 @@ export const PaymentMethods = (props: PaymentMethodsProps) => {
 
         props.handleEditMethod(props.item.id, convertedvalue, e.target.value)
     }
-
-
 
     return (
         <>

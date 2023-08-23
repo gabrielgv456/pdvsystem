@@ -52,6 +52,7 @@ export interface DeliveriesReturnApiProps {
         descriptionProduct: string,
         totalValue: number,
         sell: {
+            id:number,
             codRef: number,
             sellValue: number,
             paymentsells: [{

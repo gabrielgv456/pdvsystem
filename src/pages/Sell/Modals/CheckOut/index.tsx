@@ -1,5 +1,4 @@
 import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 import { useState, useEffect, useContext } from 'react';
 import { MdAddCircleOutline, MdPending } from "react-icons/md"
 import { HiBadgeCheck } from "react-icons/hi"
@@ -127,7 +126,6 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const [inputSeller, setInputSeller] = useState<SellersandClientsType | null>(null)
     const [inputClient, setInputClient] = useState<ClientsType | null>(null)
     const [codRefSell, setCodRefSell] = useState<number | null>(null)
-    const [value, setValue] = useState([0])
     const [sellers, setSellers] = useState<SellersandClientsType[]>([])
     const [clients, setClients] = useState<ClientsType[]>([])
     const [selectedDeliveryType, setSelectedDeliveryType] = useState('instantDelivery');
@@ -135,6 +133,9 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const [isModalAddSellerOpen, setisModalAddSellerOpen] = useState(false)
     const [addressDeliveryClient, setDeliveryClientType] = useState<deliveryAddressClientType>({ addressCep: '', addressCity: '', addressComplement: '', addressNeighborhood: '', addressNumber: '', addressState: '', addressStreet: '', addressUF: '', scheduledDate: null })
     const handleChangeDeliveryType = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.value === 'instantDelivery') {
+            props.setMethods(props.listMethods.filter(method => method.type !== 'onDelivery'))
+        }
         setSelectedDeliveryType(event.target.value);
     };
 
@@ -204,9 +205,9 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
     function handleRemoveMethod(id: number) {
         let filteredmethods = props.listMethods.filter(method => method.id !== id)
-
         props.setMethods(filteredmethods)
     }
+
     function handleEditMethod(id: number, value: number, valueformated: string) {
         let newMethods = [...props.listMethods]
 
@@ -218,14 +219,6 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
             props.setMethods(newMethods)
         }
-    }
-
-    function onChangeValuePayment(ValuePayment: number) {
-        let newvalue = value
-        newvalue.push(
-            ValuePayment
-        )
-        setValue(newvalue)
     }
 
     function handleRemoveOneMethod(id: number, value: number) {
@@ -247,7 +240,6 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             props.setNeedReturnCash('N')
             setInputClient(null)
             setInputSeller(null)
-            setValue([0])
             setSelectedDeliveryType('instantDelivery')
             setDeliveryClientType({ addressCep: '', addressCity: '', addressComplement: '', addressNeighborhood: '', addressNumber: '', addressState: '', addressStreet: '', addressUF: '', scheduledDate: null })
             props.setinputProducts(null)
@@ -434,7 +426,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                         </div>
 
                     }
-                    {isSellEnded ? '' :
+                    {!isSellEnded &&
                         <S.DivModalIconsPayment>
                             <S.LabelIconsModal onClick={() => handleAddMethod('money')} isDarkMode={Theme.DarkMode} ><FaMoneyBillWave className="hoverbutton" size={25} style={{ color: '#23591b' }} />Dinheiro</S.LabelIconsModal>
                             <S.LabelIconsModal onClick={() => handleAddMethod('debitcard')} isDarkMode={Theme.DarkMode}><BsFillCreditCardFill className="hoverbutton" size={25} style={{ color: '#f1b917' }} />Cartão de Débito</S.LabelIconsModal>
@@ -448,14 +440,13 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                         </S.DivModalIconsPayment>
                     }
                     {props.listMethods.map((item) => (
-                        <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item} handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} value={value} onChangeValuePayment={onChangeValuePayment} />
+                        <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item} handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} />
                     ))}
 
                     <S.DivModalButtons>
                         {isSellEnded ?
                             <S.ButtonPrint onClick={(e) => GeneratePDF(props.listProducts, props.sumvalueformated, props.sumquantity)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
-                            : ''}
-                        {isSellEnded ? '' :
+                            :
                             <S.ButtonEndSell onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</S.ButtonEndSell>
                         }
                     </S.DivModalButtons>
