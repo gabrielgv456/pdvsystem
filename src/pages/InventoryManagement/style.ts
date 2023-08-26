@@ -114,6 +114,7 @@ export const DivTitleListProducts = styled.div <DarkModeProps>`
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
     @media screen and (max-width:930px) {
         padding: 5px;
+         font-size: 0.7rem;
     }
     box-sizing: border-box;
 `
@@ -166,7 +167,7 @@ export const labelStatus = styled.label `
 width:15%;
 display:flex;
 @media screen and (max-width:930px) {
-        width:20%
+    width:15%;
     }
 `
 export const labelQuantity = styled.label `

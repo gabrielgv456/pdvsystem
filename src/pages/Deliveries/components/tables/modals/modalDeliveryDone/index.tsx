@@ -3,8 +3,7 @@ import { MuiBox } from '../../../../../../components/box/muiBox';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { DeliveriesReturnApiProps, TypeDeliveries } from '../../../..';
-import { useState } from 'react';
-import { DeliveryAddressChange } from '../components/changeAddress';
+import { useContext, useState } from 'react';
 import * as S from './style'
 import { DateDelivered } from '../components/dateDelivered';
 import { DefaultButton } from '../../../../../../components/buttons/defaultButton';
@@ -13,6 +12,7 @@ import { MethodsType } from '../../../../../Sell';
 import { PaymentDelivery } from '../components/Payment';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { useApi } from '../../../../../../hooks/useApi';
+import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
 
 interface ModalDeliveryChangesProps {
     isModalDeliveryDoneOpen: boolean,
@@ -20,11 +20,15 @@ interface ModalDeliveryChangesProps {
     deliveriesFiltered: DeliveriesReturnApiProps[]
     searchDeliveries: () => void
     typeDelivery: TypeDeliveries
+    itensSelected: number[]
 }
 
-interface PayonDeliveryType {
-    deliveryInfo: DeliveriesReturnApiProps | null,
-    listMehods?: MethodsType[] | null
+export interface typeSetPaymentsonDelivery {
+    storeId: number,
+    idDelivery: number | null
+    idVenda: number | null
+    codRef: number | null
+    listMethods: MethodsType[]
 }
 
 
@@ -32,7 +36,8 @@ export const ModalDeliveryDone = (props: ModalDeliveryChangesProps) => {
 
     const moreOneDelivery = props.deliveriesFiltered.length > 1
     const { MessageBox } = useMessageBoxContext()
-    const { setTypePaymentsonDelivery } = useApi()
+    const auth = useContext(AuthContext)
+    const { setPaymentsonDelivery, changeStatusDeliveries } = useApi()
 
     const [listMethods, setMethods] = useState<MethodsType[]>([])
     const [deliveredDate, setDeliveredDate] = useState<Date | null>(new Date())
@@ -42,48 +47,56 @@ export const ModalDeliveryDone = (props: ModalDeliveryChangesProps) => {
     const [selectedPayOnDeliveryModal, setselectedPayOnDeliveryModal] = useState<DeliveriesReturnApiProps | null>(payOnDeliveryFiltered.length === 1 ? payOnDeliveryFiltered[0] : null)
 
 
-    function handleCloseModalDeliveryChanges() {
+    function handleCloseModalDeliveryDone() {
         props.setIsModalDeliveryDoneOpen(false)
         setMethods([])
         setValue([0])
     }
     const isPayonDeliveryShipping = payOnDeliveryFiltered.length > 0 && props.typeDelivery === 'Shipping'
 
-    const dataRequestApi = {
-        idDelivery: selectedPayOnDeliveryModal?.id,
-        idVenda: selectedPayOnDeliveryModal?.itemSell.sell.id,
-        listMehods: listMethods,
-        PayValue: value
+
+    const dataRequestApi: typeSetPaymentsonDelivery = {
+        storeId: auth.idUser,
+        idDelivery: selectedPayOnDeliveryModal?.id ?? null,
+        idVenda: selectedPayOnDeliveryModal?.itemSell.sell.id ?? null,
+        codRef: selectedPayOnDeliveryModal?.itemSell.sell.codRef ?? null,
+        listMethods: listMethods
     }
 
-    const totalPay = dataRequestApi.listMehods.reduce((acc, item) => {
+    const totalPay = dataRequestApi.listMethods.reduce((acc, item) => {
         return acc + item.value
     }, 0)
 
     async function handleDoneDelivery(isPayonDeliveryShipping: boolean) {
-
         try {
             if (isPayonDeliveryShipping) {
                 if (totalPay !== (selectedPayOnDeliveryModal?.onDeliveryPayValue ?? 0)) {
                     throw new Error(`Valor a receber diferente do recebido, informe o valor corretamente!`)
                 }
-                const response = await setTypePaymentsonDelivery(true)
+                const response = await setPaymentsonDelivery(dataRequestApi)
                 if (!response.Success) {
                     throw new Error(response.Erro)
                 }
+                props.searchDeliveries()
                 MessageBox('success', 'Pagamento incluso com sucesso! Prossiga com a baixa da entrega')
             } else {
-
+                if (String(deliveredDate) === 'Invalid Date' || !(deliveredDate)) {
+                    throw new Error('Data inválida, confira e tente novamente!')
+                }
+                const response = await changeStatusDeliveries({ storeId: auth.idUser, itensSellToChange: props.itensSelected, newStatus: 'Done', deliveredDate: deliveredDate })
+                if (!response.Success) {
+                    throw new Error(response.Erro)
+                }
+                props.searchDeliveries()
+                MessageBox('success', 'Entrega concluída com sucesso!')
             }
-
         } catch (error: any) {
             MessageBox('warning', 'Falha ao concluir entrega! ' + error.message)
         }
     }
 
-
     return (
-        <Modal open={props.isModalDeliveryDoneOpen} onClose={handleCloseModalDeliveryChanges}>
+        <Modal open={props.isModalDeliveryDoneOpen} onClose={handleCloseModalDeliveryDone}>
             <MuiBox desktopWidth={700} mobileWidthPercent='80%' padding='40px'>
                 <h3 style={{ width: 'max-content', margin: '0 auto', marginBottom: 15 }}>
                     Concluir Entrega
@@ -109,7 +122,7 @@ export const ModalDeliveryDone = (props: ModalDeliveryChangesProps) => {
                                 getOptionLabel={(option) => (
                                     option.itemSell.sell.codRef + ' - ' +
                                     (option.client?.name ?? 'Cliente não informado') + ' - ' +
-                                    option.itemSell.descriptionProduct
+                                    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(option.onDeliveryPayValue)
                                 )}
                                 sx={{ width: '100%' }}
                                 renderInput={(params) =>

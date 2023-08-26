@@ -125,6 +125,7 @@ export const Sell = () => {
 
         setListProducts(filteredtasks)
     }
+    
     function handleEditItem(id: number, item: number, quantity: number, type: 'add' | 'change') {
         let verifyQuantityProducts = Products.find(product => product.id === id)
 

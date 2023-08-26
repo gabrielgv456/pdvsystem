@@ -23,7 +23,6 @@ export const ModalDeliveryChanges = (props: ModalDeliveryChangesProps) => {
     const moreOneDelivery = props.deliveriesFiltered.length > 1
 
     function handleCloseModalDeliveryChanges() {
-        props.searchDeliveries()
         props.setIsModalDeliveryChangesOpen(false)
     }
 
@@ -54,7 +53,7 @@ export const ModalDeliveryChanges = (props: ModalDeliveryChangesProps) => {
                                 label="Selecione a entrega *"
                             />
                         } />
-                    <DeliveryAddressChange selectedDeliveryModal={selectedDeliveryModal} moreOneDelivery={moreOneDelivery} />
+                    <DeliveryAddressChange selectedDeliveryModal={selectedDeliveryModal} setSelectedDeliveryModal={setSelectedDeliveryModal} moreOneDelivery={moreOneDelivery} searchDeliveries={props.searchDeliveries} />
                 </S.ModalDiv>
                 <DefaultButtonCloseModal onClick={() => props.setIsModalDeliveryChangesOpen(false)}>
                     <DefaultIconCloseModal />

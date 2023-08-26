@@ -216,6 +216,7 @@ export interface TypeChangeStatusDeliveriesRequest {
   storeId: number,
   itensSellToChange: number[],
   newStatus: TypeDeliveries,
+  deliveredDate?: Date
 }
 
 interface EnhancedTableToolbarProps {
@@ -246,9 +247,9 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       if (!dataChangeStatus.Success) {
         throw new Error(dataChangeStatus.Erro)
       }
+      props.searchDeliveries()
       MessageBox('success', `Status da(s) entrega(s) atualizado com sucesso! ${newStatus === 'Shipping' ? 'Roteiro Impresso' : ''}`)
       GeneratePDFDeliveryList(deliveriesFiltered, props.user?.name ?? '')
-      props.searchDeliveries()
     } catch (error: any) {
       MessageBox('error', 'Falha ao atualizar status da entrega! ' + error.message)
     }
@@ -298,7 +299,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                   <DefaultButton selectedColor='--Blue' onClick={() => handleChangeStatusDelivery('Shipping')}>
                     Iniciar Entrega{numSelected > 1 && 's'}
                   </DefaultButton>
-                  <DefaultButton selectedColor='--Gold' onClick={() => props.setIsModalDeliveryChangesOpen(true)} >
+                  <DefaultButton selectedColor='--Orange' onClick={() => props.setIsModalDeliveryChangesOpen(true)} >
                     Editar Entrega{numSelected > 1 && 's'}
                   </DefaultButton>
                 </>
@@ -308,7 +309,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                   <DefaultButton selectedColor='--Green' onClick={() => props.setIsModalDeliveryDoneOpen(true)}>
                     Concluir Entrega{numSelected > 1 && 's'}
                   </DefaultButton>
-                  <DefaultButton selectedColor='--Orange' onClick={() => handleDeliveryListPrint()}>
+                  <DefaultButton selectedColor='--Pink' onClick={() => handleDeliveryListPrint()}>
                     Imprimrir Roteiro
                   </DefaultButton>
                 </>
@@ -332,23 +333,6 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             // </Tooltip>
           )}
         </Toolbar >)
-      }
-      {props.isModalDeliveryChangesOpen &&
-        <ModalDeliveryChanges
-          isModalDeliveryChangesOpen={props.isModalDeliveryChangesOpen}
-          setIsModalDeliveryChangesOpen={props.setIsModalDeliveryChangesOpen}
-          deliveriesFiltered={deliveriesFiltered}
-          searchDeliveries={props.searchDeliveries}
-          typeDelivery={props.typeDelivery}
-        />}
-      {props.isModalDeliveryDoneOpen &&
-        <ModalDeliveryDone
-          deliveriesFiltered={deliveriesFiltered}
-          searchDeliveries={props.searchDeliveries}
-          typeDelivery={props.typeDelivery}
-          isModalDeliveryDoneOpen={props.isModalDeliveryDoneOpen}
-          setIsModalDeliveryDoneOpen={props.setIsModalDeliveryDoneOpen}
-        />
       }
     </>
   );
@@ -434,7 +418,8 @@ export default function MuiTableDeliveries(props: MuiTableProps) {
     [order, orderBy, page, rowsPerPage],
   );
 
-
+  const itensSelected = selected.map(item => parseInt(item))
+  const deliveriesFiltered = props.Deliveries.filter(delivery => itensSelected.includes(delivery.itemSell.id)); // Filter selected deliveries
 
   return (
     <>
@@ -505,7 +490,7 @@ export default function MuiTableDeliveries(props: MuiTableProps) {
                       <TableCell>{row.client}</TableCell>
                       <TableCell>{row.address}</TableCell>
                       <TableCell>{row.scheduledDate}</TableCell>
-                      {row.deliveredDate && <TableCell>{row.deliveredDate}</TableCell>}
+                      <TableCell>{row.deliveredDate}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -537,10 +522,26 @@ export default function MuiTableDeliveries(props: MuiTableProps) {
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Comprimir"
         />
-
       </Box>
 
-
+      {isModalDeliveryChangesOpen &&
+        <ModalDeliveryChanges
+          isModalDeliveryChangesOpen={isModalDeliveryChangesOpen}
+          setIsModalDeliveryChangesOpen={setIsModalDeliveryChangesOpen}
+          deliveriesFiltered={deliveriesFiltered}
+          searchDeliveries={props.searchDeliveries}
+          typeDelivery={props.type}
+        />}
+      {isModalDeliveryDoneOpen &&
+        <ModalDeliveryDone
+          deliveriesFiltered={deliveriesFiltered}
+          searchDeliveries={props.searchDeliveries}
+          typeDelivery={props.type}
+          isModalDeliveryDoneOpen={isModalDeliveryDoneOpen}
+          setIsModalDeliveryDoneOpen={setIsModalDeliveryDoneOpen}
+          itensSelected={itensSelected}
+        />
+      }
     </>
 
   );

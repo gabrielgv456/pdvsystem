@@ -26,6 +26,7 @@ export const Container = styled.div <ActiveProps>`
     }
    @media screen and (max-width:930px) {
         padding: 5px;
+        font-size: 0.7rem;
     }
     box-sizing: border-box;
 `
@@ -53,7 +54,8 @@ export const LabelStatus = styled.label <DarkModeProps>`
     text-overflow: ellipsis;
     white-space: nowrap;
     @media screen and (max-width:930px) {
-        width:20%
+        width:15%;
+        font-size: 0.5rem;
     }
 `
 export const LabelValue = styled.label <DarkModeProps> `

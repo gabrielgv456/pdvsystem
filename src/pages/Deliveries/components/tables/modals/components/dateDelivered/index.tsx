@@ -25,10 +25,9 @@ export const DateDelivered = (props:DateDeliveredProps) => {
                     onChange={(newValue) => {
                         props.setDeliveredDate(newValue);
                     }}
-                    renderInput={(params) => <TextField sx={{ width: '60%' }} {...params} />}
+                    renderInput={(params) => <TextField sx={{ width: '100%' }} {...params} />}
                 />
             </LocalizationProvider>
-
         </>
     )
 }

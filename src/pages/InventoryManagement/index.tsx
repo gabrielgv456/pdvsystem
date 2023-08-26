@@ -29,7 +29,8 @@ interface ProductsReturnApiProps {
     cfopId: number,
     ncmCode: string,
     profitMargin: number,
-    unitMeasurement: string
+    unitMeasurement: string,
+    deliveries: [{ itemSell: { quantity: number } }]
 }
 
 export interface TransactionsProductsReturnApi {
@@ -83,6 +84,7 @@ export const InventoryManagement = () => {
     }
     const SearchProducts = async () => {
         const data = await findProducts(auth.idUser)
+        console.log(data.listProducts)
         setProductsReturnApi(data.listProducts)
     }
 
@@ -123,7 +125,8 @@ export const InventoryManagement = () => {
                         <S.labelEdit></S.labelEdit>
                         <S.labelProduct><b>Produto</b></S.labelProduct>
                         <S.labelStatus><b>Status</b></S.labelStatus>
-                        <S.labelQuantity><b>Saldo</b></S.labelQuantity>
+                        <S.labelQuantity><b>Disponível</b></S.labelQuantity>
+                        <S.labelQuantity><b>Reservado</b></S.labelQuantity>
                         <S.labelValue><b>Valor</b></S.labelValue>
                         <S.labelCriadoEm ><b>Criado em</b></S.labelCriadoEm>
                         <S.labelTrash></S.labelTrash>
@@ -153,7 +156,11 @@ export const InventoryManagement = () => {
                             searchProduct={SearchProducts}
                             dataTransactionsProductsReturnApi={dataTransactionsProductsReturnApi}
                             setdataTransactionsProductsReturnApi={setdataTransactionsProductsReturnApi}
-                            created_at={item.created_at} />
+                            created_at={item.created_at}
+                            reservedQuantity={item.deliveries.reduce( (acc, item) => { 
+                                return acc + item.itemSell.quantity
+                            },0)}
+                            />
 
                     ))
                     }

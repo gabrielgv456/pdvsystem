@@ -1,7 +1,8 @@
-import {createGlobalStyle} from 'styled-components'
+import { createGlobalStyle } from 'styled-components'
+import { darken } from 'polished'
 
 interface DarkModeProps {
-  isDarkMode:Boolean;
+  isDarkMode: Boolean;
 }
 
 export const GlobalStyle = createGlobalStyle<DarkModeProps>`
@@ -19,6 +20,7 @@ export const GlobalStyle = createGlobalStyle<DarkModeProps>`
     --Red: #ff0000;
     --Gold : gold;
     --Orange: #f1b445;
+    --Pink:#e96090
 }
 
 

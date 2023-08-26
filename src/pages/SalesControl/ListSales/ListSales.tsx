@@ -1,6 +1,6 @@
 import * as S from "./style";
 import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider"
-import { GeneratePDFSalesControl } from "../../../hooks/useGeneratePDF";
+import { GeneratePDF } from "../../../hooks/useGeneratePDF";
 import { Sell, SellsProductsReceiveApi } from "../index"
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { AiFillPrinter } from "react-icons/ai";
@@ -45,7 +45,7 @@ export function Listagem(props: Props) {
 
 
    const handlePrint = () => {
-      GeneratePDFSalesControl(props.listSellsProducts, sumtotalValuethisSellFormated, sumtotalQuantitythisSell, dataSellPrint, props.item.id)
+      GeneratePDF(sumtotalValuethisSellFormated, sumtotalQuantitythisSell, props.listSellsProducts.filter(item => item.sellId === props.item.id).map(item => { return { name: item.descriptionProduct, id: item.id, initialvalue: item.totalCost, quantity: item.quantity, totalvalue: item.totalValue } }), dataSellPrint, props.item.codRef)
    }
    const handleEdit = async () => {
 

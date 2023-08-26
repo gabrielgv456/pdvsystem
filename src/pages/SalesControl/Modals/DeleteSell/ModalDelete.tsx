@@ -48,10 +48,10 @@ export const ModalDelete = (props: ModalDeleteProps) => {
     const [selectedType, setSelectedType] = useState<type | null>(null)
     const options: type[] = [
         { id: 1, descricao: 'INTERNO - Remover recebimento realizado' },
-        { id: 2, descricao: `SAÍDA - Lançar uma saída no caixa de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.valueSellModal)} em dinheiro na data de hoje` },
+        { id: 2, descricao: `SAÍDA - Lançar uma saída no caixa em dinheiro na data de hoje` },
 
     ]
-
+//e ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.valueSellModal)}
     async function handleCloseModalDelete() {
         props.setismodalDeleteOpen(false)
         setisCheckBoxChecked(true)

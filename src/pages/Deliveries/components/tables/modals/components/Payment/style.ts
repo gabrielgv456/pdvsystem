@@ -25,7 +25,7 @@ export const DivModalIconsPayment = styled.div`
     font-size:0.8rem;
     display: flex;
     justify-content: space-around;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.3rem;
     .hoverbutton {
         width: 25px;
         height: 25px;

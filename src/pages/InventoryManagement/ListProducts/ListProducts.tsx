@@ -35,6 +35,7 @@ export interface ListProductsProps {
     unitMeasurement: string,
     dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[];
     isModalTransactionsProductsOpen: boolean;
+    reservedQuantity: number,
     setisModalTransactionsProductsOpen: (isModalTransactionsProductsOpen: boolean) => void;
     setdataTransactionsProductsReturnApi: (dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[]) => void;
     searchProduct: () => void;
@@ -150,6 +151,10 @@ export const ListProducts = (props: ListProductsProps) => {
 
                 <S.LabelQuantity isDarkMode={Theme.DarkMode}>
                     <b>{props.quantity}</b>
+                </S.LabelQuantity>
+
+                <S.LabelQuantity isDarkMode={Theme.DarkMode}>
+                    <b>{props.reservedQuantity > 0 ? props.reservedQuantity : ''}</b>
                 </S.LabelQuantity>
 
                 <S.LabelValue isDarkMode={Theme.DarkMode}>

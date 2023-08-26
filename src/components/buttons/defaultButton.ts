@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import {darken} from 'polished'
 
 interface selectedColorProps {
-    selectedColor: '--Green'|'--Blue'|'--Red'|'--Gold'|'--Orange'
+    selectedColor: '--Green'|'--Blue'|'--Red'|'--Gold'|'--Orange'|'--Pink';
 } 
 
 export const DefaultButton = styled.button <selectedColorProps>  `
@@ -20,8 +20,9 @@ export const DefaultButton = styled.button <selectedColorProps>  `
         props.selectedColor === '--Blue' ? '#437fff' : 
         props.selectedColor === '--Red' ? '#ff0000'  :
         props.selectedColor === '--Gold' ? 'gold' :
-        props.selectedColor === '--Orange' ? '#f1b445' : ''
-        
-        ))}
+        props.selectedColor === '--Orange' ? '#f1b445' : 
+        props.selectedColor === '--Pink' ? '#e96090' :
+        '' ))}
+
     }
 `

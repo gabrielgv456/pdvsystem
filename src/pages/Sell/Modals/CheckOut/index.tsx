@@ -445,7 +445,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
                     <S.DivModalButtons>
                         {isSellEnded ?
-                            <S.ButtonPrint onClick={(e) => GeneratePDF(props.listProducts, props.sumvalueformated, props.sumquantity)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
+                            <S.ButtonPrint onClick={(e) => GeneratePDF(props.sumvalueformated, props.sumquantity, props.listProducts,new Date().toLocaleDateString(),codRefSell)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
                             :
                             <S.ButtonEndSell onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</S.ButtonEndSell>
                         }

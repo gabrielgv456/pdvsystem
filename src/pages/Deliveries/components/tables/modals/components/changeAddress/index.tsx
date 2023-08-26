@@ -16,7 +16,9 @@ import { useApi } from '../../../../../../../hooks/useApi';
 
 interface DeliveryAddressClientProps {
     selectedDeliveryModal: DeliveriesReturnApiProps,
-    moreOneDelivery: boolean
+    moreOneDelivery: boolean,
+    searchDeliveries: () => void
+    setSelectedDeliveryModal:(value:DeliveriesReturnApiProps) => void
 }
 export interface typeRequestDeliveryAdressChange {
     scheduledDate: string | null;
@@ -36,15 +38,14 @@ export interface typeRequestDeliveryAdressChange {
 export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
 
     const { MessageBox } = useMessageBoxContext()
-    const [newDeliveryAddress, setNewDeliveryAddress] = useState<DeliveriesReturnApiProps>(props.selectedDeliveryModal)
     const auth = useContext(AuthContext)
     const { changeAdressDelivery } = useApi()
 
     const dataRequestApi: typeRequestDeliveryAdressChange = {
-        ...newDeliveryAddress.address,
-        scheduledDate: newDeliveryAddress.scheduledDate,
-        addressId: newDeliveryAddress.address.id,
-        deliveryId: newDeliveryAddress.id,
+        ...props.selectedDeliveryModal.address,
+        scheduledDate: props.selectedDeliveryModal.scheduledDate,
+        addressId: props.selectedDeliveryModal.address.id,
+        deliveryId: props.selectedDeliveryModal.id,
         storeId: auth.idUser
     }
 
@@ -52,6 +53,7 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
         try {
             const result = await changeAdressDelivery(dataRequestApi)
             if (!result.Success) throw new Error(result.Erro)
+            props.searchDeliveries()
             MessageBox('success', 'Dados de entrega atualizados com sucesso!')
         } catch (error: any) {
             MessageBox('error', 'Falha ao atualizar dados de entrega! ' + error.message)
@@ -67,16 +69,16 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
                     MessageBox('error', 'CEP invalido')
                 }
                 else {
-                    if (newDeliveryAddress) {
-                        setNewDeliveryAddress({
-                            ...newDeliveryAddress,
+                    if (props.selectedDeliveryModal) {
+                        props.setSelectedDeliveryModal({
+                            ...props.selectedDeliveryModal,
                             address: {
-                                ...newDeliveryAddress.address,
+                                ...props.selectedDeliveryModal.address,
                                 addressNeighborhood: data.bairro,
                                 addressState: data.uf,
                                 addressStreet: data.logradouro,
                                 addressCity: data.localidade,
-                                addressCep: newDeliveryAddress.address.addressCep,
+                                addressCep: props.selectedDeliveryModal.address.addressCep,
                                 addressComplement: '',
                                 addressNumber: ''
                             }
@@ -100,18 +102,18 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
                         views={['year', 'month', 'day']}
                         className='TextField'
                         disablePast={true}
-                        value={newDeliveryAddress.scheduledDate}
+                        value={props.selectedDeliveryModal.scheduledDate}
                         onChange={(newValue) => {
-                            setNewDeliveryAddress({ ...newDeliveryAddress, scheduledDate: newValue });
+                            props.setSelectedDeliveryModal({ ...props.selectedDeliveryModal, scheduledDate: newValue });
                         }}
                         renderInput={(params) => <TextField size="small" sx={{ width: '30%' }} {...params} />}
                     />
                 </LocalizationProvider>
 
                 <TextField
-                    value={newDeliveryAddress.address.addressCep}
+                    value={props.selectedDeliveryModal.address.addressCep}
                     onChange={(e) => {
-                        setNewDeliveryAddress({ ...newDeliveryAddress, address: { ...newDeliveryAddress.address, addressCep: cepFormat(e.target.value, newDeliveryAddress.address.addressCep) } })
+                        props.setSelectedDeliveryModal({ ...props.selectedDeliveryModal, address: { ...props.selectedDeliveryModal.address, addressCep: cepFormat(e.target.value, props.selectedDeliveryModal.address.addressCep) } })
                     }}
                     onBlur={(e) => handleConsultCep(e.target.value)}
                     size='small'
@@ -123,9 +125,9 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
                 />
 
                 <TextField
-                    value={newDeliveryAddress.address.addressStreet}
+                    value={props.selectedDeliveryModal.address.addressStreet}
                     onChange={(e) => {
-                        setNewDeliveryAddress({ ...newDeliveryAddress, address: { ...newDeliveryAddress.address, addressStreet: `${e.target.value.length > 50 ? newDeliveryAddress.address.addressStreet : e.target.value}` } })
+                        props.setSelectedDeliveryModal({ ...props.selectedDeliveryModal, address: { ...props.selectedDeliveryModal.address, addressStreet: `${e.target.value.length > 50 ? props.selectedDeliveryModal.address.addressStreet : e.target.value}` } })
                     }}
                     id="outlined-basic"
                     label="Endereço"
@@ -136,9 +138,9 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
                 />
 
                 <TextField
-                    value={newDeliveryAddress.address.addressNumber}
+                    value={props.selectedDeliveryModal.address.addressNumber}
                     onChange={(e) => {
-                        setNewDeliveryAddress({ ...newDeliveryAddress, address: { ...newDeliveryAddress.address, addressNumber: `${e.target.value.length > 5 ? newDeliveryAddress.address.addressNumber : e.target.value}` } })
+                        props.setSelectedDeliveryModal({ ...props.selectedDeliveryModal, address: { ...props.selectedDeliveryModal.address, addressNumber: `${e.target.value.length > 5 ? props.selectedDeliveryModal.address.addressNumber : e.target.value}` } })
                     }}
                     id="outlined-basic"
                     label="Nº"
@@ -152,9 +154,9 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
 
             <S.LabelModal>
                 <TextField
-                    value={newDeliveryAddress.address.addressNeighborhood}
+                    value={props.selectedDeliveryModal.address.addressNeighborhood}
                     onChange={(e) =>
-                        setNewDeliveryAddress({ ...newDeliveryAddress, address: { ...newDeliveryAddress.address, addressNeighborhood: `${e.target.value.length > 30 ? newDeliveryAddress.address.addressNeighborhood : e.target.value}` } })
+                        props.setSelectedDeliveryModal({ ...props.selectedDeliveryModal, address: { ...props.selectedDeliveryModal.address, addressNeighborhood: `${e.target.value.length > 30 ? props.selectedDeliveryModal.address.addressNeighborhood : e.target.value}` } })
                     }
                     type="text"
                     id="outlined-basic"
@@ -165,9 +167,9 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
                     sx={{ width: '35%' }} />
 
                 <TextField
-                    value={newDeliveryAddress.address.addressCity}
+                    value={props.selectedDeliveryModal.address.addressCity}
                     onChange={(e) =>
-                        setNewDeliveryAddress({ ...newDeliveryAddress, address: { ...newDeliveryAddress.address, addressCity: `${e.target.value.length > 30 ? newDeliveryAddress.address.addressCity : e.target.value}` } })
+                        props.setSelectedDeliveryModal({ ...props.selectedDeliveryModal, address: { ...props.selectedDeliveryModal.address, addressCity: `${e.target.value.length > 30 ? props.selectedDeliveryModal.address.addressCity : e.target.value}` } })
                     }
                     type="text"
                     id="outlined-basic"
@@ -178,9 +180,9 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
                     sx={{ width: '45%' }} />
 
                 <Autocomplete
-                    value={newDeliveryAddress.address.addressState}
+                    value={props.selectedDeliveryModal.address.addressState}
                     onChange={(event: any, newValue: string | null) => {
-                        setNewDeliveryAddress({ ...newDeliveryAddress, address: { ...newDeliveryAddress.address, addressState: newValue } })
+                        props.setSelectedDeliveryModal({ ...props.selectedDeliveryModal, address: { ...props.selectedDeliveryModal.address, addressState: newValue } })
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"

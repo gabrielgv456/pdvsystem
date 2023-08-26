@@ -2,6 +2,7 @@ import axios from 'axios';
 import { TypeDeliveriesRequest } from '../pages/Deliveries';
 import { TypeChangeStatusDeliveriesRequest } from '../pages/Deliveries/components/tables/muiDeliveryTable';
 import { typeRequestDeliveryAdressChange } from '../pages/Deliveries/components/tables/modals/components/changeAddress';
+import { typeSetPaymentsonDelivery } from '../pages/Deliveries/components/tables/modals/modalDeliveryDone';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -169,8 +170,8 @@ export const useApi = () => ({
         const response = await api.patch('/changeAddressDelivery', {dataChangeAddressDelivery})
         return response.data
     },
-    setTypePaymentsonDelivery : async (dataSetTypePaymentsonDelivery:any) => {
-        const response = await api.post('/setTypePaymentonDelivery', {dataSetTypePaymentsonDelivery})
+    setPaymentsonDelivery : async (dataSetPaymentsonDelivery:typeSetPaymentsonDelivery) => {
+        const response = await api.post('/setPaymentonDelivery', {dataSetPaymentsonDelivery})
         return response.data
     }
 });
