@@ -60,7 +60,8 @@ justify-content: space-around;
 export const DivModalButtons = styled.div`
     padding-top: 2rem;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap:8px;
 `
 
 export const InputModal = styled.input`
@@ -153,22 +154,6 @@ export const ButtonPrint = styled.button`
     transition: background-color 0.2s;
     &:hover{
         background-color: ${darken(0.02, '#007fff')}
-    }
-`
-export const ButtonEndSell = styled.button`
-    background-color: #34cc96;
-    border-radius: 13px;
-    font-size:18px;
-    width:9rem;
-    height:40px;
-    //border:1px solid silver;
-    border:none;
-    cursor:pointer;
-    color:#fff;
-    padding:5px;
-    transition: background-color 0.2s;
-    &:hover{
-        background-color: ${darken(0.02, '#34cc96')}
     }
 `
 

@@ -81,7 +81,11 @@ export default function LayoutDefault(props: Props) {
 
   const drawer = (
     <S.Div isDarkMode={Theme.DarkMode}  >
-      <Toolbar><Typography variant="h6" noWrap component="div">{auth.user?.name}</Typography></Toolbar>
+      <Toolbar><Typography sx={{ margin: '0 auto'}} variant="h6" noWrap component="div">
+        {auth.user?.urlLogo ?
+          <img style={{ maxHeight: 50,maxWidth:170 }} src={auth.user.urlLogo} /> :
+          auth.user?.name}
+      </Typography></Toolbar>
       <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} />
       <List sx={{ marginBottom: '1rem' }}>
         {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Entregas', 'Movimentações', 'Pessoas', 'Gestão de Estoque', 'Ajustes'].map((text, index) => (
@@ -100,7 +104,7 @@ export default function LayoutDefault(props: Props) {
               {index === 0 && <HomeIcon className="Icons" />}
               {index === 1 && <StorefrontIcon className="Icons" />}
               {index === 2 && <ReceiptLongIcon className="Icons" />}
-              {index === 3 && <FaTruck  style={{ fontSize: '22px' }} className="Icons"/>}
+              {index === 3 && <FaTruck style={{ fontSize: '22px' }} className="Icons" />}
               {index === 4 && <PaidIcon className="Icons" />}
               {index === 5 && <BsFillPeopleFill size="22" className="Icons" />}
               {index === 6 && <PieChartIcon className="Icons" />}
@@ -140,7 +144,7 @@ export default function LayoutDefault(props: Props) {
 
 
       <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : '', width: '60%', margin: '0 auto' }} />
-      <div style={{ display: 'flex',gap:'2px', width: "100%", justifyContent: 'center', flexDirection: 'column', alignItems: 'center', margin: '2.5rem 0 1rem 0' }}>
+      <div style={{ display: 'flex', gap: '2px', width: "100%", justifyContent: 'center', flexDirection: 'column', alignItems: 'center', margin: '2.5rem 0 1rem 0' }}>
 
         <S.BNameLogo isDarkMode={Theme.DarkMode}>Safyra®</S.BNameLogo>
         <img src={logo} style={{ width: 120, height: 75 }} />

@@ -1,10 +1,12 @@
 import * as S from "./style";
 import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider"
-import { GeneratePDF } from "../../../hooks/useGeneratePDF";
+import { GeneratePDFSell } from "../../../components/pdfGenerator/GeneratePDFSell";
 import { Sell, SellsProductsReceiveApi } from "../index"
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { AiFillPrinter } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
+import { useContext } from 'react'
+import { AuthContext } from "../../../contexts/Auth/AuthContext";
 
 
 interface Props {
@@ -23,6 +25,7 @@ interface Props {
 export function Listagem(props: Props) {
 
    const Theme = useDarkMode();
+   const { user } = useContext(AuthContext)
    const remove = () => {
       props.handleRemoveTask(props.item.id, props.item.sellValue)
    }
@@ -45,7 +48,7 @@ export function Listagem(props: Props) {
 
 
    const handlePrint = () => {
-      GeneratePDF(sumtotalValuethisSellFormated, sumtotalQuantitythisSell, props.listSellsProducts.filter(item => item.sellId === props.item.id).map(item => { return { name: item.descriptionProduct, id: item.id, initialvalue: item.totalCost, quantity: item.quantity, totalvalue: item.totalValue } }), dataSellPrint, props.item.codRef)
+      GeneratePDFSell(sumtotalValuethisSellFormated, sumtotalQuantitythisSell, props.listSellsProducts.filter(item => item.sellId === props.item.id).map(item => { return { name: item.descriptionProduct, id: item.id, initialvalue: item.totalCost, quantity: item.quantity, totalvalue: item.totalValue } }), dataSellPrint, props.item.codRef, user)
    }
    const handleEdit = async () => {
 

@@ -5,7 +5,7 @@ import { HiBadgeCheck } from "react-icons/hi"
 import { AiFillCloseCircle, AiFillPrinter, AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai"
 import { BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill, BsPersonBadge, BsFillPersonFill } from "react-icons/bs"
 import { PaymentMethods } from "../../PaymentMethods/PaymentMethods";
-import { GeneratePDF } from "../../../../hooks/useGeneratePDF";
+import { GeneratePDFSell } from "../../../../components/pdfGenerator/GeneratePDFSell";
 import PixIcon from '@mui/icons-material/Pix';
 import { FaMoneyBillWave, FaTruck } from "react-icons/fa"
 import * as S from './style'
@@ -24,6 +24,9 @@ import { ModalAddSeller } from '../../../PeopleRegistration/Sellers/Modals/addSe
 import { MuiBox } from '../../../../components/box/muiBox';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../components/buttons/closeButtonModal';
+import { DefaultButton } from '../../../../components/buttons/defaultButton';
+import { RiFileList3Line } from 'react-icons/ri';
+import { GeneratePDFBudget } from '../../../../components/pdfGenerator/GeneratePDFBudget';
 
 interface handleChangeProps {
     UserId: number;
@@ -54,7 +57,7 @@ interface ProductsType {
     initialCost: number
 };
 
-interface SellersandClientsType {
+export interface SellersandClientsType {
     id: number;
     name: string;
     cpf: string;
@@ -445,9 +448,12 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
                     <S.DivModalButtons>
                         {isSellEnded ?
-                            <S.ButtonPrint onClick={(e) => GeneratePDF(props.sumvalueformated, props.sumquantity, props.listProducts,new Date().toLocaleDateString(),codRefSell)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
+                            <S.ButtonPrint onClick={(e) => GeneratePDFSell(props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), codRefSell, auth.user)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
                             :
-                            <S.ButtonEndSell onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</S.ButtonEndSell>
+                            <>
+                            <DefaultButton onClick={(e) => GeneratePDFBudget(props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), codRefSell, auth.user, inputClient,inputSeller)} selectedColor='--NoColor' fontSize='1.01rem'  padding='7px 10px 7px 10px' borderRadius='13px'> <RiFileList3Line style={{ marginRight: 2 }}/> Orçamento</DefaultButton>
+                            <DefaultButton selectedColor='--Green' fontSize='1.08rem' padding='7px 25px 7px 25px' borderRadius='13px' onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</DefaultButton>
+                            </>
                         }
                     </S.DivModalButtons>
                     <DefaultButtonCloseModal onClick={handleCloseModalConfirmSell}>

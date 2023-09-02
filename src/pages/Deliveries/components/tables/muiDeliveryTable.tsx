@@ -26,7 +26,7 @@ import { DeliveryAddressClient } from '../../../Sell/Modals/CheckOut/Components/
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 import { useApi } from '../../../../hooks/useApi';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
-import { GeneratePDFDeliveryList } from '../../../../hooks/useGeneratePDF';
+import { GeneratePDFDeliveryList } from '../../../../components/pdfGenerator/GeneratePDFDeliveryList';
 import { User } from '../../../../types/User';
 import { ModalDeliveryChanges } from './modals/modalDeliveryChanges';
 import { ModalDeliveryDone } from './modals/modalDeliveryDone';

@@ -3,6 +3,7 @@ import { User } from '../../types/User';
 
 export type AuthContextType = {
     user: User | null;
+    setUser: (value: User|null) => void
     signin: (email: string, password: string, setIsModalValidateOpen:(value:boolean)=>void) => Promise<string>;
     signout: () => void;
     isUserValid: boolean;

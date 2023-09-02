@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect,DragEvent,ChangeEvent } from 'react';
+import { useState, useContext, useEffect, DragEvent, ChangeEvent } from 'react';
 import * as S from './style'
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
@@ -8,7 +8,7 @@ import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../hooks/useApi';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat, removeNotNumerics } from '../../../../utils/utils';
+import { cellNumberFormat, cepFormat, convertToBase64, cpfCnpjFormat, optionsUF, phoneNumberFormat, removeNotNumerics } from '../../../../utils/utils';
 
 
 export const TabMyProfile = () => {
@@ -29,38 +29,61 @@ export const TabMyProfile = () => {
     const [newPass, setNewPass] = useState('')
     const [confirmNewPass, setConfirmNewPass] = useState('')
     const [changeImage, setChangeImage] = useState(false)
-    const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
     const auth = useContext(AuthContext)
-    const { changePassword, changeAboutCorporation, findAboutCorporation } = useApi()
+    const { changePassword, changeAboutCorporation, findAboutCorporation, uploadFile } = useApi()
     const { MessageBox } = useMessageBoxContext()
     const [dragOver, setDragOver] = useState(false);
-    const [selectedImage, setSelectedImage] = useState<File|null>(null);
-  
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
     const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
-      event.preventDefault();
-      setDragOver(true);
+        event.preventDefault();
+        setDragOver(true);
     };
-  
+
     const handleDragLeave = (event: DragEvent<HTMLLabelElement>) => {
-      event.preventDefault();
-      setDragOver(false);
+        event.preventDefault();
+        setDragOver(false);
     };
-  
-    const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
-      event.preventDefault();
-      setDragOver(false);
-  
-      const file = event.dataTransfer.files[0];
-      setSelectedImage(file);
-      // Fazer chamada para API
+
+    const handleDrop = async (event: DragEvent<HTMLLabelElement>) => {
+        event.preventDefault();
+        setDragOver(false);
+        const file = event.dataTransfer.files[0];
+        sendFiletoApi(file)
     };
-  
+
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files && event.target.files[0];
-      setSelectedImage(file);
-      // Fazer chamada para API
+        sendFiletoApi(file)
     };
-  
+
+    const sendFiletoApi = async (imageLogo: File | null) => {
+        try {
+            if (!imageLogo) {
+                throw new Error('Selecione um arquivo!')
+            }
+            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(imageLogo.type)) {
+                throw new Error('Formato de arquivo inválido!')
+            }
+            if (imageLogo.size >= 1000000 * 5) {
+                throw new Error('Tamanho do arquivo muito grande! Máximo 5mb!')
+            }
+            setSelectedImage(imageLogo);
+            const formData = new FormData();
+            formData.append('file', imageLogo);
+            const result = await uploadFile(formData, auth.idUser)
+            if (!result.Success) {
+                throw new Error('Sem sucesso ao atualizar o arquivo! ' + result.erro)
+            }
+            if (auth.user) {
+                auth.setUser({ ...auth.user, urlLogo: result.url })
+            }
+            MessageBox('success', 'Arquivo atualizado com sucesso! ')
+        } catch (error: any) {
+            MessageBox('warning', error.message)
+        }
+    }
+
 
     useEffect(() => {
         const searchAboutCorporation = async () => {
@@ -71,11 +94,11 @@ export const TabMyProfile = () => {
                 }
                 const { resultAboutCorporation } = dataFindAboutCorporation
                 setNameCorporation(resultAboutCorporation.name)
-                setCnpjCorporation(cpfCnpjFormat(resultAboutCorporation.cnpj,resultAboutCorporation.cnpj))
+                setCnpjCorporation(cpfCnpjFormat(resultAboutCorporation.cnpj, resultAboutCorporation.cnpj))
                 setEmailCorporation(resultAboutCorporation.email)
-                setPhoneNumberCorporation(phoneNumberFormat(resultAboutCorporation.phone,resultAboutCorporation.phone))
-                setCellNumberCorporation(cellNumberFormat(resultAboutCorporation.cellPhone,resultAboutCorporation.cellPhone))
-                setAdressCepCorporation(cepFormat(resultAboutCorporation.adressCep,resultAboutCorporation.adressCep))
+                setPhoneNumberCorporation(phoneNumberFormat(resultAboutCorporation.phone, resultAboutCorporation.phone))
+                setCellNumberCorporation(cellNumberFormat(resultAboutCorporation.cellPhone, resultAboutCorporation.cellPhone))
+                setAdressCepCorporation(cepFormat(resultAboutCorporation.adressCep, resultAboutCorporation.adressCep))
                 setAdressStreetCorporation(resultAboutCorporation.adressStreet)
                 setAdressNumberCorporation(resultAboutCorporation.adressNumber)
                 setAdressNeighborhoodCorporation(resultAboutCorporation.adressNeighborhood)
@@ -95,7 +118,7 @@ export const TabMyProfile = () => {
             if (!newPass || !actualPass || !confirmNewPass) {
                 throw new Error("Informe todos campos!")
             }
-            if (newPass !== confirmNewPass){
+            if (newPass !== confirmNewPass) {
                 throw new Error("Nova senha não confere com a confirmação da nova senha!")
             }
             if (newPass.length < 8) {
@@ -138,7 +161,7 @@ export const TabMyProfile = () => {
         adressNeighborhood: adressNeighborhoodCorporation === '' ? null : adressNeighborhoodCorporation,
         adressCity: adressCityCorporation === '' ? null : adressCityCorporation,
         adressState: adressStateCorporation === '' ? null : adressStateCorporation,
-        fantasyName: fantasyNameCorporation === '' ? null : fantasyNameCorporation 
+        fantasyName: fantasyNameCorporation === '' ? null : fantasyNameCorporation
     }
 
     const finalDataChangePass = {
@@ -153,7 +176,7 @@ export const TabMyProfile = () => {
 
         if (cepformated.length === 8) {
             try {
-                const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
+                const { data } = await axios.get(`https://viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
                     MessageBox('error', 'CEP invalido')
@@ -176,28 +199,29 @@ export const TabMyProfile = () => {
         <S.Container>
             <S.DivForm>
                 <S.DivPicture>
-                    <img width={150} style={{maxHeight:140}} src={selectedImage ? URL.createObjectURL(selectedImage):"https://cdn-icons-png.flaticon.com/512/4194/4194756.png"}></img>
+                    {/* URL.createObjectURL(selectedImage) */}
+                    <img style={{ maxHeight: 50, maxWidth: 170 }} src={auth.user?.urlLogo ?? "https://cdn-icons-png.flaticon.com/512/4194/4194756.png"}></img>
                     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: 15 }}>
                         <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
 
                             {changeImage ?
                                 < >
-                                <S.labelChangeImg onDragOver={handleDragOver}
-                                onDragLeave={handleDragLeave}
-                                onDrop={handleDrop}
-                                dragOver={dragOver}>
-                                    <AiOutlineCloudUpload size='30'/>
-                                    Selecione ou arraste uma imagem
-                                <input type='file' onChange={handleFileChange} />
-                                </S.labelChangeImg>
+                                    <S.labelChangeImg onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={handleDrop}
+                                        dragOver={dragOver}>
+                                        <AiOutlineCloudUpload size='30' />
+                                        Selecione ou arraste uma imagem
+                                        <input type='file' onChange={handleFileChange} />
+                                    </S.labelChangeImg>
                                 </>
-                                
+
                                 :
-                                <S.ButtonChangeImg onClick={()=>setChangeImage(true)}><b>Alterar</b></S.ButtonChangeImg>
+                                <S.ButtonChangeImg onClick={() => setChangeImage(true)}><b>Alterar</b></S.ButtonChangeImg>
                             }
                             <S.ButtonDeletar><b>Deletar</b></S.ButtonDeletar>
                         </div>
-                        <S.labelRecomendationsImg> Dimensões recomendadas: 200x200, tamanho maximo: 5mb </S.labelRecomendationsImg>
+                        <S.labelRecomendationsImg> Dimensões recomendadas: 170x50, tamanho maximo: 5mb </S.labelRecomendationsImg>
                     </div>
 
                 </S.DivPicture>
@@ -227,7 +251,7 @@ export const TabMyProfile = () => {
                     <TextField
                         value={cnpjCorporation}
                         onChange={(e) => {
-                            setCnpjCorporation(cpfCnpjFormat(e.target.value,cnpjCorporation))
+                            setCnpjCorporation(cpfCnpjFormat(e.target.value, cnpjCorporation))
                         }}
                         label="CNPJ"
                         id="outlined-basic"
@@ -269,7 +293,7 @@ export const TabMyProfile = () => {
                     <TextField
                         value={phoneNumberCorporation}
                         onChange={(e) => {
-                            setPhoneNumberCorporation(phoneNumberFormat(e.target.value,phoneNumberCorporation))
+                            setPhoneNumberCorporation(phoneNumberFormat(e.target.value, phoneNumberCorporation))
                         }}
                         id="outlined-basic"
                         label="Telefone"
@@ -280,7 +304,7 @@ export const TabMyProfile = () => {
                     <TextField
                         value={cellNumberCorporation}
                         onChange={(e) => {
-                            setCellNumberCorporation(cellNumberFormat(e.target.value,cellNumberCorporation))
+                            setCellNumberCorporation(cellNumberFormat(e.target.value, cellNumberCorporation))
                         }}
                         id="outlined-basic"
                         label="Celular"
@@ -295,7 +319,7 @@ export const TabMyProfile = () => {
                     <TextField
                         value={adressCepCorporation}
                         onChange={(e) => {
-                            setAdressCepCorporation(cepFormat(e.target.value,adressCepCorporation))
+                            setAdressCepCorporation(cepFormat(e.target.value, adressCepCorporation))
                         }}
                         onBlur={(e) => handleConsultCep(e.target.value)}
                         id="outlined-basic"
@@ -414,7 +438,7 @@ export const TabMyProfile = () => {
                     id="outlined-basic"
                     label="Repita Nova Senha"
                     variant="outlined"
-                    sx={{  width: '250px' }} />
+                    sx={{ width: '250px' }} />
 
             </S.DivChangePass>
             <S.ButtonSave onClick={() => handleChangePass()}><b>Salvar</b></S.ButtonSave>

@@ -83,12 +83,12 @@ export function cepFormat(text: string, max: string) {
 export function FormatCurrencytoFloatdb(value: string | null) {
   if (!value) { return 0 };
   let formatvalue = value
-  formatvalue =  formatvalue.replace(/[^\d.-]/g, '')
+  formatvalue = formatvalue.replace(/[^\d.-]/g, '')
   formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
   return (parseFloat(formatvalue))
 }
 
-export function FormatChangePercent(value: string|null) {
+export function FormatChangePercent(value: string | null) {
   if (!value) { return '' }
   value = value.replace(/[^\d.-]/g, '');
   const valueInt = parseFloat(value)
@@ -96,7 +96,7 @@ export function FormatChangePercent(value: string|null) {
   return valueInt.toFixed(2) + ''
 }
 
-export function FormatPercent(value: string|null) {
+export function FormatPercent(value: string | null) {
   if (!value) { return '' }
   value = value.replace(/\D/g, "")
   value = value.replace(/(\d)(\d{2})$/, "$1.$2")
@@ -110,15 +110,37 @@ export function currencyRemoveNotNumbers(value: string | null) {
   return value.replace(/[^\d.]/g, '')
 }
 
-export function DateFormatWeek (value: string|null) {
+export function DateFormatWeek(value: string | null) {
   if (!value) return ''
   return new Date(value).toLocaleString('pt-BR', {
     day: 'numeric',
     month: 'numeric',
     year: 'numeric',
     weekday: 'long',
-})
+  })
 }
+
+export const convertToBase64 = (file: File | null): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          resolve(event.target.result.toString());
+        } else {
+          reject(new Error('Failed to convert to base64'));
+        }
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  });
+};
 
 
 export function CustomizedSnackbars() {

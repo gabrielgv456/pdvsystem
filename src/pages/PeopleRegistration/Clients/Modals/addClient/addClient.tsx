@@ -84,7 +84,7 @@ export const ModalAddClient = (props: ListClientstoAddClientProps) => {
 
         if (cepformated.length === 8) {
             try {
-                const { data } = await axios.get(`https:\\viacep.com.br/ws/${cepformated}/json/`)
+                const { data } = await axios.get(`https://viacep.com.br/ws/${cepformated}/json/`)
 
                 if (data.erro) {
                     MessageBox('error', 'CEP invalido')
