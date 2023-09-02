@@ -9,6 +9,7 @@ import { useApi } from '../../../../hooks/useApi';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { cellNumberFormat, cepFormat, convertToBase64, cpfCnpjFormat, optionsUF, phoneNumberFormat, removeNotNumerics } from '../../../../utils/utils';
+import { User } from '../../../../types/User';
 
 
 export const TabMyProfile = () => {
@@ -30,7 +31,7 @@ export const TabMyProfile = () => {
     const [confirmNewPass, setConfirmNewPass] = useState('')
     const [changeImage, setChangeImage] = useState(false)
     const auth = useContext(AuthContext)
-    const { changePassword, changeAboutCorporation, findAboutCorporation, uploadFile } = useApi()
+    const { changePassword, changeAboutCorporation, findAboutCorporation, uploadFile, deleteLogo } = useApi()
     const { MessageBox } = useMessageBoxContext()
     const [dragOver, setDragOver] = useState(false);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -81,6 +82,21 @@ export const TabMyProfile = () => {
             MessageBox('success', 'Arquivo atualizado com sucesso! ')
         } catch (error: any) {
             MessageBox('warning', error.message)
+        }
+    }
+
+    const handleDeleteLogo = async () => {
+        try {
+            const result = await deleteLogo(auth.idUser)
+            if (!result.Success) {
+                throw new Error('Falha ao deletar logo! ' + result.erro)
+            }
+            if (auth.user) (
+                auth.setUser({ ...auth.user, urlLogo: '' })
+            )
+            MessageBox('success', 'Logo exclusa com sucesso!')
+        } catch (error: any) {
+            MessageBox('error', error.message)
         }
     }
 
@@ -141,6 +157,10 @@ export const TabMyProfile = () => {
             const dataChangeAboutCorporation = await changeAboutCorporation(finalDataChangeAboutCorporation)
             if (!dataChangeAboutCorporation.Success) {
                 throw new Error("Erro ao atualizar dados da empresa! " + dataChangeAboutCorporation.erro)
+            }
+            const newUser : User | null = dataChangeAboutCorporation.updateAbouteCorporation
+            if (auth.user) {
+                auth.setUser({ ...auth.user, ...newUser})
             }
             MessageBox('success', 'Dados atualizados com sucesso!')
         } catch (error: any) {
@@ -219,14 +239,14 @@ export const TabMyProfile = () => {
                                 :
                                 <S.ButtonChangeImg onClick={() => setChangeImage(true)}><b>Alterar</b></S.ButtonChangeImg>
                             }
-                            <S.ButtonDeletar><b>Deletar</b></S.ButtonDeletar>
+                            <S.ButtonDeletar onClick={() => handleDeleteLogo()}><b>Deletar</b></S.ButtonDeletar>
                         </div>
                         <S.labelRecomendationsImg> Dimensões recomendadas: 170x50, tamanho maximo: 5mb </S.labelRecomendationsImg>
                     </div>
 
                 </S.DivPicture>
                 <span style={{ marginBottom: 15, fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}>
-                    <input type='checkbox' />Exibir logo no menu
+                    {/* <input type='checkbox' />Exibir logo no menu */}
                 </span>
                 <b>Sobre o estabelecimento</b>
                 <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>

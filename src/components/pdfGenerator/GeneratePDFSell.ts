@@ -1,6 +1,6 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { cpfCnpjFormat } from "../../utils/utils";
+import { cellNumberFormat, cpfCnpjFormat, phoneNumberFormat } from "../../utils/utils";
 import { User } from "../../types/User";
 
 interface ProductsType {
@@ -46,10 +46,43 @@ export const GeneratePDFSell = (sumvalueformated: string, sumquantity: number, l
             {
                 style: 'title',
                 table: {
-                    widths: [200],
+                    widths: [170],
+                    alignment: 'center',
                     body: [
-                        [{ text: '          Comprovante de venda' }],
-
+                        [userInfo?.urlLogo ? { image: 'logo', width:170,  alignment: 'center' } : { text: '' }],
+                    ]
+                },
+                layout: 'noBorders',
+            },
+            {
+                style: `${userInfo?.urlLogo ? 'main' : 'title'}'`,
+                text: [
+                    (userInfo?.name ?? '') + '\n',
+                ],
+                margins: [0, 0, 0, 0]
+            },
+            {
+                style: 'main',
+                text: [
+                    (userInfo?.cnpj ? 'Cnpj: ' + cpfCnpjFormat(userInfo.cnpj, userInfo.cnpj) + '\n' : ''),
+                    userInfo?.phone ? 'Telefone: ' + phoneNumberFormat(userInfo?.phone ?? '', userInfo?.phone ?? '') + '\n' : '',
+                    userInfo?.cellPhone ? 'Celular: ' + cellNumberFormat(userInfo?.cellPhone ?? '', userInfo?.cellPhone ?? '') + '\n' : '',
+                    userInfo?.adressStreet ? (
+                        userInfo?.adressStreet + ', '
+                        + userInfo?.adressNumber + ', '
+                        + userInfo?.adressNeighborhood + ', '
+                        + userInfo?.adressCity + ' - '
+                        + userInfo?.adressState) + '\n\n' : '',
+                ],
+                margins: [0, 0, 0, 0]
+            },
+            {
+                style: 'title',
+                table: {
+                    widths: [170],
+                    alignment: 'center',
+                    body: [
+                        [{ text: 'Comprovante de venda \n\n', alignment: 'center' }],
                     ]
                 },
                 layout: 'noBorders',
@@ -57,23 +90,10 @@ export const GeneratePDFSell = (sumvalueformated: string, sumquantity: number, l
             {
                 style: 'main',
                 text: [
-                    (userInfo?.name ?? '') + '\n',
-                    (userInfo?.cnpj ? 'Cnpj: ' + cpfCnpjFormat(userInfo.cnpj,userInfo.cnpj) + '\n' : ''),
-                    userInfo?.adressStreet ? (
-                        userInfo?.adressStreet + ', '
-                        + userInfo?.adressNumber + ', '
-                        + userInfo?.adressNeighborhood + ', '
-                        + userInfo?.adressCity + ' - '
-                        + userInfo?.adressState) + '\n\n' : '',
                     'Itens da venda\n',
                     '_________________________________________\n',
-
-
                 ],
                 margins: [0, 0, 0, 0]
-
-
-
             },
             {
                 style: 'tableItens',
@@ -106,6 +126,11 @@ export const GeneratePDFSell = (sumvalueformated: string, sumquantity: number, l
 
 
             },
+            {
+                style: 'footer',
+                text: ['Emitido com Safyra® - Gestão do seu negócio (safyra.com.br)'],
+                
+            }
         ],
 
         styles: {
@@ -119,10 +144,17 @@ export const GeneratePDFSell = (sumvalueformated: string, sumquantity: number, l
             main: {
 
                 fontSize: 9
+            },
+            footer: {
+                fontSize: 5,margin: [0, 20, 0, 0]
             }
+        },
+        images : {
+            logo: userInfo?.urlLogo ?? ''
         }
 
     }
+    //@ts-ignorex
     pdfMake.createPdf(docParams).print()
 }
 

@@ -253,7 +253,7 @@ export const Sell = () => {
                         </S.TotalValue>
                         <S.DivConfirmSell>
                             <S.Button onClick={handleOpenModalConfirmSell}><FaCheckCircle size="80" /></S.Button>
-                            <S.LabelConfirm onClick={handleOpenModalConfirmSell}>Confirmar Venda</S.LabelConfirm>
+                            <S.LabelConfirm onClick={handleOpenModalConfirmSell}>Ir para o Check-out</S.LabelConfirm>
                         </S.DivConfirmSell>
                     </S.Checkout>
 

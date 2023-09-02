@@ -174,12 +174,16 @@ export const useApi = () => ({
         const response = await api.post('/setPaymentonDelivery', { dataSetPaymentsonDelivery })
         return response.data
     },
-    uploadFile: async (file: FormData, idUser:number) => {
+    uploadFile: async (file: FormData, idUser: number) => {
         const response = await api.post(`/uploadFile?idStore=${idUser}&url=${process.env.REACT_APP_API}`, file, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }
         })
+        return response.data
+    },
+    deleteLogo: async (idUser: number) => {
+        const response = await api.delete('/deleteLogo', { params: { storeId: idUser } })
         return response.data
     }
 });

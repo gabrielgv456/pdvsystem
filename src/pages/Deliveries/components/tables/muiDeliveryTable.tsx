@@ -236,27 +236,27 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
   const { changeStatusDeliveries } = useApi()
   const { MessageBox } = useMessageBoxContext()
-  const { idUser } = React.useContext(AuthContext)
+  const auth = React.useContext(AuthContext)
   const itensSelected = props.selected.map(item => parseInt(item))
   const deliveriesFiltered = props.deliveries.filter(delivery => itensSelected.includes(delivery.itemSell.id)); // Filter selected deliveries
 
   async function handleChangeStatusDelivery(newStatus: TypeDeliveries) {
     if (!window.confirm('Confirma atualização de status da(s) entrega(s) selecionada(s)?')) { return }
     try {
-      const dataChangeStatus = await changeStatusDeliveries({ storeId: idUser, itensSellToChange: itensSelected, newStatus })
+      const dataChangeStatus = await changeStatusDeliveries({ storeId: auth.idUser, itensSellToChange: itensSelected, newStatus })
       if (!dataChangeStatus.Success) {
         throw new Error(dataChangeStatus.Erro)
       }
       props.searchDeliveries()
       MessageBox('success', `Status da(s) entrega(s) atualizado com sucesso! ${newStatus === 'Shipping' ? 'Roteiro Impresso' : ''}`)
-      GeneratePDFDeliveryList(deliveriesFiltered, props.user?.name ?? '')
+      GeneratePDFDeliveryList(deliveriesFiltered, props.user?.name ?? '',auth.user)
     } catch (error: any) {
       MessageBox('error', 'Falha ao atualizar status da entrega! ' + error.message)
     }
   }
 
   async function handleDeliveryListPrint() {
-    GeneratePDFDeliveryList(deliveriesFiltered, props.user?.name ?? '')
+    GeneratePDFDeliveryList(deliveriesFiltered, props.user?.name ?? '', auth.user)
   }
 
   return (

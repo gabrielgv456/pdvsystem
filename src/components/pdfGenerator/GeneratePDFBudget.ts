@@ -12,7 +12,7 @@ interface ProductsType {
     quantity: number;
 };
 
-export  const GeneratePDFBudget = async (sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null, clientInfo: ClientsType | null, sellerInfo: SellersandClientsType | null) => {
+export const GeneratePDFBudget = async (sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null, clientInfo: ClientsType | null, sellerInfo: SellersandClientsType | null) => {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -36,7 +36,7 @@ export  const GeneratePDFBudget = async (sumvalueformated: string, sumquantity: 
         //   fontSize:15,
         // }],
         //footer:[]
-        
+
         content: [
 
             {
@@ -44,41 +44,29 @@ export  const GeneratePDFBudget = async (sumvalueformated: string, sumquantity: 
                     widths: ['auto', 'star', 'auto'],
                     body: [
                         [
-                            {
-                                image: 'logo', width:150,rowSpan:5
-                            },
-                            { text: (userInfo?.name ?? '') + '\n', style: 'title'},
+                            userInfo?.urlLogo ?
+                                { image: 'logo', width: 150, rowSpan: 5 } :
+                                { text: '', rowSpan: 5 },
+                            { text: (userInfo?.name ?? '') + '\n', style: 'title' },
 
                             { text: dataSell, alignment: 'right', style: 'title' },
 
                         ],
-                        [{},{text : `${userInfo?.cnpj ? 'CNPJ: ' + cpfCnpjFormat(userInfo.cnpj, userInfo.cnpj) : '' }`}, {}],
-                        [{},{text : userInfo?.phone ? 'Telefone: ' + phoneNumberFormat(userInfo?.phone ?? '', userInfo?.phone ?? '') + '\n' : '' },{}],
-                        [{},{text : userInfo?.cellPhone ? 'Celular: ' + cellNumberFormat(userInfo?.cellPhone ?? '', userInfo?.cellPhone ?? '') + '\n' : '' },{}],
-                        [{},{text : userInfo?.adressStreet ? (
-                            userInfo?.adressStreet + ', '
-                            + userInfo?.adressNumber + ', '
-                            + userInfo?.adressNeighborhood + ', '
-                            + userInfo?.adressCity + ' - '
-                            + userInfo?.adressState) : ''},{}]
+                        [{}, { text: `${userInfo?.cnpj ? 'CNPJ: ' + cpfCnpjFormat(userInfo.cnpj, userInfo.cnpj) : ''}` }, {}],
+                        [{}, { text: userInfo?.phone ? 'Telefone: ' + phoneNumberFormat(userInfo?.phone ?? '', userInfo?.phone ?? '') + '\n' : '' }, {}],
+                        [{}, { text: userInfo?.cellPhone ? 'Celular: ' + cellNumberFormat(userInfo?.cellPhone ?? '', userInfo?.cellPhone ?? '') + '\n' : '' }, {}],
+                        [{}, {
+                            text: userInfo?.adressStreet ? (
+                                userInfo?.adressStreet + ', '
+                                + userInfo?.adressNumber + ', '
+                                + userInfo?.adressNeighborhood + ', '
+                                + userInfo?.adressCity + ' - '
+                                + userInfo?.adressState) : ''
+                        }, {}]
                     ]
                 },
                 layout: 'noBorders',
             },
-            // {
-            //     style: 'main',
-            //     text: [
-            //         userInfo?.cnpj ? 'CNPJ: ' + cpfCnpjFormat(userInfo.cnpj, userInfo.cnpj) + '\n' : '',
-            //         userInfo?.phone ? 'Telefone: ' + cellNumberFormat(userInfo.cellPhone, userInfo.cellPhone) + '\n' : '',
-            //         userInfo?.cellPhone ? 'Celular: ' + cellNumberFormat(userInfo.cellPhone, userInfo.cellPhone) + '\n' : '',
-            //         userInfo?.adressStreet ? (
-            //             userInfo?.adressStreet + ', '
-            //             + userInfo?.adressNumber + ', '
-            //             + userInfo?.adressNeighborhood + ', '
-            //             + userInfo?.adressCity + ' - '
-            //             + userInfo?.adressState) + '\n\n' : '',
-            //     ],
-            // },
             {
                 style: 'subTitle',
                 text: ['Orçamento'],
@@ -152,16 +140,13 @@ export  const GeneratePDFBudget = async (sumvalueformated: string, sumquantity: 
             }
         },
         images: {
-            logo: userInfo?.urlLogo 
+            logo: userInfo?.urlLogo
         }
 
     }
     if (!userInfo?.urlLogo) {
-        docParams.content[0].table?.body[0].splice(0,1)
         delete docParams.images.logo
     }
-    console.log(docParams)
-    
     //@ts-ignore
     pdfMake.createPdf(docParams).print()
 }

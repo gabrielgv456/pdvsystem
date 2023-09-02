@@ -1,9 +1,10 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DeliveriesReturnApiProps } from "../../pages/Deliveries";
-import { DateFormatWeek } from "../../utils/utils";
+import { DateFormatWeek, cellNumberFormat, cpfCnpjFormat, phoneNumberFormat } from "../../utils/utils";
+import { User } from "../../types/User";
 
-export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], storeName: string) => {
+export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], storeName: string, userInfo:User|null) => {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -64,15 +65,38 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
             //     text: 'Comprovante de Venda'
             // },
             {
-                style: 'title',
                 table: {
-                    // widths: [180],
+                    widths: ['auto', 'star', 'auto'],
                     body: [
-                        [{ text: 'Roteiro Logístico - ' + storeName + ' -  ' + (new Date().toLocaleDateString()) }],
+                        [
+                            userInfo?.urlLogo ?
+                                { image: 'logo', width: 150, rowSpan: 5 } :
+                                { text: '', rowSpan: 5 },
+                            { text: (userInfo?.name ?? '') + '\n', style: 'title' },
 
+                            { text: (new Date().toLocaleDateString()), alignment: 'right', style: 'title' },
+
+                        ],
+                        [{}, { text: `${userInfo?.cnpj ? 'CNPJ: ' + cpfCnpjFormat(userInfo.cnpj, userInfo.cnpj) : ''}` }, {}],
+                        [{}, { text: userInfo?.phone ? 'Telefone: ' + phoneNumberFormat(userInfo?.phone ?? '', userInfo?.phone ?? '') + '\n' : '' }, {}],
+                        [{}, { text: userInfo?.cellPhone ? 'Celular: ' + cellNumberFormat(userInfo?.cellPhone ?? '', userInfo?.cellPhone ?? '') + '\n' : '' }, {}],
+                        [{}, {
+                            text: userInfo?.adressStreet ? (
+                                userInfo?.adressStreet + ', '
+                                + userInfo?.adressNumber + ', '
+                                + userInfo?.adressNeighborhood + ', '
+                                + userInfo?.adressCity + ' - '
+                                + userInfo?.adressState + '\n\n') : ''
+                        }, {}]
                     ]
-
                 },
+                layout: 'noBorders',
+            },
+
+            {
+                style: 'subTitle',
+                text: ['Roteiro Logístico \n'],
+                alignment: 'center',
                 layout: 'noBorders',
             },
             {
@@ -122,6 +146,11 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
 
 
             },
+            {
+                style: 'footer',
+                alignment: 'bottom',
+                text: ['Emitido com Safyra® - Gestão do seu negócio (safyra.com.br)']
+            },
         ],
 
         styles: {
@@ -129,15 +158,25 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
             title: {
                 fontSize: 15, bold: true
             },
+            subTitle : {
+                fontSize: 16, bold: true,  decoration: "underline",
+            },
             tableItens: {
                 fontSize: 9
             },
             main: {
 
                 fontSize: 9
+            },
+            footer: {
+                margin: [0, 20, 0, 0], fontSize: 8
             }
+        },
+        images: {
+            logo: userInfo?.urlLogo
         }
 
     }
+    //@ts-ignore
     pdfMake.createPdf(docParams).print()
 }
