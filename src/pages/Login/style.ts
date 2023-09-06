@@ -36,6 +36,19 @@ export const Div = styled.div `
     display:flex;
     align-items:flex-end;
 `
+export const SectionForgot = styled.section `
+  display: flex;
+  justify-content: flex-end;
+  padding:10px;
+  width:300px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: gray;
+  &:hover{
+    text-decoration: underline;
+  }
+`
+
 export const InputMail = styled.input<isEmailWrongProps>`
     
     width:280px;

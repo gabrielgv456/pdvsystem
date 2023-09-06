@@ -3,6 +3,7 @@ import { TypeDeliveriesRequest } from '../pages/Deliveries';
 import { TypeChangeStatusDeliveriesRequest } from '../pages/Deliveries/components/tables/muiDeliveryTable';
 import { typeRequestDeliveryAdressChange } from '../pages/Deliveries/components/tables/modals/components/changeAddress';
 import { typeSetPaymentsonDelivery } from '../pages/Deliveries/components/tables/modals/modalDeliveryDone';
+import { typeChangeForgotPassword } from '../pages/Login/Modals/validateEmail';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -184,6 +185,14 @@ export const useApi = () => ({
     },
     deleteLogo: async (idUser: number) => {
         const response = await api.delete('/deleteLogo', { params: { storeId: idUser } })
+        return response.data
+    },
+    changeForgotPassword: async (dataChangeForgotPassword: typeChangeForgotPassword) => {
+        const response = await api.post('/changeForgotPassword', { ...dataChangeForgotPassword })
+        return response.data
+    },
+    validateForgotPassword: async (email: string) => {
+        const response = await api.post('/validateForgotPassword', { email })
         return response.data
     }
 });

@@ -10,40 +10,52 @@ import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { useApi } from '../../../../hooks/useApi';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
+import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../components/buttons/closeButtonModal';
+import { TypeValidateMail } from '../..';
 
 interface validateEmailProps {
     isModalValidateEmailOpen: boolean,
     setIsModalValidateEmailOpen: (value: boolean) => void,
     setisSuccessModalValidateEmailOpen: (value: boolean) => void,
-    email: string
+    email: string,
+    typeValidateMail: TypeValidateMail,
+    codEmailValidate: string | null
+}
+
+export interface typeChangeForgotPassword {
+   storeId: number
+   newPass: string 
+   codEmailValidate: string | null
 }
 
 export const ModalValidateEmail = (props: validateEmailProps) => {
     const Theme = useDarkMode();
-    const { codEmailValidate,idUser } = useContext(AuthContext)
-    const { validateMail } = useApi();
-    const {MessageBox} = useMessageBoxContext()
+    const { idUser } = useContext(AuthContext)
+    const { validateMail, changeForgotPassword } = useApi();
+    const { MessageBox } = useMessageBoxContext()
+    const [inputCode, setInputCode] = useState('')
 
-    const VerifyCode = async () => {
-        if (inputCode === codEmailValidate) {
+    const VerifyCode = async (codValidate: string | null) => {
+        if (inputCode === codValidate) {
             try {
-                const dataValidateMail = await validateMail(idUser)
-                if (dataValidateMail.success) {      
+                const dataValidateMail = props.typeValidateMail === 'newUser' ?
+                    await validateMail(idUser) : 
+                    await changeForgotPassword({ storeId: idUser, newPass: 'sdfsdfdsfdf', codEmailValidate: codValidate })
+                if (dataValidateMail.Success) {
                     props.setIsModalValidateEmailOpen(false)
-                    props.setisSuccessModalValidateEmailOpen(true)   
+                    props.setisSuccessModalValidateEmailOpen(true)
                 } else {
                     throw new Error('Falha ao concluir validação de e-mail!')
                 }
             } catch (error: any) {
-                MessageBox('error',error.message)
+                MessageBox('error', error.message)
             }
         } else {
-            MessageBox('error','Código de verificação incorreto!');
+            MessageBox('error', 'Código de verificação incorreto!');
         }
     }
 
 
-    const [inputCode, setInputCode] = useState('')
     return (
         <Modal open={props.isModalValidateEmailOpen} onClose={() => props.setIsModalValidateEmailOpen(false)}>
             <Box sx={{
@@ -65,7 +77,7 @@ export const ModalValidateEmail = (props: validateEmailProps) => {
 
             }}
             >
-                <S.ButtonClose onClick={() => props.setIsModalValidateEmailOpen(false)}><b><IoCloseSharp size="22.5" /></b></S.ButtonClose>
+                <DefaultButtonCloseModal onClick={() => props.setIsModalValidateEmailOpen(false)}><DefaultIconCloseModal /></DefaultButtonCloseModal>
                 <S.Container>
                     Digite o código de verificação enviado para o e-mail {props.email} :
                     <S.LabelTip>
@@ -76,7 +88,7 @@ export const ModalValidateEmail = (props: validateEmailProps) => {
                         <MdMarkEmailRead size="28" />
                         <S.Input placeholder='******' value={inputCode} onChange={(e) => setInputCode(e.target.value)} maxLength={6} />
                     </S.LabelMail>
-                    <S.ButtonConfirm onClick={() => VerifyCode()}>Confirmar</S.ButtonConfirm>
+                    <S.ButtonConfirm onClick={() => VerifyCode(props.codEmailValidate)}>Confirmar</S.ButtonConfirm>
                 </S.Container>
 
             </Box>

@@ -6,18 +6,24 @@ import { RiLock2Line } from 'react-icons/ri'
 import * as S from './style'
 import { ModalValidateEmail, SuccessModalValidateEmail } from "./Modals/validateEmail";
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
+import { useApi } from "../../hooks/useApi";
 
+export type TypeValidateMail = 'newPass' | 'newUser' | null
 
 export const Login = () => {
     const auth = useContext(AuthContext);
     const navigate = useNavigate();
-
+    const { validateForgotPassword } = useApi()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isEmailWrong, setEmailWrong] = useState(false)
     const [isPasswordWrong, setPasswordWrong] = useState(false)
     const [isModalValidateEmailOpen, setIsModalValidateEmailOpen] = useState(false)
     const [isSuccessModalValidateEmailOpen, setisSuccessModalValidateEmailOpen] = useState(false)
+    const [typeValidateMail, setTypeValidateMail] = useState<TypeValidateMail>(null)
+    const [codValidateForgot, setCodValidateForgot] = useState<string | null>(null)
+    const { MessageBox } = useMessageBoxContext()
+
 
     const handleVerifyInputEmail = () => {
         email.includes('@') ? setEmailWrong(false) : setEmailWrong(true)
@@ -28,7 +34,25 @@ export const Login = () => {
                 break
         }
     }
-    const {MessageBox} = useMessageBoxContext()
+
+    const handleForgotPass = async () => {
+        try {
+            if (!email || !email.includes('@') || !email.includes('.')) { 
+                throw new Error ('E-mail inválido, verifique e tente novamente!')
+            }
+            const result = await validateForgotPassword(email)
+            alert(JSON.stringify(result))
+            if (!result.Success) {
+                throw new Error('Falha ao enviar código de validação ! ' + (result.erro ?? ''))
+            }
+            setCodValidateForgot(result.codEmailValidate)
+            setTypeValidateMail('newPass')
+            setIsModalValidateEmailOpen(true)
+        } catch (error: any) {
+            MessageBox('warning', error.message)
+        }
+    }
+
     const handleVerifyInputPassword = () => {
         if (password.length < 8) {
             setPasswordWrong(true)
@@ -87,13 +111,14 @@ export const Login = () => {
                 if (isLogged === 'true') {
                     navigate('/home');
                 } else if (isLogged === 'invalidMail') {
+                    setTypeValidateMail('newUser')
                     setIsModalValidateEmailOpen(true)
                 } else if (isLogged === 'false') {
-                    MessageBox('error',"Dados incorretos, verifique seu e-mail ou senha !");
+                    MessageBox('error', "Dados incorretos, verifique seu e-mail ou senha !");
                 }
             }
-            catch (error:any) {
-                MessageBox('warning',"Falha de conexão com servidor remoto" + error.message)
+            catch (error: any) {
+                MessageBox('warning', "Falha de conexão com servidor remoto" + error.message)
             }
         }
     }
@@ -113,7 +138,6 @@ export const Login = () => {
                             onKeyUp={handleKeyUP}
                             onBlur={handleVerifyInputEmail}
                             isEmailWrong={isEmailWrong}
-
                         />
                     </S.Div>
                     <S.Div>
@@ -126,9 +150,9 @@ export const Login = () => {
                             onKeyUp={handleKeyUP}
                             onBlur={handleVerifyInputPassword}
                             isPasswordWrong={isPasswordWrong}
-
                         />
                     </S.Div>
+                    <S.SectionForgot onClick={() => handleForgotPass()}>Esqueceu a senha ?</S.SectionForgot>
                     <S.Button onClick={handleLogin}>Login</S.Button>
                 </S.BoxLogin>
 
@@ -140,7 +164,9 @@ export const Login = () => {
                 isModalValidateEmailOpen={isModalValidateEmailOpen}
                 setIsModalValidateEmailOpen={setIsModalValidateEmailOpen}
                 setisSuccessModalValidateEmailOpen={setisSuccessModalValidateEmailOpen}
+                typeValidateMail={typeValidateMail}
                 email={email}
+                codEmailValidate={typeValidateMail === 'newUser' ? auth.codEmailValidate : codValidateForgot}
             />
             <SuccessModalValidateEmail
                 isSuccessModalValidateEmailOpen={isSuccessModalValidateEmailOpen}
