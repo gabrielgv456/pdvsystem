@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
 import * as S from "./style"
 import { MdMarkEmailRead } from 'react-icons/md';
-import { useState, useContext } from 'react';
+import { useState, useContext, KeyboardEvent } from 'react';
 import { FcIdea } from 'react-icons/fc'
 import { IoCloseSharp } from 'react-icons/io5'
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
@@ -12,6 +12,7 @@ import { useApi } from '../../../../hooks/useApi';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../components/buttons/closeButtonModal';
 import { TypeValidateMail } from '../..';
+import { RiLockPasswordLine } from 'react-icons/ri';
 
 interface validateEmailProps {
     isModalValidateEmailOpen: boolean,
@@ -19,42 +20,86 @@ interface validateEmailProps {
     setisSuccessModalValidateEmailOpen: (value: boolean) => void,
     email: string,
     typeValidateMail: TypeValidateMail,
+    setTypeValidateMail: (value: TypeValidateMail) => void
     codEmailValidate: string | null
 }
 
 export interface typeChangeForgotPassword {
-   storeId: number
-   newPass: string 
-   codEmailValidate: string | null
+    email: string
+    newPass: string | null
+    codEmailValidate: string | null
 }
 
 export const ModalValidateEmail = (props: validateEmailProps) => {
     const Theme = useDarkMode();
     const { idUser } = useContext(AuthContext)
-    const { validateMail, changeForgotPassword } = useApi();
+    const { validateMail, changeForgotPassword, verifyCodeForgotPassword } = useApi();
     const { MessageBox } = useMessageBoxContext()
     const [inputCode, setInputCode] = useState('')
+    const [newPass, setNewpass] = useState<{ newPass: string, confirmNewPass: string }>({ newPass: '', confirmNewPass: '' })
+    const [isChangePass, setIsChangePass] = useState(false)
 
     const VerifyCode = async (codValidate: string | null) => {
-        if (inputCode === codValidate) {
-            try {
-                const dataValidateMail = props.typeValidateMail === 'newUser' ?
-                    await validateMail(idUser) : 
-                    await changeForgotPassword({ storeId: idUser, newPass: 'sdfsdfdsfdf', codEmailValidate: codValidate })
-                if (dataValidateMail.Success) {
-                    props.setIsModalValidateEmailOpen(false)
-                    props.setisSuccessModalValidateEmailOpen(true)
-                } else {
-                    throw new Error('Falha ao concluir validação de e-mail!')
-                }
-            } catch (error: any) {
-                MessageBox('error', error.message)
-            }
-        } else {
-            MessageBox('error', 'Código de verificação incorreto!');
+
+        function successNewUser() {
+            props.setIsModalValidateEmailOpen(false)
+            props.setisSuccessModalValidateEmailOpen(true)
         }
+        function successForgotPass() {
+            MessageBox('success', 'Código confirmado com sucesso!')
+            setIsChangePass(true)
+        }
+
+        async function validateNewUserEmail(codValidate: string | null) {
+            if (inputCode === codValidate) {
+                await validateMail(idUser)
+            } else {
+                throw new Error('Código de verificação incorreto!');
+            }
+        }
+
+        try {
+            const dataValidateMail = props.typeValidateMail === 'newUser' ?
+                validateNewUserEmail(codValidate)
+                :
+                await verifyCodeForgotPassword({ email: props.email, codEmailValidate: inputCode })
+            if (dataValidateMail.Success) {
+                props.typeValidateMail === 'newUser' ?
+                    successNewUser()
+                    :
+                    successForgotPass()
+            } else {
+                throw new Error('Falha ao concluir validação de e-mail! ' + (dataValidateMail.erro ?? ''))
+            }
+        } catch (error: any) {
+            MessageBox('error', error.message)
+        }
+
     }
 
+    const changePassword = async () => {
+        if (newPass.newPass.length < 8) {
+            MessageBox('info', 'Nova senha precisa ter no mínimo 8 dígitos!')
+            return
+        }
+        if (newPass.newPass !== newPass.confirmNewPass) {
+            MessageBox('info', 'Senha e confirmação de senha não coincidem, corrija e tente novamente !')
+            return
+        }
+        try {
+            const result = await changeForgotPassword({ codEmailValidate: inputCode, email: props.email, newPass: (newPass.newPass ?? null) })
+            if (!result.Success) {
+                throw new Error('Falha ao alterar a senha! ' + (result.erro ?? ''))
+            }
+            props.setIsModalValidateEmailOpen(false)
+            MessageBox('success', 'Senha alterada com sucesso, realize o acesso com a nova senha!')
+            setIsChangePass(false)
+            setInputCode('')
+            setNewpass({ newPass: '', confirmNewPass: '' })
+        } catch (error: any) {
+            MessageBox('error', error.message)
+        }
+    }
 
     return (
         <Modal open={props.isModalValidateEmailOpen} onClose={() => props.setIsModalValidateEmailOpen(false)}>
@@ -78,18 +123,44 @@ export const ModalValidateEmail = (props: validateEmailProps) => {
             }}
             >
                 <DefaultButtonCloseModal onClick={() => props.setIsModalValidateEmailOpen(false)}><DefaultIconCloseModal /></DefaultButtonCloseModal>
-                <S.Container>
-                    Digite o código de verificação enviado para o e-mail {props.email} :
-                    <S.LabelTip>
-                        <FcIdea size={15} />
-                        Verique também sua caixa de Spam.
-                    </S.LabelTip>
-                    <S.LabelMail>
-                        <MdMarkEmailRead size="28" />
-                        <S.Input placeholder='******' value={inputCode} onChange={(e) => setInputCode(e.target.value)} maxLength={6} />
-                    </S.LabelMail>
-                    <S.ButtonConfirm onClick={() => VerifyCode(props.codEmailValidate)}>Confirmar</S.ButtonConfirm>
-                </S.Container>
+                {!isChangePass ?
+                    <S.Container>
+                        Digite o código de verificação enviado para o e-mail {props.email} :
+                        <S.LabelTip>
+                            <FcIdea size={15} />
+                            Verique também sua caixa de Spam.
+                        </S.LabelTip>
+                        <S.LabelMail>
+                            <MdMarkEmailRead size="28" />
+                            <S.Input placeholder='******' onKeyUp={(e: KeyboardEvent) => { if (e.code === 'Enter') VerifyCode(props.codEmailValidate) }} value={inputCode} onChange={(e) => setInputCode(e.target.value)} maxLength={6} />
+                        </S.LabelMail>
+                        <S.ButtonConfirm onClick={() => VerifyCode(props.codEmailValidate)}>Confirmar</S.ButtonConfirm>
+                    </S.Container>
+                    :
+                    <S.Container>
+                        Infome a nova senha:
+                        <S.DivForgot>
+                            <S.LabelForgot>
+                                <RiLockPasswordLine size="28" />
+                                <S.InputPass
+                                    placeholder='Nova Senha'
+                                    type='password' value={newPass.newPass}
+                                    onChange={(e) => setNewpass({ ...newPass, newPass: e.target.value })} />
+                            </S.LabelForgot>
+                            <S.LabelForgot>
+                                <RiLockPasswordLine size="28" />
+                                <S.InputPass
+                                    placeholder='Confirme a Nova Senha'
+                                    type='password'
+                                    onKeyUp={(e: KeyboardEvent) => { if (e.code === 'Enter') changePassword() }}
+                                    value={newPass.confirmNewPass}
+                                    onChange={(e) => setNewpass({ ...newPass, confirmNewPass: e.target.value })}
+                                />
+                            </S.LabelForgot>
+                        </S.DivForgot>
+                        <S.ButtonConfirm onClick={() => changePassword()}>Confirmar</S.ButtonConfirm>
+                    </S.Container>
+                }
 
             </Box>
 
@@ -129,7 +200,7 @@ export const SuccessModalValidateEmail = (props: SuccessModalValidateEmailProps)
                 outline: 'none'
             }}
             >
-                <S.ButtonClose onClick={() => props.setisSuccessModalValidateEmailOpen(false)}><b><IoCloseSharp size="22.5" /></b></S.ButtonClose>
+                <DefaultButtonCloseModal onClick={() => props.setisSuccessModalValidateEmailOpen(false)}><DefaultIconCloseModal /></DefaultButtonCloseModal>
                 <S.Container>
                     <S.labelSucess>
                         <BsPatchCheckFill className='btnSuccess' size="70" />

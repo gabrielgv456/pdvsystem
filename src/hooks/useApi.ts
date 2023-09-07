@@ -194,5 +194,8 @@ export const useApi = () => ({
     validateForgotPassword: async (email: string) => {
         const response = await api.post('/validateForgotPassword', { email })
         return response.data
+    }, verifyCodeForgotPassword: async (dataverifyCodeForgotPass: { email: string, codEmailValidate: string }) => {
+        const response = await api.get('/verifyCodeForgotPassword', { params: { ...dataverifyCodeForgotPass } })
+        return response.data
     }
 });

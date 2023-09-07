@@ -8,7 +8,7 @@ import { ModalValidateEmail, SuccessModalValidateEmail } from "./Modals/validate
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import { useApi } from "../../hooks/useApi";
 
-export type TypeValidateMail = 'newPass' | 'newUser' | null
+export type TypeValidateMail = 'newPass' | 'newUser' |'changePass'| null
 
 export const Login = () => {
     const auth = useContext(AuthContext);
@@ -21,7 +21,6 @@ export const Login = () => {
     const [isModalValidateEmailOpen, setIsModalValidateEmailOpen] = useState(false)
     const [isSuccessModalValidateEmailOpen, setisSuccessModalValidateEmailOpen] = useState(false)
     const [typeValidateMail, setTypeValidateMail] = useState<TypeValidateMail>(null)
-    const [codValidateForgot, setCodValidateForgot] = useState<string | null>(null)
     const { MessageBox } = useMessageBoxContext()
 
 
@@ -37,15 +36,16 @@ export const Login = () => {
 
     const handleForgotPass = async () => {
         try {
-            if (!email || !email.includes('@') || !email.includes('.')) { 
-                throw new Error ('E-mail inválido, verifique e tente novamente!')
+            if(!email) {
+                throw new Error('Por favor, insira seu e-mail !')
+            }
+            if (!email.includes('@') || !email.includes('.')) { 
+                throw new Error ('E-mail inválido, verifique e tente novamente !')
             }
             const result = await validateForgotPassword(email)
-            alert(JSON.stringify(result))
             if (!result.Success) {
                 throw new Error('Falha ao enviar código de validação ! ' + (result.erro ?? ''))
             }
-            setCodValidateForgot(result.codEmailValidate)
             setTypeValidateMail('newPass')
             setIsModalValidateEmailOpen(true)
         } catch (error: any) {
@@ -166,7 +166,8 @@ export const Login = () => {
                 setisSuccessModalValidateEmailOpen={setisSuccessModalValidateEmailOpen}
                 typeValidateMail={typeValidateMail}
                 email={email}
-                codEmailValidate={typeValidateMail === 'newUser' ? auth.codEmailValidate : codValidateForgot}
+                setTypeValidateMail={setTypeValidateMail}
+                codEmailValidate={auth.codEmailValidate}
             />
             <SuccessModalValidateEmail
                 isSuccessModalValidateEmailOpen={isSuccessModalValidateEmailOpen}

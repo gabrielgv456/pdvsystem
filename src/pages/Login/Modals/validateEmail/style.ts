@@ -18,6 +18,13 @@ export const LabelMail = styled.div `
     gap:10px;
     align-items: center; 
 `
+export const LabelForgot = styled.div `
+    display: flex;
+    gap:10px;
+    align-items: center; 
+    justify-content: center;
+    width: 100%;
+`
 export const LabelTip = styled.div `
     font-size:0.75rem;
     display: flex;
@@ -31,6 +38,20 @@ export const Input = styled.input`
     text-align: center;
     font-size: 1rem;
     letter-spacing: 10px;
+`
+export const InputPass = styled.input`
+    border-radius: 5px;
+    border: none;
+    height: 2.5rem;
+    text-align: center;
+    width: 60%;
+    font-size: 1rem;
+`
+export const DivForgot = styled.div `
+width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap:5px
 `
 export const ButtonClose = styled.button`
     background-color: #fff;
