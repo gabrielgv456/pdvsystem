@@ -45,10 +45,13 @@ export function Listagem(props: Props) {
    const sumtotalValuethisSell = searchvaluesthisSell.map(item => item.totalValue).reduce((prev, curr) => prev + curr, 0);
    const sumtotalQuantitythisSell = searchvaluesthisSell.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
    const sumtotalValuethisSellFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumtotalValuethisSell)
+   const sumTotalDiscountThisSell = searchvaluesthisSell.map(item => item.totalDiscount).reduce((prev, curr) => prev + curr, 0);
+
+
 
 
    const handlePrint = () => {
-      GeneratePDFSell(sumtotalValuethisSellFormated, sumtotalQuantitythisSell, props.listSellsProducts.filter(item => item.sellId === props.item.id).map(item => { return { name: item.descriptionProduct, id: item.id, initialvalue: item.totalCost, quantity: item.quantity, totalvalue: item.totalValue } }), dataSellPrint, props.item.codRef, user)
+      GeneratePDFSell(sumTotalDiscountThisSell, sumtotalValuethisSell,sumtotalValuethisSellFormated, sumtotalQuantitythisSell, props.listSellsProducts.filter(item => item.sellId === props.item.id).map(item => { return { name: item.descriptionProduct, id: item.id, initialvalue: item.totalCost, quantity: item.quantity, totalvalue: item.totalValue } }), dataSellPrint, props.item.codRef, user)
    }
    const handleEdit = async () => {
 
@@ -101,6 +104,14 @@ export function Listagem(props: Props) {
                   {props.listSellsProducts.map((products) => (
                      products.sellId === props.item.id &&
                      <S.LabelItem isDarkMode={Theme.DarkMode}>{(products.totalCost || products.totalCost === 0) ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalCost) : '-'} </S.LabelItem>
+                  ))}
+               </S.DivListItens>
+            </S.span>
+            <S.span isDarkMode={Theme.DarkMode}>
+               <S.bItem isDarkMode={Theme.DarkMode}>Desconto</S.bItem> <S.DivListItens isDarkMode={Theme.DarkMode}>
+                  {props.listSellsProducts.map((products) => (
+                     products.sellId === props.item.id &&
+                     <S.LabelItem isDarkMode={Theme.DarkMode}>{(products.totalDiscount || products.totalDiscount === 0) ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalDiscount) : '-'} </S.LabelItem>
                   ))}
                </S.DivListItens>
             </S.span>

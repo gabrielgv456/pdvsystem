@@ -15,7 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
-import { cellNumberFormat, cepFormat, phoneNumberFormat } from '../../../../../utils/utils';
+import { cellNumberFormat, cepFormat, optionsUF, phoneNumberFormat } from '../../../../../utils/utils';
 import { SellersandClientsType } from '../../../../SalesControl';
 import { MuiBox } from '../../../../../components/box/muiBox';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../components/buttons/closeButtonModal';
@@ -51,7 +51,6 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
     const [valueInputSellerAdressState, setvalueInputSellerAdressState] = useState<string | null>(null)
     const [valueInputSellerAdressCep, setvalueInputSellerAdressCep] = useState("")
     const [valueInputSellerActive, setvalueInputSellerActive] = useState(true)
-    const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
     const { MessageBox } = useMessageBoxContext()
 
     function eraseValues() {

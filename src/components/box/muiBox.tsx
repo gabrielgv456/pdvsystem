@@ -1,6 +1,5 @@
 import { useDarkMode } from "../../contexts/DarkMode/DarkModeProvider"
 import Box from '@mui/material/Box';
-import { padding } from "polished";
 import { ReactNode } from 'react'
 
 interface MuiBoxProps {

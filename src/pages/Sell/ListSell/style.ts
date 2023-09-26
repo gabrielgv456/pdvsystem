@@ -1,9 +1,15 @@
+import { BsTrash } from "react-icons/bs";
+import { IoMdAddCircleOutline, IoMdRemoveCircleOutline } from "react-icons/io";
+import { TbDiscount2 } from "react-icons/tb";
 import styled from "styled-components";
 
 interface DarkModeProps {
-    isDarkMode:Boolean;
+  isDarkMode: boolean;
 }
 
+interface DiscountProps {
+  applyDiscount: number | null;
+}
 export const Container = styled.div <DarkModeProps>`
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
     box-shadow: ${props => (props.isDarkMode ? '' : '0px 0px 5px #CCC')}; 
@@ -14,6 +20,7 @@ export const Container = styled.div <DarkModeProps>`
     width:100%;
     display: flex;
     justify-content: space-between; 
+    align-items: center;
     gap:5px;
     @media screen and (max-width: 930px) {
         padding: 10px;
@@ -47,36 +54,124 @@ animation: tilt-in-top-1 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 
 `
 
-export const DivButtonsAddRemove = styled.div `
+export const DivButtonsAddRemove = styled.div`
 display: flex;
 width: 48px;
 align-items: flex-start;
+height: 24px;
 
 `
-export const ButtonRemove= styled.button `
+export const ButtonRemove = styled.button`
+    width: 21px;
     text-decoration: none;
     background: none;
     border:none;
     color:gold;
     padding: 0;
 `
-export const ButtonAdd= styled.button `
+export const ButtonAdd = styled.button`
+    width: 22px; 
     text-decoration: none;
     background: none;
     border:none;
     color:var(--Green);
     padding: 0;
 `
-export const ButtonTrash = styled.button `
-     text-decoration: none;
+export const ButtonTrash = styled.button`
+    width: 18px;
+    text-decoration: none;
     background: none;
     border:none;
     color:red;
 `
+export const IconDiscount = styled(TbDiscount2) <DiscountProps> `
+  width: 22px;
+  height: 22px;
+  color: #FFA500;
+  &:hover{   
+    width: ${props => props.applyDiscount ? '' : '24px'};
+    height: ${props => props.applyDiscount ? '' : '24px'};
+  }
+`
+export const DivDiscount = styled.div`
+  justify-content: flex-start;
+  width: 15%;
+  display: flex;
+  cursor:pointer;
+  height: 24px;
+
+`
+export const DivIconDiscount = styled.div <DiscountProps> `
+  display: flex;
+  align-items: center;
+  border: ${props => props.applyDiscount ? '1px solid  #FFA500' : ''};
+  border-radius: 6px 0px 0px 6px;
+  padding: 1px;
+  background-color: ${props => props.applyDiscount ? '#ffefd1' : ''};
+`
+
+export const IconTrash = styled(BsTrash) `
+  width: 16px;
+  height: 16px;
+  &:hover{   
+    width:  17px;
+    height: 17px;
+  }
+`
+
+export const IconAddItem = styled(IoMdAddCircleOutline) `
+  width: 20px;
+  height: 20px;
+  &:hover{   
+    width:  21px;
+    height: 21px;
+  }
+`
+
+export const IconRemoveItem = styled(IoMdRemoveCircleOutline) `
+  width: 20px;
+  height: 20px;
+  &:hover{   
+    width:  21px;
+    height: 21px;
+  }
+`
+
+export const DivContentPercentDiscount = styled.div <DiscountProps>`
+  display: ${props => props.applyDiscount ? 'flex' : 'none'};
+  background-color: #FFA500;
+  color:#fff;
+  align-items: center;
+  border: 1px solid  #FFA500;
+  border-left: none;
+  border-radius: 0px 6px 6px 0px;
+  padding: 0px 5px 0px 5px;
+  @media screen and (max-width:600px){
+    padding: 0px 2px 0px 2px;
+  }
+`
+
+export const DivDiscountShadow = styled.div <DiscountProps>`
+  display: flex;
+  border-radius: 6px;
+  &:hover{
+    box-shadow: ${props => props.applyDiscount ? 'rgba(0, 0, 0, 0.12) 0px 6px 16px' : ''};
+  }
+`
+export const DivContentValueDiscount = styled.div <DiscountProps>`
+  display: none;
+  align-items: center;
+  border: 1px solid  #FFA500;
+  border-left: none;
+  padding: 0px 5px 0px 5px;
+  @media screen and (max-width:600px){
+    padding: 0px 2px 0px 2px;
+  }
+`
 export const LabelItem = styled.label<DarkModeProps>`
     color: ${props => (props.isDarkMode ? 'white' : '')};
-    width: 45%;
-    max-width:45%;
+    width: 40%;
+    max-width:40%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -93,13 +188,16 @@ export const LabelItem = styled.label<DarkModeProps>`
     white-space: nowrap;
     }
 `
-export const LabelValue = styled.label `
-    width: 20%;
+export const LabelValue = styled.label <DiscountProps>`
+    display: flex;
+    align-items: center;
+    font-size: ${props=>props.applyDiscount ? '0.6rem' :''};
+    text-decoration:${props => (props.applyDiscount? 'line-through' : ''  )} ;
+    opacity: ${props => (props.applyDiscount? '0.6' : '' )};
 `
 
-export const LabelQuantaty = styled.section `
+export const LabelQuantaty = styled.section`
     width: 10%;
     min-width: min-content;
     margin-right: 0.3rem;
-
 `

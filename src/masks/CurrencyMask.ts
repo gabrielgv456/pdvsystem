@@ -10,6 +10,14 @@ export const CurrencyMask = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInpu
     return e
 }
 
+export const CurrencyNumberMask = (e:number) => {
+    if (!e) { return ''}
+    let format = String(e)
+    format = parseFloat(String(e)).toFixed(2)
+    format = "R$" + format.replace('.', ',')
+    return format
+}
+
 export const CurrencyMaskValue = (e: string) => {
     let format = e
     format = format.replace(/\D/g, "")

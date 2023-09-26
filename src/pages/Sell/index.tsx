@@ -35,7 +35,10 @@ export interface ProductsType {
     initialvalue: number;
     quantity: number;
     totalCost: number;
-    initialCost: number
+    initialCost: number,
+    discountValue: number | null,
+    discountPercent: number | null,
+    totalDiscount: number | null
 };
 
 export interface MethodsType {
@@ -113,7 +116,10 @@ export const Sell = () => {
                     initialvalue: inputProducts.value,
                     totalvalue: inputProducts.value,
                     initialCost: inputProducts.cost,
-                    totalCost: inputProducts.cost
+                    totalCost: inputProducts.cost,
+                    discountPercent: null,
+                    discountValue: null,
+                    totalDiscount: null
                 })
                 setListProducts(newList)
                 setinputProducts(null)
@@ -121,11 +127,10 @@ export const Sell = () => {
         }
     }
     function handleRemoveItem(id: number) {
-        let filteredtasks = listProducts.filter(list => list.id !== id)
-
-        setListProducts(filteredtasks)
+        let filtereditems = listProducts.filter(list => list.id !== id)
+        setListProducts(filtereditems)
     }
-    
+
     function handleEditItem(id: number, item: number, quantity: number, type: 'add' | 'change') {
         let verifyQuantityProducts = Products.find(product => product.id === id)
 
@@ -138,6 +143,8 @@ export const Sell = () => {
                         newList[i].quantity = newList[i].quantity + quantity
                         newList[i].totalvalue = newList[i].totalvalue + newList[i].initialvalue
                         newList[i].totalCost = newList[i].totalCost + newList[i].initialCost
+                        newList[i].totalDiscount = (newList[i].totalDiscount ?? 0) + (newList[i].discountValue ?? 0)
+                        newList[i].totalDiscount = newList[i].totalDiscount ?? 0 > 0 ? newList[i].totalDiscount : null
                     }
                     else {
                         MessageBox('info', `Saldo máximo do produto atingido! Estoque disponivel: ${verifyQuantityProducts?.quantity}`)
@@ -146,6 +153,8 @@ export const Sell = () => {
                     if (verifyQuantityProducts !== undefined && quantity <= verifyQuantityProducts.quantity) {
                         newList[i].totalvalue = quantity * (newList[i].totalvalue / newList[i].quantity)
                         newList[i].totalCost = quantity * (newList[i].totalCost / newList[i].quantity)
+                        newList[i].totalDiscount = quantity * (newList[i].discountValue ?? 0)
+                        newList[i].totalDiscount = newList[i].totalDiscount ?? 0 > 0 ? newList[i].totalDiscount : null
                         newList[i].quantity = quantity;
                     }
                     else {
@@ -157,6 +166,19 @@ export const Sell = () => {
         setListProducts(newList)
 
     }
+
+    function handleDiscount(id: number, valueDiscount: number | null, percentDiscount: number) {
+        let newList = [...listProducts]
+        for (let i in newList) {
+            if (newList[i].id === id) {
+                newList[i].discountPercent = percentDiscount
+                newList[i].discountValue = valueDiscount
+                newList[i].totalDiscount = valueDiscount ? valueDiscount * newList[i].quantity : null
+            }
+        }
+        setListProducts(newList)
+    }
+
     function handleRemoveOneItem(id: number, item: number) {
         let newList = [...listProducts]
         for (let i in newList) {
@@ -164,6 +186,7 @@ export const Sell = () => {
                 newList[i].quantity = newList[i].quantity - 1
                 newList[i].totalvalue = newList[i].totalvalue - newList[i].initialvalue
                 newList[i].totalCost = newList[i].totalCost - newList[i].initialCost
+                newList[i].totalDiscount = (newList[i].totalDiscount ?? 0) - (newList[i].discountValue ?? 0)
             }
         }
         setListProducts(newList)
@@ -177,7 +200,7 @@ export const Sell = () => {
         }
     }
     const [isModalConfirmSellOpen, setisModalConfirmSellOpen] = useState(false);
-    
+
     function handleOpenModalConfirmSell() {
         if (listProducts.length > 0) {
             setisModalConfirmSellOpen(true)
@@ -186,7 +209,9 @@ export const Sell = () => {
 
     const [listMethods, setMethods] = useState<MethodsType[]>([])
     const sumquantity = listProducts.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
-    const sumvalue = listProducts.map(item => item.totalvalue).reduce((prev, curr) => prev + curr, 0);
+    const sumDiscount = (listProducts.map(item => item.totalDiscount ?? 0).reduce((prev, curr) => prev + curr, 0))
+    const sumDiscountFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumDiscount);
+    const sumvalue = parseFloat(((listProducts.map(item => item.totalvalue).reduce((prev, curr) => prev + curr, 0)) - sumDiscount).toFixed(2));
     const sumvalueformated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumvalue);
     const sumpayvalue = listMethods.filter(item => Number.isNaN(item.value) === false).map(item => item.value).reduce((prev, curr) => prev + curr, 0);
     const calculatemissvalue = sumvalue - sumpayvalue
@@ -203,12 +228,6 @@ export const Sell = () => {
     }, [formatedmissvalue])
 
     //const finallistapi = JSON.stringify({Products: {...listProducts}, Payment: {...listMethods}})
-
-
-
-
-
-
 
     return (
         <>
@@ -241,12 +260,19 @@ export const Sell = () => {
                     {listProducts.length > 0 &&
                         <S.DivList>
                             {listProducts.map((item) => (
-                                <ListSell key={item.name} item={item} handleRemoveItem={handleRemoveItem} handleEditItem={handleEditItem} handleRemoveOneItem={handleRemoveOneItem} />
-
+                                <ListSell
+                                    key={item.name}
+                                    item={item}
+                                    handleRemoveItem={handleRemoveItem}
+                                    handleEditItem={handleEditItem}
+                                    handleRemoveOneItem={handleRemoveOneItem}
+                                    handleDiscount={handleDiscount}
+                                />
                             ))}</S.DivList>
                     }
                     <S.Checkout isDarkMode={Theme.DarkMode}>
-                        <label>Qtd: {sumquantity}</label>
+                        <label>Quantidade de itens: {sumquantity}</label>
+                        <label>Desconto Total: {sumDiscountFormated}</label>
                         <label>Valor Total:</label>
                         <S.TotalValue>
                             {sumvalueformated}
@@ -259,6 +285,7 @@ export const Sell = () => {
 
                 </S.Main>
             </S.Container>
+
             <ModalCheckOut
                 listMethods={listMethods}
                 setMethods={setMethods}
@@ -276,6 +303,7 @@ export const Sell = () => {
                 calculatemissvalue={calculatemissvalue}
                 sumvalueformated={sumvalueformated}
                 sumquantity={sumquantity}
+                sumDiscount={sumDiscount}
             />
         </>
     )

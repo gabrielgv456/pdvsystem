@@ -12,7 +12,7 @@ interface ProductsType {
     quantity: number;
 };
 
-export const GeneratePDFBudget = async (sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null, clientInfo: ClientsType | null, sellerInfo: SellersandClientsType | null) => {
+export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number,sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null, clientInfo: ClientsType | null, sellerInfo: SellersandClientsType | null) => {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -21,8 +21,6 @@ export const GeneratePDFBudget = async (sumvalueformated: string, sumquantity: n
             { text: product.quantity }, { text: product.name }, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.initialvalue) }, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.totalvalue) }
         ]
     })
-
-
 
     const docParams = {
         pageMargins: 15,
@@ -103,6 +101,8 @@ export const GeneratePDFBudget = async (sumvalueformated: string, sumquantity: n
                         [{ text: 'Quantidade', style: 'bold' }, { text: 'Descrição do produto', style: 'bold' }, { text: 'Valor Unitário', style: 'bold' }, { text: 'Valor Total', style: 'bold' }],
                         ...ProductData,
                         [{ text: ' ' }, { text: ' ' }, { text: ' ' }, { text: ' ' }],
+                        [{ text: 'Total s/ Descontos', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValue + sumDiscount), colSpan: 2, alignment: 'center' }, {}],
+                        [{ text: 'Desconto Total', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumDiscount) , colSpan: 2, alignment: 'center'}, {}],
                         [{ text: 'VALOR TOTAL', colSpan: 2, style: 'bold' }, {}, { text: sumvalueformated, colSpan: 2, alignment: 'center', style: 'bold' }, {}],
                         [{ text: 'QUANTIDADE TOTAL', colSpan: 2, style: 'bold' }, {}, { text: sumquantity, alignment: 'center', colSpan: 2, style: 'bold' }, {}],
                     ]

@@ -11,7 +11,7 @@ interface ProductsType {
     quantity: number;
 };
 
-export const GeneratePDFSell = (sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null) => {
+export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null) => {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -49,7 +49,7 @@ export const GeneratePDFSell = (sumvalueformated: string, sumquantity: number, l
                     widths: [170],
                     alignment: 'center',
                     body: [
-                        [userInfo?.urlLogo ? { image: 'logo', width:170,  alignment: 'center' } : { text: '' }],
+                        [userInfo?.urlLogo ? { image: 'logo', width: 170, alignment: 'center' } : { text: '' }],
                     ]
                 },
                 layout: 'noBorders',
@@ -103,8 +103,10 @@ export const GeneratePDFSell = (sumvalueformated: string, sumquantity: number, l
                         [{ text: 'Qnt' }, { text: 'Item' }, { text: 'Valor' }],
                         ...ProductData,
                         [{ text: ' ' }, { text: ' ' }, { text: ' ' }],
-                        [{ text: 'VALOR TOTAL:', colSpan: 2 }, {}, { text: sumvalueformated }],
-                        [{ text: 'QTD ITENS:', colSpan: 2 }, {}, { text: sumquantity, alignment: 'right' }],
+                        [{ text: 'QTD ITENS:', colSpan: 2 }, {}, { text: sumquantity, alignment: 'left' }],
+                        [{ text: 'TOTAL S/ DESCONTOS:', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValue + sumDiscount) }],
+                        [{ text: 'DESCONTO TOTAL:', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumDiscount) }],
+                        [{ text: 'VALOR TOTAL:', colSpan: 2 }, {}, { text: sumvalueformated, style: 'bold' }],
                         [{ text: ' ' }, { text: ' ' }, { text: ' ' }],
                         [{ text: 'VENDA Nº:', colSpan: 2 }, {}, { text: codRef, alignment: 'right' }],
                         [{ text: ' ' }, { text: ' ' }, { text: ' ' }],
@@ -129,7 +131,7 @@ export const GeneratePDFSell = (sumvalueformated: string, sumquantity: number, l
             {
                 style: 'footer',
                 text: ['Emitido com Safyra® - Gestão do seu negócio (safyra.com.br)'],
-                
+
             }
         ],
 
@@ -146,10 +148,13 @@ export const GeneratePDFSell = (sumvalueformated: string, sumquantity: number, l
                 fontSize: 9
             },
             footer: {
-                fontSize: 5,margin: [0, 20, 0, 0]
+                fontSize: 5, margin: [0, 20, 0, 0]
+            },
+            bold: {
+                bold: true
             }
         },
-        images : {
+        images: {
             logo: userInfo?.urlLogo ?? ''
         }
 

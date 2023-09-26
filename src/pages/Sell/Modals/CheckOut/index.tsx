@@ -15,7 +15,7 @@ import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
 import { useApi } from '../../../../hooks/useApi';
 import { AuthContext } from "../../../../contexts/Auth/AuthContext";
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
-import { MethodsType, ProductsTypeOptions } from '../..';
+import { MethodsType, ProductsType, ProductsTypeOptions } from '../..';
 import Radio from '@mui/material/Radio';
 import { DeliveryAddressClient } from './Components/AddressClient';
 import { ModalAddClient } from '../../../PeopleRegistration/Clients/Modals/addClient/addClient';
@@ -46,16 +46,6 @@ interface SellersOptionType {
     code: number;
 }
 
-
-interface ProductsType {
-    name: string;
-    id: number;
-    totalvalue: number;
-    initialvalue: number;
-    quantity: number;
-    totalCost: number;
-    initialCost: number
-};
 
 export interface SellersandClientsType {
     id: number;
@@ -116,6 +106,7 @@ interface ModalCheckOutProps {
     calculatemissvalue: number
     sumvalueformated: string
     sumquantity: number
+    sumDiscount: number
 }
 
 
@@ -256,6 +247,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const finallistapi = {
         UserId: auth.idUser,
         totalValue: props.sumvalue,
+        totalDiscount: props.sumDiscount > 0 ? props.sumDiscount : null,
         valuePayment: props.sumpayvalue,
         changeValue: null,
         totalCost: props.sumCost,
@@ -448,11 +440,11 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
                     <S.DivModalButtons>
                         {isSellEnded ?
-                            <S.ButtonPrint onClick={(e) => GeneratePDFSell(props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), codRefSell, auth.user)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
+                            <S.ButtonPrint onClick={(e) => GeneratePDFSell(props.sumDiscount, props.sumvalue, props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), codRefSell, auth.user)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
                             :
                             <>
-                            <DefaultButton onClick={(e) => GeneratePDFBudget(props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), codRefSell, auth.user, inputClient,inputSeller)} selectedColor='--NoColor' fontSize='1.01rem'  padding='7px 10px 7px 10px' borderRadius='13px'> <RiFileList3Line style={{ marginRight: 2 }}/> Orçamento</DefaultButton>
-                            <DefaultButton selectedColor='--Green' fontSize='1.08rem' padding='7px 25px 7px 25px' borderRadius='13px' onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</DefaultButton>
+                                <DefaultButton onClick={(e) => GeneratePDFBudget(props.sumDiscount, props.sumvalue, props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), codRefSell, auth.user, inputClient, inputSeller)} selectedColor='--NoColor' fontSize='1.01rem' padding='7px 10px 7px 10px' borderRadius='13px'> <RiFileList3Line style={{ marginRight: 2 }} /> Orçamento</DefaultButton>
+                                <DefaultButton selectedColor='--Green' fontSize='1.08rem' padding='7px 25px 7px 25px' borderRadius='13px' onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</DefaultButton>
                             </>
                         }
                     </S.DivModalButtons>

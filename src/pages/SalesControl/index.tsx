@@ -32,6 +32,7 @@ export interface SellsProductsReceiveApi {
     valueProduct: number;
     totalValue: number;
     totalCost: number;
+    totalDiscount:number;
     descriptionProduct: string;
     created_at: Date;
 };
@@ -107,8 +108,8 @@ export const SalesControl = () => {
     const defaultSendtoApi = async () => {
 
         const data = await findSells(dataToSendApi)
-        await setListSells(data.sells)
-        await setListSellsProducts(data.sellsproducts)
+        setListSells(data.sells)
+        setListSellsProducts(data.sellsproducts)
     }
     // End parms menu MUI//
 
