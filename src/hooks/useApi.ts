@@ -4,6 +4,7 @@ import { TypeChangeStatusDeliveriesRequest } from '../pages/Deliveries/component
 import { typeRequestDeliveryAdressChange } from '../pages/Deliveries/components/tables/modals/components/changeAddress';
 import { typeSetPaymentsonDelivery } from '../pages/Deliveries/components/tables/modals/modalDeliveryDone';
 import { typeChangeForgotPassword } from '../pages/Login/Modals/validateEmail';
+import { typeReqChangeFiscalParameters } from '../pages/Settings/tabs/FiscalParameters/interfaces';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -14,6 +15,7 @@ const api = axios.create({
         return true
     }
 });
+
 
 export const useApi = () => ({
 
@@ -98,11 +100,11 @@ export const useApi = () => ({
         return response.data
     },
     editClient: async (dataEditClient: object) => {
-        const response = await api.post('/editclient', { dataEditClient })
+        const response = await api.post('/editclient', { ...dataEditClient })
         return response.data
     },
     addClient: async (dataAddClient: object) => {
-        const response = await api.post('/addclient', { dataAddClient })
+        const response = await api.post('/addclient', { ...dataAddClient })
         return response.data
     },
     deleteClient: async (dataDeleteClient: object) => {
@@ -196,6 +198,12 @@ export const useApi = () => ({
         return response.data
     }, verifyCodeForgotPassword: async (dataverifyCodeForgotPass: { email: string, codEmailValidate: string }) => {
         const response = await api.get('/verifyCodeForgotPassword', { params: { ...dataverifyCodeForgotPass } })
+        return response.data
+    }, getFiscalParameters: async (idUser: number) => {
+        const response = await api.get('/fiscalParameters', { params: { storeId: idUser } })
+        return response.data
+    }, changeFiscalParameters: async (dataChangeFicalParameters: typeReqChangeFiscalParameters) => {
+        const response = await api.post('/changeFiscalParameters', { ...dataChangeFicalParameters })
         return response.data
     }
 });

@@ -17,6 +17,7 @@ export const TabMyProfile = () => {
     const [nameCorporation, setNameCorporation] = useState('')
     const [cnpjCorporation, setCnpjCorporation] = useState('')
     const [emailCorporation, setEmailCorporation] = useState('')
+    const [ieCorporation,setIeCorporation] = useState('')
     const [phoneNumberCorporation, setPhoneNumberCorporation] = useState('')
     const [cellNumberCorporation, setCellNumberCorporation] = useState('')
     const [adressCepCorporation, setAdressCepCorporation] = useState('')
@@ -112,6 +113,7 @@ export const TabMyProfile = () => {
                 setNameCorporation(resultAboutCorporation.name)
                 setCnpjCorporation(cpfCnpjFormat(resultAboutCorporation.cnpj, resultAboutCorporation.cnpj))
                 setEmailCorporation(resultAboutCorporation.email)
+                setIeCorporation(resultAboutCorporation.ie)
                 setPhoneNumberCorporation(phoneNumberFormat(resultAboutCorporation.phone, resultAboutCorporation.phone))
                 setCellNumberCorporation(cellNumberFormat(resultAboutCorporation.cellPhone, resultAboutCorporation.cellPhone))
                 setAdressCepCorporation(cepFormat(resultAboutCorporation.adressCep, resultAboutCorporation.adressCep))
@@ -158,9 +160,9 @@ export const TabMyProfile = () => {
             if (!dataChangeAboutCorporation.Success) {
                 throw new Error("Erro ao atualizar dados da empresa! " + dataChangeAboutCorporation.erro)
             }
-            const newUser : User | null = dataChangeAboutCorporation.updateAbouteCorporation
+            const newUser: User | null = dataChangeAboutCorporation.updateAbouteCorporation
             if (auth.user) {
-                auth.setUser({ ...auth.user, ...newUser})
+                auth.setUser({ ...auth.user, ...newUser })
             }
             MessageBox('success', 'Dados atualizados com sucesso!')
         } catch (error: any) {
@@ -181,7 +183,8 @@ export const TabMyProfile = () => {
         adressNeighborhood: adressNeighborhoodCorporation === '' ? null : adressNeighborhoodCorporation,
         adressCity: adressCityCorporation === '' ? null : adressCityCorporation,
         adressState: adressStateCorporation === '' ? null : adressStateCorporation,
-        fantasyName: fantasyNameCorporation === '' ? null : fantasyNameCorporation
+        fantasyName: fantasyNameCorporation === '' ? null : fantasyNameCorporation,
+        ie : ieCorporation === '' ? null : ieCorporation
     }
 
     const finalDataChangePass = {
@@ -291,24 +294,37 @@ export const TabMyProfile = () => {
 
 
                 </label>
-
-                <TextField
-                    value={emailCorporation}
-                    onChange={(e) => {
-                        setEmailCorporation(
-                            e.target.value.length > 40 ?
-                                emailCorporation
-                                :
-                                e.target.value)
-                    }}
-                    id="outlined-basic"
-                    label="E-mail"
-                    variant="outlined"
-                    sx={{ width: '100%' }}
-                    disabled={true}
-                />
-
-
+                <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                    <TextField
+                        value={emailCorporation}
+                        onChange={(e) => {
+                            setEmailCorporation(
+                                e.target.value.length > 40 ?
+                                    emailCorporation
+                                    :
+                                    e.target.value)
+                        }}
+                        id="outlined-basic"
+                        label="E-mail"
+                        variant="outlined"
+                        sx={{ width: '70%' }}
+                        disabled={true}
+                    />
+                    <TextField
+                        value={ieCorporation}
+                        onChange={(e) => {
+                            setIeCorporation(
+                                e.target.value.length > 20 ?
+                                    ieCorporation
+                                    :
+                                    removeNotNumerics(e.target.value))
+                        }}
+                        id="outlined-basic"
+                        label="Inscrição Estadual"
+                        variant="outlined"
+                        sx={{ width: '28%' }}
+                    />
+                </label>
                 <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <TextField
                         value={phoneNumberCorporation}

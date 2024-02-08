@@ -6,16 +6,16 @@ import { useContext, useState } from "react";
 import { useApi } from "../../../../hooks/useApi";
 import { AuthContext } from "../../../../contexts/Auth/AuthContext";
 import { RiWhatsappLine } from "react-icons/ri";
-import { ModalEditClient } from "./Modals/editClient";
 import { ClientsReturnApiProps } from '../index'
 import { ModalDeleteClient } from "./Modals/deleteClient";
 import { ModalSuccessDeleteClient } from "./Modals/successDeleteClient";
 import { MdOutlineMail } from "react-icons/md";
 import { useMessageBoxContext } from "../../../../contexts/MessageBox/MessageBoxContext";
+import { ModalAddEditClient } from "../Modals/addEditClient/addEditClient";
 
 interface ListClientsProps {
     client: ClientsReturnApiProps;
-    created_at: Date;
+    created_at: Date | null;
     searchClient: () => void;
 }
 
@@ -31,7 +31,7 @@ export const ListClients = (props: ListClientsProps) => {
     //const [inputMasterKey, setinputMasterKey] = useState("")
     const [isModalDeleteClientOpen, setisModalDeleteClientOpen] = useState(false)
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false)
-    const cpfcnpjFormated = props.client.cpf.length === 11 ? props.client.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4") : props.client.cpf.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "$1.$2.$3/$4-$5")
+    const cpfcnpjFormated = props.client.cpf?.length === 11 ? props.client.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4") : props.client.cpf?.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "$1.$2.$3/$4-$5")
     const cellFormated =  props.client.cellNumber !== null && props.client.cellNumber.replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3")
     //const telFormated = props.client.phoneNumber !== null ? props.client.phoneNumber.replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3") : ""
     const linkwhatsapp = `https://wa.me/55${props.client.cellNumber}`
@@ -110,11 +110,12 @@ export const ListClients = (props: ListClientsProps) => {
                  setisModalSucessOpen = {setisModalSucessOpen}
             />
 
-            <ModalEditClient
+            <ModalAddEditClient
                 client={props.client}
-                isModalEditClientOpen={isModalEditClientOpen}
-                setisModalEditClientOpen={setisModalEditClientOpen}
+                isModalAddEditClientOpen={isModalEditClientOpen}
+                setisModalAddEditClientOpen={setisModalEditClientOpen}
                 setisModalSucessOpen={setisModalSucessOpen}
+                type="edit"
             />
 
             <ModalDeleteClient 

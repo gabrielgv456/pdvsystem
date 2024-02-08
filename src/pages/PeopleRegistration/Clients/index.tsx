@@ -9,20 +9,22 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useApi } from '../../../hooks/useApi';
 import { BsSearch } from 'react-icons/bs';
 import { ListClients } from './ListClients/ListClients';
-import { ModalAddClient } from "./Modals/addClient/addClient";
+import { ModalAddEditClient } from "./Modals/addEditClient/addEditClient";
 import { ModalSuccessClient } from "./Modals/Success/modalSuccess";
 
 
 
 export interface ClientsReturnApiProps {
-    id: number;
+    storeId?: number,
+    id?: number;
+    idClient?: number;
     name: string;
-    gender: string;
-    cpf: string;
+    gender: string | null;
+    cpf: string | null;
     email: string | null;
-    created_at: Date;
+    created_at?: Date;
     active: boolean;
-    birthDate: Date,
+    birthDate: Date | string | null,
     phoneNumber: string | null,
     cellNumber: string | null,
     adressStreet: string | null,
@@ -32,7 +34,12 @@ export interface ClientsReturnApiProps {
     adressCity: string | null,
     adressState: string | null,
     adressCep: string | null,
-    adressUF: string | null
+    adressUF: string | null,
+    ie: string,
+    suframa: string,
+    finalCostumer: boolean | null,
+    taxRegimeId: number | null,
+    taxPayerTypeId: number | null
 }
 
 interface SidebartoPeopleRegistrationProps {
@@ -48,7 +55,7 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
     const [ClientsReturnApi, setClientsReturnApi] = useState<ClientsReturnApiProps[]>([])
     const [ItensPerPageExtract, SetItensPerPageExtract] = useState(10)
     const [atualPageExtract, SetAtualPageExtract] = useState(0)
-    const [isModalAddClientOpen, setisModalAddClientOpen] = useState(false);
+    const [isModalAddEditClientOpen, setisModalAddEditClientOpen] = useState(false);
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false);
     const [inputSearchClient, setinputSearchClient] = useState("")
     const inputSearchClientLowwer = inputSearchClient.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
@@ -63,13 +70,13 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
     }, [])
 
     function handleOpenModalConfirmSell() {
-        setisModalAddClientOpen(true)
+        setisModalAddEditClientOpen(true)
 
     }
 
 
     function handleContinueAddingClients() {
-        setisModalAddClientOpen(true)
+        setisModalAddEditClientOpen(true)
         setisModalSucessOpen(false)
     }
 
@@ -100,7 +107,7 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
         <>
             <S.Container isDarkMode={Theme.DarkMode}>
                 <S.Header>
-                    <S.LabelSearchClient> 
+                    <S.LabelSearchClient>
                         <BsSearch style={{ margin: '15px', color: "#9eaab5" }} size="18" />
                         <input
                             value={inputSearchClient}
@@ -159,8 +166,7 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
                             client={item}
                             key={item.id}
                             searchClient={SearchClients}
-                            created_at={item.created_at} />
-
+                            created_at={item.created_at ?? null} />
                     ))
                     }
 
@@ -208,11 +214,12 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
             </S.Container>
 
 
-            <ModalAddClient
-                setisModalAddClientOpen={setisModalAddClientOpen}
+            <ModalAddEditClient
+                setisModalAddEditClientOpen={setisModalAddEditClientOpen}
                 setisModalSucessOpen={setisModalSucessOpen}
-                isModalAddClientOpen={isModalAddClientOpen}
+                isModalAddEditClientOpen={isModalAddEditClientOpen}
                 searchClients={SearchClients}
+                type="add"
             />
 
             <ModalSuccessClient

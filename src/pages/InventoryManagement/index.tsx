@@ -157,10 +157,10 @@ export const InventoryManagement = () => {
                             dataTransactionsProductsReturnApi={dataTransactionsProductsReturnApi}
                             setdataTransactionsProductsReturnApi={setdataTransactionsProductsReturnApi}
                             created_at={item.created_at}
-                            reservedQuantity={item.deliveries.reduce( (acc, item) => { 
+                            reservedQuantity={item.deliveries.reduce((acc, item) => {
                                 return acc + item.itemSell.quantity
-                            },0)}
-                            />
+                            }, 0)}
+                        />
 
                     ))
                     }

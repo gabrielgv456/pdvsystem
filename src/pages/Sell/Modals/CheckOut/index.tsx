@@ -18,7 +18,7 @@ import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBox
 import { MethodsType, ProductsType, ProductsTypeOptions } from '../..';
 import Radio from '@mui/material/Radio';
 import { DeliveryAddressClient } from './Components/AddressClient';
-import { ModalAddClient } from '../../../PeopleRegistration/Clients/Modals/addClient/addClient';
+import { ModalAddEditClient } from '../../../PeopleRegistration/Clients/Modals/addEditClient/addEditClient';
 import { ModalSuccessClient } from '../../../PeopleRegistration/Clients/Modals/Success/modalSuccess';
 import { ModalAddSeller } from '../../../PeopleRegistration/Sellers/Modals/addSeller';
 import { MuiBox } from '../../../../components/box/muiBox';
@@ -123,7 +123,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const [sellers, setSellers] = useState<SellersandClientsType[]>([])
     const [clients, setClients] = useState<ClientsType[]>([])
     const [selectedDeliveryType, setSelectedDeliveryType] = useState('instantDelivery');
-    const [isModalAddClientOpen, setisModalAddClientOpen] = useState(false)
+    const [isModalAddEditClientOpen, setisModalAddEditClientOpen] = useState(false)
     const [isModalAddSellerOpen, setisModalAddSellerOpen] = useState(false)
     const [addressDeliveryClient, setDeliveryClientType] = useState<deliveryAddressClientType>({ addressCep: '', addressCity: '', addressComplement: '', addressNeighborhood: '', addressNumber: '', addressState: '', addressStreet: '', addressUF: '', scheduledDate: null })
     const handleChangeDeliveryType = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -364,7 +364,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                                         )}
                                     />
                                     <button style={{ border: 'none', background: 'none' }}>
-                                        <MdAddCircleOutline size='22' color='var(--Green)' onClick={() => setisModalAddClientOpen(true)} />
+                                        <MdAddCircleOutline size='22' color='var(--Green)' onClick={() => setisModalAddEditClientOpen(true)} />
                                     </button>
                                 </S.labelClient>
                                 <S.labelSeller>
@@ -453,10 +453,11 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                     </DefaultButtonCloseModal>
                 </MuiBox>
             </Modal>
-            <ModalAddClient
-                isModalAddClientOpen={isModalAddClientOpen}
-                setisModalAddClientOpen={setisModalAddClientOpen}
+            <ModalAddEditClient
+                isModalAddEditClientOpen={isModalAddEditClientOpen}
+                setisModalAddEditClientOpen={setisModalAddEditClientOpen}
                 handleChangeClient={handleChangeClient}
+                type='add'
             />
             <ModalAddSeller
                 isModalAddSellerOpen={isModalAddSellerOpen}

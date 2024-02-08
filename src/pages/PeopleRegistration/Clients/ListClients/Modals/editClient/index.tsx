@@ -31,7 +31,7 @@ interface ListClientstoEditClientProps {
 
 export const ModalEditClient = (props: ListClientstoEditClientProps) => {
 
-    const cpfcnpjformated = cpfCnpjFormat(props.client.cpf, props.client.cpf)
+    const cpfcnpjformated = cpfCnpjFormat(props.client.cpf, props.client.cpf ?? '')
     const cepformated = props.client.adressCep !== null ? props.client.adressCep.toString().replace(/(\d{5})(\d{3})/g, "$1-$2") : ""
     const cellformated = props.client.cellNumber !== null ? props.client.cellNumber.replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3") : ""
     const telformated = props.client.phoneNumber !== null ? props.client.phoneNumber.replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3") : ""

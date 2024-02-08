@@ -39,7 +39,7 @@ export function cellNumberFormat(text: string, max: string) {
           text.replace(/[^0-9]/g, '')
 }
 
-export function cpfCnpjFormat(text: string, max: string, onlyCpf: boolean = false) {
+export function cpfCnpjFormat(text: string | null, max: string , onlyCpf: boolean = false) {
   if (!text) { return '' }
   return text.replace(/\D/g, '').length === 11 ?
     text.replace(/[^0-9]/g, '')
