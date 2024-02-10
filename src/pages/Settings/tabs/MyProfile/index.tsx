@@ -195,7 +195,7 @@ export const TabMyProfile = () => {
     }
 
     async function handleConsultCep(cep: string) {
-        const cepformated = cep.replace(/[^0-9]/g, '')
+        const cepformated = removeNotNumerics(cep)
 
         if (cepformated.length === 8) {
             try {

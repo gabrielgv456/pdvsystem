@@ -12,26 +12,26 @@ export interface ListClientstoAddClientProps {
 }
 
 export interface TypeClientData {
-    ClientName: string,
-    ClientGender: string,
-    ClientCpfCnpj: string,
-    ClientEmail: string,
-    ClientBirthDate: Date | string | null,
-    ClientPhoneNumber: string,
-    ClientCellNumber: string,
-    ClientAdressStreet: string,
-    ClientAdressNumber: string,
-    ClientAdressNeighborhood: string,
-    ClientAdressComplement: string,
-    ClientAdressCity: string,
-    ClientAdressState: string | null,
-    ClientAdressCep: string,
-    ClientActive: boolean,
-    ClientIe: string,
-    ClientSuframa: string
-    ClientFinalCostumer: boolean,
-    ClientTaxRegimeId: number | null,
-    ClientTaxPayerTypeId: number | null
+    name: string,
+    gender: string,
+    cpf: string,
+    email: string,
+    birthDate: Date | string | null,
+    phoneNumber: string,
+    cellNumber: string,
+    adressStreet: string,
+    adressNumber: string,
+    adressNeighborhood: string,
+    adressComplement: string,
+    adressCity: string,
+    adressState: string | null,
+    adressCep: string,
+    active: boolean,
+    ie: string,
+    suframa: string
+    finalCostumer: boolean,
+    taxRegimeId: number | null,
+    taxPayerTypeId: number | null
 }
 
 export type typeOptions = { id: number, description: string }

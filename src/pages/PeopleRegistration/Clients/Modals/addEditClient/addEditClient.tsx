@@ -14,7 +14,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
-import { cellNumberFormat, cepFormat, cpfCnpjFormat, optionsUF, phoneNumberFormat } from '../../../../../utils/utils';
+import { cellNumberFormat, cepFormat, cpfCnpjFormat, optionsUF, phoneNumberFormat, removeNotNumerics, validateCPForCNPJ } from '../../../../../utils/utils';
 import { MuiBox } from '../../../../../components/box/muiBox';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../components/buttons/closeButtonModal';
 import { ClientsReturnApiProps } from '../..';
@@ -26,33 +26,37 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
     const { MessageBox } = useMessageBoxContext()
     const auth = useContext(AuthContext)
     const defaultClientData: type.TypeClientData = {
-        ClientName: props.client?.name ?? "",
-        ClientGender: props.client?.gender ?? "",
-        ClientCpfCnpj: props.client?.cpf ?? "",
-        ClientEmail: props.client?.email ?? "",
-        ClientIe: props.client?.ie ?? "",
-        ClientSuframa: props.client?.suframa ?? "",
-        ClientFinalCostumer: props.client?.finalCostumer ?? false,
-        ClientBirthDate: props.client?.birthDate ?? null,
-        ClientPhoneNumber: props.client?.phoneNumber ?? "",
-        ClientCellNumber: props.client?.cellNumber ?? "",
-        ClientAdressStreet: props.client?.adressStreet ?? "",
-        ClientAdressNumber: props.client?.adressNumber ?? "",
-        ClientAdressNeighborhood: props.client?.adressNeighborhood ?? "",
-        ClientAdressComplement: props.client?.adressComplement ?? "",
-        ClientAdressCity: props.client?.adressCity ?? "",
-        ClientAdressState: props.client?.adressState ?? "",
-        ClientAdressCep: props.client?.adressCep ?? "",
-        ClientActive: props.client?.active ?? true,
-        ClientTaxRegimeId: props.client?.taxRegimeId ?? null,
-        ClientTaxPayerTypeId: props.client?.taxPayerTypeId ?? null
+        name: props.client?.name ?? "",
+        gender: props.client?.gender ?? "",
+        cpf: cpfCnpjFormat(props.client?.cpf ?? ""),
+        email: props.client?.email ?? "",
+        ie: props.client?.ie ?? "",
+        suframa: props.client?.suframa ?? "",
+        finalCostumer: props.client?.finalCostumer ?? false,
+        birthDate: props.client?.birthDate ?? null,
+        phoneNumber: phoneNumberFormat(props.client?.phoneNumber ?? ''),
+        cellNumber: cellNumberFormat(props.client?.cellNumber ?? ""),
+        adressStreet: props.client?.adressStreet ?? "",
+        adressNumber: props.client?.adressNumber ?? "",
+        adressNeighborhood: props.client?.adressNeighborhood ?? "",
+        adressComplement: props.client?.adressComplement ?? "",
+        adressCity: props.client?.adressCity ?? "",
+        adressState: props.client?.adressState ?? "",
+        adressCep: cepFormat(props.client?.adressCep ?? ""),
+        active: props.client?.active ?? true,
+        taxRegimeId: props.client?.taxRegimeId ?? null,
+        taxPayerTypeId: props.client?.taxPayerTypeId ?? null
     }
-    const [clientData, setClientData] = useState<type.TypeClientData>(defaultClientData)
-    const [selectedTaxPayerId, setSelectedTaxPayerId] = useState<type.typeOptions | null>(null)
-    const [selectedTaxRegimeId, setSelectedTaxRegimeId] = useState<type.typeOptions | null>(null)
     const optionsTaxPayerId: type.typeOptions[] = [{ id: 1, description: "1 - Contribuinte ICMS" },
     { id: 2, description: "2 - Contribuinte Isento" },
     { id: 9, description: "9 - Não Contribuinte, pode ou não possuir Inscrição Estadual" }]
+    const optionsTaxRegimeId: type.typeOptions[] = [{ id: 1, description: 'Lucro Real' },
+    { id: 2, description: 'Simples Nacional' },
+    { id: 3, description: 'Lucro Presumido' }]
+    const [clientData, setClientData] = useState<type.TypeClientData>(defaultClientData)
+    const [selectedTaxPayerId, setSelectedTaxPayerId] = useState<type.typeOptions | null>(optionsTaxPayerId.find(item => item.id === props.client?.taxPayerTypeId) ?? null)
+    const [selectedTaxRegimeId, setSelectedTaxRegimeId] = useState<type.typeOptions | null>(optionsTaxRegimeId.find(item => item.id === props.client?.taxRegimeId) ?? null)
+
 
     async function handleCloseModalAddClient() {
         props.setisModalAddEditClientOpen(false)
@@ -60,14 +64,14 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
     }
     function handleChangeTaxPayerType(newValue: type.typeOptions | null) {
         setSelectedTaxPayerId(newValue)
-        setClientData({ ...clientData, ClientTaxPayerTypeId: (newValue?.id ?? null) })
+        setClientData({ ...clientData, taxPayerTypeId: (newValue?.id ?? null) })
     }
     function handleChangeTaxRegimeId(newValue: type.typeOptions | null) {
         setSelectedTaxRegimeId(newValue)
-        setClientData({ ...clientData, ClientTaxRegimeId: (newValue?.id ?? null) })
+        setClientData({ ...clientData, taxRegimeId: (newValue?.id ?? null) })
     }
     async function handleConsultCep(cep: string) {
-        const cepformated = cep.replace(/[^0-9]/g, '')
+        const cepformated = removeNotNumerics(cep)
 
         if (cepformated.length === 8) {
             try {
@@ -77,10 +81,13 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                     MessageBox('error', 'CEP invalido')
                 }
                 else {
-                    setClientData({ ...clientData, ClientAdressStreet: data.logradouro })
-                    setClientData({ ...clientData, ClientAdressNeighborhood: data.bairro })
-                    setClientData({ ...clientData, ClientAdressCity: data.localidade })
-                    setClientData({ ...clientData, ClientAdressState: data.uf })
+                    setClientData({
+                        ...clientData,
+                        adressStreet: data.logradouro,
+                        adressNeighborhood: data.bairro,
+                        adressCity: data.localidade,
+                        adressState: data.uf
+                    })
                 }
             }
             catch (error: any) {
@@ -93,35 +100,36 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
     const finaldataAddClientToSendApi: ClientsReturnApiProps = {
         storeId: auth.idUser,
         idClient: props.client?.id,
-        name: clientData.ClientName,
-        active: clientData.ClientActive,
-        email: clientData.ClientEmail,
-        adressCep: clientData.ClientAdressCep !== null || "" ? (clientData.ClientAdressCep.replace(/[^0-9]/g, '')) : null,
-        adressCity: clientData.ClientAdressCity,
-        adressComplement: clientData.ClientAdressComplement,
-        adressNeighborhood: clientData.ClientAdressNeighborhood,
-        adressNumber: clientData.ClientAdressNumber,
-        adressState: clientData.ClientAdressState,
-        adressStreet: clientData.ClientAdressStreet,
-        adressUF: clientData.ClientAdressState,
-        birthDate: clientData.ClientBirthDate,
-        cellNumber: clientData.ClientCellNumber !== null || "" ? (clientData.ClientCellNumber.replace(/[^0-9]/g, '')) : null,
-        cpf: clientData.ClientCpfCnpj !== null || "" ? (clientData.ClientCpfCnpj.replace(/[^0-9]/g, '')) : null,
-        gender: clientData.ClientCpfCnpj.length !== 18 ? clientData.ClientGender : null,
-        phoneNumber: clientData.ClientPhoneNumber !== null || "" ? (clientData.ClientPhoneNumber.replace(/[^0-9]/g, '')) : null,
-        ie: clientData.ClientIe,
-        suframa: clientData.ClientSuframa,
-        finalCostumer: clientData.ClientFinalCostumer,
-        taxRegimeId: clientData.ClientTaxRegimeId,
-        taxPayerTypeId: clientData.ClientTaxPayerTypeId
+        name: clientData.name,
+        active: clientData.active,
+        email: clientData.email ?? null,
+        adressCep: (removeNotNumerics(clientData.adressCep)) ?? null,
+        adressCity: clientData.adressCity ?? null,
+        adressComplement: clientData.adressComplement ?? null,
+        adressNeighborhood: clientData.adressNeighborhood ?? null,
+        adressNumber: clientData.adressNumber ?? null,
+        adressState: clientData.adressState ?? null,
+        adressStreet: clientData.adressStreet ?? null,
+        adressUF: clientData.adressState ?? null,
+        birthDate: clientData.birthDate ?? null,
+        cellNumber: (removeNotNumerics(clientData.cellNumber)) ?? null,
+        cpf: (removeNotNumerics(clientData.cpf)) ?? null,
+        gender: clientData.cpf.length !== 18 ? clientData.gender : null,
+        phoneNumber: (removeNotNumerics(clientData.phoneNumber)) ?? null,
+        ie: clientData.ie ?? null,
+        suframa: clientData.suframa ?? null,
+        finalCostumer: clientData.finalCostumer ?? null,
+        taxRegimeId: clientData.taxRegimeId ?? null,
+        taxPayerTypeId: clientData.taxPayerTypeId ?? null
     }
 
     const AddClientApi = async () => {
         try {
-            if (!(clientData.ClientCpfCnpj && clientData.ClientName && clientData.ClientBirthDate &&
-                clientData.ClientCpfCnpj !== "" && clientData.ClientName !== "" && clientData.ClientBirthDate !== "" &&
-                (clientData.ClientCpfCnpj.length === 14 || clientData.ClientCpfCnpj.length === 18))
+            if (!(clientData.cpf && clientData.name && clientData.birthDate &&
+                clientData.cpf !== "" && clientData.name !== "" && clientData.birthDate !== "" &&
+                (clientData.cpf.length === 14 || clientData.cpf.length === 18))
             ) { throw new Error('Campos obrigatórios não informados!') }
+            if (!validateCPForCNPJ(clientData.cpf)) throw new Error('Cpf ou Cnpj inválido!')
             let data
             if (props.type === 'add')
                 data = await addClient(finaldataAddClientToSendApi)
@@ -139,7 +147,7 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
             }
         }
         catch (error: any) {
-            MessageBox('error', `Falha ao ${props.type==='add' ? 'adicionar' : (props.type === 'edit' && 'editar')} cliente! ` + error.message)
+            MessageBox('error', `Falha ao ${props.type === 'add' ? 'adicionar' : (props.type === 'edit' && 'editar')} cliente! ` + error.message)
         }
     }
 
@@ -151,17 +159,17 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                 <S.DivModal>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
-                            value={clientData.ClientCpfCnpj}
+                            value={clientData.cpf}
                             onChange={(e) => {
-                                setClientData({ ...clientData, ClientCpfCnpj: cpfCnpjFormat(e.target.value, clientData.ClientCpfCnpj) })
+                                setClientData({ ...clientData, cpf: cpfCnpjFormat(e.target.value, clientData.cpf) })
                             }}
-                            label={clientData.ClientCpfCnpj.length === 0 ?
+                            label={clientData.cpf.length === 0 ?
                                 "CPF/CNPJ *"
                                 :
-                                clientData.ClientCpfCnpj.length === 14 ?
+                                clientData.cpf.length === 14 ?
                                     "CPF *"
                                     :
-                                    clientData.ClientCpfCnpj.length === 18 ?
+                                    clientData.cpf.length === 18 ?
                                         "CNPJ *"
                                         :
                                         "CPF/CNPJ *"
@@ -177,22 +185,22 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                             <DatePicker
                                 disableFuture
 
-                                label={clientData.ClientCpfCnpj.length === 0 ?
+                                label={clientData.cpf.length === 0 ?
                                     "Nascimento/Fundação *"
                                     :
-                                    clientData.ClientCpfCnpj.length === 14 ?
+                                    clientData.cpf.length === 14 ?
                                         "Data de Nascimento *"
                                         :
-                                        clientData.ClientCpfCnpj.length === 18 ?
+                                        clientData.cpf.length === 18 ?
                                             "Data de Fundação *"
                                             :
                                             "Nascimento/Fundação *"
                                 }
                                 openTo="year"
                                 views={['year', 'month', 'day']}
-                                value={clientData.ClientBirthDate}
+                                value={clientData.birthDate}
                                 onChange={(newValue) => {
-                                    setClientData({ ...clientData, ClientBirthDate: newValue });
+                                    setClientData({ ...clientData, birthDate: newValue });
                                 }}
                                 renderInput={(params) => <TextField sx={{ width: '49%' }} {...params} variant="outlined" />}
                             />
@@ -201,30 +209,30 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                     </label>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
-                            value={clientData.ClientName}
+                            value={clientData.name}
                             onChange={(e) => {
                                 setClientData(
                                     e.target.value.length > 40 ?
                                         clientData
                                         :
-                                        { ...clientData, ClientName: e.target.value })
+                                        { ...clientData, name: e.target.value })
                             }}
                             id="outlined-basic"
-                            label={clientData.ClientName.length === 0 ?
+                            label={clientData.name.length === 0 ?
                                 "Nome/Razão Social *"
                                 :
-                                clientData.ClientCpfCnpj.length === 14 ?
+                                clientData.cpf.length === 14 ?
                                     "Nome *"
                                     :
-                                    clientData.ClientCpfCnpj.length === 18 ?
+                                    clientData.cpf.length === 18 ?
                                         "Razão Social *"
                                         :
                                         "Nome/Razão Social *"
                             }
                             variant="outlined"
-                            sx={{ width: clientData.ClientCpfCnpj.length < 18 ? '80%' : '60%' }}
+                            sx={{ width: clientData.cpf.length < 18 ? '80%' : '60%' }}
                         />
-                        {clientData.ClientCpfCnpj.length < 18 ?
+                        {clientData.cpf.length < 18 ?
                             <div style={{ display: 'flex', flexDirection: 'column', fontSize: "0.9rem", width: '20%', alignItems: 'center' }}>
 
                                 <section >
@@ -237,16 +245,16 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                                         type="radio"
 
                                         value="M"
-                                        checked={clientData.ClientGender === 'M'}
-                                        onChange={(e) => setClientData({ ...clientData, ClientGender: e.target.value })}
+                                        checked={clientData.gender === 'M'}
+                                        onChange={(e) => setClientData({ ...clientData, gender: e.target.value })}
                                     />M
 
                                     <input
                                         type="radio"
                                         value="F"
                                         style={{ marginLeft: "10px" }}
-                                        checked={clientData.ClientGender === 'F'}
-                                        onChange={(e) => setClientData({ ...clientData, ClientGender: e.target.value })}
+                                        checked={clientData.gender === 'F'}
+                                        onChange={(e) => setClientData({ ...clientData, gender: e.target.value })}
                                     />F
                                 </label>
 
@@ -260,9 +268,7 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                                 }}
                                 noOptionsText="Não encontrado"
                                 id="controllable-states-demo"
-                                options={[{ id: 1, description: 'Lucro Real' },
-                                { id: 2, description: 'Simples Nacional' },
-                                { id: 3, description: 'Lucro Presumido' }]}
+                                options={optionsTaxRegimeId}
                                 sx={{ width: '38%' }}
                                 getOptionLabel={(option) => (option.description)}
                                 renderInput={(params) =>
@@ -293,13 +299,13 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                                 />
                             } />
                         <TextField
-                            value={clientData.ClientSuframa}
+                            value={clientData.suframa}
                             onChange={(e) => {
                                 setClientData(
                                     e.target.value.length > 40 ?
                                         clientData
                                         :
-                                        { ...clientData, ClientSuframa: e.target.value })
+                                        { ...clientData, suframa: e.target.value })
                             }}
                             id="outlined-basic"
                             label="SUFRAMA"
@@ -308,13 +314,13 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                             sx={{ width: '20%' }}
                         />
                         <TextField
-                            value={clientData.ClientIe}
+                            value={clientData.ie}
                             onChange={(e) => {
                                 setClientData(
                                     e.target.value.length > 40 ?
                                         clientData
                                         :
-                                        { ...clientData, ClientIe: e.target.value })
+                                        { ...clientData, ie: e.target.value })
                             }}
                             id="outlined-basic"
                             label="Inscrição Estadual"
@@ -326,13 +332,13 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
 
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
-                            value={clientData.ClientEmail}
+                            value={clientData.email}
                             onChange={(e) => {
                                 setClientData(
                                     e.target.value.length > 40 ?
                                         clientData
                                         :
-                                        { ...clientData, ClientEmail: e.target.value })
+                                        { ...clientData, email: e.target.value })
                             }}
                             id="outlined-basic"
                             label="E-mail"
@@ -344,9 +350,9 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                     </label>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
-                            value={clientData.ClientPhoneNumber}
+                            value={clientData.phoneNumber}
                             onChange={(e) => {
-                                setClientData({ ...clientData, ClientPhoneNumber: phoneNumberFormat(e.target.value, clientData.ClientPhoneNumber) })
+                                setClientData({ ...clientData, phoneNumber: phoneNumberFormat(e.target.value, clientData.phoneNumber) })
                             }}
                             id="outlined-basic"
                             label="Telefone"
@@ -356,9 +362,9 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                         />
 
                         <TextField
-                            value={clientData.ClientCellNumber}
+                            value={clientData.cellNumber}
                             onChange={(e) => {
-                                setClientData({ ...clientData, ClientCellNumber: cellNumberFormat(e.target.value, clientData.ClientCellNumber) })
+                                setClientData({ ...clientData, cellNumber: cellNumberFormat(e.target.value, clientData.cellNumber) })
                             }}
                             id="outlined-basic"
                             label="Celular"
@@ -372,9 +378,9 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
 
                         <TextField
-                            value={clientData.ClientAdressCep}
+                            value={clientData.adressCep}
                             onChange={(e) => {
-                                setClientData({ ...clientData, ClientAdressCep: cepFormat(e.target.value, clientData.ClientAdressCep) })
+                                setClientData({ ...clientData, adressCep: cepFormat(e.target.value, clientData.adressCep) })
                             }}
                             onBlur={(e) => handleConsultCep(e.target.value)}
                             id="outlined-basic"
@@ -385,13 +391,13 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                         />
 
                         <TextField
-                            value={clientData.ClientAdressStreet}
+                            value={clientData.adressStreet}
                             onChange={(e) => {
                                 setClientData(
                                     e.target.value.length > 50 ?
                                         clientData
                                         :
-                                        { ...clientData, ClientAdressStreet: e.target.value }
+                                        { ...clientData, adressStreet: e.target.value }
                                 )
                             }}
                             id="outlined-basic"
@@ -402,13 +408,13 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                         />
 
                         <TextField
-                            value={clientData.ClientAdressNumber}
+                            value={clientData.adressNumber}
                             onChange={(e) => {
                                 setClientData(
                                     e.target.value.length > 5 ?
                                         clientData
                                         :
-                                        { ...clientData, ClientAdressNumber: e.target.value }
+                                        { ...clientData, adressNumber: e.target.value }
                                 )
                             }}
                             id="outlined-basic"
@@ -422,12 +428,12 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
 
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
-                            value={clientData.ClientAdressNeighborhood}
+                            value={clientData.adressNeighborhood}
                             onChange={(e) => setClientData(
                                 e.target.value.length > 30 ?
                                     clientData
                                     :
-                                    { ...clientData, ClientAdressNeighborhood: e.target.value })}
+                                    { ...clientData, adressNeighborhood: e.target.value })}
                             type="text"
                             id="outlined-basic"
                             label="Bairro"
@@ -436,12 +442,12 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                             sx={{ width: '40%' }} />
 
                         <TextField
-                            value={clientData.ClientAdressCity}
+                            value={clientData.adressCity}
                             onChange={(e) => setClientData(
                                 e.target.value.length > 30 ?
                                     clientData
                                     :
-                                    { ...clientData, ClientAdressCity: e.target.value })}
+                                    { ...clientData, adressCity: e.target.value })}
                             type="text"
                             id="outlined-basic"
                             label="Cidade"
@@ -451,9 +457,9 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
 
 
                         <Autocomplete
-                            value={clientData.ClientAdressState}
+                            value={clientData.adressState}
                             onChange={(event: any, newValue: string | null) => {
-                                setClientData({ ...clientData, ClientAdressState: newValue });
+                                setClientData({ ...clientData, adressState: newValue });
                             }}
                             noOptionsText="Não encontrado"
                             id="controllable-states-demo"

@@ -22,61 +22,69 @@ export function ReturnData() {
   return (CurrentData)
 }
 
-export function cellNumberFormat(text: string, max: string) {
+export function cellNumberFormat(text: string, max?: string) {
   if (!text) { return '' }
-  return text.replace(/[^0-9]/g, '').length === 2 ?
-    text.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
+  const localMax = text
+  const cellNumber = removeNotNumerics(text)
+  return cellNumber.length === 2 ?
+    cellNumber.replace(/(\d{2})/g, "($1)")
     :
-    text.replace(/[^0-9]/g, '').length === 3 ?
-      text.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
+    cellNumber.length === 3 ?
+      cellNumber.replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
       :
-      text.replace(/[^0-9]/g, '').length === 11 ?
-        text.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3")
+      cellNumber.length === 11 ?
+        cellNumber.replace(/(\d{2})(\d{5})(\d{4})/g, "($1)$2-$3")
         :
-        text.replace(/[^0-9]/g, '').length > 11 ?
-          max
+        cellNumber.length > 11 ?
+          max ?? localMax
           :
-          text.replace(/[^0-9]/g, '')
+          cellNumber
 }
 
-export function cpfCnpjFormat(text: string | null, max: string , onlyCpf: boolean = false) {
+export function cpfCnpjFormat(text: string | null, max?: string, onlyCpf: boolean = false): string {
   if (!text) { return '' }
+  const localMax = text
+  const cpfCnpj = removeNotNumerics(text)
   return text.replace(/\D/g, '').length === 11 ?
-    text.replace(/[^0-9]/g, '')
+    cpfCnpj
       .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
     : text.replace(/\D/g, '').length === 14 ?
-      text.replace(/[^0-9]/g, '')
+      cpfCnpj
         .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "$1.$2.$3/$4-$5")
-      : text.replace(/[^0-9]/g, '').length > 14 ?
-        max
+      : cpfCnpj.length > 14 ?
+        (max ?? localMax)
         :
-        onlyCpf ? max : text.replace(/[^0-9]/g, '')
+        onlyCpf ? (max ?? localMax) : cpfCnpj
 }
 
-export function phoneNumberFormat(text: string, max: string) {
+export function phoneNumberFormat(text: string, max?: string) {
   if (!text) { return '' }
-  return text.replace(/[^0-9]/g, '').length === 2 ?
-    text.replace(/[^0-9]/g, '').replace(/(\d{2})/g, "($1)")
+  const localMax = text
+  const phoneNumber = removeNotNumerics(text)
+  return phoneNumber.length === 2 ?
+    phoneNumber.replace(/(\d{2})/g, "($1)")
     :
-    text.replace(/[^0-9]/g, '').length === 3 ?
-      text.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
+    phoneNumber.length === 3 ?
+      phoneNumber.replace(/(\d{2})(\d{1})(\d{*})/g, "($1)$2")
       :
-      text.replace(/[^0-9]/g, '').length === 10 ?
-        text.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3")
+      phoneNumber.length === 10 ?
+        phoneNumber.replace(/(\d{2})(\d{4})(\d{4})/g, "($1)$2-$3")
         :
-        text.replace(/[^0-9]/g, '').length > 10 ?
-          max
+        phoneNumber.length > 10 ?
+          max ?? localMax
           :
-          text.replace(/[^0-9]/g, '')
+          phoneNumber
 }
 
-export function cepFormat(text: string, max: string) {
+export function cepFormat(text: string, max?: string) {
   if (!text) { return '' }
-  return text.replace(/[^0-9]/g, '').length === 8 ?
+  const localMax = text
+  const cep = removeNotNumerics(text)
+  return cep.length === 8 ?
     text.toString().replace(/(\d{5})(\d{3})/g, "$1-$2")
     :
     text.length > 9 ?
-      max
+      max ?? localMax
       :
       text
 }
@@ -118,6 +126,87 @@ export function DateFormatWeek(value: string | null) {
     year: 'numeric',
     weekday: 'long',
   })
+}
+
+export function validateCPForCNPJ(cpfCnpj: string): boolean {
+  cpfCnpj = removeNotNumerics(cpfCnpj)
+  if (cpfCnpj.length === 11)
+    return validateCPF(cpfCnpj)
+  else if (cpfCnpj.length === 14)
+    return validateCNPJ(cpfCnpj)
+  else return false
+}
+
+function validateCPF(cpf: string): boolean {
+
+  if (cpf.length !== 11) {
+    return false;
+  }
+
+  if (/^(\d)\1+$/.test(cpf)) {
+    return false;
+  }
+
+  let soma = 0;
+  for (let i = 0; i < 9; i++) {
+    soma += parseInt(cpf.charAt(i)) * (10 - i);
+  }
+  let resto = 11 - (soma % 11);
+  if (resto === 10 || resto === 11) {
+    resto = 0;
+  }
+  if (resto !== parseInt(cpf.charAt(9))) {
+    return false;
+  }
+
+  soma = 0;
+  for (let i = 0; i < 10; i++) {
+    soma += parseInt(cpf.charAt(i)) * (11 - i);
+  }
+  resto = 11 - (soma % 11);
+  if (resto === 10 || resto === 11) {
+    resto = 0;
+  }
+  if (resto !== parseInt(cpf.charAt(10))) {
+    return false;
+  }
+  return true;
+}
+
+function validateCNPJ(cnpj: string): boolean {
+
+  if (cnpj.length !== 14) {
+    return false;
+  }
+
+  if (/^(\d)\1+$/.test(cnpj)) {
+    return false;
+  }
+
+  let soma = 0;
+  let peso = 5;
+  for (let i = 0; i < 12; i++) {
+    soma += parseInt(cnpj.charAt(i)) * peso;
+    peso = peso === 2 ? 9 : peso - 1;
+  }
+  let resto = soma % 11;
+  const digitoVerificador1 = resto < 2 ? 0 : 11 - resto;
+  if (digitoVerificador1 !== parseInt(cnpj.charAt(12))) {
+    return false;
+  }
+
+  soma = 0;
+  peso = 6;
+  for (let i = 0; i < 13; i++) {
+    soma += parseInt(cnpj.charAt(i)) * peso;
+    peso = peso === 2 ? 9 : peso - 1;
+  }
+  resto = soma % 11;
+  const digitoVerificador2 = resto < 2 ? 0 : 11 - resto;
+  if (digitoVerificador2 !== parseInt(cnpj.charAt(13))) {
+    return false;
+  }
+  return true;
 }
 
 export const convertToBase64 = (file: File | null): Promise<string> => {

@@ -1,6 +1,6 @@
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { cepFormat, optionsUF } from '../../../../../../utils/utils';
+import { cepFormat, optionsUF, removeNotNumerics } from '../../../../../../utils/utils';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import axios from 'axios';
 import * as S from './style'
@@ -25,7 +25,7 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
     
 
     async function handleConsultCep(cep: string) {
-        const cepformated = cep.replace(/[^0-9]/g, '')
+        const cepformated = removeNotNumerics(cep)
 
         if (cepformated.length === 8) {
             try {

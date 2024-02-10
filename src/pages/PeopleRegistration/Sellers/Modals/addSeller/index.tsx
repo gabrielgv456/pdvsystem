@@ -15,7 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
-import { cellNumberFormat, cepFormat, optionsUF, phoneNumberFormat } from '../../../../../utils/utils';
+import { cellNumberFormat, cepFormat, optionsUF, phoneNumberFormat, removeNotNumerics } from '../../../../../utils/utils';
 import { SellersandClientsType } from '../../../../SalesControl';
 import { MuiBox } from '../../../../../components/box/muiBox';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../components/buttons/closeButtonModal';
@@ -77,7 +77,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
     }
 
     async function handleConsultCep(cep: string) {
-        const cepformated = cep.replace(/[^0-9]/g, '')
+        const cepformated = removeNotNumerics(cep)
 
         if (cepformated.length === 8) {
             try {
@@ -105,7 +105,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
         name: valueInputSellerName,
         active: valueInputSellerActive,
         email: valueInputSellerEmail,
-        adressCep: valueInputSellerAdressCep !== null || "" ? (valueInputSellerAdressCep.replace(/[^0-9]/g, '')) : null,
+        adressCep: valueInputSellerAdressCep !== null || "" ? (removeNotNumerics(valueInputSellerAdressCep)) : null,
         adressCity: valueInputSellerAdressCity,
         adressComplement: valueInputSellerAdressComplement,
         adressNeighborhood: valueInputSellerAdressNeighborhood,
@@ -113,10 +113,10 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
         adressState: valueInputSellerAdressState,
         adressStreet: valueInputSellerAdressStreet,
         birthDate: valueInputSellerBirthDate,
-        cellNumber: valueInputSellerCellNumber !== null || "" ? (valueInputSellerCellNumber.replace(/[^0-9]/g, '')) : null,
-        cpf: valueInputSellerCpf !== null || "" ? (valueInputSellerCpf.replace(/[^0-9]/g, '')) : null,
+        cellNumber: valueInputSellerCellNumber !== null || "" ? (removeNotNumerics(valueInputSellerCellNumber)) : null,
+        cpf: valueInputSellerCpf !== null || "" ? (removeNotNumerics(valueInputSellerCpf)) : null,
         gender: valueInputSellerCpf.length !== 18 ? valueInputSellerGender : null,
-        phoneNumber: valueInputSellerPhoneNumber !== null || "" ? (valueInputSellerPhoneNumber.replace(/[^0-9]/g, '')) : null,
+        phoneNumber: valueInputSellerPhoneNumber !== null || "" ? (removeNotNumerics(valueInputSellerPhoneNumber)) : null,
 
     }
 
@@ -195,12 +195,12 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                             value={valueInputSellerCpf}
                             onChange={(e) => {
                                 setvalueInputSellerCpf(e.target.value.replace(/\D/g, '').length === 11 ?
-                                    e.target.value.replace(/[^0-9]/g, '')
+                                removeNotNumerics(e.target.value)
                                         .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
-                                    : e.target.value.replace(/[^0-9]/g, '').length > 11 ?
+                                    : removeNotNumerics(e.target.value).length > 11 ?
                                         valueInputSellerCpf
                                         :
-                                        e.target.value.replace(/[^0-9]/g, '')
+                                        removeNotNumerics(e.target.value)
                                 )
                             }}
                             label={"CPF *"}

@@ -11,6 +11,7 @@ import { BsSearch } from 'react-icons/bs';
 import { ListClients } from './ListClients/ListClients';
 import { ModalAddEditClient } from "./Modals/addEditClient/addEditClient";
 import { ModalSuccessClient } from "./Modals/Success/modalSuccess";
+import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
 
 
 
@@ -50,6 +51,7 @@ interface SidebartoPeopleRegistrationProps {
 
 export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => {
     const { findClients } = useApi()
+    const { MessageBox } = useMessageBoxContext()
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
     const [ClientsReturnApi, setClientsReturnApi] = useState<ClientsReturnApiProps[]>([])
@@ -90,8 +92,14 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
         SetAtualPageExtract(0)
     }
     const SearchClients = async () => {
-        const data = await findClients(auth.idUser)
-        setClientsReturnApi(data.findClients)
+        try {
+            const data = await findClients(auth.idUser)
+            if (!data.Success) { throw new Error(data.erro) }
+            setClientsReturnApi(data.findClients)
+        }
+        catch (error: any) {
+            MessageBox('error', 'Falha ao consultar clientes! ' + error.message ?? '')
+        }
     }
 
     const handleChangePeopleType = (
