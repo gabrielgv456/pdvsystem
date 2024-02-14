@@ -77,7 +77,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
             try {
                 const dataFindItemType = await findItemType()
                 if (!dataFindItemType.Success) {
-                    throw new Error('Falha ao obter lista de tipos de item!')
+                    throw new Error('Falha ao obter lista de tipos de item!' + (dataFindItemType.erro ?? ''))
                 }
                 setOptionsItensType(dataFindItemType.findItemType)
             }
@@ -90,7 +90,7 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
             try {
                 const dataFindCfop = await findCfop()
                 if (!dataFindCfop.Success) {
-                    throw new Error('Falha ao obter lista de tipos de item!')
+                    throw new Error('Falha ao obter lista de Cfop!' + (dataFindCfop.erro ?? ''))
                 }
                 setOptionsCfop(dataFindCfop.findCfop)
                 setSelectedCfop(dataFindCfop.findCfop.find((item: cfopType) => item.id === props.itemData?.cfopId))

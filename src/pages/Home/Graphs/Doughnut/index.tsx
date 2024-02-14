@@ -1,44 +1,45 @@
 import React from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import {useEffect, useContext, useState} from 'react'
+import { useEffect, useContext, useState } from 'react'
 import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../hooks/useApi';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
+import { DoughnutChartType } from '../../interfaces';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface DoughnutChartType {
-    femaleGender: number;
-	masculineGender: number;
-	notInformedGender: number;
+interface propsDoughnutChart {
+    setdataDoughnutChart: (newValue: DoughnutChartType) => void
+    dataDoughnutChart: DoughnutChartType | null
 }
 
-export const DoughnutChart = () => {
+
+export const DoughnutChart = (props: propsDoughnutChart) => {
 
     const auth = useContext(AuthContext)
-    const {findDoughnutChartData} = useApi()
-    const [dataDoughnutChart,setdataDoughnutChart] = useState<DoughnutChartType | null>(null)
-    const {MessageBox} = useMessageBoxContext()
-    useEffect(()=>{
-        
+    const { findDoughnutChartData } = useApi()
+
+    const { MessageBox } = useMessageBoxContext()
+    useEffect(() => {
+
         const SearchData = async () => {
-            try{
-                const dataDoughnut = await findDoughnutChartData(auth.idUser)
+            try {
+                const dataDoughnut = await findDoughnutChartData(auth.idUser,1)
                 if (dataDoughnut.Success) {
-                    setdataDoughnutChart(dataDoughnut.doughnutData)
+                    props.setdataDoughnutChart(dataDoughnut.content)
                 }
                 else {
-                    MessageBox('warning',dataDoughnut.erro)
+                    throw new Error(dataDoughnut.erro ?? '')
                 }
             }
-            catch (error:any){
-                MessageBox('warning','Erro ao consultar dados do gráfico de rosca !' + error.message)
+            catch (error: any) {
+                MessageBox('warning', 'Erro ao consultar dados do gráfico de rosca! ' + error.message)
             }
         }
         SearchData()
-    },[])
+    }, [])
 
     const Theme = useDarkMode()
 
@@ -50,39 +51,39 @@ export const DoughnutChart = () => {
             },
             //title: {
             //    display: true,
-             //   text: 'Vendas por Gênero',
-           // },
+            //   text: 'Vendas por Gênero',
+            // },
         },
     };
 
     const data = {
-        labels: ['Masculino','Feminino','Não informado'],
+        labels: ['Masculino', 'Feminino', 'Não informado'],
         datasets: [
             {
                 label: '# of Votes',
                 data: [
-                    dataDoughnutChart?.masculineGender ?? 0,
-                    dataDoughnutChart?.femaleGender ?? 0,
-                    dataDoughnutChart?.notInformedGender ?? 0
+                    props.dataDoughnutChart?.masculineGender ?? 0,
+                    props.dataDoughnutChart?.femaleGender ?? 0,
+                    props.dataDoughnutChart?.notInformedGender ?? 0
                 ],
                 backgroundColor: [
-                    
+
                     '#409ae9',
                     '#7e57c2',
                     '#f7f6f6',
-                    
+
                 ],
-                borderColor:`${Theme.DarkMode ? '#29292b' : '#fff' }`
-                
+                borderColor: `${Theme.DarkMode ? '#29292b' : '#fff'}`
+
             },
         ],
     };
 
-    
+
 
     return (
         <>
-        <Doughnut data={data} options={options}/>
+            <Doughnut data={data} options={options} />
         </>
     )
 }

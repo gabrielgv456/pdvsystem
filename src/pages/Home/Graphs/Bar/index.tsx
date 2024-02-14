@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,20 +12,45 @@ import { Bar } from 'react-chartjs-2';
 import { useApi } from '../../../../hooks/useApi';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
+import { BarChartType } from '../../interfaces';
+import * as type from './interfaces'
 
+export const BarChart = (props: type.barChartProps) => {
 
-interface dataBarType {
-    sumSells: number,
-    month: number,
-    medTicket: number,
-    totalProfit:number
-}
+    const { MessageBox } = useMessageBoxContext()
+    const auth = useContext(AuthContext)
+    const [labels, setLabels] = useState([""])
+    const { findBarChartData } = useApi()
 
-export const BarChart = () => {
-    const {MessageBox} = useMessageBoxContext()
-    async function addMonths(dataBarChart: dataBarType[]) {
+    useEffect(() => {
+        const searchApiData = async () => {
+            try {
+                const dataBar = await findBarChartData(auth.idUser, 3)
+                if (dataBar.Success) {
+                    props.setdataBarChart(dataBar.content)
+                }
+                else {
+                    MessageBox('warning', 'Falha ao buscar dados do grafico de Barras')
+                }
+            }
+            catch (error: any) {
+                MessageBox('warning', error.message)
+            }
+        }
+        searchApiData()
+    }, [])
 
-        const month : string[]= [];
+    useEffect(() => {
+        async function updateMonths() {
+            if (!props.dataBarChart) { return }
+            await addMonths(props.dataBarChart)
+        }
+        updateMonths()
+    }, [props.dataBarChart])
+
+    async function addMonths(dataBarChart: BarChartType[]) {
+
+        const month: string[] = [];
         dataBarChart.map((data) => {
             switch (data.month) {
                 case 1:
@@ -67,34 +92,8 @@ export const BarChart = () => {
             }
         }
         )
-        return month
+        setLabels(month)
     }
-
-    useEffect(() => {
-        
-        const searchApiData = async () => {
-            try {
-                const dataBar = await findBarChartData(auth.idUser)
-                if (dataBar.Success) {
-                    setdataBar(dataBar.dataBarChart)
-                    const returnMonths = await addMonths(dataBar.dataBarChart)
-                    setLabels(returnMonths)
-                }
-                else {
-                    MessageBox('warning','Falha ao buscar dados do grafico de Barras')
-                }
-            }
-            catch (error:any) {
-                MessageBox('warning',error.message)
-            }
-        }
-        searchApiData()
-    }, [])
-
-    const [labels,setLabels] = useState([""])
-    const [dataBar, setdataBar] = useState<dataBarType[]>([])
-    const { findBarChartData } = useApi()
-    const auth = useContext(AuthContext)
 
     ChartJS.register(
         CategoryScale,
@@ -118,28 +117,24 @@ export const BarChart = () => {
         },
     };
 
-
-
-
-
     const data = {
         labels,
         datasets: [
 
             {
                 label: 'Ticket Médio',
-                data: dataBar.map((data) => data.medTicket),
+                data: props.dataBarChart ? props.dataBarChart.map((data) => data.medTicket) : [],
                 backgroundColor: '#064699',
 
             },
             {
-                label: 'Valor Total',
-                data: dataBar.map((data) => data.sumSells),
+                label: 'Faturamento Total',
+                data: props.dataBarChart ? props.dataBarChart.map((data) => data.sumSells) : [],
                 backgroundColor: '#3181ed',
             },
             {
                 label: 'Lucro Total',
-                data: dataBar.map((data) => data.totalProfit),
+                data: props.dataBarChart ? props.dataBarChart.map((data) => data.totalProfit) : [],
                 backgroundColor: '#33CC95',
             },
         ],

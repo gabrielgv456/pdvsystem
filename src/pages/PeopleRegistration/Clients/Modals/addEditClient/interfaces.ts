@@ -29,9 +29,9 @@ export interface TypeClientData {
     active: boolean,
     ie: string,
     suframa: string
-    finalCostumer: boolean,
+    finalCostumer: boolean | null,
     taxRegimeId: number | null,
-    taxPayerTypeId: number | null
+    taxPayerTypeId: number | null,
 }
 
 export type typeOptions = { id: number, description: string }

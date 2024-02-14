@@ -111,28 +111,28 @@ export const useApi = () => ({
         const response = await api.post('/deleteclient', { dataDeleteClient })
         return response.data
     },
-    findBarChartData: async (userId: number) => {
-        const response = await api.post('/charts/bar', { userId })
+    findBarChartData: async (userId: number, lastPeriod: number) => {
+        const response = await api.get('/charts/bar', { params: { userId, lastPeriod } })
         return response.data
     },
-    findDoughnutChartData: async (userId: number) => {
-        const response = await api.post('charts/doughnut', { userId })
+    findDoughnutChartData: async (userId: number, lastPeriod: number) => {
+        const response = await api.get('charts/doughnut', { params: { userId, lastPeriod } })
         return response.data
     },
-    findAreaChartData: async (userId: number) => {
-        const response = await api.post('charts/area', { userId })
+    findAreaChartData: async (userId: number, lastPeriod: number) => {
+        const response = await api.get('charts/area', { params: { userId, lastPeriod } })
         return response.data
     },
     findBestSellersChartData: async (userId: number) => {
-        const response = await api.post('/charts/bestsellers', { userId })
+        const response = await api.get('/charts/bestsellers', { params: { userId } })
         return response.data
     },
-    findTopSellingProducts: async (userId: number) => {
-        const response = await api.post('/charts/topsellingproducts', { userId })
+    findHorizontalChartData: async (userId: number, lastPeriod: number) => {
+        const response = await api.get('/charts/topsellingproducts', { params: { userId, lastPeriod } })
         return response.data
     },
-    findRadarChartData: async (userId: number) => {
-        const response = await api.post('/charts/radar', { userId })
+    findRadarChartData: async (userId: number, lastPeriod: number) => {
+        const response = await api.get('/charts/radar', { params: { userId, lastPeriod } })
         return response.data
     },
     changeAboutCorporation: async (data: object) => {

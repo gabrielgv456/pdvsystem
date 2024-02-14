@@ -12,11 +12,8 @@ import { Radar } from 'react-chartjs-2';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../hooks/useApi';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
+import * as type from './interfaces'
 
-interface radarChartType {
-    typepayment: string,
-    quantity: number
-}
 
 ChartJS.register(
     RadialLinearScale,
@@ -27,25 +24,24 @@ ChartJS.register(
     Legend
 );
 
-export const RadarChart = () => {
+export const RadarChart = (props: type.RadarChartProps) => {
 
     const auth = React.useContext(AuthContext)
     const { findRadarChartData } = useApi()
-    const [radarChartdata, setRadarChartData] = React.useState<radarChartType[]>([])
-    const {MessageBox} = useMessageBoxContext()
+    const { MessageBox } = useMessageBoxContext()
 
     React.useEffect(() => {
         const searchDataRadarChart = async () => {
             try {
-                const dataRadarChart = await findRadarChartData(auth.idUser)
+                const dataRadarChart = await findRadarChartData(auth.idUser, 1)
                 if (dataRadarChart.Success) {
-                    setRadarChartData(dataRadarChart.Payments)
+                    props.setdataRadarChart(dataRadarChart.content)
                 }
                 else {
-                    MessageBox('warning',`Erro ao consultar dados do gráfico radar! ${dataRadarChart.erro}`)
+                    MessageBox('warning', `Erro ao consultar dados do gráfico radar! ${dataRadarChart.erro}`)
                 }
-            } catch (error:any) {
-                MessageBox('warning',`Erro ao consultar dados do gráfico radar! ${error.message}`)
+            } catch (error: any) {
+                MessageBox('warning', `Erro ao consultar dados do gráfico radar! ${error.message}`)
             }
         }
         searchDataRadarChart();
@@ -65,12 +61,12 @@ export const RadarChart = () => {
     };
 
     const data = {
-        labels: radarChartdata.map(payment=>payment.typepayment),
+        labels: props.dataRadarChart.map(payment => payment.typepayment),
         //labels: ['Dinheiro', 'PIX', 'Cartão de Crédito', 'Cartão de Débito', 'Outros'],
         datasets: [
             {
                 label: 'Quantidade de vendas',
-                data: radarChartdata.map(payment=>payment.quantity),
+                data: props.dataRadarChart.map(payment => payment.quantity),
                 backgroundColor: '#4a2da31f',
                 borderColor: '#4a2da3',
                 borderWidth: 1,

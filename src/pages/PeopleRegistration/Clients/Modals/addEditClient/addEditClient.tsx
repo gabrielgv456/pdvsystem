@@ -125,10 +125,9 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
 
     const AddClientApi = async () => {
         try {
-            if (!(clientData.cpf && clientData.name && clientData.birthDate &&
-                clientData.cpf !== "" && clientData.name !== "" && clientData.birthDate !== "" &&
-                (clientData.cpf.length === 14 || clientData.cpf.length === 18))
-            ) { throw new Error('Campos obrigatórios não informados!') }
+            if (!(clientData.cpf && clientData.name && clientData.birthDate)) {
+                throw new Error('Campos obrigatórios não informados!')
+            }
             if (!validateCPForCNPJ(clientData.cpf)) throw new Error('Cpf ou Cnpj inválido!')
             let data
             if (props.type === 'add')
@@ -473,6 +472,12 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
 
                                 />
                             } />
+                    </label>
+                    <label style={{ display: 'flex', width: '95%' }}>
+                        <input checked={clientData.finalCostumer ?? false} type='checkbox' onChange={(e) => {
+                            setClientData({ ...clientData, finalCostumer: e.target.checked })
+                        }} />
+                        Consumidor final
                     </label>
 
 

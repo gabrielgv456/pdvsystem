@@ -37,7 +37,7 @@ export const Box = styled.div<BoxProps> `
     }
 `
 export const HeaderBox = styled.div `
-    padding:15px 30px 15px 30px ; 
+    padding:15px 10px 15px 30px ; 
     border-bottom: 1px solid #eaecf0;
     width: 100%;
     font-size:0.9rem;
