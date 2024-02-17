@@ -13,10 +13,12 @@ import Typography from '@mui/material/Typography';
 import { CgProfile } from 'react-icons/cg';
 import { MdAssignment, MdSettingsInputComponent } from 'react-icons/md';
 import { useMediaQuery } from '@mui/material';
-import { TabFiscal } from './tabs/infoFiscalNfe';
+import { TabIcmsProduct } from './tabs/icmsProduct/icmsProduct';
 import { ListProductsProps } from '../../ListProducts/ListProducts';
 import { MuiBox } from '../../../../components/box/muiBox';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../components/buttons/closeButtonModal';
+import { TabIpiPisCofinsProduct } from './tabs/ipiPisCofinsProduct/ipiPisCofinsProduct';
+import { TabIcmsSTProduct } from './tabs/icmsSTProduct/icmsSTProduct';
 
 
 interface PropsModalAddProduct {
@@ -78,13 +80,15 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
     return (
 
         <Modal open={props.isModalAddEditProductOpen} onClose={handleCloseModalAddProduct}>
-            <MuiBox desktopWidth={600} mobileWidthPercent='80%' padding='15px 10px 0px 10px' >
+            <MuiBox desktopWidth='80%' mobileWidthPercent='80%' padding='15px 7px 0px 7px' >
                 <h3 style={{ width: 'max-content', margin: '0 auto' }}>{props.type === 'Add' ? 'Cadastro de produto' : 'Edição de produto'}</h3>
 
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
                     <Tabs value={value} onChange={handleChange}  >
                         <Tab label={isLess900 ? '' : 'Principal'} title='Principal' sx={{ borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<FiPackage size={20} />} iconPosition='start' />
-                        <Tab label={isLess900 ? '' : "Tributos"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />
+                        <Tab label={isLess900 ? '' : "ICMS"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />
+                        <Tab label={isLess900 ? '' : "ICMS ST"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />
+                        <Tab label={isLess900 ? '' : "IPI/PIS/COFINS"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />
                     </Tabs>
                 </Box>
                 <div>
@@ -96,7 +100,13 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                         />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        <TabFiscal />
+                        <TabIcmsProduct />
+                    </TabPanel>
+                    <TabPanel value={value} index={2}>
+                        <TabIcmsSTProduct />
+                    </TabPanel>
+                    <TabPanel value={value} index={3}>
+                        <TabIpiPisCofinsProduct />
                     </TabPanel>
                 </div>
                 <DefaultButtonCloseModal onClick={handleCloseModalAddProduct}>

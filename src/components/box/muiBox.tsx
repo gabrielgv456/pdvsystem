@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 interface MuiBoxProps {
     children: ReactNode,
     mobileWidthPercent: string,
-    desktopWidth: number,
+    desktopWidth: number | string,
     padding?: string 
 }
 

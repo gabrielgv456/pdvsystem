@@ -10,7 +10,6 @@ interface DragOverProps{
 }
 
 export const ButtonAddProductModal = styled.button <DarkModeProps> `
-    flex-wrap: wrap;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,12 +27,13 @@ export const ButtonAddProductModal = styled.button <DarkModeProps> `
     }
 `
 export const DivModalAddProduct = styled.div `
+    width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 12px;
     align-items: center;
     flex-wrap: wrap;
-    margin: 0px 0 10px 0;
+    margin: 0px 0 15px 0;
 `
 
 export const labelChangeImg = styled.label <DragOverProps>`
@@ -51,4 +51,7 @@ export const labelChangeImg = styled.label <DragOverProps>`
     &:hover{
         background:${lighten(0.42, '#33CC95')};
     }
+`
+export const InputSection = styled.section `
+    flex: 1 1 160px;
 `

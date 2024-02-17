@@ -245,22 +245,25 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                         <input type='file' onChange={handleFileChange} />
                     </S.labelChangeImg>
                 } */}
-                <TextField
-                    value={inputProductsModalName}
-                    onChange={(e) => setinputProductsModalName(e.target.value)}
-                    id="outlined-basic"
-                    label="Nome do Produto*"
-                    variant="outlined"
-                    autoFocus
-                    sx={{ width: '100%' }} />
-                <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <S.InputSection>
+                    <TextField
+                        value={inputProductsModalName}
+                        onChange={(e) => setinputProductsModalName(e.target.value)}
+                        id="outlined-basic"
+                        label="Nome do Produto*"
+                        variant="outlined"
+                        autoFocus
+                    />
+                </S.InputSection>
+                <S.InputSection>
                     <TextField
                         value={inputCostProduct}
                         onChange={(e) => changeCostProduct(e.target.value)}
                         id="outlined-basic"
                         label="Custo*"
-                        variant="outlined"
-                        sx={{ width: '32%' }} />
+                        variant="outlined" />
+                </S.InputSection>
+                <S.InputSection>
                     <TextField
                         value={inputProfitMargin}
                         onChange={(e) => changeProfitProduct(e.target.value)}
@@ -269,8 +272,9 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                         InputLabelProps={{
                             shrink: !!inputProfitMargin
                         }}
-                        variant="outlined"
-                        sx={{ width: '32%' }} />
+                        variant="outlined" />
+                </S.InputSection>
+                <S.InputSection>
                     <TextField
                         value={inputvalueProduct}
                         onChange={(e) => changeValueProduct(e.target.value)}
@@ -279,27 +283,27 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                             shrink: !!inputvalueProduct
                         }}
                         label="Preço venda*"
-                        variant="outlined"
-                        sx={{ width: '32%' }} />
-                </section>
-                <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-
+                        variant="outlined" />
+                </S.InputSection>
+                <S.InputSection>
                     <TextField
                         value={inputProductsModalQuantity}
                         onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
                         type="number"
                         id="outlined-basic"
                         label="Estoque*"
-                        variant="outlined"
-                        sx={{ width: '22%' }} />
+                        variant="outlined" />
+                </S.InputSection>
+                <S.InputSection>
                     <TextField
                         value={inputBarCode}
                         onChange={(e) => setInputBarCode(e.target.value)}
                         type="number"
                         id="outlined-basic"
                         label="Código de barras"
-                        variant="outlined"
-                        sx={{ width: '34%' }} />
+                        variant="outlined" />
+                </S.InputSection>
+                <S.InputSection>
                     <Autocomplete
                         value={ncmCode}
                         onChange={(event: any, newValue: ncmType | null) => {
@@ -309,15 +313,15 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                         id="controllable-states-demo"
                         options={optionsNCM}
                         getOptionLabel={(option) => (option.Codigo + ' ' + option.Descricao)}
-                        sx={{ width: '40%' }}
                         renderInput={(params) =>
                             <TextField
                                 {...params}
                                 label="Código NCM"
                             />
                         } />
-                </section>
-                <section style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                </S.InputSection>
+
+                <S.InputSection>
 
                     <Autocomplete
                         value={selectedCfop}
@@ -328,13 +332,14 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                         id="controllable-states-demo"
                         options={optionsCfop}
                         getOptionLabel={(option) => (option.id + ' - ' + option.descricao)}
-                        sx={{ width: '48%' }}
                         renderInput={(params) =>
                             <TextField
                                 {...params}
                                 label="CFOP"
                             />
                         } />
+                </S.InputSection>
+                <S.InputSection>
                     <Autocomplete
                         value={selectedUnitMeasurement}
                         onChange={(event: any, newValue: string | null) => {
@@ -344,21 +349,21 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                         id="controllable-states-demo"
                         disabled
                         options={optionsUnitMeasurement}
-                        sx={{ width: '48%' }}
                         renderInput={(params) =>
                             <TextField
                                 {...params}
                                 label="Unidade de Medida"
                             />
                         } />
+                </S.InputSection>
 
-                </section>
 
-                <section>
+                <div style={{width:'100%'}}>
                     Produto ativo
                     <Switch checked={isProductActiveModalAddProduct} onChange={(e) => { setisProductActiveModalAddProduct(e.target.checked) }} />
-                </section>
-            </S.DivModalAddProduct>
+                </div>
+            </S.DivModalAddProduct >
+            
             <S.ButtonAddProductModal onClick={props.type === 'Add' ? AddProductApi : EditProductApi} isDarkMode={Theme.DarkMode} style={{ margin: '0 auto' }}>
                 <MdFileDownloadDone size="22" />
                 {props.type === 'Add' ?

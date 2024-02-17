@@ -63,7 +63,7 @@ export function Listagem(props: Props) {
 
    return (
 
-      <S.Container isDarkMode={Theme.DarkMode}>
+      <S.Container isDarkMode={Theme.DarkMode}> 
          <S.DivTitle>
             <S.DivTipo>
                {/* {dataSell} */}
