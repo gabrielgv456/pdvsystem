@@ -1,72 +1,55 @@
 import * as S from './style'
+import * as type from './interfaces'
 import Switch from '@mui/material/Switch';
 import { CurrencyMask, CurrencyMaskValue } from '../../../../../../masks/CurrencyMask';
-import { MdFileDownloadDone } from 'react-icons/md';
 import TextField from '@mui/material/TextField';
-import { useContext, useState, DragEvent, ChangeEvent, useEffect } from 'react';
+import { useState, DragEvent, ChangeEvent, useEffect, useContext, memo, useCallback } from 'react';
 import { useApi } from '../../../../../../hooks/useApi';
 import Autocomplete from '@mui/material/Autocomplete';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
-import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvider';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { FormatChangePercent, FormatCurrencytoFloatdb, FormatPercent, currencyRemoveNotNumbers, removeNotNumerics } from '../../../../../../utils/utils';
-import { info } from 'console';
-import { ListProductsProps } from '../../../../ListProducts/ListProducts';
+import { FormatChangePercent, FormatCurrencytoFloatdb, FormatPercent, currencyFormat, currencyRemoveNotNumbers, removeNotNumerics } from '../../../../../../utils/utils';
+import { addEditProductDataPrincipal } from '../../saveProduct/interfaces';
 
+export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
 
-interface tabInfoProductProps {
-    setisModalSucessOpen: (value: boolean) => void;
-    setisModalAddEditProductOpen: (value: boolean) => void,
-    type: 'Add' | 'Edit',
-    itemData?: ListProductsProps;
-}
-
-interface ncmType {
-    Codigo: string,
-    Descricao: string
-}
-interface itemType {
-    id: number,
-    descricao: string
-}
-interface cfopType {
-    id: number,
-    descricao: string
-}
-export const TabInfoProduct = (props: tabInfoProductProps) => {
-
-    const { addProducts, findNCM, findItemType, findCfop, editProducts } = useApi()
-    const auth = useContext(AuthContext)
-    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(props.itemData?.value ? CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.value ?? 0)) : null)
-    const [inputCostProduct, setInputCostProduct] = useState<string | null>(props.itemData?.cost ? CurrencyMaskValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.itemData?.cost ?? 0)) : null)
-    const [inputProfitMargin, setInputProfitMargin] = useState<string | null>((props.itemData?.profitMargin) ? ((props.itemData?.profitMargin) + '') : null)
-    const [inputProductsModalQuantity, setinputProductsModalQuantity] = useState<number | null>(props.itemData?.quantity ?? null)
-    const [inputBarCode, setInputBarCode] = useState<string | null>(props.itemData?.barCode ?? null)
+    const { findCfop, findItemType, findNCM } = useApi()
     const [selectedUnitMeasurement, setSelectedUnitMeasurement] = useState<string | null>(props.itemData?.unitMeasurement ?? 'UN')
-    const [isProductActiveModalAddProduct, setisProductActiveModalAddProduct] = useState<boolean>(props.itemData?.active ?? true)
-    const [inputProductsModalName, setinputProductsModalName] = useState<string | null>(props.itemData?.name ?? null)
     const { MessageBox } = useMessageBoxContext()
-    const Theme = useDarkMode()
-    const [optionsItensType, setOptionsItensType] = useState<itemType[]>([])
-    const [selectedItemType, setSelectedItemType] = useState<itemType | null>(null)
-    const [optionsCfop, setOptionsCfop] = useState<itemType[]>([])
-    const [selectedCfop, setSelectedCfop] = useState<itemType | null>(null)
+    const [optionsItensType, setOptionsItensType] = useState<type.itemType[]>([])
+    const [selectedItemType, setSelectedItemType] = useState<type.itemType | null>(null)
+    const [optionsCfop, setOptionsCfop] = useState<type.itemType[]>([])
+    const [selectedCfop, setSelectedCfop] = useState<type.itemType | null>(null)
     const optionsUnitMeasurement = ['UN']
-    const [ncmCode, setNcmCode] = useState<ncmType | null>(null)
-    const [optionsNCM, setOptionsNCM] = useState<ncmType[]>([])
+    const [ncmCode, setNcmCode] = useState<type.ncmType | null>(null)
+    const [optionsNCM, setOptionsNCM] = useState<type.ncmType[]>([])
     const [dragOver, setDragOver] = useState(false);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+    function handleChangeData<T extends keyof addEditProductDataPrincipal>(
+        property: T, value: addEditProductDataPrincipal[T]) {
+        props.setDataAddEditProduct(prevState => {
+            return {
+                ...prevState,
+                principal: {
+                    ...prevState.principal,
+                    [property]: value
+                }
+            }
+        })
+    }
+
 
     useEffect(() => {
         async function searchNCM() {
             try {
                 const dataFindNCM = await findNCM()
                 if (!dataFindNCM.Success) {
-                    throw new Error('Falha ao obter lista NCM!')
+                    throw new Error('Falha ao obter lista NCM!' + dataFindNCM.erro)
                 }
                 setOptionsNCM(dataFindNCM.ncmList)
-                setNcmCode(dataFindNCM.ncmList.find((item: ncmType) => item.Codigo === props.itemData?.ncmCode))
+                setNcmCode(dataFindNCM.ncmList.find((item: type.ncmType) => item.Codigo === props.dataAddEditProduct.principal.ncmCode))
             }
             catch (error: any) {
                 MessageBox('info', error.message)
@@ -80,67 +63,72 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
                     throw new Error('Falha ao obter lista de tipos de item!' + (dataFindItemType.erro ?? ''))
                 }
                 setOptionsItensType(dataFindItemType.findItemType)
-            }
-            catch (error: any) {
-                MessageBox('info', error.message)
-            }
-        }
-
-        async function searchCfop() {
-            try {
-                const dataFindCfop = await findCfop()
-                if (!dataFindCfop.Success) {
-                    throw new Error('Falha ao obter lista de Cfop!' + (dataFindCfop.erro ?? ''))
+                const defaultOptionItemType = dataFindItemType.findItemType.find((item: type.itemType) => item.id === props.itemData?.itemTypeId)
+                if (defaultOptionItemType) {
+                    setSelectedItemType(defaultOptionItemType)
                 }
-                setOptionsCfop(dataFindCfop.findCfop)
-                setSelectedCfop(dataFindCfop.findCfop.find((item: cfopType) => item.id === props.itemData?.cfopId))
             }
             catch (error: any) {
                 MessageBox('info', error.message)
             }
         }
 
-        //searchItemType();
-        searchCfop();
+        // async function searchCfop() {
+        //     try {
+        //         const dataFindCfop = await findCfop()
+        //         if (!dataFindCfop.Success) {
+        //             throw new Error('Falha ao obter lista de Cfop!' + (dataFindCfop.erro ?? ''))
+        //         }
+        //         setOptionsCfop(dataFindCfop.findCfop)
+        //         setSelectedCfop(dataFindCfop.findCfop.find((item: type.cfopType) => item.id === props.dataAddEditProduct.principal.cfopId))
+        //     }
+        //     catch (error: any) {
+        //         MessageBox('info', error.message)
+        //     }
+        // }
+
+        searchItemType();
+        // searchCfop();
         searchNCM();
     }, [])
 
     const changeValueProduct = async (value: string) => {
-        setinputvalueProduct(CurrencyMaskValue(value))
         const valueProduct = FormatCurrencytoFloatdb(value ?? '0')
-        const costProduct = FormatCurrencytoFloatdb(inputCostProduct ?? '0')
-        const profit = valueProduct - costProduct;
-        const percentualProft = costProduct === 0 ? 0 : (profit / costProduct) * 100;
+        handleChangeData('value', valueProduct)
+
+        const costProduct = FormatCurrencytoFloatdb(props.dataAddEditProduct.principal.cost?.toString() ?? '0')
+
         if (costProduct !== 0) {
-            setInputProfitMargin(FormatChangePercent(percentualProft + ''))
+            const profit = valueProduct - costProduct;
+            const percentualProfit = (profit / costProduct) * 100;
+            handleChangeData('profitMargin', parseFloat(percentualProfit.toFixed(2)))
         }
     }
 
     const changeCostProduct = async (value: string) => {
-        setInputCostProduct(CurrencyMaskValue(value))
-        const valueProduct = FormatCurrencytoFloatdb(inputvalueProduct ?? '0')
-        const costProduct = FormatCurrencytoFloatdb(value ?? '0')
-        const profit = valueProduct - costProduct;
-        const percentualProft = valueProduct === 0 ? 0 : (profit / costProduct) * 100;
-        if (valueProduct !== 0) {
-            setInputProfitMargin(FormatChangePercent(percentualProft + ''))
-        }
 
+        handleChangeData('cost', FormatCurrencytoFloatdb(value))
+        const valueProduct = props.dataAddEditProduct.principal.value ?? 0
+
+        if (valueProduct !== 0) {
+            const costProduct = FormatCurrencytoFloatdb(value)
+            const profit = valueProduct - costProduct;
+            const percentualProfit = (profit / costProduct) * 100;
+            handleChangeData('profitMargin', parseFloat(percentualProfit.toFixed(2)))
+        }
     }
 
     const changeProfitProduct = async (value: string) => {
-
-        setInputProfitMargin(FormatPercent(value))
-        const costProduct = FormatCurrencytoFloatdb(inputCostProduct ?? '0')
+        handleChangeData('profitMargin', Number(value))
+        const costProduct = props.dataAddEditProduct.principal.cost ?? 0
         if (costProduct <= 0) {
             MessageBox('info', 'Informe o custo do produto!')
-            setInputProfitMargin(FormatPercent('0'))
+            handleChangeData('profitMargin', 0)
             return
         }
-        const profit = FormatCurrencytoFloatdb(FormatPercent(value) ?? '0')
+        const profit = Number(removeNotNumerics(value))
         const newValueProduct = parseFloat((costProduct + (costProduct * (profit / 100))) + "").toFixed(2)
-        setinputvalueProduct("R$" + newValueProduct.replace('.', ','))
-
+        handleChangeData('value', Number(newValueProduct))
     }
 
 
@@ -168,210 +156,184 @@ export const TabInfoProduct = (props: tabInfoProductProps) => {
         setSelectedImage(file);
         // Fazer chamada para API
     };
-
-    function validateFields() {
-        if (!(inputProductsModalName !== ""
-            && finaldataAddProductsToSendApi.value > 0
-            && finaldataAddProductsToSendApi.cost > 0
-            && finaldataAddProductsToSendApi.profitMargin
-            && (finaldataAddProductsToSendApi.quantity ?? 0) > 0
-        )) {
-            throw new Error('Informe todos os campos obrigatórios!')
-        }
-    }
-
-    const AddProductApi = async () => {
-        try {
-            validateFields()
-            delete finaldataAddProductsToSendApi.id
-            const data = await addProducts(finaldataAddProductsToSendApi)
-            if (!data.Sucess) {
-                throw new Error('Falha ao adicionar produto! ' + data.erro)
-            }
-            props.setisModalAddEditProductOpen(false)
-            setinputProductsModalName("")
-            setinputProductsModalQuantity(null)
-            setinputvalueProduct(null)
-            props.setisModalSucessOpen(true)
-        } catch (error: any) {
-            MessageBox('error', error.message)
-        }
-    }
-
-    const EditProductApi = async () => {
-        try {
-            validateFields()
-            const data = await editProducts(finaldataAddProductsToSendApi)
-            if (!data.Sucess) {
-                throw new Error('Falha ao editar produto! ' + data.erro)
-            }
-            props.setisModalAddEditProductOpen(false)
-            props.setisModalSucessOpen(true)
-        }
-        catch (error: any) {
-            MessageBox('error', error.message)
-        }
-    }
-
-    const finaldataAddProductsToSendApi = {
-        id: props.itemData?.id,
-        userId: auth.idUser,
-        name: inputProductsModalName,
-        value: FormatCurrencytoFloatdb(inputvalueProduct),
-        quantity: inputProductsModalQuantity,
-        active: isProductActiveModalAddProduct,
-        cost: FormatCurrencytoFloatdb(inputCostProduct),
-        profitMargin: FormatCurrencytoFloatdb(FormatChangePercent(inputProfitMargin) ?? '0'),
-        barCode: inputBarCode,
-        ncmCode: ncmCode?.Codigo ?? null,
-        //itemTypeId: selectedItemType?.id,
-        cfopId: selectedCfop?.id ?? null,
-        unitMeasurement: 'UN'//selectedUnitMeasurement
-    }
-
-
+    console.log('render')
     return (
-        <>
-            <S.DivModalAddProduct>
-                {/* REMOVE COMMENT TO ENABLE PICTURE PRODUCT */}
-                {/* {selectedImage ?
-                    <img width={100} style={{ maxHeight: 140 }} src={URL.createObjectURL(selectedImage)}></img> :
-                    <S.labelChangeImg onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                        dragOver={dragOver}>
-                        <AiOutlineCloudUpload size='30' />
-                        Selecione ou arraste uma imagem
-                        <input type='file' onChange={handleFileChange} />
-                    </S.labelChangeImg>
-                } */}
-                <S.InputSection>
-                    <TextField
-                        value={inputProductsModalName}
-                        onChange={(e) => setinputProductsModalName(e.target.value)}
-                        id="outlined-basic"
-                        label="Nome do Produto*"
-                        variant="outlined"
-                        autoFocus
-                    />
-                </S.InputSection>
-                <S.InputSection>
-                    <TextField
-                        value={inputCostProduct}
-                        onChange={(e) => changeCostProduct(e.target.value)}
-                        id="outlined-basic"
-                        label="Custo*"
-                        variant="outlined" />
-                </S.InputSection>
-                <S.InputSection>
-                    <TextField
-                        value={inputProfitMargin}
-                        onChange={(e) => changeProfitProduct(e.target.value)}
-                        id="outlined-basic"
-                        label="M. Lucro (%)*"
-                        InputLabelProps={{
-                            shrink: !!inputProfitMargin
-                        }}
-                        variant="outlined" />
-                </S.InputSection>
-                <S.InputSection>
-                    <TextField
-                        value={inputvalueProduct}
-                        onChange={(e) => changeValueProduct(e.target.value)}
-                        id="outlined-basic"
-                        InputLabelProps={{
-                            shrink: !!inputvalueProduct
-                        }}
-                        label="Preço venda*"
-                        variant="outlined" />
-                </S.InputSection>
-                <S.InputSection>
-                    <TextField
-                        value={inputProductsModalQuantity}
-                        onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
-                        type="number"
-                        id="outlined-basic"
-                        label="Estoque*"
-                        variant="outlined" />
-                </S.InputSection>
-                <S.InputSection>
-                    <TextField
-                        value={inputBarCode}
-                        onChange={(e) => setInputBarCode(e.target.value)}
-                        type="number"
-                        id="outlined-basic"
-                        label="Código de barras"
-                        variant="outlined" />
-                </S.InputSection>
-                <S.InputSection>
-                    <Autocomplete
-                        value={ncmCode}
-                        onChange={(event: any, newValue: ncmType | null) => {
-                            setNcmCode(newValue);
-                        }}
-                        noOptionsText="Não encontrado"
-                        id="controllable-states-demo"
-                        options={optionsNCM}
-                        getOptionLabel={(option) => (option.Codigo + ' ' + option.Descricao)}
-                        renderInput={(params) =>
-                            <TextField
-                                {...params}
-                                label="Código NCM"
-                            />
-                        } />
-                </S.InputSection>
 
-                <S.InputSection>
+        <S.DivModalAddProduct>
+            <div style={{ width: '100%', gap: 20, alignItems: 'center', display: 'flex' }}>
 
-                    <Autocomplete
-                        value={selectedCfop}
-                        onChange={(event: any, newValue: cfopType | null) => {
-                            setSelectedCfop(newValue);
-                        }}
-                        noOptionsText="Não encontrado"
-                        id="controllable-states-demo"
-                        options={optionsCfop}
-                        getOptionLabel={(option) => (option.id + ' - ' + option.descricao)}
-                        renderInput={(params) =>
-                            <TextField
-                                {...params}
-                                label="CFOP"
-                            />
-                        } />
-                </S.InputSection>
-                <S.InputSection>
-                    <Autocomplete
-                        value={selectedUnitMeasurement}
-                        onChange={(event: any, newValue: string | null) => {
-                            setSelectedUnitMeasurement(newValue);
-                        }}
-                        noOptionsText="Não encontrado"
-                        id="controllable-states-demo"
-                        disabled
-                        options={optionsUnitMeasurement}
-                        renderInput={(params) =>
-                            <TextField
-                                {...params}
-                                label="Unidade de Medida"
-                            />
-                        } />
-                </S.InputSection>
-
-
-                <div style={{width:'100%'}}>
+                <S.labelChangeImg
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    dragOver={dragOver}>
+                    <input type='file' onChange={handleFileChange} style={{ display: 'none' }} />
+                    {selectedImage ?
+                        <img alt='' style={{ width: 'auto', maxHeight: 100 }} src={URL.createObjectURL(selectedImage)}></img> :
+                        <>
+                            <AiOutlineCloudUpload size='30' />
+                            <label>Selecione ou arraste</label>
+                            uma imagem
+                        </>
+                    }
+                </S.labelChangeImg>
+                <label>
                     Produto ativo
-                    <Switch checked={isProductActiveModalAddProduct} onChange={(e) => { setisProductActiveModalAddProduct(e.target.checked) }} />
-                </div>
-            </S.DivModalAddProduct >
-            
-            <S.ButtonAddProductModal onClick={props.type === 'Add' ? AddProductApi : EditProductApi} isDarkMode={Theme.DarkMode} style={{ margin: '0 auto' }}>
-                <MdFileDownloadDone size="22" />
-                {props.type === 'Add' ?
-                    <b>ADICIONAR PRODUTO</b>
-                    :
-                    <b>EDITAR PRODUTO</b>
-                }
-            </S.ButtonAddProductModal>
-        </>
+                    <Switch checked={props.dataAddEditProduct.principal.active} onChange={(e) => { handleChangeData('active', (e.target.checked)) }} />
+                </label>
+
+                {/* REMOVE COMMENT TO ENABLE PICTURE PRODUCT */}
+
+
+            </div>
+
+            <TextField
+                value={props.dataAddEditProduct.principal.name}
+                onChange={(e) => handleChangeData('name', e.target.value)}
+                id="outlined-basic"
+                label="Nome do Produto*"
+                variant="outlined"
+                className='InputSection'
+                autoFocus
+            />
+            <TextField
+                value={props.dataAddEditProduct.principal.codRef}
+                onChange={(e) => handleChangeData('codRef', Number(removeNotNumerics(e.target.value)))}
+                id="outlined-basic"
+                label="Cód. Referência*"
+                variant="outlined"
+                className='InputSection'
+            />
+            <TextField
+                value={currencyFormat(props.dataAddEditProduct.principal.cost)}
+                onChange={(e) => changeCostProduct(e.target.value)}
+                id="outlined-basic"
+                label="Custo*"
+                variant="outlined"
+                className='InputSection' />
+            <TextField
+                value={props.dataAddEditProduct.principal.profitMargin}
+                onChange={(e) => changeProfitProduct(e.target.value)}
+                id="outlined-basic"
+                label="M. Lucro (%)*"
+                className='InputSection'
+                InputLabelProps={{
+                    shrink: !!props.dataAddEditProduct.principal.profitMargin
+                }}
+                variant="outlined" />
+            <TextField
+                value={currencyFormat(props.dataAddEditProduct.principal.value)}
+                onChange={(e) => changeValueProduct(e.target.value)}
+                id="outlined-basic"
+                className='InputSection'
+                InputLabelProps={{
+                    shrink: !!props.dataAddEditProduct.principal.value
+                }}
+                label="Preço venda*"
+                variant="outlined" />
+            <TextField
+                value={props.dataAddEditProduct.principal.quantity}
+                onChange={(e) => handleChangeData('quantity', (Number(removeNotNumerics(e.target.value))))}
+                id="outlined-basic"
+                label="Estoque*"
+                className='InputSection'
+                variant="outlined" />
+            <TextField
+                value={props.dataAddEditProduct.principal.barCode}
+                onChange={(e) => handleChangeData('barCode', removeNotNumerics(e.target.value))}
+                id="outlined-basic"
+                className='InputSection'
+                label="Código de barras"
+                variant="outlined" />
+            <TextField
+                value={props.dataAddEditProduct.principal.exTipi}
+                onChange={(e) => handleChangeData('exTipi', (e.target.value))}
+                id="outlined-basic"
+                className='InputSection'
+                label="Ex Tipi"
+                variant="outlined" />
+            <TextField
+                value={props.dataAddEditProduct.principal.brand}
+                onChange={(e) => handleChangeData('brand', (e.target.value))}
+                id="outlined-basic"
+                className='InputSection'
+                label="Marca"
+                variant="outlined" />
+            <Autocomplete
+                value={selectedUnitMeasurement}
+                onChange={(event: any, newValue: string | null) => {
+                    setSelectedUnitMeasurement(newValue);
+                }}
+                className='InputSection'
+                noOptionsText="Não encontrado"
+                id="controllable-states-demo"
+                disabled
+                options={optionsUnitMeasurement}
+                renderInput={(params) =>
+                    <TextField
+                        {...params}
+                        label="Unidade de Medida"
+                    />
+                } />
+
+            <Autocomplete
+                value={selectedItemType}
+                onChange={(event: any, newValue: type.itemType | null) => {
+                    setSelectedItemType(newValue)
+                    if (newValue) {
+                        handleChangeData('itemTypeId', newValue.id)
+                    }
+                }}
+                noOptionsText="Não encontrado"
+                id="controllable-states-demo"
+                options={optionsItensType}
+                className='InputSection'
+                getOptionLabel={(option) => (option.id + ' ' + option.description)}
+                renderInput={(params) =>
+                    <TextField
+                        {...params}
+                        label="Tipo Item*"
+                    />
+                } />
+            <Autocomplete
+                value={ncmCode}
+                onChange={(event: any, newValue: type.ncmType | null) => {
+                    setNcmCode(newValue);
+                    handleChangeData('ncmCode', newValue?.Codigo ?? null)
+                }}
+                noOptionsText="Não encontrado"
+                id="controllable-states-demo"
+                options={optionsNCM}
+                className='InputSection'
+                getOptionLabel={(option) => (option.Codigo + ' ' + option.Descricao)}
+                renderInput={(params) =>
+                    <TextField
+                        {...params}
+                        label="Código NCM*"
+                    />
+                } />
+            <Autocomplete
+                value={selectedItemType}
+                onChange={(event: any, newValue: type.itemType | null) => {
+                    setSelectedItemType(newValue);
+                    if (newValue) {
+                        handleChangeData('itemTypeId', newValue.id)
+                    }
+                }}
+                noOptionsText="Não encontrado"
+                id="controllable-states-demo"
+                options={optionsItensType}
+                className='InputSection'
+                getOptionLabel={(option) => (option.id + ' ' + option.description)}
+                renderInput={(params) =>
+                    <TextField
+                        {...params}
+                        label="CEST"
+                    />
+                } />
+
+
+
+        </S.DivModalAddProduct >
     )
-}
+})

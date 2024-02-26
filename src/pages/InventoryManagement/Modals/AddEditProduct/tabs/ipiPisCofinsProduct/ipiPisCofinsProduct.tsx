@@ -216,7 +216,7 @@ export const TabIpiPisCofinsProduct = () => {
                     id="outlined-basic"
                     label="Alíquota COFINS Entrada(%)"
                     variant="outlined"
-                    sx={{ flex: '1 1 180px' }}
+                    sx={{ flex: '1 1 2000px' }}
                 />
             </S.SectionContainer>
         </S.Container>

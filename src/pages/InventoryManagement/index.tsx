@@ -13,25 +13,15 @@ import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContex
 import { ModalAddEditProduct } from "./Modals/AddEditProduct";
 import { MuiBox } from "../../components/box/muiBox";
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../components/buttons/closeButtonModal";
+import { addEditProductDataPrincipal } from "./Modals/AddEditProduct/saveProduct/interfaces";
 
-
-interface ProductsReturnApiProps {
-    id: number;
-    name: string;
-    value: number;
-    totalValue: number;
-    created_at: Date;
-    active: boolean;
-    quantity: number;
-    barCode: string,
-    cost: number,
-    itemTypeId: number,
-    cfopId: number,
-    ncmCode: string,
-    profitMargin: number,
-    unitMeasurement: string,
+type editFields = {
     deliveries: [{ itemSell: { quantity: number } }]
+    created_at: Date
+    totalValue: number
 }
+export type ProductsReturnApiProps = addEditProductDataPrincipal & editFields
+
 
 export interface TransactionsProductsReturnApi {
     type: string;
@@ -45,6 +35,7 @@ export const InventoryManagement = () => {
     const { findProducts } = useApi()
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
+    const [actualItemEdit, setActualItemEdit] = useState<ProductsReturnApiProps | undefined>()
     const [ProductsReturnApi, setProductsReturnApi] = useState<ProductsReturnApiProps[]>([])
     const [ItensPerPageExtract, SetItensPerPageExtract] = useState(10)
     const [atualPageExtract, SetAtualPageExtract] = useState(0)
@@ -66,7 +57,8 @@ export const InventoryManagement = () => {
     }, [])
 
     function handleOpenModalConfirmSell() {
-        setisModalAddEditProductOpen(true)
+        setActualItemEdit(undefined)
+        setisModalAddEditProductOpen(true) 
     }
 
     function handleCloseModalSucess() {
@@ -139,24 +131,15 @@ export const InventoryManagement = () => {
                     {paginedTransactionsReturnApi.map((item) => (
                         <ListProducts
                             key={item.id}
-                            id={item.id}
-                            name={item.name}
-                            value={item.value}
-                            quantity={item.quantity}
-                            active={item.active}
-                            barCode={item.barCode}
-                            cost={item.cost}
-                            itemTypeId={item.itemTypeId}
-                            cfopId={item.cfopId}
-                            ncmCode={item.ncmCode}
-                            profitMargin={item.profitMargin}
-                            unitMeasurement={item.unitMeasurement}
+                            item={item}
                             isModalTransactionsProductsOpen={isModalTransactionsProductsOpen}
                             setisModalTransactionsProductsOpen={setisModalTransactionsProductsOpen}
                             searchProduct={SearchProducts}
                             dataTransactionsProductsReturnApi={dataTransactionsProductsReturnApi}
                             setdataTransactionsProductsReturnApi={setdataTransactionsProductsReturnApi}
-                            created_at={item.created_at}
+                            setActualItemEdit={setActualItemEdit}
+                            isModalAddEditProductOpen={isModalAddEditProductOpen}
+                            setisModalAddEditProductOpen={setisModalAddEditProductOpen}
                             reservedQuantity={item.deliveries.reduce((acc, item) => {
                                 return acc + item.itemSell.quantity
                             }, 0)}
@@ -217,14 +200,23 @@ export const InventoryManagement = () => {
                     isModalTransactionsProductsOpen={isModalTransactionsProductsOpen}
                     setisModalTransactionsProductsOpen={setisModalTransactionsProductsOpen}
                 />
-
-                <ModalAddEditProduct
-                    isModalAddEditProductOpen={isModalAddEditProductOpen}
-                    setisModalAddEditProductOpen={setisModalAddEditProductOpen}
-                    setisModalSucessOpen={setisModalSucessOpen}
-                    type="Add"
-                />
-
+                {actualItemEdit ?
+                    <ModalAddEditProduct
+                        itemData={actualItemEdit}
+                        isModalAddEditProductOpen={isModalAddEditProductOpen}
+                        setisModalAddEditProductOpen={setisModalAddEditProductOpen}
+                        setisModalSucessOpen={setisModalSucessOpen}
+                        type={'Edit'}
+                    />
+                    :
+                    <ModalAddEditProduct
+                        isModalAddEditProductOpen={isModalAddEditProductOpen}
+                        setisModalAddEditProductOpen={setisModalAddEditProductOpen}
+                        setisModalSucessOpen={setisModalSucessOpen}
+                        type={'Add'}
+                    />
+                }
+                {JSON.stringify(actualItemEdit)}
                 <Modal open={isModalSucessOpen} onClose={handleCloseModalSucess}>
                     <MuiBox desktopWidth={500} mobileWidthPercent="80%" >
                         <S.DivModalSucess>

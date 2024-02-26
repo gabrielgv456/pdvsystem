@@ -57,6 +57,11 @@ export function cpfCnpjFormat(text: string | null, max?: string, onlyCpf: boolea
         onlyCpf ? (max ?? localMax) : cpfCnpj
 }
 
+export function currencyFormat(value: number | null) {
+  if (!value) return ''
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
+}
+
 export function phoneNumberFormat(text: string, max?: string) {
   if (!text) { return '' }
   const localMax = text

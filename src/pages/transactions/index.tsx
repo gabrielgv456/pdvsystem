@@ -125,7 +125,7 @@ export const Transactions = () => {
         if (inputdescriptionExit && finalvalueExit > 0) {
             const dataExit = await addTransactions(dataAddTransactionExit)
 
-            if (dataExit.Sucess === true) {
+            if (dataExit.Success === true) {
                 setinputdescriptionExit("")
                 setinputvalueExit("")
                 setisOpenExists(false)
@@ -143,7 +143,7 @@ export const Transactions = () => {
     const handleAddEntry = async () => {
         if (inputdescriptionEntry && finalvalueEntry > 0) {
             const dataEntry = await addTransactions(dataAddTransactionEntry)
-            if (dataEntry.Sucess === true) {
+            if (dataEntry.Success === true) {
                 setinputdescriptionEntry("")
                 setinputvalueEntry(null)
                 setisOpenEntries(false)

@@ -1,6 +1,7 @@
 import { BsCheckCircle, BsTrash } from "react-icons/bs";
 import { useDarkMode } from "../../../contexts/DarkMode/DarkModeProvider";
 import * as S from "./style"
+import * as type from './interfaces'
 import { BiTransfer } from "react-icons/bi"
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import Modal from '@mui/material/Modal';
@@ -12,60 +13,33 @@ import { AiOutlineClose, AiOutlineEdit } from "react-icons/ai";
 import { useApi } from "../../../hooks/useApi";
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import { RiAdminLine } from "react-icons/ri";
-import { TransactionsProductsReturnApi } from "../index"
 import { CurrencyMask } from "../../../masks/CurrencyMask"
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
 import { ModalAddEditProduct } from "../Modals/AddEditProduct";
 import { MuiBox } from "../../../components/box/muiBox";
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../../components/buttons/closeButtonModal";
+import { currencyFormat } from "../../../utils/utils";
 
-export interface ListProductsProps {
-    id: number;
-    name: string;
-    value: number;
-    created_at: Date;
-    active: boolean;
-    quantity: number;
-    barCode: string,
-    cost: number,
-    itemTypeId: number,
-    cfopId: number,
-    ncmCode: string,
-    profitMargin: number,
-    unitMeasurement: string,
-    dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[];
-    isModalTransactionsProductsOpen: boolean;
-    reservedQuantity: number,
-    setisModalTransactionsProductsOpen: (isModalTransactionsProductsOpen: boolean) => void;
-    setdataTransactionsProductsReturnApi: (dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[]) => void;
-    searchProduct: () => void;
-}
+export const ListProducts = (props: type.ListProductsProps) => {
 
-
-
-
-
-export const ListProducts = (props: ListProductsProps) => {
-
-
-    const { editProducts, deleteProducts, findTransactionsProducts } = useApi()
+    const { deleteProducts, findTransactionsProducts } = useApi()
     const auth = useContext(AuthContext)
     const Theme = useDarkMode();
-    const gethoursTransactions = new Date(props.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })
-    const formatedItemValue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.value)
+    const gethoursTransactions = new Date(props.item.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })
+    const formatedItemValue = currencyFormat(props.item.value)
     const [isModalEditProductOpen, setisModalEditProductOpen] = useState(false);
     const [isModalMasterKeyOpen, setisModalMasterKeyOpen] = useState(false)
     const [inputMasterKey, setinputMasterKey] = useState("")
     const [isModalDeleteProductOpen, setisModalDeleteProductOpen] = useState(false)
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false)
-    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.value))
-    const [valueInputProductName, setvalueInputProductName] = useState(props.name)
-    const [finalvalueProduct, setfinalvalueProduct] = useState(props.value)
-    const [valueInputProductQuantity, setvalueInputProductQuantity] = useState(props.quantity)
-    const [valueInputProductActive, setvalueInputProductActive] = useState(props.active)
+    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(currencyFormat(props.item.value))
+    const [valueInputProductName, setvalueInputProductName] = useState(props.item.name)
+    const [finalvalueProduct, setfinalvalueProduct] = useState(props.item.value)
+    const [valueInputProductQuantity, setvalueInputProductQuantity] = useState(props.item.quantity)
+    const [valueInputProductActive, setvalueInputProductActive] = useState(props.item.active)
     const { MessageBox } = useMessageBoxContext()
     const finaldataEditProductsToSendApi = {
-        id: props.id,
+        id: props.item.id,
         name: valueInputProductName,
         value: finalvalueProduct,
         quantity: valueInputProductQuantity,
@@ -102,8 +76,8 @@ export const ListProducts = (props: ListProductsProps) => {
         }
     }
     const handleDeleteProductApi = async () => {
-        const data = await deleteProducts({ id: props.id })
-        if (data.Sucess) {
+        const data = await deleteProducts({ id: props.item.id })
+        if (data.Success) {
             setisModalDeleteProductOpen(false)
             setisModalSucessOpen(true)
         }
@@ -114,32 +88,35 @@ export const ListProducts = (props: ListProductsProps) => {
 
     }
     function handleCloseModalEditProduct() {
-        setvalueInputProductName(props.name)
-        setfinalvalueProduct(props.value)
-        setvalueInputProductQuantity(props.quantity)
-        setvalueInputProductActive(props.active)
-        setinputvalueProduct(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(props.value))
+        setvalueInputProductName(props.item.name)
+        setfinalvalueProduct(props.item.value)
+        setvalueInputProductQuantity(props.item.quantity)
+        setvalueInputProductActive(props.item.active)
+        setinputvalueProduct(currencyFormat(props.item.value))
         setisModalEditProductOpen(false)
     }
 
     const handleOpenModalTransactionsProducts = async () => {
         props.setisModalTransactionsProductsOpen(true)
-        const data = await findTransactionsProducts({ id: props.id, storeId: auth.idUser })
+        const data = await findTransactionsProducts({ id: props.item.id, storeId: auth.idUser })
         props.setdataTransactionsProductsReturnApi(data.findTransactionsProducts)
     }
 
 
     return (
         <>
-            <S.Container isDarkMode={Theme.DarkMode} isProductActive={props.active}>
+            <S.Container isDarkMode={Theme.DarkMode} isProductActive={props.item.active}>
 
-                <S.ButtonEdit onClick={() => setisModalEditProductOpen(true)} title="Editar Produto"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+                <S.ButtonEdit onClick={() => {
+                    props.setActualItemEdit(props.item)
+                    props.setisModalAddEditProductOpen(true)
+                }} title="Editar Produto"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
 
                 <S.LabelNameProduct isDarkMode={Theme.DarkMode}>
-                    <b>{props.name}</b>
+                    <b>{props.item.name}</b>
                 </S.LabelNameProduct>
 
-                {props.quantity > 0 ?
+                {(props.item.quantity ?? 0) > 0 ?
                     <S.LabelStatus style={Theme.DarkMode ? { color: '#4daf42' } : { backgroundColor: '#eaf9e0', color: '#4daf42' }} isDarkMode={Theme.DarkMode}>
                         <b>Em estoque</b>
                     </S.LabelStatus>
@@ -150,7 +127,7 @@ export const ListProducts = (props: ListProductsProps) => {
                 }
 
                 <S.LabelQuantity isDarkMode={Theme.DarkMode}>
-                    <b>{props.quantity}</b>
+                    <b>{props.item.quantity}</b>
                 </S.LabelQuantity>
 
                 <S.LabelQuantity isDarkMode={Theme.DarkMode}>
@@ -171,13 +148,6 @@ export const ListProducts = (props: ListProductsProps) => {
             </S.Container>
 
 
-            <ModalAddEditProduct
-                isModalAddEditProductOpen={isModalEditProductOpen}
-                setisModalAddEditProductOpen={handleCloseModalEditProduct}
-                setisModalSucessOpen={setisModalSucessOpen}
-                type="Edit"
-                itemData={props}
-            />
 
             <Modal open={isModalMasterKeyOpen} onClose={handleCloseModalMasterKey}>
                 <MuiBox desktopWidth={500} mobileWidthPercent="80%">

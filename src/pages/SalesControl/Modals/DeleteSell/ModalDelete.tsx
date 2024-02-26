@@ -73,7 +73,7 @@ export const ModalDelete = (props: ModalDeleteProps) => {
                 props.setismodalDeleteOpen(false)
                 props.defaultSendtoApi()
 
-            } else if (!data.Sucess) {
+            } else if (!data.Success) {
                 throw new Error('Falha ao realizar estorno! ' + data.erro)
             }
         } catch (error: any) {

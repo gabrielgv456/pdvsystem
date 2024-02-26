@@ -104,7 +104,7 @@ export const TabIcmsProduct = () => {
                     renderInput={(params) =>
                         <TextField
                             {...params}
-                            label="Motivo Desoneração ICMS(%)"
+                            label="Motivo Desoneração ICMS"
                         />
                     } />
                 <Autocomplete

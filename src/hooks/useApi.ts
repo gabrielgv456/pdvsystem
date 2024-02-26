@@ -5,6 +5,7 @@ import { typeRequestDeliveryAdressChange } from '../pages/Deliveries/components/
 import { typeSetPaymentsonDelivery } from '../pages/Deliveries/components/tables/modals/modalDeliveryDone';
 import { typeChangeForgotPassword } from '../pages/Login/Modals/validateEmail';
 import { typeReqChangeFiscalParameters } from '../pages/Settings/tabs/FiscalParameters/interfaces';
+import { addEditProductDataSend } from '../pages/InventoryManagement/Modals/AddEditProduct/interfaces';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -55,12 +56,12 @@ export const useApi = () => ({
         const response = await api.post('/findtransactions', { datafindTransactions })
         return response.data
     },
-    addProducts: async (dataAddProduct: object) => {
-        const response = await api.post('/addproduct', { dataAddProduct })
+    addProducts: async (dataAddProduct: addEditProductDataSend) => {
+        const response = await api.post('/addproduct', { ...dataAddProduct })
         return response.data
     },
-    editProducts: async (dataEditProduct: object) => {
-        const response = await api.post('/editproduct', { dataEditProduct })
+    editProducts: async (dataEditProduct: addEditProductDataSend) => {
+        const response = await api.post('/editproduct', { ...dataEditProduct })
         return response.data
     },
     deleteProducts: async (dataDeleteProduct: object) => {
