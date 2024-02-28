@@ -144,6 +144,10 @@ export const useApi = () => ({
         const response = await api.get(`/aboutCorporation?storeId=${userId}`)
         return response.data
     },
+    findIcmsOptions: async () => {
+        const response = await api.get('/findIcmsOptions')
+        return response.data
+    },
     findNCM: async () => {
         const response = await api.get('/listNCM')
         return response.data

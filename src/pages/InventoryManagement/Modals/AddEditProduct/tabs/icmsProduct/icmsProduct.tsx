@@ -1,25 +1,43 @@
 import * as S from './style'
+import * as type from './interfaces'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useApi } from '../../../../../../hooks/useApi';
+import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 
 export const TabIcmsProduct = () => {
+    useEffect(() => {
+        async function searchOptions() {
+            try {
+                const response: type.searchOptions = await findIcmsOptions()
+                if (!response.Success) { throw new Error(response.erro) }
+                setOptions(response)
+            } catch (error: any) {
+                MessageBox('error', 'Falha ao buscar opções ICMS!' + (error.message ?? ''))
+            }
+        }
+        searchOptions()
+    }, [])
+    const [options, setOptions] = useState<type.searchOptions | null>(null)
+    const { findIcmsOptions } = useApi()
     const [inputProductsModalQuantity, setinputProductsModalQuantity] = useState<number | null>(null)
     const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(null)
-    const options = ['teste']
-
+    const { MessageBox } = useMessageBoxContext()
+    const [value, setValue] = useState<type.optionsType | null>(null)
     return (
         <S.Container>
             <S.SectionContainer>
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
-                    sx={{flex: '1 1 120px'}}
+                    options={options?.originOptions ?? []}
+                    getOptionLabel={(option) => (option.description)}
+                    sx={{ flex: '1 1 120px' }}
                     size='small'
                     renderInput={(params) =>
                         <TextField
@@ -41,14 +59,15 @@ export const TabIcmsProduct = () => {
             <S.SectionContainer>
                 <b style={{ display: 'flex', alignSelf: 'flex-start', width: '100%' }}>ICMS Nota Fiscal Eletrônica</b>
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    options={options?.cstOptions ?? []}
                     sx={{ flex: '1 2 200px' }}
+                    getOptionLabel={(option) => (option.description)}
                     size='small'
                     renderInput={(params) =>
                         <TextField
@@ -57,13 +76,14 @@ export const TabIcmsProduct = () => {
                         />
                     } />
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    options={options?.modalityOptions ?? []}
+                    getOptionLabel={(option) => (option.description)}
                     sx={{ flex: '1 2 200px' }}
                     size='small'
                     renderInput={(params) =>
@@ -92,14 +112,15 @@ export const TabIcmsProduct = () => {
                     size='small'
                     sx={{ flex: '1 1 200px' }} />
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    options={options?.exemptionOptions ?? []}
                     sx={{ flex: '1 2 270px' }}
+                    getOptionLabel={(option) => (option.description)}
                     size='small'
                     renderInput={(params) =>
                         <TextField
@@ -108,13 +129,14 @@ export const TabIcmsProduct = () => {
                         />
                     } />
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    getOptionLabel={(option) => (option.id + ' - ' + option.description)}
+                    options={options?.cfopStateOptions ?? []}
                     sx={{ flex: '1 1 170px' }}
                     size='small'
                     renderInput={(params) =>
@@ -124,13 +146,14 @@ export const TabIcmsProduct = () => {
                         />
                     } />
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    options={options?.cfopInterstateOptions ?? []}
+                    getOptionLabel={(option) => (option.id + ' - ' + option.description)}
                     sx={{ flex: '1 1 200px' }}
                     size='small'
                     renderInput={(params) =>
@@ -144,13 +167,14 @@ export const TabIcmsProduct = () => {
             <S.SectionContainer>
                 <b style={{ display: 'flex', alignSelf: 'flex-start', width: '100%' }}>ICMS Não Contribuinte</b>
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    options={options?.originOptions ?? []}
+                    getOptionLabel={(option) => (option.description)}
                     sx={{ flex: '1 4 250px' }}
                     size='small'
                     renderInput={(params) =>
@@ -183,13 +207,14 @@ export const TabIcmsProduct = () => {
             <S.SectionContainer>
                 <b style={{ display: 'flex', alignSelf: 'flex-start', width: '100%' }}>ICMS Nota Fiscal do Consumidor Eletrônica</b>
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    options={options?.originOptions ?? []}
+                    getOptionLabel={(option) => (option.description)}
                     sx={{ flex: '1 4 170px' }}
                     size='small'
                     renderInput={(params) =>
@@ -218,14 +243,15 @@ export const TabIcmsProduct = () => {
                     sx={{ flex: '1 1 160px' }}
                 />
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
-                    sx={{ flex: '1 1 120px'}}
+                    options={options?.originOptions ?? []}
+                    getOptionLabel={(option) => (option.description)}
+                    sx={{ flex: '1 1 120px' }}
                     size='small'
                     renderInput={(params) =>
                         <TextField
@@ -234,14 +260,15 @@ export const TabIcmsProduct = () => {
                         />
                     } />
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={value}
+                    onChange={(event: any, newValue: type.optionsType | null) => {
+                        setValue(newValue);
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
-                    sx={{flex: '1 1 200px'}}
+                    getOptionLabel={(option) => (option.description)}
+                    options={options?.originOptions ?? []}
+                    sx={{ flex: '1 1 200px' }}
                     size='small'
                     renderInput={(params) =>
                         <TextField
