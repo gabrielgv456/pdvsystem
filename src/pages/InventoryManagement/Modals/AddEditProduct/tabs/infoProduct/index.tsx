@@ -3,24 +3,22 @@ import * as type from './interfaces'
 import Switch from '@mui/material/Switch';
 import { CurrencyMask, CurrencyMaskValue } from '../../../../../../masks/CurrencyMask';
 import TextField from '@mui/material/TextField';
-import { useState, DragEvent, ChangeEvent, useEffect, useContext, memo, useCallback } from 'react';
+import { useState, DragEvent, ChangeEvent, useEffect, memo } from 'react';
 import { useApi } from '../../../../../../hooks/useApi';
 import Autocomplete from '@mui/material/Autocomplete';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { FormatChangePercent, FormatCurrencytoFloatdb, FormatPercent, currencyFormat, currencyRemoveNotNumbers, removeNotNumerics } from '../../../../../../utils/utils';
+import { FormatChangePercent, FormatCurrencytoFloatdb, FormatPercent, currencyFormat, currencyRemoveNotNumbers, percentFormatIntl, removeNotNumerics, strTofixed2Float } from '../../../../../../utils/utils';
 import { addEditProductDataPrincipal } from '../../saveProduct/interfaces';
 
 export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
 
-    const { findCfop, findItemType, findNCM } = useApi()
+    const { findItemType, findNCM } = useApi()
     const [selectedUnitMeasurement, setSelectedUnitMeasurement] = useState<string | null>(props.itemData?.unitMeasurement ?? 'UN')
     const { MessageBox } = useMessageBoxContext()
     const [optionsItensType, setOptionsItensType] = useState<type.itemType[]>([])
     const [selectedItemType, setSelectedItemType] = useState<type.itemType | null>(null)
-    const [optionsCfop, setOptionsCfop] = useState<type.itemType[]>([])
-    const [selectedCfop, setSelectedCfop] = useState<type.itemType | null>(null)
     const optionsUnitMeasurement = ['UN']
     const [ncmCode, setNcmCode] = useState<type.ncmType | null>(null)
     const [optionsNCM, setOptionsNCM] = useState<type.ncmType[]>([])
@@ -119,14 +117,14 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
     }
 
     const changeProfitProduct = async (value: string) => {
-        handleChangeData('profitMargin', Number(value))
+        handleChangeData('profitMargin', strTofixed2Float(value))
         const costProduct = props.dataAddEditProduct.principal.cost ?? 0
         if (costProduct <= 0) {
             MessageBox('info', 'Informe o custo do produto!')
             handleChangeData('profitMargin', 0)
             return
         }
-        const profit = Number(removeNotNumerics(value))
+        const profit = parseFloat(value)
         const newValueProduct = parseFloat((costProduct + (costProduct * (profit / 100))) + "").toFixed(2)
         handleChangeData('value', Number(newValueProduct))
     }
@@ -213,10 +211,11 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                 className='InputSection' />
             <TextField
                 value={props.dataAddEditProduct.principal.profitMargin}
-                onChange={(e) => changeProfitProduct(e.target.value)}
+                onChange={(e) => { changeProfitProduct(e.target.value) }}
                 id="outlined-basic"
                 label="M. Lucro (%)*"
                 className='InputSection'
+                type='number'
                 InputLabelProps={{
                     shrink: !!props.dataAddEditProduct.principal.profitMargin
                 }}

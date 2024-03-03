@@ -5,10 +5,10 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { BsArrowDownLeftCircle, BsArrowUpRightCircle } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
-import { TransactionsProductsReturnApi } from "../../index"
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { MuiBox } from "../../../../components/box/muiBox";
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../../../components/buttons/closeButtonModal";
+import { TransactionsProductsReturnApi } from "../../interfaces";
 
 interface indextoModalTransactionsProducts {
     dataTransactionsProductsReturnApi: TransactionsProductsReturnApi[];

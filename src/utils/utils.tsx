@@ -62,6 +62,11 @@ export function currencyFormat(value: number | null) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
 }
 
+export function percentFormatIntl(value: number | null) {
+  if (!value) return ''
+  return new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value / 100)
+}
+
 export function phoneNumberFormat(text: string, max?: string) {
   if (!text) { return '' }
   const localMax = text
@@ -99,6 +104,11 @@ export function FormatCurrencytoFloatdb(value: string | null) {
   formatvalue = formatvalue.replace(/[^\d.-]/g, '')
   formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
   return (parseFloat(formatvalue))
+}
+
+export function strTofixed2Float(value: string | null | undefined) {
+  if (!value) return null
+  return parseFloat(parseFloat(value).toFixed(2))
 }
 
 export function FormatChangePercent(value: string | null) {

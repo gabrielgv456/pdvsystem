@@ -1,4 +1,4 @@
-import { ProductsReturnApiProps, TransactionsProductsReturnApi } from "../index"
+import { ProductsReturnApiProps, TransactionsProductsReturnApi } from "../interfaces";
 
 export interface ListProductsProps {
     item: ProductsReturnApiProps;

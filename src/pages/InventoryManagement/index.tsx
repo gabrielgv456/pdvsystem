@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import * as S from "./style"
+import * as type from './interfaces'
 import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 import { MdAdd, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { ListProducts } from './ListProducts/ListProducts';
@@ -13,30 +14,14 @@ import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContex
 import { ModalAddEditProduct } from "./Modals/AddEditProduct";
 import { MuiBox } from "../../components/box/muiBox";
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../components/buttons/closeButtonModal";
-import { addEditProductDataPrincipal } from "./Modals/AddEditProduct/saveProduct/interfaces";
 
-type editFields = {
-    deliveries: [{ itemSell: { quantity: number } }]
-    created_at: Date
-    totalValue: number
-}
-export type ProductsReturnApiProps = addEditProductDataPrincipal & editFields
-
-
-export interface TransactionsProductsReturnApi {
-    type: string;
-    description: string;
-    created_at: Date;
-    quantity: number;
-    totalQuantity: number;
-}
 
 export const InventoryManagement = () => {
     const { findProducts } = useApi()
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
-    const [actualItemEdit, setActualItemEdit] = useState<ProductsReturnApiProps | undefined>()
-    const [ProductsReturnApi, setProductsReturnApi] = useState<ProductsReturnApiProps[]>([])
+    const [actualItemEdit, setActualItemEdit] = useState<type.ProductsReturnApiProps | undefined>()
+    const [ProductsReturnApi, setProductsReturnApi] = useState<type.ProductsReturnApiProps[]>([])
     const [ItensPerPageExtract, SetItensPerPageExtract] = useState(10)
     const [atualPageExtract, SetAtualPageExtract] = useState(0)
     const [isModalAddEditProductOpen, setisModalAddEditProductOpen] = useState(false);
@@ -44,7 +29,7 @@ export const InventoryManagement = () => {
     const [isModalTransactionsProductsOpen, setisModalTransactionsProductsOpen] = useState(false);
     const [inputSearchProduct, setinputSearchProduct] = useState("")
     const inputSearchProductLowwer = inputSearchProduct.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    const [dataTransactionsProductsReturnApi, setdataTransactionsProductsReturnApi] = useState<TransactionsProductsReturnApi[]>([])
+    const [dataTransactionsProductsReturnApi, setdataTransactionsProductsReturnApi] = useState<type.TransactionsProductsReturnApi[]>([])
     const ProductsReturnApiFiltered = ProductsReturnApi.filter((product) => product.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(inputSearchProductLowwer))
     const PagesExtract = Math.ceil(ProductsReturnApiFiltered.length / ItensPerPageExtract)
     const StartIndexExtract = atualPageExtract * ItensPerPageExtract
@@ -58,7 +43,7 @@ export const InventoryManagement = () => {
 
     function handleOpenModalConfirmSell() {
         setActualItemEdit(undefined)
-        setisModalAddEditProductOpen(true) 
+        setisModalAddEditProductOpen(true)
     }
 
     function handleCloseModalSucess() {
@@ -162,7 +147,7 @@ export const InventoryManagement = () => {
                             <option value={10000}>*</option>
                         </select>
                         <S.DivRightFooterProducts>
-                            <label>Qtd Total: {ProductsReturnApi.reduce((acc, item) => { return acc + item.quantity }, 0)}</label>
+                            <label>Qtd Total: {ProductsReturnApi.reduce((acc, item) => { return acc + (item.quantity ?? 0) }, 0)}</label>
                             <label>Valor Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(ProductsReturnApi.reduce((acc, item) => { return acc + item.totalValue }, 0))}</label>
 
                             {PagesExtract > 0 ? <label> Página {atualPageExtract + 1} de {PagesExtract}</label> : <label></label>}
@@ -216,7 +201,6 @@ export const InventoryManagement = () => {
                         type={'Add'}
                     />
                 }
-                {JSON.stringify(actualItemEdit)}
                 <Modal open={isModalSucessOpen} onClose={handleCloseModalSucess}>
                     <MuiBox desktopWidth={500} mobileWidthPercent="80%" >
                         <S.DivModalSucess>

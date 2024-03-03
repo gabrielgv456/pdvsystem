@@ -8,7 +8,7 @@ import { TabInfoProduct } from './tabs/infoProduct';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { MdAssignment } from 'react-icons/md';
-import { useMediaQuery } from '@mui/material';
+import { Divider, useMediaQuery } from '@mui/material';
 import { TabIcmsProduct } from './tabs/icmsProduct/icmsProduct';
 import { MuiBox } from '../../../../components/box/muiBox';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../components/buttons/closeButtonModal';
@@ -17,7 +17,10 @@ import { TabIcmsSTProduct } from './tabs/icmsSTProduct/icmsSTProduct';
 import { SaveProduct } from './saveProduct/saveProduct';
 import { AuthContext } from '../../../../contexts/Auth/AuthContext'
 import { TabPanel } from '../../../../components/tabPanel/tabPanel';
-import { ProductsReturnApiProps } from '../..';
+import { ProductsReturnApiProps } from '../../interfaces';
+import { searchOptions } from './tabs/icmsProduct/interfaces';
+import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
+import { useApi } from '../../../../hooks/useApi';
 
 
 
@@ -31,16 +34,31 @@ interface PropsModalAddProduct {
 
 export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
 
-    useEffect(()=>{
+    useEffect(() => {
         setDataAddEditProduct(defaultDataEditProduct)
-    },[props.itemData])
+    }, [props.itemData])
 
+    useEffect(() => {
+        async function searchOptions() {
+            try {
+                const response = await findIcmsOptions()
+                if (!response.Success) { throw new Error(response.erro) }
+                setIcmsOptions(response)
+            } catch (error: any) {
+                MessageBox('error', 'Falha ao buscar opções ICMS!' + (error.message ?? ''))
+            }
+        }
+        searchOptions()
+    }, [])
 
+    const [icmsOptions, setIcmsOptions] = useState<searchOptions | null>(null)
     const auth = useContext(AuthContext)
+    const { findIcmsOptions } = useApi()
+    const { MessageBox } = useMessageBoxContext()
     const isLess900 = useMediaQuery('(max-width:100px)')
     const [value, setValue] = useState(0);
 
-    const defaultDataEditProduct = {
+    const defaultDataEditProduct: type.addEditProductDataSend = {
         principal: {
             id: props.itemData?.id,
             userId: auth.idUser,
@@ -49,7 +67,7 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
             exTipi: props.itemData?.exTipi ?? null,
             name: props.itemData?.name ?? '',
             value: props.itemData?.value ?? null,
-            quantity: props.itemData?.quantity ?? 0,
+            quantity: props.itemData?.quantity ?? null,
             active: props.itemData?.active ?? true,
             cost: props.itemData?.cost ?? null,
             profitMargin: props.itemData?.profitMargin ?? null,
@@ -58,9 +76,45 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
             itemTypeId: (props.itemData ? props.itemData.itemTypeId : null),
             cfopId: props.itemData?.cfopId ?? null,
             unitMeasurement: props.itemData?.unitMeasurement ?? 'UN'
+        },
+        icms: {
+            TaxIcms: {
+                taxIcmsOriginId: (props.itemData?.taxIcms[0]?.taxIcmsOriginId) ?? null,
+                fcpAliquot: (props.itemData?.taxIcms[0]?.fcpAliquot) ?? null,
+            },
+            TaxIcmsNfce: {
+                taxCstIcmsId: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxCstIcmsId) ?? null,
+                taxAliquotIcms: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxAliquotIcms) ?? null,
+                taxCfopDevolutionId: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxCfopDevolutionId) ?? null,
+                taxCfopId: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxCfopId) ?? null,
+                taxRedBCICMS: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxRedBCICMS) ?? null
+            },
+            TaxIcmsNfe: {
+                taxCfopInterstateId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxCfopInterstateId) ?? null,
+                taxCstIcmsId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxCstIcmsId) ?? null,
+                taxAliquotIcms: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxAliquotIcms) ?? null,
+                taxCfopStateId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxCfopStateId) ?? null,
+                taxModalityBCId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxModalityBCId) ?? null,
+                taxReasonExemptionId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxReasonExemptionId) ?? null,
+                taxRedBCICMS: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxRedBCICMS) ?? null,
+            },
+            TaxIcmsNoPayer: {
+                taxAliquotIcms: (props.itemData?.taxIcms[0]?.taxIcmsNoPayer[0]?.taxAliquotIcms) ?? null,
+                taxCstIcmsId: (props.itemData?.taxIcms[0]?.taxIcmsNoPayer[0]?.taxCstIcmsId) ?? null,
+                taxRedBCICMS: (props.itemData?.taxIcms[0]?.taxIcmsNoPayer[0]?.taxRedBCICMS) ?? null,
+            },
+            TaxIcmsST: {
+                taxAliquotIcmsInner: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxRedBCICMSInner) ?? null,
+                taxCfopInterstateIdSt: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCfopInterstateIdSt) ?? null,
+                taxCfopStateIdSt: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCfopStateIdSt) ?? null,
+                taxCstIcmsStId: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCstIcmsStId) ?? null,
+                taxModalityBCIdSt: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCstIcmsStId) ?? null,
+                taxRedBCICMSInner: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCstIcmsStId) ?? null,
+                taxRedBCICMSSt: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCstIcmsStId) ?? null
+            }
         }
     }
-    
+
     const [dataAddEditProduct, setDataAddEditProduct] = useState<type.addEditProductDataSend>(defaultDataEditProduct)
     console.log(dataAddEditProduct.principal.itemTypeId)
 
@@ -98,23 +152,30 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                 <div>
                     <TabPanel value={value} index={0}>
                         <TabInfoProduct
-                            type={props.type}
                             dataAddEditProduct={dataAddEditProduct}
                             setDataAddEditProduct={setDataAddEditProduct}
                             itemData={props.itemData}
                         />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        <TabIcmsProduct />
+                        <TabIcmsProduct
+                            dataAddEditProduct={dataAddEditProduct}
+                            setDataAddEditProduct={setDataAddEditProduct}
+                            icmsOptions={icmsOptions}
+                        />
                     </TabPanel>
                     <TabPanel value={value} index={2}>
-                        <TabIcmsSTProduct />
+                        <TabIcmsSTProduct
+                            dataAddEditProduct={dataAddEditProduct}
+                            setDataAddEditProduct={setDataAddEditProduct}
+                            icmsOptions={icmsOptions}
+                        />
                     </TabPanel>
                     <TabPanel value={value} index={3}>
                         <TabIpiPisCofinsProduct />
                     </TabPanel>
-
                 </div>
+
                 <SaveProduct
                     type={props.type}
                     dataToSend={dataAddEditProduct}

@@ -17,7 +17,7 @@ export type addEditProductDataPrincipal = {
     exTipi: string | null
     brand: string | null
     value: number | null
-    quantity: number
+    quantity: number | null
     active: boolean
     cost: number | null
     profitMargin: number | null

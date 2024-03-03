@@ -1,13 +1,12 @@
 import { Dispatch, SetStateAction } from 'react';
 import { addEditProductDataSend } from '../../interfaces';
-import { ProductsReturnApiProps } from '../../../..';
+import { ProductsReturnApiProps } from '../../../../interfaces';
 
 
 export interface tabInfoProductProps {
     dataAddEditProduct: addEditProductDataSend
     setDataAddEditProduct: Dispatch<SetStateAction<addEditProductDataSend>>
     itemData?: ProductsReturnApiProps;
-    type: 'Add' | 'Edit'
 }
 
 export interface ncmType {

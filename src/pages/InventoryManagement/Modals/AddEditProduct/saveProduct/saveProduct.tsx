@@ -4,6 +4,8 @@ import * as type from './interfaces'
 import { MdFileDownloadDone } from 'react-icons/md';
 import { useApi } from '../../../../../hooks/useApi';
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
+import { DefaultButton } from '../../../../../components/buttons/defaultButton';
+import { Divider } from '@mui/material';
 
 export const SaveProduct = (props: type.SaveProductProps) => {
 
@@ -55,14 +57,19 @@ export const SaveProduct = (props: type.SaveProductProps) => {
     }
 
     return (
+        <>
+            <Divider />
+            <div style={{ display: 'flex', marginTop: 20, width: '100%', justifyContent: 'center' }}>
 
-        <S.ButtonAddProductModal onClick={props.type === 'Add' ? AddProductApi : EditProductApi} isDarkMode={Theme.DarkMode} style={{ margin: '0 auto' }}>
-            <MdFileDownloadDone size="22" />
-            {props.type === 'Add' ?
-                <b>ADICIONAR PRODUTO</b>
-                :
-                <b>EDITAR PRODUTO</b>
-            }
-        </S.ButtonAddProductModal>
+                <DefaultButton selectedColor='--Green'>
+                    <MdFileDownloadDone size="22" />
+                    {props.type === 'Add' ?
+                        'Adicionar Produto'
+                        :
+                        'Editar Produto'
+                    }
+                </DefaultButton>
+            </div>
+        </>
     )
 }

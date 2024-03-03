@@ -14,8 +14,6 @@ export const DivModalAddProduct = styled.div`
     max-height:60vh;
     overflow: auto;
     flex-wrap: wrap;
-    padding: 8px 0 0 0;
-    margin: 0px 0 15px 0;
     .InputSection {
         flex: 1 1 170px
     }

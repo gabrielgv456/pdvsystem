@@ -5,9 +5,9 @@ export const SectionContainer = styled.div`
     gap: 10px;
     flex-wrap: wrap;
     width: 100%;
-    margin: 0 0 20px 0;
 `
 export const Container = styled.div`
+    padding-top: 8px;
     width: 100%;
     max-height:65vh;
     overflow: auto;
