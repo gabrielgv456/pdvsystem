@@ -1,46 +1,23 @@
 import * as S from './style'
-import * as type from './interfaces'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
-import { TaxIcmsSTType, icmsProductProps, icmsType, optionsType, searchOptions } from '../icmsProduct/interfaces';
+import { TaxIcmsSTType, icmsProductProps, optionsType, searchOptions } from '../icmsProduct/interfaces';
 import { strTofixed2Float } from '../../../../../../utils/utils';
 
 export const TabIcmsSTProduct = (props: icmsProductProps) => {
 
-    const [selectedOption, setSelectedOption] = useState<type.selectedOptions | null>({
-        cfopInterstateStOption: defaultOption('taxCfopInterstateIdSt'),
-        cfopStateStOption: defaultOption('taxCfopStateIdSt'),
-        cstIcmsStOption: defaultOption('taxCstIcmsStId'),
-        modalityBCStOption: defaultOption('taxModalityBCIdSt')
-    })
-
-    function defaultOption<T extends keyof TaxIcmsSTType>(
-        property: T
-    ) {
-        const taxDefaultValue = props.dataAddEditProduct.icms.TaxIcmsST[property]
-        if (typeof (taxDefaultValue) !== 'number') return null
-        return props.icmsOptions?.cfopInterstateOptions.find(
-            item => item.id === taxDefaultValue)
-            ?? null
-    }
-
     function findOption<T extends keyof TaxIcmsSTType, S extends keyof searchOptions>(
         property: T,
         option: S
-    ) : optionsType | null {
+    ): optionsType | null {
         if (!props.icmsOptions) return null
         const taxId = props.dataAddEditProduct.icms.TaxIcmsST[property]
-        const array : optionsType[] =  props.icmsOptions[option]
+        const array: optionsType[] = props.icmsOptions[option]
         return array.find(
-            item =>  item.id === taxId)
+            item => item.id === taxId)
             ?? null
     }
-    function handleChangeSelectedOption<T extends keyof type.selectedOptions>(property: T, value: type.selectedOptions[T]) {
-        if (selectedOption) {
-            setSelectedOption({ ...selectedOption, [property]: value })
-        }
-    }
+
     function handleChangeTax<T extends keyof TaxIcmsSTType>(
         property: T, value: TaxIcmsSTType[T]) {
         props.setDataAddEditProduct(prevState => {
@@ -48,7 +25,10 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                 ...prevState,
                 icms: {
                     ...prevState.icms,
-                    TaxIcmsST: { [property]: value }
+                    TaxIcmsST: {
+                        ...prevState.icms.TaxIcmsST,
+                        [property]: value
+                    }
                 }
             }
         })
@@ -59,7 +39,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
             <S.SectionContainer>
                 <b style={{ display: 'flex', alignSelf: 'flex-start', width: '100%' }}>ICMS ST</b>
                 <Autocomplete
-                    value={findOption('taxCstIcmsStId','cstOptions')}
+                    value={findOption('taxCstIcmsStId', 'cstOptions')}
                     onChange={(_event: any, newValue: optionsType | null) => {
                         handleChangeTax('taxCstIcmsStId', newValue?.id)
                     }}
@@ -76,14 +56,13 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                         />
                     } />
                 <Autocomplete
-                    value={selectedOption?.cfopStateStOption}
+                    value={findOption('taxCfopStateIdSt', 'cfopStateOptions')}
                     onChange={(_event: any, newValue: optionsType | null) => {
-                        handleChangeSelectedOption('cfopStateStOption', newValue);
                         handleChangeTax('taxCfopStateIdSt', newValue?.id)
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    getOptionLabel={(option) => (option.description)}
+                    getOptionLabel={(option) => (option.id + ' - ' + option.description)}
                     options={props.icmsOptions?.cfopStateOptions ?? []}
                     sx={{ flex: '1 1 250px' }}
                     size='small'
@@ -94,13 +73,12 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                         />
                     } />
                 <Autocomplete
-                    value={selectedOption?.cfopInterstateStOption}
+                    value={findOption('taxCfopInterstateIdSt', 'cfopInterstateOptions')}
                     onChange={(_event: any, newValue: optionsType | null) => {
-                        handleChangeSelectedOption('cfopInterstateStOption', newValue);
                         handleChangeTax('taxCfopInterstateIdSt', newValue?.id)
                     }}
                     noOptionsText="Não encontrado"
-                    getOptionLabel={(option) => (option.description)}
+                    getOptionLabel={(option) => (option.id + ' - ' + option.description)}
                     id="controllable-states-demo"
                     options={props.icmsOptions?.cfopInterstateOptions ?? []}
                     sx={{ flex: '1 1 250px' }}
@@ -112,9 +90,8 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                         />
                     } />
                 <Autocomplete
-                    value={selectedOption?.modalityBCStOption}
+                    value={findOption('taxRedBCICMSSt', 'modalityOptions')}
                     onChange={(_event: any, newValue: optionsType | null) => {
-                        handleChangeSelectedOption('modalityBCStOption', newValue);
                         handleChangeTax('taxModalityBCIdSt', newValue?.id)
                     }}
                     noOptionsText="Não encontrado"

@@ -11,10 +11,11 @@ export const Container = styled.div<DarkModeProps> `
     font-family: 'Poppins', sans-serif;
     border-radius: 10px;
     width: 100%;
-    min-height: 82vh;
+    min-height: calc(100vh - 64px);
     padding: 0px;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
     box-sizing: border-box;
+  
 
 `
 

@@ -23,9 +23,12 @@ interface ButtonisOpenExits {
 export const Container = styled.div<DarkModeProps> `
     font-family: 'Poppins', sans-serif;
     width: 100%;
-    min-height: 82vh;
+    min-height: calc(100vh - 64px);
     border: 0px solid;
     color: ${props => (props.isDarkMode ? 'white' : '')};
+     border-radius: 8px 8px 0 0;
+    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)!important' : 'var(--backgroundsilver)!important;')}; 
+    padding: 24px;
   
 `
 export const Header = styled.div<DarkModeProps>`

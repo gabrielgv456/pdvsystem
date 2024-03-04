@@ -116,7 +116,6 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
     }
 
     const [dataAddEditProduct, setDataAddEditProduct] = useState<type.addEditProductDataSend>(defaultDataEditProduct)
-    console.log(dataAddEditProduct.principal.itemTypeId)
 
     function handleCloseModalAddProduct() {
         props.setisModalAddEditProductOpen(false)

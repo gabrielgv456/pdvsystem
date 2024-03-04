@@ -114,111 +114,113 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
     return (
         <>
             <S.Container isDarkMode={Theme.DarkMode}>
-                <S.Header>
-                    <S.LabelSearchClient>
-                        <BsSearch style={{ margin: '15px', color: "#9eaab5" }} size="18" />
-                        <input
-                            value={inputSearchClient}
-                            onChange={(e) => setinputSearchClient(e.target.value)}
-                            style={{
-                                border: "none",
-                                background: 'none',
-                                borderRadius: '7px',
-                                width: '100%',
-                                height: '100%',
-                                outline: 'none',
-                                fontSize: "1rem",
-                                color: `${Theme.DarkMode ? '#fff' : '#000'}`
-                            }}
-                            placeholder="Localizar Consumidor..."></input>
-                    </S.LabelSearchClient>
-                    <section style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '5%' }}>
-                        <ToggleButtonGroup
+                <S.Content isDarkMode={Theme.DarkMode}>
+                    <S.Header>
+                        <S.LabelSearchClient>
+                            <BsSearch style={{ margin: '15px', color: "#9eaab5" }} size="18" />
+                            <input
+                                value={inputSearchClient}
+                                onChange={(e) => setinputSearchClient(e.target.value)}
+                                style={{
+                                    border: "none",
+                                    background: 'none',
+                                    borderRadius: '7px',
+                                    width: '100%',
+                                    height: '100%',
+                                    outline: 'none',
+                                    fontSize: "1rem",
+                                    color: `${Theme.DarkMode ? '#fff' : '#000'}`
+                                }}
+                                placeholder="Localizar Consumidor..."></input>
+                        </S.LabelSearchClient>
+                        <section style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '5%' }}>
+                            <ToggleButtonGroup
 
-                            color="info"
-                            value={props.PeopleMode}
-                            exclusive
-                            onChange={handleChangePeopleType}
+                                color="info"
+                                value={props.PeopleMode}
+                                exclusive
+                                onChange={handleChangePeopleType}
 
-                        >
-                            <ToggleButton value="Clients" style={{ padding: '0.8rem', height: 'min-content', fontSize: '1rem' }}>Clientes</ToggleButton>
-                            <ToggleButton value="Sellers" style={{ padding: '0.8rem', height: 'min-content', fontSize: '1rem' }}>Vendedores</ToggleButton>
+                            >
+                                <ToggleButton value="Clients" style={{ padding: '0.8rem', height: 'min-content', fontSize: '1rem' }}>Clientes</ToggleButton>
+                                <ToggleButton value="Sellers" style={{ padding: '0.8rem', height: 'min-content', fontSize: '1rem' }}>Vendedores</ToggleButton>
 
-                        </ToggleButtonGroup>
-
-
-                        <S.ButtonAddClient onClick={handleOpenModalConfirmSell} isDarkMode={Theme.DarkMode}>
-                            <MdAdd size="22" />
-                            <b>NOVO CLIENTE</b>
-                        </S.ButtonAddClient>
-                    </section>
-
-                </S.Header>
+                            </ToggleButtonGroup>
 
 
-                <S.DivListClients>
+                            <S.ButtonAddClient onClick={handleOpenModalConfirmSell} isDarkMode={Theme.DarkMode}>
+                                <MdAdd size="22" />
+                                <b>NOVO CLIENTE</b>
+                            </S.ButtonAddClient>
+                        </section>
 
-                    <S.DivTitleListClients isDarkMode={Theme.DarkMode}>
-                        <S.labelEdit >&nbsp;</S.labelEdit>
-                        <S.labelNomeRazao><b>Nome / Razão Social </b></S.labelNomeRazao>
-                        <S.labelCpfCnpj ><b>CPF/CNPJ</b></S.labelCpfCnpj>
-                        <S.labelCelular><b>Celular</b></S.labelCelular>
-                        <S.labelEmail ><b>Email</b></S.labelEmail>
-                        <S.labelExcluir>&nbsp;</S.labelExcluir>
-                    </S.DivTitleListClients>
+                    </S.Header>
 
 
+                    <S.DivListClients>
 
-                    {paginedTransactionsReturnApi.map((item) => (
-                        <ListClients
-                            client={item}
-                            key={item.id}
-                            searchClient={SearchClients}
-                            created_at={item.created_at ?? null} />
-                    ))
-                    }
+                        <S.DivTitleListClients isDarkMode={Theme.DarkMode}>
+                            <S.labelEdit >&nbsp;</S.labelEdit>
+                            <S.labelNomeRazao><b>Nome / Razão Social </b></S.labelNomeRazao>
+                            <S.labelCpfCnpj ><b>CPF/CNPJ</b></S.labelCpfCnpj>
+                            <S.labelCelular><b>Celular</b></S.labelCelular>
+                            <S.labelEmail ><b>Email</b></S.labelEmail>
+                            <S.labelExcluir>&nbsp;</S.labelExcluir>
+                        </S.DivTitleListClients>
 
-                    {ClientsReturnApi.length === 0 &&
-                        <h5 style={{ color: '#485059', marginTop: '5%' }}>Nenhum resultado encontrado</h5>
-                    }
 
-                    <S.DivFooterListClients isDarkMode={Theme.DarkMode}>
-                        <select value={ItensPerPageExtract}
-                            onChange={(e) => EditItensPerPage(Number(e.target.value))}
-                            style={{ border: 'none', width: '40px', background: 'none', color: '#67636d' }}>
-                            <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={25}>25</option>
-                            <option value={10000}>*</option>
-                        </select>
-                        <div style={{ fontSize: '0.85rem', color: '#67636d', display: 'flex', width: '20%', justifyContent: 'space-between', minWidth: 'max-content', alignItems: 'center' }}>
-                            {PagesExtract > 0 ? <label> Página {atualPageExtract + 1} de {PagesExtract}</label> : <label></label>}
 
-                            <S.DivAlterPage>
+                        {paginedTransactionsReturnApi.map((item) => (
+                            <ListClients
+                                client={item}
+                                key={item.id}
+                                searchClient={SearchClients}
+                                created_at={item.created_at ?? null} />
+                        ))
+                        }
 
-                                {atualPageExtract <= PagesExtract && atualPageExtract > 0 ?
-                                    <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract - 1)}>
-                                        <MdChevronLeft color='#4b535c' size="25" />
-                                    </button>
-                                    :
-                                    <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
-                                        <MdChevronLeft color='#b8c0c9' size="25" />
-                                    </button>
-                                }
-                                {atualPageExtract + 1 >= PagesExtract ?
-                                    <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
-                                        <MdChevronRight color='#b8c0c9' size="25" />
-                                    </button>
-                                    :
-                                    <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract + 1)}>
-                                        <MdChevronRight color='#4b535c' size="25" />
-                                    </button>
-                                }
-                            </S.DivAlterPage>
-                        </div>
+                        {ClientsReturnApi.length === 0 &&
+                            <h5 style={{ color: '#485059', marginTop: '5%' }}>Nenhum resultado encontrado</h5>
+                        }
 
-                    </S.DivFooterListClients>
-                </S.DivListClients>
+                        <S.DivFooterListClients isDarkMode={Theme.DarkMode}>
+                            <select value={ItensPerPageExtract}
+                                onChange={(e) => EditItensPerPage(Number(e.target.value))}
+                                style={{ border: 'none', width: '40px', background: 'none', color: '#67636d' }}>
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={25}>25</option>
+                                <option value={10000}>*</option>
+                            </select>
+                            <div style={{ fontSize: '0.85rem', color: '#67636d', display: 'flex', width: '20%', justifyContent: 'space-between', minWidth: 'max-content', alignItems: 'center' }}>
+                                {PagesExtract > 0 ? <label> Página {atualPageExtract + 1} de {PagesExtract}</label> : <label></label>}
+
+                                <S.DivAlterPage>
+
+                                    {atualPageExtract <= PagesExtract && atualPageExtract > 0 ?
+                                        <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract - 1)}>
+                                            <MdChevronLeft color='#4b535c' size="25" />
+                                        </button>
+                                        :
+                                        <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
+                                            <MdChevronLeft color='#b8c0c9' size="25" />
+                                        </button>
+                                    }
+                                    {atualPageExtract + 1 >= PagesExtract ?
+                                        <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
+                                            <MdChevronRight color='#b8c0c9' size="25" />
+                                        </button>
+                                        :
+                                        <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract + 1)}>
+                                            <MdChevronRight color='#4b535c' size="25" />
+                                        </button>
+                                    }
+                                </S.DivAlterPage>
+                            </div>
+
+                        </S.DivFooterListClients>
+                    </S.DivListClients>
+                </S.Content>
             </S.Container>
 
 

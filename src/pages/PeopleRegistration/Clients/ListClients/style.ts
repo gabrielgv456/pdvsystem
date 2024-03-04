@@ -13,12 +13,11 @@ export const Container = styled.div <ActiveProps>`
     text-decoration:${props => (props.isClientActive? '' : 'line-through' )} ;
     opacity: ${props => (props.isClientActive? '' : '0.6' )};
     /* min-width: min-content; */
-    padding:20px;
+    padding:24px;
     width:100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
     font-size: 0.85rem;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 0px 0px;
     &:hover{
@@ -27,8 +26,7 @@ export const Container = styled.div <ActiveProps>`
     @media screen and (max-width:930px) {
         font-size: 0.7rem;
         padding:5px;
-    }
-   
+    } 
 `
 
 export const LabelNumber = styled.label `

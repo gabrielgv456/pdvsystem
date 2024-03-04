@@ -9,7 +9,7 @@ interface DarkModeProps {
 export const Container = styled.div<DarkModeProps> `
     font-family: 'Poppins', sans-serif;
     width: 100%;
-    min-height: 82vh;
+    min-height: calc(100vh - 64px);
     border: 0px solid;
     color: ${props => (props.isDarkMode ? 'white' : '')};
   

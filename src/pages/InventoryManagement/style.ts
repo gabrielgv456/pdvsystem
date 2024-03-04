@@ -6,19 +6,25 @@ interface DarkModeProps {
 }
 
 export const Container = styled.div<DarkModeProps> `
-    background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
     color: ${props => (props.isDarkMode ? 'white' : '')};
     font-family: 'Poppins', sans-serif;
     border-radius: 10px;
     width: 100%;
-    min-height: 82vh;
-    padding: 25px;
+    min-height: calc(100vh - 64px);
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
     box-sizing: border-box;
+    border-radius: 8px 8px 0 0;
+    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)!important' : 'var(--backgroundsilver)!important;')}; 
+    padding: 24px;
     @media screen and (max-width:930px) {
         padding: 10px;
     }
+`
 
+export const Content = styled.div<DarkModeProps> `
+    background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
+    border-radius: 10px;
+    padding: 20px;
 `
 export const Header = styled.div`
     display: flex;

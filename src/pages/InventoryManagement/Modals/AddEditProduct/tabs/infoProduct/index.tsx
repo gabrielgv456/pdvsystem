@@ -154,7 +154,6 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
         setSelectedImage(file);
         // Fazer chamada para API
     };
-    console.log('render')
     return (
 
         <S.DivModalAddProduct>

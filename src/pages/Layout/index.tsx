@@ -32,6 +32,7 @@ import logo from '../../images/logo.png'
 import { useLayout } from '../../contexts/Layout/layoutContext';
 import { BiMoon, BiSun } from 'react-icons/bi';
 import { FaTruck } from 'react-icons/fa';
+import { GrMenu } from "react-icons/gr";
 
 
 
@@ -80,13 +81,16 @@ export default function LayoutDefault(props: Props) {
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
   const drawer = (
-    <S.Div isDarkMode={Theme.DarkMode}  >
-      <Toolbar><Typography sx={{ margin: '0 auto'}} variant="h6" noWrap component="div">
-        {auth.user?.urlLogo ?
-          <img style={{ maxHeight: 50,maxWidth:170 }} src={auth.user.urlLogo} /> :
-          auth.user?.name}
-      </Typography></Toolbar>
-      <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} />
+    <S.Div isDarkMode={Theme.DarkMode}   >
+      <Toolbar >
+        <Typography sx={{  margin: '0 auto'}} variant="h6" noWrap component="div">
+          {auth.user?.urlLogo ?
+            <img style={{ maxHeight: 50, maxWidth: 170 }} src={auth.user.urlLogo} /> :
+            auth.user?.name}
+
+        </Typography>
+      </Toolbar>
+      {/* <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} /> */}
       <List sx={{ marginBottom: '1rem' }}>
         {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Entregas', 'Movimentações', 'Pessoas', 'Gestão de Estoque', 'Ajustes'].map((text, index) => (
           <ListItem button key={text}
@@ -170,12 +174,13 @@ export default function LayoutDefault(props: Props) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          backgroundColor: Theme.DarkMode ? 'var(--backgroundDarkMode)' : 'var(--AppBar)',
+          backgroundColor: Theme.DarkMode ? 'var(--backgroundDarkMode)' : '#fff',
           boxShadow: 'none',
-          borderBottom: '1px solid var(--AppBar)',
+          //borderBottom: '1px solid var(--AppBar)',
+          color:'#000'
         }}
       >
-        <Toolbar >
+        <Toolbar style={{ borderRadius: '20px 20px 20px 20px ' }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -186,12 +191,12 @@ export default function LayoutDefault(props: Props) {
             <MenuIcon />
           </IconButton>
 
-          <Typography variant="h6" noWrap component="div" display="flex">
+          <Typography variant="h6" noWrap component="div" display="flex" >
             {actualPage}
           </Typography>
-          <S.DivCashierStatus>
+          {/* <S.DivCashierStatus>
             Caixa aberto
-          </S.DivCashierStatus>
+          </S.DivCashierStatus> */}
           {auth.user &&
             <PowerSettingsNewIcon
               onClick={handleLogout}
@@ -226,23 +231,23 @@ export default function LayoutDefault(props: Props) {
 
         <Drawer
           classes={{ paper: Theme.DarkMode ? classes.drawerPaperDarkMode : classes.drawerPaper }}
-          variant="permanent"
+          
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, borderRight:'none' },
           }}
+          variant="permanent"
           open
         >
           {drawer}
         </Drawer>
       </Box>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+      <div
+        style={{ flexGrow: 1, width: `calc(100% - ${drawerWidth}px)` }}
       >
         <Toolbar />
         <Outlet />
-      </Box>
+      </div>
     </Box>
   );
 }

@@ -10,8 +10,10 @@ interface BoxProps {
 
 export const Container = styled.div<DarkModeProps> `
     width: 100%;
-    min-height: 82vh;
-    border: 0px solid;
+    min-height: calc(100vh - 64px);
+    border-radius: 8px 8px 0 0;
+    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : 'var(--backgroundsilver)')}; 
+    padding: 24px;
     color: ${props => (props.isDarkMode ? 'white' : '')};
     .Box_Cashier{
         background: var(--Green);

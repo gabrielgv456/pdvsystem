@@ -8,8 +8,8 @@ import { useState } from 'react';
 import { TabMyProfile } from './tabs/MyProfile';
 import { TabFiscalParameters } from './tabs/FiscalParameters';
 import { TabSystem } from './tabs/System';
-import {CgProfile} from 'react-icons/cg';
-import { MdAssignment,MdSettingsInputComponent } from 'react-icons/md';
+import { CgProfile } from 'react-icons/cg';
+import { MdAssignment, MdSettingsInputComponent } from 'react-icons/md';
 import { useMediaQuery } from '@mui/material';
 
 
@@ -60,27 +60,28 @@ export const Settings = () => {
 
     return (
         <S.Container isDarkMode={Theme.DarkMode}>
-
-            <Box sx={{ width: '100%' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} >
-                        <Tab label={ isLess900 ? '' :'Meu Perfil'} title='Meu Perfil' sx={{ borderRadius: '10px 0px 0px 0px'}} {...a11yProps(0)} icon={<CgProfile size={20}/>} iconPosition='start'/>
-                        <Tab label={ isLess900 ? '' :"Parâmetros Fiscais"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20}/>} iconPosition='start' />
-                        <Tab label={ isLess900 ? '' :"Configurações do sistema"} title='Configurações do sistema' {...a11yProps(2)} icon={<MdSettingsInputComponent size={20}/>} iconPosition='start' />
-                    </Tabs>
+            <S.Content isDarkMode={Theme.DarkMode}>
+                <Box sx={{ width: '100%' }}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Tabs value={value} onChange={handleChange} >
+                            <Tab label={isLess900 ? '' : 'Meu Perfil'} title='Meu Perfil' sx={{ borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<CgProfile size={20} />} iconPosition='start' />
+                            <Tab label={isLess900 ? '' : "Parâmetros Fiscais"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />
+                            <Tab label={isLess900 ? '' : "Configurações do sistema"} title='Configurações do sistema' {...a11yProps(2)} icon={<MdSettingsInputComponent size={20} />} iconPosition='start' />
+                        </Tabs>
+                    </Box>
+                    <div style={{ padding: '0 25px 25px 25px' }}>
+                        <TabPanel value={value} index={0}>
+                            <TabMyProfile />
+                        </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            <TabFiscalParameters />
+                        </TabPanel>
+                        <TabPanel value={value} index={2}>
+                            <TabSystem />
+                        </TabPanel>
+                    </div>
                 </Box>
-                <div style={{padding:'0 25px 25px 25px'}}>
-                <TabPanel value={value} index={0}>
-                    <TabMyProfile/>
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                    <TabFiscalParameters/>
-                </TabPanel>
-                <TabPanel value={value} index={2}>
-                    <TabSystem/>
-                </TabPanel>
-                </div>
-            </Box>
+            </S.Content>
         </S.Container>
 
     )
