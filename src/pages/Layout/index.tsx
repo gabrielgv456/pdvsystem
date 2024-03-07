@@ -32,12 +32,6 @@ import logo from '../../images/logo.png'
 import { useLayout } from '../../contexts/Layout/layoutContext';
 import { BiMoon, BiSun } from 'react-icons/bi';
 import { FaTruck } from 'react-icons/fa';
-import { GrMenu } from "react-icons/gr";
-
-
-
-const drawerWidth = 240;
-
 
 interface Props {
   /**
@@ -48,7 +42,7 @@ interface Props {
 }
 
 export default function LayoutDefault(props: Props) {
-  const [drawerWidth, setdrawerWidth] = React.useState(240);
+  const [drawerWidth, setdrawerWidth] = React.useState(260);
   //const [PeopleMode, setPeopleMode] = React.useState('Clients')
   const classes = DrawerStyle();
   const { window } = props;
@@ -83,7 +77,7 @@ export default function LayoutDefault(props: Props) {
   const drawer = (
     <S.Div isDarkMode={Theme.DarkMode}   >
       <Toolbar >
-        <Typography sx={{  margin: '0 auto'}} variant="h6" noWrap component="div">
+        <Typography sx={{ margin: '0 auto' }} variant="h6" noWrap component="div">
           {auth.user?.urlLogo ?
             <img style={{ maxHeight: 50, maxWidth: 170 }} src={auth.user.urlLogo} /> :
             auth.user?.name}
@@ -91,7 +85,7 @@ export default function LayoutDefault(props: Props) {
         </Typography>
       </Toolbar>
       {/* <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} /> */}
-      <List sx={{ marginBottom: '1rem' }}>
+      <List sx={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Entregas', 'Movimentações', 'Pessoas', 'Gestão de Estoque', 'Ajustes'].map((text, index) => (
           <ListItem button key={text}
             onClick={() =>
@@ -103,9 +97,9 @@ export default function LayoutDefault(props: Props) {
                         index === 5 ? openPage('/peopleRegistration', text) :
                           index === 6 ? openPage('/inventoryManagement', text) :
                             index === 7 ? openPage('/settings', text) : handleVoid
-            } className="ListItem">
-            <ListItemIcon>
-              {index === 0 && <HomeIcon className="Icons" />}
+            } className={actualPage === text ? 'SelectedItem' : 'ListItem'} >
+            <ListItemIcon className="ListIcon" sx={{ color: "inherit", minWidth: 0, paddingRight: 2 }}>
+              {index === 0 && <HomeIcon color="inherit" className="Icons" />}
               {index === 1 && <StorefrontIcon className="Icons" />}
               {index === 2 && <ReceiptLongIcon className="Icons" />}
               {index === 3 && <FaTruck style={{ fontSize: '22px' }} className="Icons" />}
@@ -114,17 +108,17 @@ export default function LayoutDefault(props: Props) {
               {index === 6 && <PieChartIcon className="Icons" />}
               {index === 7 && <SettingsIcon style={{ fontSize: '23px' }} className="Icons" />}
             </ListItemIcon>
-            <ListItemText primary={text} />
+            <span style={{ fontSize: 12 }}>{text}</span>
           </ListItem>
         ))}
       </List>
 
-      {drawerWidth === 240 ?
+      {drawerWidth === 260 ?
         <S.ButtonRetract
           onClick={() => setdrawerWidth(0)}
           style={{
             position: 'fixed',
-            left: '239px',
+            left: '259px',
             top: '50%',
           }}
           isDarkMode={Theme.DarkMode}
@@ -177,7 +171,7 @@ export default function LayoutDefault(props: Props) {
           backgroundColor: Theme.DarkMode ? 'var(--backgroundDarkMode)' : '#fff',
           boxShadow: 'none',
           //borderBottom: '1px solid var(--AppBar)',
-          color:'#000'
+          color: '#000'
         }}
       >
         <Toolbar style={{ borderRadius: '20px 20px 20px 20px ' }}>
@@ -231,10 +225,10 @@ export default function LayoutDefault(props: Props) {
 
         <Drawer
           classes={{ paper: Theme.DarkMode ? classes.drawerPaperDarkMode : classes.drawerPaper }}
-          
+
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, borderRight:'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, borderRight: 'none' },
           }}
           variant="permanent"
           open

@@ -12,7 +12,7 @@ type ChildrenProps = {
 const LayoutContext = createContext({} as LayoutProps)
 
 export const LayoutProvider = ({ children }: ChildrenProps) => {
-    const [actualPage, setActualPage] = useState('Bem vindo!')
+    const [actualPage, setActualPage] = useState('Página Inicial')
 
     return (
         <LayoutContext.Provider value={{ actualPage, setActualPage }}>

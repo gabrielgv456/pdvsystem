@@ -14,7 +14,7 @@ export const Container = styled.div<DarkModeProps> `
     flex-wrap: wrap;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
     border-radius: 8px 8px 0 0;
-    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)!important' : 'var(--backgroundsilver)!important;')}; 
+    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : 'var(--backgroundsilver)')}; 
     padding: 24px;
 `
 

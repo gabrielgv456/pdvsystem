@@ -14,7 +14,7 @@ export const Container = styled.div<DarkModeProps> `
     box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 10px 0px;
     box-sizing: border-box;
     border-radius: 8px 8px 0 0;
-    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)!important' : 'var(--backgroundsilver)!important;')}; 
+    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : 'var(--backgroundsilver)')}; 
     padding: 24px;
     @media screen and (max-width:930px) {
         padding: 10px;

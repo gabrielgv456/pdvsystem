@@ -13,7 +13,7 @@ export const Container = styled.div<DarkModeProps> `
     border: 0px solid;
     color: ${props => (props.isDarkMode ? 'white' : '')};
     border-radius: 8px 8px 0 0;
-    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)!important' : 'var(--backgroundsilver)!important;')}; 
+    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : 'var(--backgroundsilver)')}; 
     padding: 24px;
   
 `

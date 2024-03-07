@@ -33,7 +33,7 @@ export interface DeliveriesReturnApiProps {
     client: {
         name: string
     } | null,
-    scheduledDate: string|null,
+    scheduledDate: string | null,
     deliveredDate: string | null,
     status: 'Pending' | 'Shipping' | 'Done',
     onDeliveryPayValue: number,
@@ -52,7 +52,7 @@ export interface DeliveriesReturnApiProps {
         descriptionProduct: string,
         totalValue: number,
         sell: {
-            id:number,
+            id: number,
             codRef: number,
             sellValue: number,
             paymentsells: [{
@@ -134,26 +134,27 @@ export const Deliveries = () => {
         setValue(newValue);
     };
 
-    const countPending  = DeliveriesReturnApi.reduce((acc, item) => {
+    const countPending = DeliveriesReturnApi.reduce((acc, item) => {
         if (item.status === 'Pending') { return acc + 1; } else { return acc; }
     }, 0);
-    const countShipping  = DeliveriesReturnApi.reduce((acc, item) => {
+    const countShipping = DeliveriesReturnApi.reduce((acc, item) => {
         if (item.status === 'Shipping') { return acc + 1; } else { return acc; }
     }, 0);
-    const countDone  = DeliveriesReturnApi.reduce((acc, item) => {
+    const countDone = DeliveriesReturnApi.reduce((acc, item) => {
         if (item.status === 'Done') { return acc + 1; } else { return acc; }
     }, 0);
 
 
     return (
         <>
-            <S.Header isDarkMode={Theme.DarkMode}>
-                <S.Box isDarkMode={Theme.DarkMode}><label>Data Inicial</label><S.Input value={initialDate} onChange={(e) => setinitialDate(e.target.value)} isDarkMode={Theme.DarkMode} type="date"></S.Input ></S.Box>
-                <S.Box isDarkMode={Theme.DarkMode}><label>Data Final</label><S.Input value={finalDate} onChange={(e) => SetfinalDate(e.target.value)} isDarkMode={Theme.DarkMode} type="date"></S.Input></S.Box>
-                <S.Button onClick={searchDeliveries}><FaSearch size="13" /></S.Button>
-            </S.Header>
             <S.Container isDarkMode={Theme.DarkMode}>
-                <Box sx={{ width: '100%' }}>
+                <S.Header isDarkMode={Theme.DarkMode}>
+                    <S.Box isDarkMode={Theme.DarkMode}><label>Data Inicial</label><S.Input value={initialDate} onChange={(e) => setinitialDate(e.target.value)} isDarkMode={Theme.DarkMode} type="date"></S.Input ></S.Box>
+                    <S.Box isDarkMode={Theme.DarkMode}><label>Data Final</label><S.Input value={finalDate} onChange={(e) => SetfinalDate(e.target.value)} isDarkMode={Theme.DarkMode} type="date"></S.Input></S.Box>
+                    <S.Button onClick={searchDeliveries}><FaSearch size="13" /></S.Button>
+                </S.Header>
+
+                <Box sx={{ width: '100%', backgroundColor: '#fff', borderRadius: 5, boxShadow: 'rgba(58, 53, 65, 0.1) 0px 2px 10px 0px' }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange} >
                             <Tab label={isLess900 ? '' : `Pendentes (${countPending})`} title='Pendentes' sx={{ minWidth: '33.33%', borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<AiOutlineClockCircle size={20} />} iconPosition='start' />

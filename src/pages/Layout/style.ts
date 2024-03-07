@@ -1,23 +1,28 @@
 import styled from "styled-components";
 
 interface DarkModeProps {
-    isDarkMode:Boolean;
+    isDarkMode: Boolean;
 }
 
 export const Div = styled.div<DarkModeProps> `
     background-color:  ${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
-    color: ${props => (props.isDarkMode ? 'white' : '')};
-    .ListItemText{
-        font-family: 'Poppins' !important;
+    color: ${props => (props.isDarkMode ? 'white' : 'rgb(54, 65, 82);')};
+ 
+    .ListItem,
+    .SelectedItem {
+    border-radius: 12px;
+    margin: 5px 5px;
+    max-width: 92%;
+    &:hover {
+        background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : 'rgb(237, 231, 246)')};
+        color: rgb(94, 53, 177);
     }
-    .Icons{
-        color: ${props => (props.isDarkMode ? 'var(--iconDarkMode)' : '')};
     }
-    .ListItem{
-        &:hover{
-            background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '')};
-        }
-    }
+
+    .SelectedItem {
+    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : 'rgb(237, 231, 246)')};
+    color: rgb(94, 53, 177);
+    } 
 `
 
 export const DivSwitch = styled.div<DarkModeProps> `
@@ -34,13 +39,13 @@ export const DivSwitch = styled.div<DarkModeProps> `
 export const ButtonRetract = styled.button <DarkModeProps>`
 
     border:${props => (props.isDarkMode ? '1px solid #2b2c2e' : '1px solid #e0e0e0')}; 
-    background-color:${props => (props.isDarkMode ? '#1e1f20' :'#EDE7F6')};
+    background-color:${props => (props.isDarkMode ? '#1e1f20' : '#EDE7F6')};
     border-left:none;
     height:120px;
     padding: 0;
     border-radius: 0px 7px 7px 0px;
     &:hover{
-        background-color:${props => (props.isDarkMode ? '#3a3a3e' :'#edf4fb')} ;
+        background-color:${props => (props.isDarkMode ? '#3a3a3e' : '#edf4fb')} ;
         box-shadow: rgba(58, 53, 65, 0.1) 0px 2px 30px 0px;
     }
      @media screen and (max-width:600px) {
@@ -49,7 +54,7 @@ export const ButtonRetract = styled.button <DarkModeProps>`
 
 `
 
-export const DivCashierStatus = styled.div `
+export const DivCashierStatus = styled.div`
     background: var(--Green);
     width: max-content;
     border-radius: 5px;
@@ -60,5 +65,5 @@ export const DivCashierStatus = styled.div `
 
 export const BNameLogo = styled.b <DarkModeProps>`
     font-size: 25px;
-    color: ${props=>(props.isDarkMode ? '#FFF' : '')}
+    color: ${props => (props.isDarkMode ? '#FFF' : '')}
 `
