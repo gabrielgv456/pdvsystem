@@ -154,7 +154,7 @@ export const Deliveries = () => {
                     <S.Button onClick={searchDeliveries}><FaSearch size="13" /></S.Button>
                 </S.Header>
 
-                <Box sx={{ width: '100%', backgroundColor: '#fff', borderRadius: 5, boxShadow: 'rgba(58, 53, 65, 0.1) 0px 2px 10px 0px' }}>
+                <Box sx={{ width: '100%', backgroundColor: Theme.DarkMode ? 'var(--backgroundDarkMode)': '#fff', borderRadius: 5, boxShadow: 'rgba(58, 53, 65, 0.1) 0px 2px 10px 0px' }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange} >
                             <Tab label={isLess900 ? '' : `Pendentes (${countPending})`} title='Pendentes' sx={{ minWidth: '33.33%', borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<AiOutlineClockCircle size={20} />} iconPosition='start' />

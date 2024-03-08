@@ -49,7 +49,7 @@ body {
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)!important' : '#fff')}; 
+    background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode)!important' : '#fff')}; 
     
   }
 

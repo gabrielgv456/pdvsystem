@@ -78,9 +78,8 @@ export default function LayoutDefault(props: Props) {
     <S.Div isDarkMode={Theme.DarkMode}   >
       <Toolbar >
         <Typography sx={{ margin: '0 auto' }} variant="h6" noWrap component="div">
-          {auth.user?.urlLogo ?
-            <img style={{ maxHeight: 50, maxWidth: 170 }} src={auth.user.urlLogo} /> :
-            auth.user?.name}
+
+          <img src={logo} style={{ width: 'auto', maxHeight: 75 }} />
 
         </Typography>
       </Toolbar>
@@ -127,7 +126,7 @@ export default function LayoutDefault(props: Props) {
         </S.ButtonRetract>
         :
         <S.ButtonRetract
-          onClick={() => setdrawerWidth(240)}
+          onClick={() => setdrawerWidth(260)}
           style={{
             position: 'fixed',
             left: '0',
@@ -138,16 +137,20 @@ export default function LayoutDefault(props: Props) {
           <IoMdArrowRoundForward color="var(--AppBar)" size="14" />
         </S.ButtonRetract>
       }
+      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-
-
-      <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : '', width: '60%', margin: '0 auto' }} />
-      <div style={{ display: 'flex', gap: '2px', width: "100%", justifyContent: 'center', flexDirection: 'column', alignItems: 'center', margin: '2.5rem 0 1rem 0' }}>
-
-        <S.BNameLogo isDarkMode={Theme.DarkMode}>Safyra®</S.BNameLogo>
-        <img src={logo} style={{ width: 120, height: 75 }} />
+        A serviço de:
+        {auth.user?.urlLogo ?
+          <img style={{ maxHeight: 50, maxWidth: 170 }} src={auth.user.urlLogo} /> :
+          auth.user?.name}
 
       </div>
+
+
+
+      {/* <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--backgroundDarkMode2)' : '', width: '60%', margin: '0 auto' }} /> */}
+
+
       <S.DivSwitch isDarkMode={Theme.DarkMode}>
         <BiSun color="#727272" />
         <Switch checked={Theme.DarkMode} onChange={e => Theme.setDarkMode(e.target.checked)} sx={{ display: 'flex' }} />
@@ -170,6 +173,7 @@ export default function LayoutDefault(props: Props) {
           ml: { sm: `${drawerWidth}px` },
           backgroundColor: Theme.DarkMode ? 'var(--backgroundDarkMode)' : '#fff',
           boxShadow: 'none',
+          transition: 'width 0.7s ease',
           //borderBottom: '1px solid var(--AppBar)',
           color: '#000'
         }}
@@ -185,7 +189,7 @@ export default function LayoutDefault(props: Props) {
             <MenuIcon />
           </IconButton>
 
-          <Typography variant="h6" noWrap component="div" display="flex" >
+          <Typography style={{color:'#fff'}}variant="h6" noWrap component="div" display="flex" >
             {actualPage}
           </Typography>
           {/* <S.DivCashierStatus>
@@ -201,7 +205,7 @@ export default function LayoutDefault(props: Props) {
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ transition: 'width 0.7s ease', width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -237,7 +241,7 @@ export default function LayoutDefault(props: Props) {
         </Drawer>
       </Box>
       <div
-        style={{ flexGrow: 1, width: `calc(100% - ${drawerWidth}px)` }}
+        style={{ transition: 'width 0.7s ease', flexGrow: 1, width: `calc(100% - ${drawerWidth}px)` }}
       >
         <Toolbar />
         <Outlet />
