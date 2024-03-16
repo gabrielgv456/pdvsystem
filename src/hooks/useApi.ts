@@ -6,6 +6,7 @@ import { typeSetPaymentsonDelivery } from '../pages/Deliveries/components/tables
 import { typeChangeForgotPassword } from '../pages/Login/Modals/validateEmail';
 import { typeReqChangeFiscalParameters } from '../pages/Settings/tabs/FiscalParameters/interfaces';
 import { addEditProductDataSend } from '../pages/InventoryManagement/Modals/AddEditProduct/interfaces';
+import { uploadImageType } from '../components/uploadImage/interfaces';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -45,7 +46,7 @@ export const useApi = () => ({
         return response.data
     },
     findProducts: async (userId: number) => {
-        const response = await api.post('/products', { userId })
+        const response = await api.get('/products', { params: { userId } })
         return response.data
     },
     findSells: async (datafindSells: object) => {
@@ -78,6 +79,10 @@ export const useApi = () => ({
     },
     deleteSell: async (dataDeleteSell: object) => {
         const response = await api.post('/deletesell', { dataDeleteSell })
+        return response.data
+    },
+    findProductsToSell: async (userId: number) => {
+        const response = await api.get('/productsToSell', { params: { userId } })
         return response.data
     },
     findSellers: async (userId: number) => {
@@ -182,12 +187,18 @@ export const useApi = () => ({
         const response = await api.post('/setPaymentonDelivery', { dataSetPaymentsonDelivery })
         return response.data
     },
-    uploadFile: async (file: FormData, idUser: number) => {
-        const response = await api.post(`/uploadFile?idStore=${idUser}&url=${process.env.REACT_APP_API}`, file, {
+    uploadFile: async (file: FormData, params: uploadImageType) => {
+        const response = await api.post(`/uploadFile`, file, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+            }, params: {
+                ...params
             }
         })
+        return response.data
+    },
+    deleteFile: async (imageId: number, userId: number) => {
+        const response = await api.delete('/deleteFile', { params: { imageId, userId } })
         return response.data
     },
     deleteLogo: async (idUser: number) => {

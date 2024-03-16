@@ -17,7 +17,7 @@ export const TabMyProfile = () => {
     const [nameCorporation, setNameCorporation] = useState('')
     const [cnpjCorporation, setCnpjCorporation] = useState('')
     const [emailCorporation, setEmailCorporation] = useState('')
-    const [ieCorporation,setIeCorporation] = useState('')
+    const [ieCorporation, setIeCorporation] = useState('')
     const [phoneNumberCorporation, setPhoneNumberCorporation] = useState('')
     const [cellNumberCorporation, setCellNumberCorporation] = useState('')
     const [adressCepCorporation, setAdressCepCorporation] = useState('')
@@ -73,7 +73,7 @@ export const TabMyProfile = () => {
             setSelectedImage(imageLogo);
             const formData = new FormData();
             formData.append('file', imageLogo);
-            const result = await uploadFile(formData, auth.idUser)
+            const result = await uploadFile(formData, { 'userId': auth.idUser, owner: 'local', host: process.env.REACT_APP_API ?? '' })
             if (!result.Success) {
                 throw new Error('Sem sucesso ao atualizar o arquivo! ' + result.erro)
             }
@@ -81,8 +81,8 @@ export const TabMyProfile = () => {
                 auth.setUser({ ...auth.user, urlLogo: result.url })
             }
             MessageBox('success', 'Arquivo atualizado com sucesso! ')
-        } catch (error: any) {
-            MessageBox('warning', error.message)
+        } catch (error) {
+            MessageBox('warning', (error as Error).message)
         }
     }
 
@@ -96,8 +96,8 @@ export const TabMyProfile = () => {
                 auth.setUser({ ...auth.user, urlLogo: '' })
             )
             MessageBox('success', 'Logo exclusa com sucesso!')
-        } catch (error: any) {
-            MessageBox('error', error.message)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
         }
     }
 
@@ -123,8 +123,8 @@ export const TabMyProfile = () => {
                 setAdressCityCorporation(resultAboutCorporation.adressCity)
                 setAdressStateCorporation(resultAboutCorporation.adressState)
                 setFantasyNameCorporation(resultAboutCorporation.fantasyName)
-            } catch (error: any) {
-                MessageBox('warning', error.message)
+            } catch (error) {
+                MessageBox('warning', (error as Error).message)
             }
 
         }
@@ -150,8 +150,8 @@ export const TabMyProfile = () => {
             setNewPass('')
             setActualPass('')
             setConfirmNewPass('')
-        } catch (error: any) {
-            MessageBox('error', error.message)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
         }
     }
     async function handleChangeAboutCorporation() {
@@ -165,8 +165,8 @@ export const TabMyProfile = () => {
                 auth.setUser({ ...auth.user, ...newUser })
             }
             MessageBox('success', 'Dados atualizados com sucesso!')
-        } catch (error: any) {
-            MessageBox('error', error.message)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
         }
     }
 
@@ -184,7 +184,7 @@ export const TabMyProfile = () => {
         adressCity: adressCityCorporation === '' ? null : adressCityCorporation,
         adressState: adressStateCorporation === '' ? null : adressStateCorporation,
         fantasyName: fantasyNameCorporation === '' ? null : fantasyNameCorporation,
-        ie : ieCorporation === '' ? null : ieCorporation
+        ie: ieCorporation === '' ? null : ieCorporation
     }
 
     const finalDataChangePass = {
@@ -211,8 +211,8 @@ export const TabMyProfile = () => {
                     setAdressStateCorporation(data.uf)
                 }
             }
-            catch (error: any) {
-                MessageBox('info', error.message)
+            catch (error) {
+                MessageBox('info', (error as Error).message)
             }
         }
 

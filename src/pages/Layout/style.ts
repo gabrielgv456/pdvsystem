@@ -6,7 +6,7 @@ interface DarkModeProps {
 
 export const Div = styled.div<DarkModeProps> `
     background-color:  ${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
-    color: ${props => (props.isDarkMode ? 'white' : 'rgb(54, 65, 82);')};
+    color: ${props => (props.isDarkMode ? 'white' : 'var(--Gray)')};
     transition: width 0.5s ease;
     .ListItem,
     .SelectedItem {

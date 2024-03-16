@@ -90,8 +90,8 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                     })
                 }
             }
-            catch (error: any) {
-                MessageBox('info', error.message)
+            catch (error) {
+                MessageBox('info', (error as Error).message)
             }
         }
 
@@ -145,8 +145,8 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                 throw new Error(data.erro)
             }
         }
-        catch (error: any) {
-            MessageBox('error', `Falha ao ${props.type === 'add' ? 'adicionar' : (props.type === 'edit' && 'editar')} cliente! ` + error.message)
+        catch (error) {
+            MessageBox('error', `Falha ao ${props.type === 'add' ? 'adicionar' : (props.type === 'edit' && 'editar')} cliente! ` + (error as Error).message)
         }
     }
 

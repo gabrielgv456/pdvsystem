@@ -11,6 +11,7 @@ import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/Mess
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { FormatChangePercent, FormatCurrencytoFloatdb, FormatPercent, currencyFormat, currencyRemoveNotNumbers, percentFormatIntl, removeNotNumerics, strTofixed2Float } from '../../../../../../utils/utils';
 import { addEditProductDataPrincipal } from '../../saveProduct/interfaces';
+import { UploadImage } from '../../../../../../components/uploadImage/uploadImage';
 
 export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
 
@@ -22,8 +23,6 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
     const optionsUnitMeasurement = ['UN']
     const [ncmCode, setNcmCode] = useState<type.ncmType | null>(null)
     const [optionsNCM, setOptionsNCM] = useState<type.ncmType[]>([])
-    const [dragOver, setDragOver] = useState(false);
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
     function handleChangeData<T extends keyof addEditProductDataPrincipal>(
         property: T, value: addEditProductDataPrincipal[T]) {
@@ -38,7 +37,6 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
         })
     }
 
-
     useEffect(() => {
         async function searchNCM() {
             try {
@@ -49,8 +47,8 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                 setOptionsNCM(dataFindNCM.ncmList)
                 setNcmCode(dataFindNCM.ncmList.find((item: type.ncmType) => item.Codigo === props.dataAddEditProduct.principal.ncmCode))
             }
-            catch (error: any) {
-                MessageBox('info', error.message)
+            catch (error) {
+                MessageBox('info', (error as Error).message)
             }
         }
 
@@ -66,8 +64,8 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                     setSelectedItemType(defaultOptionItemType)
                 }
             }
-            catch (error: any) {
-                MessageBox('info', error.message)
+            catch (error) {
+                MessageBox('info', (error as Error).message)
             }
         }
 
@@ -80,8 +78,8 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
         //         setOptionsCfop(dataFindCfop.findCfop)
         //         setSelectedCfop(dataFindCfop.findCfop.find((item: type.cfopType) => item.id === props.dataAddEditProduct.principal.cfopId))
         //     }
-        //     catch (error: any) {
-        //         MessageBox('info', error.message)
+        //     catch (error) {
+        //         MessageBox('info', (error as Error).message)
         //     }
         // }
 
@@ -129,59 +127,23 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
         handleChangeData('value', Number(newValueProduct))
     }
 
-
-    const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
-        event.preventDefault();
-        setDragOver(true);
-    };
-
-    const handleDragLeave = (event: DragEvent<HTMLLabelElement>) => {
-        event.preventDefault();
-        setDragOver(false);
-    };
-
-    const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
-        event.preventDefault();
-        setDragOver(false);
-
-        const file = event.dataTransfer.files[0];
-        setSelectedImage(file);
-        // Fazer chamada para API
-    };
-
-    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files && event.target.files[0];
-        setSelectedImage(file);
-        // Fazer chamada para API
-    };
     return (
 
         <S.DivModalAddProduct>
             <div style={{ width: '100%', gap: 20, alignItems: 'center', display: 'flex' }}>
-
-                <S.labelChangeImg
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    dragOver={dragOver}>
-                    <input type='file' onChange={handleFileChange} style={{ display: 'none' }} />
-                    {selectedImage ?
-                        <img alt='' style={{ width: 'auto', maxHeight: 100 }} src={URL.createObjectURL(selectedImage)}></img> :
-                        <>
-                            <AiOutlineCloudUpload size='30' />
-                            <label>Selecione ou arraste</label>
-                            uma imagem
-                        </>
-                    }
-                </S.labelChangeImg>
+                <UploadImage
+                    maxSize={1}
+                    url={props.dataAddEditProduct.principal.urlImage}
+                    idImage={props.dataAddEditProduct.principal.imageId}
+                    setIdImage={(newValue: number | null) => handleChangeData('imageId', newValue)}
+                />
                 <label>
                     Produto ativo
-                    <Switch checked={props.dataAddEditProduct.principal.active} onChange={(e) => { handleChangeData('active', (e.target.checked)) }} />
+                    <Switch
+                        checked={props.dataAddEditProduct.principal.active}
+                        onChange={(e) => { handleChangeData('active', (e.target.checked)) }}
+                    />
                 </label>
-
-                {/* REMOVE COMMENT TO ENABLE PICTURE PRODUCT */}
-
-
             </div>
 
             <TextField
@@ -310,7 +272,7 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                         label="Código NCM*"
                     />
                 } />
-            <Autocomplete
+            {/* <Autocomplete
                 value={selectedItemType}
                 onChange={(event: any, newValue: type.itemType | null) => {
                     setSelectedItemType(newValue);
@@ -329,7 +291,7 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                         label="CEST"
                     />
                 } />
-
+ */}
 
 
         </S.DivModalAddProduct >

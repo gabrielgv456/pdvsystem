@@ -55,8 +55,8 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
             if (!result.Success) throw new Error(result.Erro)
             props.searchDeliveries()
             MessageBox('success', 'Dados de entrega atualizados com sucesso!')
-        } catch (error: any) {
-            MessageBox('error', 'Falha ao atualizar dados de entrega! ' + error.message)
+        } catch (error) {
+            MessageBox('error', 'Falha ao atualizar dados de entrega! ' + (error as Error).message)
         }
     }
 
@@ -86,8 +86,8 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
                     }
                 }
             }
-            catch (error: any) {
-                MessageBox('info', error.message)
+            catch (error) {
+                MessageBox('info', (error as Error).message)
             }
         }
     }

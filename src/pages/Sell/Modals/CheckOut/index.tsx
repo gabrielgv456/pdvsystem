@@ -285,8 +285,8 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                 if (!valuesSelltoSendApi.delivery.addressState) throw new Error(`Estado obrigatório!`)
                 if (!valuesSelltoSendApi.delivery.addressStreet) throw new Error(`Rua obrigatória!`)
                 if (!valuesSelltoSendApi.delivery.scheduledDate) throw new Error(`Data de entrega obrigatória!`)
-            } catch (error: any) {
-                MessageBox('warning', error.message)
+            } catch (error) {
+                MessageBox('warning', (error as Error).message)
                 return
             }
         }
@@ -301,8 +301,8 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                         }
                         setisSellEnded(true)
                         setCodRefSell(data.codRef)
-                    } catch (error: any) {
-                        MessageBox('error', error.message)
+                    } catch (error) {
+                        MessageBox('error', (error as Error).message)
                     }
                 }
             }
@@ -316,8 +316,8 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                     }
                     setisSellEnded(true)
                     setCodRefSell(data.codRef)
-                } catch (error: any) {
-                    MessageBox('error', error.message)
+                } catch (error) {
+                    MessageBox('error', (error as Error).message)
                 }
             }
         }

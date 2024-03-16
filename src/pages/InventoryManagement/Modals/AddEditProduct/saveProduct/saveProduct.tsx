@@ -24,8 +24,8 @@ export const SaveProduct = (props: type.SaveProductProps) => {
             props.setisModalAddEditProductOpen(false)
             props.setisModalSucessOpen(true)
             props.setDataAddEditProduct(props.defaultDataEditProduct)
-        } catch (error: any) {
-            MessageBox('error', error.message)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
         }
     }
 
@@ -40,8 +40,8 @@ export const SaveProduct = (props: type.SaveProductProps) => {
             props.setisModalSucessOpen(true)
             props.setDataAddEditProduct(props.defaultDataEditProduct)
         }
-        catch (error: any) {
-            MessageBox('error', error.message)
+        catch (error) {
+            MessageBox('error', (error as Error).message)
         }
     }
 
@@ -59,17 +59,21 @@ export const SaveProduct = (props: type.SaveProductProps) => {
     return (
         <>
             <Divider />
-            <div style={{ display: 'flex', marginTop: 20, width: '100%', justifyContent: 'center' }}>
 
-                <DefaultButton selectedColor='--Green'>
-                    <MdFileDownloadDone size="22" />
-                    {props.type === 'Add' ?
-                        'Adicionar Produto'
-                        :
-                        'Editar Produto'
-                    }
-                </DefaultButton>
-            </div>
+            <div style={{ display: 'flex', marginTop: 20, width: '100%', justifyContent: 'center' }}>
+                {props.type === 'Add' ?
+                    <DefaultButton selectedColor='--Green' onClick={AddProductApi} >
+                        <MdFileDownloadDone size="22" />
+                        Adicionar Produto
+                    </DefaultButton>
+                    :
+                    <DefaultButton selectedColor='--Green' onClick={EditProductApi}>
+                        <MdFileDownloadDone size="22" />
+                        Editar Produto
+                    </DefaultButton>
+                }
+            </div> :
+
         </>
     )
 }

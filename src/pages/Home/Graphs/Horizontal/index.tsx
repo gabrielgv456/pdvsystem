@@ -35,8 +35,8 @@ export const HorizontalChart = (props: type.HorizontalChartProps) => {
                 if (!result.Success) { throw new Error(result.erro ?? '') }
                 props.setdataHorizontalChart(result.content)
             }
-            catch (error: any) {
-                MessageBox('warning', `Erro ao consultar dados do gráfico horizontal ${error.message}`)
+            catch (error) {
+                MessageBox('warning', `Erro ao consultar dados do gráfico horizontal ${(error as Error).message}`)
             }
         }
         SearchDatafindTopSellingProducts();

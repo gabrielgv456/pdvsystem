@@ -90,8 +90,8 @@ export const ModalDeliveryDone = (props: ModalDeliveryChangesProps) => {
                 props.searchDeliveries()
                 MessageBox('success', 'Entrega concluída com sucesso!')
             }
-        } catch (error: any) {
-            MessageBox('warning', 'Falha ao concluir entrega! ' + error.message)
+        } catch (error) {
+            MessageBox('warning', 'Falha ao concluir entrega! ' + (error as Error).message)
         }
     }
 

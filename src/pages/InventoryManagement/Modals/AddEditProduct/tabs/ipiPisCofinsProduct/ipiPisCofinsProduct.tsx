@@ -1,26 +1,56 @@
 import * as S from './style'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
+import { optionsType, searchOptions } from '../icmsProduct/interfaces';
+import { ipiPisCofinsProps, taxCofinsType } from './interfaces';
+import { addEditProductDataSend } from '../../interfaces';
+import { cpfCnpjFormat } from '../../../../../../utils/utils';
 
-export const TabIpiPisCofinsProduct = () => {
-    const [inputProductsModalQuantity, setinputProductsModalQuantity] = useState<number | null>(null)
-    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(null)
-    const options = ['teste']
+export const TabIpiPisCofinsProduct = (props: ipiPisCofinsProps) => {
+    function findOption<T extends keyof addEditProductDataSend, S extends keyof searchOptions, K extends keyof addEditProductDataSend[T]>(
+        property: T,
+        key: K,
+        option: S
+    ): optionsType | null {
+        if (!props.taxOptions) return null
+        const taxId = props.dataAddEditProduct[property][key]
+        const array: optionsType[] = props.taxOptions[option]
+        return array.find(
+            item => item.id === Number(taxId))
+            ?? null
+    }
+
+    function handleChangeTax<T extends keyof addEditProductDataSend, K extends keyof addEditProductDataSend[T]>(
+        property: T,
+        key: K,
+        value: addEditProductDataSend[T][K]
+    ) {
+        props.setDataAddEditProduct(prevState => {
+            return {
+                ...prevState,
+                [property]: {
+                    ...prevState[property],
+                    [key]: value,
+                },
+            };
+        });
+    }
+
 
     return (
         <S.Container>
             <S.SectionContainer>
                 <b style={{ display: 'flex', alignSelf: 'flex-start', flex: '1 1 100%' }}>IPI</b>
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={findOption('ipi', 'taxCstIpiExitId', 'cstIpiExitOptions')}
+                    onChange={(_event: any, newValue: optionsType | null) => {
+                        handleChangeTax('ipi', 'taxCstIpiExitId', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    options={props.taxOptions?.cstIpiExitOptions ?? []}
                     size='small'
+                    getOptionLabel={(option) => (option.description)}
                     sx={{ flex: '1 1 200px' }}
                     renderInput={(params) =>
                         <TextField
@@ -29,8 +59,8 @@ export const TabIpiPisCofinsProduct = () => {
                         />
                     } />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    value={props.dataAddEditProduct.ipi.taxAliquotIpi}
+                    onChange={(e) => handleChangeTax('ipi', 'taxAliquotIpi', Number(e.target.value))}
                     type="number"
                     id="outlined-basic"
                     label="Alíquota IPI(%)"
@@ -38,9 +68,8 @@ export const TabIpiPisCofinsProduct = () => {
                     variant="outlined"
                     sx={{ flex: '1 1 150px' }} />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
-                    type="number"
+                    value={props.dataAddEditProduct.ipi.taxClassificationClassIpi}
+                    onChange={(e) => handleChangeTax('ipi', 'taxClassificationClassIpi', e.target.value)}
                     size='small'
                     id="outlined-basic"
                     label="Classe Enquadramento IPI"
@@ -48,9 +77,8 @@ export const TabIpiPisCofinsProduct = () => {
                     sx={{ flex: '1 1 250px' }}
                 />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
-                    type="number"
+                    value={props.dataAddEditProduct.ipi.taxStampIpi}
+                    onChange={(e) => handleChangeTax('ipi', 'taxStampIpi', e.target.value)}
                     id="outlined-basic"
                     size='small'
                     label="Selo IPI"
@@ -58,8 +86,8 @@ export const TabIpiPisCofinsProduct = () => {
                     sx={{ flex: '1 1 120px' }}
                 />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    value={props.dataAddEditProduct.ipi.taxQtdStampControlIpi}
+                    onChange={(e) => handleChangeTax('ipi', 'taxQtdStampControlIpi', Number(e.target.value))}
                     type="number"
                     size='small'
                     id="outlined-basic"
@@ -68,8 +96,8 @@ export const TabIpiPisCofinsProduct = () => {
                     sx={{ flex: '1 1 190px' }}
                 />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    value={props.dataAddEditProduct.ipi.taxCodEnquadLegalIpi}
+                    onChange={(e) => handleChangeTax('ipi', 'taxCodEnquadLegalIpi', e.target.value)}
                     type="number"
                     size='small'
                     id="outlined-basic"
@@ -78,9 +106,8 @@ export const TabIpiPisCofinsProduct = () => {
                     sx={{ flex: '1 1 240px' }}
                 />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
-                    type="number"
+                    value={props.dataAddEditProduct.ipi.taxCnpjProd}
+                    onChange={(e) => handleChangeTax('ipi', 'taxCnpjProd', cpfCnpjFormat(e.target.value))}
                     size='small'
                     id="outlined-basic"
                     label="CNPJ Produtor Mercadoria"
@@ -88,14 +115,15 @@ export const TabIpiPisCofinsProduct = () => {
                     sx={{ flex: '1 1 240px' }}
                 />
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={findOption('ipi', 'taxCstIpiEntranceId', 'cstIpiEntranceOptions')}
+                    onChange={(_event: any, newValue: optionsType | null) => {
+                        handleChangeTax('ipi', 'taxCstIpiEntranceId', newValue?.id ?? null)
                     }}
-                    size='small'
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    options={props.taxOptions?.cstIpiEntranceOptions ?? []}
+                    getOptionLabel={(option) => (option.description)}
+                    size='small'
                     sx={{ flex: '1 1 200px' }}
                     renderInput={(params) =>
                         <TextField
@@ -110,13 +138,14 @@ export const TabIpiPisCofinsProduct = () => {
 
                 <b style={{ display: 'flex', alignSelf: 'flex-start', flex: '1 1 100%' }}>PIS</b>
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={findOption('pis', 'taxCstPisExitId', 'cstPisExitOptions')}
+                    onChange={(_event: any, newValue: optionsType | null) => {
+                        handleChangeTax('pis', 'taxCstPisExitId', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    options={props.taxOptions?.cstPisExitOptions ?? []}
+                    getOptionLabel={(option) => (option.description)}
                     size='small'
                     sx={{ flex: '1 1 180px' }}
 
@@ -127,8 +156,8 @@ export const TabIpiPisCofinsProduct = () => {
                         />
                     } />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    value={props.dataAddEditProduct.pis.taxAliquotPisExit}
+                    onChange={(e) => handleChangeTax('pis', 'taxAliquotPisExit', Number(e.target.value))}
                     type="number"
                     id="outlined-basic"
                     size='small'
@@ -136,13 +165,14 @@ export const TabIpiPisCofinsProduct = () => {
                     variant="outlined"
                     sx={{ flex: '1 1 180px' }} />
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={findOption('pis', 'taxCstPisEntranceId', 'cstPisExitOptions')}
+                    onChange={(_event: any, newValue: optionsType | null) => {
+                        handleChangeTax('pis', 'taxCstPisEntranceId', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
+                    getOptionLabel={(option) => (option.description)}
                     id="controllable-states-demo"
-                    options={options}
+                    options={props.taxOptions?.cstPisEntranceOptions ?? []}
                     size='small'
                     sx={{ flex: '1 1 180px' }}
 
@@ -153,8 +183,8 @@ export const TabIpiPisCofinsProduct = () => {
                         />
                     } />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    value={props.dataAddEditProduct.pis.taxAliquotPisEntrance}
+                    onChange={(e) => handleChangeTax('pis', 'taxAliquotPisEntrance', Number(e.target.value))}
                     type="number"
                     size='small'
                     id="outlined-basic"
@@ -166,13 +196,14 @@ export const TabIpiPisCofinsProduct = () => {
             <S.SectionContainer>
                 <b style={{ display: 'flex', alignSelf: 'flex-start', width: '100%' }}>COFINS</b>
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={findOption('cofins', 'taxCstCofinsExitId', 'cstCofinsExitOptions')}
+                    onChange={(_event: any, newValue: optionsType | null) => {
+                        handleChangeTax('cofins', 'taxCstCofinsExitId', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
-                    options={options}
+                    getOptionLabel={(option) => (option.description)}
+                    options={props.taxOptions?.cstCofinsExitOptions ?? []}
                     size='small'
                     sx={{ flex: '1 1 180px' }}
 
@@ -183,8 +214,8 @@ export const TabIpiPisCofinsProduct = () => {
                         />
                     } />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    value={props.dataAddEditProduct.cofins.taxAliquotCofinsExit}
+                    onChange={(e) => handleChangeTax('cofins', 'taxAliquotCofinsExit', Number(e.target.value))}
                     type="number"
                     id="outlined-basic"
                     size='small'
@@ -192,13 +223,14 @@ export const TabIpiPisCofinsProduct = () => {
                     variant="outlined"
                     sx={{ flex: '1 1 230px' }} />
                 <Autocomplete
-                    value={inputvalueProduct}
-                    onChange={(event: any, newValue: string | null) => {
-                        setinputvalueProduct(newValue);
+                    value={findOption('cofins', 'taxCstCofinsEntranceId', 'cstCofinsEntranceOptions')}
+                    onChange={(_event: any, newValue: optionsType | null) => {
+                        handleChangeTax('cofins', 'taxCstCofinsEntranceId', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
+                    getOptionLabel={(option) => (option.description)}
                     id="controllable-states-demo"
-                    options={options}
+                    options={props.taxOptions?.cstCofinsEntranceOptions ?? []}
                     size='small'
                     sx={{ flex: '1 1 200px' }}
 
@@ -209,8 +241,8 @@ export const TabIpiPisCofinsProduct = () => {
                         />
                     } />
                 <TextField
-                    value={inputProductsModalQuantity}
-                    onChange={(e) => setinputProductsModalQuantity(Number(e.target.value))}
+                    value={props.dataAddEditProduct.cofins.taxAliquotCofinsEntrance}
+                    onChange={(e) => handleChangeTax('cofins', 'taxAliquotCofinsEntrance', Number(e.target.value))}
                     type="number"
                     size='small'
                     id="outlined-basic"

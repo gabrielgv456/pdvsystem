@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import { useApi } from "../../hooks/useApi";
 import { User } from "../../types/User";
 import { AuthContext } from "./AuthContext";
+import { useMessageBoxContext } from "../MessageBox/MessageBoxContext";
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const [user, setUser] = useState<User | null>(null);
     const [idUser, setidUser] = useState(0)
     const [isUserValid, setUserValid] = useState(false)
     const [masterkey, setmasterkey] = useState("")
-    const [codEmailValidate,setCodEmailValidate] = useState("")
+    const [codEmailValidate, setCodEmailValidate] = useState("")
     const api = useApi();
     const [isLoading, setIsLoading] = useState(true)
-
+    const { MessageBox } = useMessageBoxContext()
     useEffect(() => {
         const validateToken = async () => {
             setIsLoading(true)
@@ -40,7 +41,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }, []);
 
     const signin = async (email: string, password: string) => {
-        const data = await api.signin(email, password);  
+        const data = await api.signin(email, password);
         if (data.user && data.token) {
             setCodEmailValidate(data.user.codEmailValidate)
             setidUser(data.user.id)
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 return 'invalidMail'
             } else {
                 setUser(data.user);
-                setToken(data.token);       
+                setToken(data.token);
                 setmasterkey(data.user.masterkey)
                 setUserValid(true)
                 return 'true';
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, idUser, signin, signout, isUserValid, masterkey, isLoading, codEmailValidate,setUser }}>
+        <AuthContext.Provider value={{ user, idUser, signin, signout, isUserValid, masterkey, isLoading, codEmailValidate, setUser }}>
             {children}
         </AuthContext.Provider>
     );

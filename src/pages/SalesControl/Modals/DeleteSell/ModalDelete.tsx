@@ -76,8 +76,8 @@ export const ModalDelete = (props: ModalDeleteProps) => {
             } else if (!data.Success) {
                 throw new Error('Falha ao realizar estorno! ' + data.erro)
             }
-        } catch (error: any) {
-            MessageBox('error', error.message)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
         }
 
     }

@@ -48,8 +48,8 @@ export const TabFiscalParameters = () => {
             setSelectedCstCofinsOptions(result.cstCofinsOptions.find((item: type.typeOptions) => item.id === result.fiscalParameters.taxCstCofinsId) ?? null)
             setSelectedCstPisOptions(result.cstPisOptions.find((item: type.typeOptions) => item.id === result.fiscalParameters.taxCstPisId) ?? null)
             setSelectedRegimeOptions(result.regimeOptions.find((item: type.typeOptions) => item.id === result.fiscalParameters.taxRegimeId) ?? null)
-        } catch (error: any) {
-            MessageBox('error', 'Falha ao obter dados fiscais! ' + error.message)
+        } catch (error) {
+            MessageBox('error', 'Falha ao obter dados fiscais! ' + (error as Error).message)
         }
     }
     async function reqChangeFiscalParameters() {
@@ -57,8 +57,8 @@ export const TabFiscalParameters = () => {
             const result = await changeFiscalParameters({ ...fiscalParameters, storeId: idUser })
             if (!result.Success) { throw new Error(result.Erro ?? '') }
             MessageBox('success', 'Atualizado com sucesso!')
-        } catch (error: any) {
-            MessageBox('error', 'Falha ao atualizar os dados fiscais! ' + error.message)
+        } catch (error) {
+            MessageBox('error', 'Falha ao atualizar os dados fiscais! ' + (error as Error).message)
         }
     }
     function handleSelectCrtOptions(newValue: type.typeOptions | null) {

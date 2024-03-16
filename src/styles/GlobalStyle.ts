@@ -19,7 +19,8 @@ export const GlobalStyle = createGlobalStyle<DarkModeProps>`
     --Red: #ff0000;
     --Gold : gold;
     --Orange: #f1b445;
-    --Pink:#e96090
+    --Pink:#e96090;
+    --Gray: rgb(54, 65, 82);
 }
 
 

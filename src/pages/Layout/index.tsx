@@ -189,16 +189,16 @@ export default function LayoutDefault(props: Props) {
             <MenuIcon />
           </IconButton>
 
-          <Typography style={{color:'#fff'}}variant="h6" noWrap component="div" display="flex" >
+          {/* <Typography style={{color:'#fff'}}variant="h6" noWrap component="div" display="flex" >
             {actualPage}
-          </Typography>
+          </Typography> */}
           {/* <S.DivCashierStatus>
             Caixa aberto
           </S.DivCashierStatus> */}
           {auth.user &&
             <PowerSettingsNewIcon
               onClick={handleLogout}
-              sx={{ position: 'absolute', right: 20, cursor: 'pointer', '&:hover': { color: 'firebrick' } }} />}
+              sx={{ position: 'absolute', right: 20, cursor: 'pointer', color: Theme.DarkMode ? '#fff' : 'var(--Gray)', '&:hover': { color: 'firebrick' } }} />}
 
 
         </Toolbar>

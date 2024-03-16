@@ -38,6 +38,9 @@ export function ListSell(props: ListSellProps) {
                <S.ButtonRemove title='Remover um item' onClick={ItemRemove}><S.IconRemoveItem /></S.ButtonRemove>
                : ''}
          </S.DivButtonsAddRemove>
+         {props.item.urlImage &&
+            <img src={props.item.urlImage} style={{ width: 'auto', maxHeight: 30 }} />
+         }
          <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.name}</S.LabelItem>
          <div style={{ display: 'flex', minWidth: 'min-content', alignItems: 'center', flexDirection: 'column' }}>
             <S.LabelValue applyDiscount={props.item.discountValue}>

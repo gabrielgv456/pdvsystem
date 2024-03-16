@@ -1,9 +1,13 @@
 import { addEditProductDataPrincipal } from "./Modals/AddEditProduct/saveProduct/interfaces";
 import { TaxIcmsNfceType, TaxIcmsNfeType, TaxIcmsNoPayerType, TaxIcmsSTType } from "./Modals/AddEditProduct/tabs/icmsProduct/interfaces";
+import { taxCofinsType, taxIpiType, taxPisType } from "./Modals/AddEditProduct/tabs/ipiPisCofinsProduct/interfaces";
 
 type editFields = {
   deliveries: [{ itemSell: { quantity: number } }]
   taxIcms: TaxIcms[]
+  taxIpi: taxIpiType[]
+  taxCofins: taxCofinsType[]
+  taxPis: taxPisType[]
   created_at: Date
   totalValue: number
 }
@@ -31,6 +35,6 @@ type TaxIcms = {
   taxIcmsNfce: TaxIcmsNfceType[];
   taxIcmsNfe: TaxIcmsNfeType[];
   taxIcmsNoPayer: TaxIcmsNoPayerType[];
-  TaxIcmsST: TaxIcmsSTType[]
+  taxIcmsSt: TaxIcmsSTType[]
   taxIcmsOrigin: TaxIcmsOrigin;
 };  

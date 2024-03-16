@@ -45,16 +45,15 @@ export function cpfCnpjFormat(text: string | null, max?: string, onlyCpf: boolea
   if (!text) { return '' }
   const localMax = text
   const cpfCnpj = removeNotNumerics(text)
-  return text.replace(/\D/g, '').length === 11 ?
-    cpfCnpj
-      .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
-    : text.replace(/\D/g, '').length === 14 ?
-      cpfCnpj
-        .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "$1.$2.$3/$4-$5")
-      : cpfCnpj.length > 14 ?
-        (max ?? localMax)
-        :
-        onlyCpf ? (max ?? localMax) : cpfCnpj
+  return (
+    cpfCnpj.length === 11 ?
+      cpfCnpj.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4") :
+      cpfCnpj.length === 14 ?
+        cpfCnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "$1.$2.$3/$4-$5") :
+        cpfCnpj.length > 14 ?
+          (max ?? localMax)
+          :
+          onlyCpf ? (max ?? localMax) : cpfCnpj)
 }
 
 export function currencyFormat(value: number | null) {

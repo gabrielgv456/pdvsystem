@@ -93,8 +93,8 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                     setvalueInputSellerAdressState(data.uf)
                 }
             }
-            catch (error: any) {
-                MessageBox('info', error.message)
+            catch (error) {
+                MessageBox('info', (error as Error).message)
             }
         }
 
@@ -133,8 +133,8 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
             if (props.handleChangeSeller) props.handleChangeSeller(data.dataSeller)
             eraseValues()
         }
-        catch (error: any) {
-            MessageBox('error', 'Falha ao adicionar vendedor! ' + error.message)
+        catch (error) {
+            MessageBox('error', 'Falha ao adicionar vendedor! ' + (error as Error).message)
         }
     }
 

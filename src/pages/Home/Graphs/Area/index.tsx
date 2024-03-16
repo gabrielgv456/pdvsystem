@@ -45,8 +45,8 @@ export const AreaChart = (props: type.AreaChartProps) => {
                     MessageBox('warning', `Houve uma falha ao consultar dados do banco de dados: ${dataAreaChart.erro}`)
                 }
             }
-            catch (error: any) {
-                MessageBox('warning', `Erro ao realizar requisição do gráfico de area ${error.message}`)
+            catch (error) {
+                MessageBox('warning', `Erro ao realizar requisição do gráfico de area ${(error as Error).message}`)
             }
 
         }

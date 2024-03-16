@@ -48,8 +48,8 @@ export const Login = () => {
             }
             setTypeValidateMail('newPass')
             setIsModalValidateEmailOpen(true)
-        } catch (error: any) {
-            MessageBox('warning', error.message)
+        } catch (error) {
+            MessageBox('warning', (error as Error).message)
         }
     }
 
@@ -117,8 +117,8 @@ export const Login = () => {
                     MessageBox('error', "Dados incorretos, verifique seu e-mail ou senha !");
                 }
             }
-            catch (error: any) {
-                MessageBox('warning', "Falha de conexão com servidor remoto" + error.message)
+            catch (error) {
+                MessageBox('warning', "Falha de conexão com servidor remoto" + (error as Error).message)
             }
         }
     }

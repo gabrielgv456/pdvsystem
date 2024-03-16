@@ -24,6 +24,12 @@ export type searchOptions = {
     modalityOptions: optionsType[]
     cfopNfceOptions: optionsType[]
     cfopNfceDevolutionOptions: optionsType[]
+    cstIpiEntranceOptions: optionsType[],
+    cstIpiExitOptions: optionsType[],
+    cstPisEntranceOptions: optionsType[],
+    cstPisExitOptions: optionsType[],
+    cstCofinsEntranceOptions: optionsType[],
+    cstCofinsExitOptions: optionsType[]
 }
 
 export type selectedOptions = {

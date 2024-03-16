@@ -79,8 +79,8 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                     setvalueInputSellerAdressState(data.uf)
                 }
             }
-            catch (error: any) {
-                MessageBox('info', error.message)
+            catch (error) {
+                MessageBox('info', (error as Error).message)
             }
         }
 
@@ -122,8 +122,8 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                         MessageBox('error', data.erro)
                     }
                 }
-                catch (error: any) {
-                    MessageBox('error', `Falha ao enviar dados. ERRO:${error.message}`)
+                catch (error) {
+                    MessageBox('error', `Falha ao enviar dados. ERRO:${(error as Error).message}`)
                 }
             }
             else {
@@ -138,8 +138,8 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                             MessageBox('error', data.erro)
                         }
                     }
-                    catch (error: any) {
-                        MessageBox('error', `Falha ao enviar dados. ERRO:${error.message}`)
+                    catch (error) {
+                        MessageBox('error', `Falha ao enviar dados. ERRO:${(error as Error).message}`)
                     }
                 }
                 else {

@@ -26,8 +26,8 @@ export const MenuMui = (props: type.MenuMuiProps) => {
             propsItem.stateOption(propsItem.option)
             handleClose()
 
-        } catch (error: any) {
-            MessageBox('error', 'Ocorreu uma falha ao buscar informações ! ' + (error.message ?? ''))
+        } catch (error) {
+            MessageBox('error', 'Ocorreu uma falha ao buscar informações ! ' + ((error as Error).message ?? ''))
         }
     }
 

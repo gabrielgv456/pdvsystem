@@ -97,8 +97,8 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
             if (!data.Success) { throw new Error(data.erro) }
             setClientsReturnApi(data.findClients)
         }
-        catch (error: any) {
-            MessageBox('error', 'Falha ao consultar clientes! ' + error.message ?? '')
+        catch (error) {
+            MessageBox('error', 'Falha ao consultar clientes! ' + (error as Error).message ?? '')
         }
     }
 

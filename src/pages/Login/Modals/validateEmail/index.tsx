@@ -71,8 +71,8 @@ export const ModalValidateEmail = (props: validateEmailProps) => {
             } else {
                 throw new Error('Falha ao concluir validação de e-mail! ' + (dataValidateMail.erro ?? ''))
             }
-        } catch (error: any) {
-            MessageBox('error', error.message)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
         }
 
     }
@@ -96,8 +96,8 @@ export const ModalValidateEmail = (props: validateEmailProps) => {
             setIsChangePass(false)
             setInputCode('')
             setNewpass({ newPass: '', confirmNewPass: '' })
-        } catch (error: any) {
-            MessageBox('error', error.message)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
         }
     }
 

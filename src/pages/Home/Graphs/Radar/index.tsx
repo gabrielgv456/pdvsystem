@@ -40,8 +40,8 @@ export const RadarChart = (props: type.RadarChartProps) => {
                 else {
                     MessageBox('warning', `Erro ao consultar dados do gráfico radar! ${dataRadarChart.erro}`)
                 }
-            } catch (error: any) {
-                MessageBox('warning', `Erro ao consultar dados do gráfico radar! ${error.message}`)
+            } catch (error) {
+                MessageBox('warning', `Erro ao consultar dados do gráfico radar! ${(error as Error).message}`)
             }
         }
         searchDataRadarChart();

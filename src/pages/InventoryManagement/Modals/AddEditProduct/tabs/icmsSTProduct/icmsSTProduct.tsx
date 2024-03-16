@@ -90,7 +90,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                         />
                     } />
                 <Autocomplete
-                    value={findOption('taxRedBCICMSSt', 'modalityOptions')}
+                    value={findOption('taxModalityBCIdSt', 'modalityOptions')}
                     onChange={(_event: any, newValue: optionsType | null) => {
                         handleChangeTax('taxModalityBCIdSt', newValue?.id)
                     }}

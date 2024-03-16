@@ -26,4 +26,6 @@ export type addEditProductDataPrincipal = {
     cfopId: number | null
     unitMeasurement: string
     itemTypeId: number | null
+    imageId: number | null
+    urlImage: string | null
 }

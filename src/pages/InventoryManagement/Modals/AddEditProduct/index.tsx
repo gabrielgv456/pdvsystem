@@ -44,8 +44,8 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                 const response = await findIcmsOptions()
                 if (!response.Success) { throw new Error(response.erro) }
                 setIcmsOptions(response)
-            } catch (error: any) {
-                MessageBox('error', 'Falha ao buscar opções ICMS!' + (error.message ?? ''))
+            } catch (error) {
+                MessageBox('error', 'Falha ao buscar opções ICMS!' + ((error as Error).message ?? ''))
             }
         }
         searchOptions()
@@ -75,7 +75,9 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
             ncmCode: props.itemData?.ncmCode ?? null,
             itemTypeId: (props.itemData ? props.itemData.itemTypeId : null),
             cfopId: props.itemData?.cfopId ?? null,
-            unitMeasurement: props.itemData?.unitMeasurement ?? 'UN'
+            unitMeasurement: props.itemData?.unitMeasurement ?? 'UN',
+            imageId: props.itemData?.imageId ?? null,
+            urlImage: props.itemData?.urlImage ?? null
         },
         icms: {
             TaxIcms: {
@@ -104,14 +106,37 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                 taxRedBCICMS: (props.itemData?.taxIcms[0]?.taxIcmsNoPayer[0]?.taxRedBCICMS) ?? null,
             },
             TaxIcmsST: {
-                taxAliquotIcmsInner: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxRedBCICMSInner) ?? null,
-                taxCfopInterstateIdSt: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCfopInterstateIdSt) ?? null,
-                taxCfopStateIdSt: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCfopStateIdSt) ?? null,
-                taxCstIcmsStId: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCstIcmsStId) ?? null,
-                taxModalityBCIdSt: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCstIcmsStId) ?? null,
-                taxRedBCICMSInner: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCstIcmsStId) ?? null,
-                taxRedBCICMSSt: (props.itemData?.taxIcms[0]?.TaxIcmsST[0]?.taxCstIcmsStId) ?? null
+                taxAliquotIcmsInner: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxRedBCICMSInner) ?? null,
+                taxCfopInterstateIdSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCfopInterstateIdSt) ?? null,
+                taxCfopStateIdSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCfopStateIdSt) ?? null,
+                taxCstIcmsStId: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCstIcmsStId) ?? null,
+                taxMvaPauta: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxMvaPauta) ?? null,
+                taxModalityBCIdSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxModalityBCIdSt) ?? null,
+                taxRedBCICMSInner: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCstIcmsStId) ?? null,
+                taxRedBCICMSSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCstIcmsStId) ?? null
             }
+        },
+        cofins: {
+            taxAliquotCofinsEntrance: (props.itemData?.taxCofins[0]?.taxAliquotCofinsEntrance) ?? null,
+            taxAliquotCofinsExit: (props.itemData?.taxCofins[0]?.taxAliquotCofinsExit) ?? null,
+            taxCstCofinsEntranceId: (props.itemData?.taxCofins[0]?.taxCstCofinsEntranceId) ?? null,
+            taxCstCofinsExitId: (props.itemData?.taxCofins[0]?.taxCstCofinsExitId) ?? null
+        },
+        ipi: {
+            taxAliquotIpi: (props.itemData?.taxIpi[0]?.taxAliquotIpi) ?? null,
+            taxClassificationClassIpi: (props.itemData?.taxIpi[0]?.taxClassificationClassIpi) ?? null,
+            taxCnpjProd: (props.itemData?.taxIpi[0]?.taxCnpjProd) ?? null,
+            taxCodEnquadLegalIpi: (props.itemData?.taxIpi[0]?.taxCodEnquadLegalIpi) ?? null,
+            taxCstIpiEntranceId: (props.itemData?.taxIpi[0]?.taxCstIpiEntranceId) ?? null,
+            taxCstIpiExitId: (props.itemData?.taxIpi[0]?.taxCstIpiExitId) ?? null,
+            taxQtdStampControlIpi: (props.itemData?.taxIpi[0]?.taxQtdStampControlIpi) ?? null,
+            taxStampIpi: (props.itemData?.taxIpi[0]?.taxStampIpi) ?? null,
+        },
+        pis: {
+            taxAliquotPisEntrance: (props.itemData?.taxPis[0]?.taxAliquotPisEntrance) ?? null,
+            taxAliquotPisExit: (props.itemData?.taxPis[0]?.taxAliquotPisExit) ?? null,
+            taxCstPisEntranceId: (props.itemData?.taxPis[0]?.taxCstPisEntranceId) ?? null,
+            taxCstPisExitId: (props.itemData?.taxPis[0]?.taxCstPisExitId) ?? null,
         }
     }
 
@@ -171,7 +196,11 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                         />
                     </TabPanel>
                     <TabPanel value={value} index={3}>
-                        <TabIpiPisCofinsProduct />
+                        <TabIpiPisCofinsProduct
+                            dataAddEditProduct={dataAddEditProduct}
+                            setDataAddEditProduct={setDataAddEditProduct}
+                            taxOptions={icmsOptions}
+                        />
                     </TabPanel>
                 </div>
 

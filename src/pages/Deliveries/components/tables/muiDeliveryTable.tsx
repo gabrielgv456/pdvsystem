@@ -250,8 +250,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       props.searchDeliveries()
       MessageBox('success', `Status da(s) entrega(s) atualizado com sucesso! ${newStatus === 'Shipping' ? 'Roteiro Impresso' : ''}`)
       GeneratePDFDeliveryList(deliveriesFiltered, props.user?.name ?? '',auth.user)
-    } catch (error: any) {
-      MessageBox('error', 'Falha ao atualizar status da entrega! ' + error.message)
+    } catch (error) {
+      MessageBox('error', 'Falha ao atualizar status da entrega! ' + (error as Error).message)
     }
   }
 

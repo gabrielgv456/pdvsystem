@@ -50,8 +50,8 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                     }
                 }
             }
-            catch (error: any) {
-                MessageBox('info', error.message)
+            catch (error) {
+                MessageBox('info', (error as Error).message)
             }
         }
 

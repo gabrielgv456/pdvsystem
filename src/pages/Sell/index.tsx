@@ -10,6 +10,7 @@ import { useApi } from "../../hooks/useApi";
 import { RiAddCircleFill } from "react-icons/ri";
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import { ModalCheckOut, typesPayment } from "./Modals/CheckOut";
+import { Box } from "@mui/material";
 
 interface ProductsTypeReturnApi {
     id: number;
@@ -18,16 +19,12 @@ interface ProductsTypeReturnApi {
     active: boolean;
     quantity: number;
     cost: number;
+    urlImage: string | null
 
 }
-export interface ProductsTypeOptions {
-    id: number;
-    name: string;
-    value: number;
-    cost: number;
-    firstLetter: string;
+export type ProductsTypeOptions = ProductsTypeReturnApi & { firstLetter: string }
 
-}
+
 export interface ProductsType {
     name: string;
     id: number;
@@ -38,7 +35,8 @@ export interface ProductsType {
     initialCost: number,
     discountValue: number | null,
     discountPercent: number | null,
-    totalDiscount: number | null
+    totalDiscount: number | null,
+    urlImage: string | null
 };
 
 export interface MethodsType {
@@ -52,17 +50,17 @@ export const Sell = () => {
 
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
-    const { findProducts, } = useApi();
+    const { findProductsToSell } = useApi();
     const [Products, setProducts] = useState<ProductsTypeReturnApi[]>([])
     const [NoFilteredProducts, setNoFilteredProducts] = useState<ProductsTypeReturnApi[]>([])
-
+    console.log(Products)
     const { MessageBox } = useMessageBoxContext()
     // const [isClientNecessary, setisClientNecessary] = useState(false)
     // const [isSellerNecessary, setisSellerNecessary] = useState(false)
 
     useEffect(() => {
         const Productsresult = async () => {
-            const data = await findProducts(auth.idUser);
+            const data = await findProductsToSell(auth.idUser);
             setNoFilteredProducts(data.listProducts)
         }
         Productsresult();
@@ -117,6 +115,7 @@ export const Sell = () => {
                     totalvalue: inputProducts.value,
                     initialCost: inputProducts.cost,
                     totalCost: inputProducts.cost,
+                    urlImage: inputProducts.urlImage,
                     discountPercent: null,
                     discountValue: null,
                     totalDiscount: null
@@ -244,6 +243,20 @@ export const Sell = () => {
                             groupBy={(option) => option.firstLetter}
                             getOptionLabel={(option) => option.name}
                             sx={{ boxShadow: 'rgba(58, 53, 65, 0.1) 0px 1px 2px 0px', border: '#fff', width: '100%', '& input': { color: Theme.DarkMode ? '#fff' : '', "& .MuiInputLabel-root": { color: 'green' } } }}
+                            renderOption={(props, option) => (
+
+                                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                                    {option.urlImage &&
+                                        <img
+                                            loading="lazy"
+                                            width="20"
+                                            srcSet={`${option.urlImage} 2x`}
+                                            src={option.urlImage}
+                                            alt=""
+                                        />}
+                                    {option.name}
+                                </Box>
+                            )}
                             renderInput={(params) => <TextField {...params}
                                 sx={{ borderColor: '#fff' }}
                                 onKeyUp={handleKeyUP}

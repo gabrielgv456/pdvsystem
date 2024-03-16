@@ -96,8 +96,8 @@ export const Deliveries = () => {
                 throw new Error('Falha ao consultar entregas! ' + (data.Erro ?? ''))
             }
             setDeliveriesReturnApi(data.resultDeliveries)
-        } catch (error: any) {
-            MessageBox('warning', error.message)
+        } catch (error) {
+            MessageBox('warning', (error as Error).message)
         }
     }
 

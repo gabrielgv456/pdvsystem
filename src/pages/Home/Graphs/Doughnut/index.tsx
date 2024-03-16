@@ -34,8 +34,8 @@ export const DoughnutChart = (props: propsDoughnutChart) => {
                     throw new Error(dataDoughnut.erro ?? '')
                 }
             }
-            catch (error: any) {
-                MessageBox('warning', 'Erro ao consultar dados do gráfico de rosca! ' + error.message)
+            catch (error) {
+                MessageBox('warning', 'Erro ao consultar dados do gráfico de rosca! ' + (error as Error).message)
             }
         }
         SearchData()

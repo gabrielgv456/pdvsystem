@@ -33,8 +33,8 @@ export const BarChart = (props: type.barChartProps) => {
                     MessageBox('warning', 'Falha ao buscar dados do grafico de Barras')
                 }
             }
-            catch (error: any) {
-                MessageBox('warning', error.message)
+            catch (error) {
+                MessageBox('warning', (error as Error).message)
             }
         }
         searchApiData()
