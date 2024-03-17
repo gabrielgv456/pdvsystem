@@ -15,7 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../contexts/MessageBox/MessageBoxContext';
-import { cellNumberFormat, cepFormat, optionsUF, phoneNumberFormat, removeNotNumerics } from '../../../../../utils/utils';
+import { cellNumberFormat, cepFormat, optionsUF, phoneNumberFormat, removeNotNumerics, validateCPForCNPJ } from '../../../../../utils/utils';
 import { SellersandClientsType } from '../../../../SalesControl';
 import { MuiBox } from '../../../../../components/box/muiBox';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../components/buttons/closeButtonModal';
@@ -125,6 +125,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
             if (!(valueInputSellerCpf && valueInputSellerName && valueInputSellerBirthDate && valueInputSellerGender &&
                 valueInputSellerCpf !== "" && valueInputSellerName !== "" && valueInputSellerBirthDate !== "" &&
                 (valueInputSellerCpf.length === 14 || valueInputSellerCpf.length === 18))) { throw new Error('Campos obrigatórios não informados') }
+            if (!validateCPForCNPJ(valueInputSellerCpf)) throw new Error('Cpf inválido')
             const data = await addSeller(finaldataAddSellerToSendApi)
             if (!data.Success) { throw new Error(data.erro) }
             props.setisModalAddSellerOpen(false)
@@ -195,7 +196,7 @@ export const ModalAddSeller = (props: ListSellerstoAddSellerProps) => {
                             value={valueInputSellerCpf}
                             onChange={(e) => {
                                 setvalueInputSellerCpf(e.target.value.replace(/\D/g, '').length === 11 ?
-                                removeNotNumerics(e.target.value)
+                                    removeNotNumerics(e.target.value)
                                         .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
                                     : removeNotNumerics(e.target.value).length > 11 ?
                                         valueInputSellerCpf

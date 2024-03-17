@@ -29,7 +29,7 @@ import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
 import logo from '../../images/logo.png'
-import { useLayout } from '../../contexts/Layout/layoutContext';
+import { descriptionPages, typeActualPage, useLayout } from '../../contexts/Layout/layoutContext';
 import { BiMoon, BiSun } from 'react-icons/bi';
 import { FaTruck } from 'react-icons/fa';
 
@@ -62,9 +62,9 @@ export default function LayoutDefault(props: Props) {
   const handleVoid = () => {
   }
 
-  const openPage = (page: string, description: string) => {
+  const openPage = (page: string, description: typeActualPage) => {
     navigate(page)
-    setActualPage(description)
+    //setActualPage(description)
     setMobileOpen(!mobileOpen)
   }
 
@@ -85,7 +85,7 @@ export default function LayoutDefault(props: Props) {
       </Toolbar>
       {/* <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} /> */}
       <List sx={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Entregas', 'Movimentações', 'Pessoas', 'Gestão de Estoque', 'Ajustes'].map((text, index) => (
+        {descriptionPages.map((text, index) => (
           <ListItem button key={text}
             onClick={() =>
               index === 0 ? openPage('/home', text) :
@@ -142,7 +142,7 @@ export default function LayoutDefault(props: Props) {
         A serviço de:
         {auth.user?.urlLogo ?
           <img style={{ maxHeight: 50, maxWidth: 170 }} src={auth.user.urlLogo} /> :
-          auth.user?.name}
+          <div>{auth.user?.name}</div>}
 
       </div>
 
@@ -184,11 +184,13 @@ export default function LayoutDefault(props: Props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 1, display: { sm: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
-
+          <Box sx={{ display: { sm: 'none' } }}>
+            <img src={logo} style={{ width: 'auto', maxHeight: 45 }} />
+          </Box>
           {/* <Typography style={{color:'#fff'}}variant="h6" noWrap component="div" display="flex" >
             {actualPage}
           </Typography> */}

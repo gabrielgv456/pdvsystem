@@ -21,6 +21,7 @@ import { ModalEditSell } from './Modals/EditSell/ModalEditSell';
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import { MdOutlineTrendingUp } from "react-icons/md";
 import { ReturnData } from "../../utils/utils";
+import { useLayout } from "../../contexts/Layout/layoutContext";
 // end imports menu MUI //
 
 export interface SellsProductsReceiveApi {
@@ -59,6 +60,8 @@ export interface SellersandClientsType {
 
 export const SalesControl = () => {
 
+    const { setActualPage } = useLayout();
+    setActualPage('Controle de Vendas')
     const atualdata = ReturnData()
     const auth = useContext(AuthContext);
     const [InitialDate, setInitialDate] = useState(atualdata);

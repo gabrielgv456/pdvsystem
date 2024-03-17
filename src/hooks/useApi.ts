@@ -201,8 +201,8 @@ export const useApi = () => ({
         const response = await api.delete('/deleteFile', { params: { imageId, userId } })
         return response.data
     },
-    deleteLogo: async (idUser: number) => {
-        const response = await api.delete('/deleteLogo', { params: { storeId: idUser } })
+    deleteLogo: async (idUser: number, module:string) => {
+        const response = await api.delete('/deleteLogo', { params: { storeId: idUser, module } })
         return response.data
     },
     changeForgotPassword: async (dataChangeForgotPassword: typeChangeForgotPassword) => {

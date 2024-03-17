@@ -10,6 +10,7 @@ import { BsSearch } from 'react-icons/bs';
 import { ListSellers } from './ListSellers/ListSellers';
 import { ModalAddSeller } from "./Modals/addSeller";
 import { ModalSuccessSeller } from "./Modals/Success";
+import { useLayout } from "../../../contexts/Layout/layoutContext";
 
 
 
@@ -41,6 +42,9 @@ interface SidebartoPeopleRegistrationProps {
 
 
 export const SellersRegistration = (props: SidebartoPeopleRegistrationProps) => {
+
+    const { setActualPage } = useLayout();
+    setActualPage('Pessoas')
     const { findSellers } = useApi()
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();

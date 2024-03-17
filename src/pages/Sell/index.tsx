@@ -11,6 +11,7 @@ import { RiAddCircleFill } from "react-icons/ri";
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import { ModalCheckOut, typesPayment } from "./Modals/CheckOut";
 import { Box } from "@mui/material";
+import { useLayout } from "../../contexts/Layout/layoutContext";
 
 interface ProductsTypeReturnApi {
     id: number;
@@ -48,12 +49,13 @@ export interface MethodsType {
 
 export const Sell = () => {
 
+    const { setActualPage } = useLayout();
+    setActualPage('Realizar Vendas')
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
     const { findProductsToSell } = useApi();
     const [Products, setProducts] = useState<ProductsTypeReturnApi[]>([])
     const [NoFilteredProducts, setNoFilteredProducts] = useState<ProductsTypeReturnApi[]>([])
-    console.log(Products)
     const { MessageBox } = useMessageBoxContext()
     // const [isClientNecessary, setisClientNecessary] = useState(false)
     // const [isSellerNecessary, setisSellerNecessary] = useState(false)

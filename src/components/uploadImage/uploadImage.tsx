@@ -56,8 +56,7 @@ export const UploadImage = (props: type.uploadImageProps) => {
             }
             setSelectedImage(result.url)
             props.setIdImage(result.id)
-            setChangeImage(false)
-            MessageBox('success', 'Arquivo atualizado com sucesso! ')
+            MessageBox('success', 'Imagem enviada com sucesso! ')
         } catch (error) {
             MessageBox('warning', (error as Error).message)
         }
@@ -70,7 +69,9 @@ export const UploadImage = (props: type.uploadImageProps) => {
             if (!result.Success) {
                 throw new Error('Falha ao deletar logo! ' + result.erro ?? '')
             }
-            MessageBox('success', 'Logo exclusa com sucesso!')
+            props.setIdImage(null)
+            setSelectedImage(null)
+            MessageBox('success', 'Imagem exclusa com sucesso!')
         } catch (error) {
             MessageBox('error', (error as Error).message)
         }

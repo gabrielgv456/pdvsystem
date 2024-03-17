@@ -11,4 +11,5 @@ export type uploadImageType = {
     userId: number
     host: string
     owner: string
+    module?:string
 }

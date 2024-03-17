@@ -12,6 +12,7 @@ import { ListClients } from './ListClients/ListClients';
 import { ModalAddEditClient } from "./Modals/addEditClient/addEditClient";
 import { ModalSuccessClient } from "./Modals/Success/modalSuccess";
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
+import { useLayout } from "../../../contexts/Layout/layoutContext";
 
 
 
@@ -50,6 +51,9 @@ interface SidebartoPeopleRegistrationProps {
 
 
 export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => {
+
+    const { setActualPage } = useLayout();
+    setActualPage('Pessoas')
     const { findClients } = useApi()
     const { MessageBox } = useMessageBoxContext()
     const auth = useContext(AuthContext);

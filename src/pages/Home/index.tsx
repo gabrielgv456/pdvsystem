@@ -11,10 +11,14 @@ import { HorizontalChart } from './Graphs/Horizontal';
 import { MenuMui } from "../../components/menuSelect/muiMenu";
 import { useApi } from "../../hooks/useApi";
 import { useState } from "react";
+import { useLayout } from "../../contexts/Layout/layoutContext";
 
 
 
 export const Home = () => {
+
+    const { setActualPage } = useLayout();
+    setActualPage('Página Inicial')
 
     const Theme = useDarkMode();
     const [dataDoughnutChart, setdataDoughnutChart] = useState<type.DoughnutChartType | null>(null)

@@ -1,10 +1,14 @@
 import { useState, createContext, ReactNode, useContext } from "react"
 
 type LayoutProps = {
-    actualPage: string;
-    setActualPage: (newState: string) => void;
+    actualPage: typeActualPage;
+    setActualPage: (newState: typeActualPage) => void;
 
 }
+
+export type typeActualPage = 'Página Inicial' | 'Realizar Vendas' | 'Controle de Vendas' | 'Entregas' | 'Movimentações' | 'Pessoas' | 'Gestão de Estoque' | 'Ajustes'
+export const descriptionPages: typeActualPage[] = ['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Entregas', 'Movimentações', 'Pessoas', 'Gestão de Estoque', 'Ajustes']
+
 type ChildrenProps = {
     children: ReactNode
 }
@@ -12,7 +16,7 @@ type ChildrenProps = {
 const LayoutContext = createContext({} as LayoutProps)
 
 export const LayoutProvider = ({ children }: ChildrenProps) => {
-    const [actualPage, setActualPage] = useState('Página Inicial')
+    const [actualPage, setActualPage] = useState<typeActualPage>('Página Inicial')
 
     return (
         <LayoutContext.Provider value={{ actualPage, setActualPage }}>

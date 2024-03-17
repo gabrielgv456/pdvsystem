@@ -19,6 +19,7 @@ import { LuCheckCircle } from 'react-icons/lu'
 import { TabShippingDeliveries } from './tabs/shippingDelivery';
 import { TabDoneDeliveries } from './tabs/doneDelivery';
 import { typesPayment } from '../Sell/Modals/CheckOut';
+import { useLayout } from '../../contexts/Layout/layoutContext';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -71,6 +72,8 @@ export interface TypeDeliveriesRequest {
 }
 export const Deliveries = () => {
 
+    const { setActualPage } = useLayout();
+    setActualPage('Entregas')
     const Theme = useDarkMode()
     const isLess900 = useMediaQuery('(max-width:900px)')
     const auth = useContext(AuthContext);

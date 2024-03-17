@@ -46,7 +46,6 @@ export const SaveProduct = (props: type.SaveProductProps) => {
     }
 
     function validateFields() {
-        console.log(props.dataToSend.principal)
         if (!(props.dataToSend.principal.name !== ""
             && (props.dataToSend.principal.value ?? 0) > 0
             && (props.dataToSend.principal.cost ?? 0) > 0

@@ -14,9 +14,13 @@ import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContex
 import { ModalAddEditProduct } from "./Modals/AddEditProduct";
 import { MuiBox } from "../../components/box/muiBox";
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../components/buttons/closeButtonModal";
+import { useLayout } from "../../contexts/Layout/layoutContext";
 
 
 export const InventoryManagement = () => {
+
+    const { setActualPage } = useLayout();
+    setActualPage('Gestão de Estoque')
     const { findProducts } = useApi()
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
@@ -203,10 +207,12 @@ export const InventoryManagement = () => {
                     <Modal open={isModalSucessOpen} onClose={handleCloseModalSucess}>
                         <MuiBox desktopWidth={500} mobileWidthPercent="80%" >
                             <S.DivModalSucess>
-                                <h3 style={{ alignSelf: 'center' }}>Produto adicionado com sucesso!</h3>
+                                <h3 style={{ alignSelf: 'center' }}>Produto {actualItemEdit ? 'editado' : 'adicionado'} com sucesso!</h3>
                                 <BsCheckCircle color="var(--Green)" size="50" className="IconSucess" />
                                 <div style={{ display: 'flex', marginTop: '30px', gap: '5px' }}>
-                                    <S.ButtonAddSucessProductModal onClick={handleContinueAddingProducts}><b>Continuar adicionando</b></S.ButtonAddSucessProductModal>
+                                    {!actualItemEdit &&
+                                        <S.ButtonAddSucessProductModal onClick={handleContinueAddingProducts}><b>Continuar adicionando</b></S.ButtonAddSucessProductModal>
+                                    }
                                     <S.ButtonExitSucessProductModal onClick={handleCloseModalSucess}><b>Sair</b></S.ButtonExitSucessProductModal>
                                 </div>
                             </S.DivModalSucess>

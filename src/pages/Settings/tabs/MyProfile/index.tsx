@@ -73,7 +73,7 @@ export const TabMyProfile = () => {
             setSelectedImage(imageLogo);
             const formData = new FormData();
             formData.append('file', imageLogo);
-            const result = await uploadFile(formData, { 'userId': auth.idUser, owner: 'local', host: process.env.REACT_APP_API ?? '' })
+            const result = await uploadFile(formData, { 'userId': auth.idUser, owner: 'local', host: process.env.REACT_APP_API ?? '', module:'User' })
             if (!result.Success) {
                 throw new Error('Sem sucesso ao atualizar o arquivo! ' + result.erro)
             }
@@ -88,7 +88,7 @@ export const TabMyProfile = () => {
 
     const handleDeleteLogo = async () => {
         try {
-            const result = await deleteLogo(auth.idUser)
+            const result = await deleteLogo(auth.idUser,'User')
             if (!result.Success) {
                 throw new Error('Falha ao deletar logo! ' + result.erro)
             }

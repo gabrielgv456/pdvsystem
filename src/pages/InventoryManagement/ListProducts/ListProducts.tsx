@@ -111,7 +111,9 @@ export const ListProducts = (props: type.ListProductsProps) => {
                     props.setActualItemEdit(props.item)
                     props.setisModalAddEditProductOpen(true)
                 }} title="Editar Produto"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
-
+           
+                    <img src={props.item.urlImage ?? ''} style={{ width: 35, height: 'auto', paddingRight: 5 }} />
+                
                 <S.LabelNameProduct isDarkMode={Theme.DarkMode}>
                     <b>{props.item.name}</b>
                 </S.LabelNameProduct>

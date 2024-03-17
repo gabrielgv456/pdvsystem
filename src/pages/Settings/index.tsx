@@ -11,6 +11,7 @@ import { TabSystem } from './tabs/System';
 import { CgProfile } from 'react-icons/cg';
 import { MdAssignment, MdSettingsInputComponent } from 'react-icons/md';
 import { useMediaQuery } from '@mui/material';
+import { useLayout } from '../../contexts/Layout/layoutContext';
 
 
 interface TabPanelProps {
@@ -21,6 +22,8 @@ interface TabPanelProps {
 
 export const Settings = () => {
 
+    const { setActualPage } = useLayout();
+    setActualPage('Ajustes')
     const Theme = useDarkMode()
     const isLess900 = useMediaQuery('(max-width:900px)')
     function TabPanel(props: TabPanelProps) {

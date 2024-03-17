@@ -13,6 +13,7 @@ import { MdAddTask, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { CurrencyMask } from '../../masks/CurrencyMask';
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import { ReturnData } from "../../utils/utils";
+import { useLayout } from "../../contexts/Layout/layoutContext";
 
 export interface TransactionsReturnApiProps {
     id: number,
@@ -27,6 +28,8 @@ export interface TransactionsReturnApiProps {
 
 export const Transactions = () => {
 
+    const { setActualPage } = useLayout();
+    setActualPage('Movimentações')
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
     const { findTransactions, addTransactions } = useApi()

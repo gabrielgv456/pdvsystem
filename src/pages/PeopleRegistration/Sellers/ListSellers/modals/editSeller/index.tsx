@@ -16,7 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
-import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat, removeNotNumerics } from '../../../../../../utils/utils';
+import { cellNumberFormat, cepFormat, cpfCnpjFormat, phoneNumberFormat, removeNotNumerics, validateCPForCNPJ } from '../../../../../../utils/utils';
 import { MuiBox } from '../../../../../../components/box/muiBox';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
 
@@ -107,49 +107,30 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
     }
 
     const EditSellerApi = async () => {
-        if (valueInputSellerCpfCnpj && valueInputSellerName && valueInputSellerBirthDate && valueInputSellerGender &&
+        if (!(valueInputSellerCpfCnpj && valueInputSellerName && valueInputSellerBirthDate && valueInputSellerGender &&
             valueInputSellerCpfCnpj !== "" && valueInputSellerName !== "" && valueInputSellerBirthDate !== "" &&
-            (valueInputSellerCpfCnpj.length === 14 || valueInputSellerCpfCnpj.length === 18)
-        ) {
-            if (valueInputSellerEmail === null || valueInputSellerEmail === "") {
-                try {
-                    const data = await editSeller(finaldataEditSellerToSendApi)
-                    if (data.Success) {
-                        props.setisModalEditSellerOpen(false)
-                        props.setisModalSucessOpen(true)
-                    }
-                    else {
-                        MessageBox('error', data.erro)
-                    }
-                }
-                catch (error) {
-                    MessageBox('error', `Falha ao enviar dados. ERRO:${(error as Error).message}`)
-                }
+            (valueInputSellerCpfCnpj.length === 14 || valueInputSellerCpfCnpj.length === 18))
+        ) { MessageBox('warning', 'Campos obrigatórios não informados!'); return }
+
+
+        try {
+            if (!(valueInputSellerEmail && valueInputSellerEmail.includes("@" && "."))) {
+                throw new Error('E-mail inválido')
+            }
+            if (!(validateCPForCNPJ(valueInputSellerCpfCnpj))) { throw new Error('Cpf inválido') }
+            const data = await editSeller(finaldataEditSellerToSendApi)
+            if (data.Success) {
+                props.setisModalEditSellerOpen(false)
+                props.setisModalSucessOpen(true)
             }
             else {
-                if (valueInputSellerEmail !== null && valueInputSellerEmail.includes("@" && ".")) {
-                    try {
-                        const data = await editSeller(finaldataEditSellerToSendApi)
-                        if (data.Success) {
-                            props.setisModalEditSellerOpen(false)
-                            props.setisModalSucessOpen(true)
-                        }
-                        else {
-                            MessageBox('error', data.erro)
-                        }
-                    }
-                    catch (error) {
-                        MessageBox('error', `Falha ao enviar dados. ERRO:${(error as Error).message}`)
-                    }
-                }
-                else {
-                    MessageBox('error', "Email inválido!")
-                }
+                MessageBox('error', data.erro)
             }
         }
-        else {
-            MessageBox('warning', "Campos obrigatórios não preenchidos !")
+        catch (error) {
+            MessageBox('error', `Falha ao editar vendedor! ${(error as Error).message}`)
         }
+
     }
 
     return (
@@ -207,7 +188,7 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                             value={valueInputSellerCpfCnpj}
                             onChange={(e) => {
                                 setvalueInputSellerCpfCnpj(e.target.value.replace(/\D/g, '').length === 11 ?
-                                removeNotNumerics(e.target.value)
+                                    removeNotNumerics(e.target.value)
                                         .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4")
                                     : removeNotNumerics(e.target.value).length > 11 ?
                                         valueInputSellerCpfCnpj
