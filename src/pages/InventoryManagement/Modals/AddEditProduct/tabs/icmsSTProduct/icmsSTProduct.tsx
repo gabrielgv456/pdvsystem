@@ -41,7 +41,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                 <Autocomplete
                     value={findOption('taxCstIcmsStId', 'cstOptions')}
                     onChange={(_event: any, newValue: optionsType | null) => {
-                        handleChangeTax('taxCstIcmsStId', newValue?.id)
+                        handleChangeTax('taxCstIcmsStId', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
@@ -58,7 +58,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                 <Autocomplete
                     value={findOption('taxCfopStateIdSt', 'cfopStateOptions')}
                     onChange={(_event: any, newValue: optionsType | null) => {
-                        handleChangeTax('taxCfopStateIdSt', newValue?.id)
+                        handleChangeTax('taxCfopStateIdSt', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
@@ -75,7 +75,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                 <Autocomplete
                     value={findOption('taxCfopInterstateIdSt', 'cfopInterstateOptions')}
                     onChange={(_event: any, newValue: optionsType | null) => {
-                        handleChangeTax('taxCfopInterstateIdSt', newValue?.id)
+                        handleChangeTax('taxCfopInterstateIdSt', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
                     getOptionLabel={(option) => (option.id + ' - ' + option.description)}
@@ -92,7 +92,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                 <Autocomplete
                     value={findOption('taxModalityBCIdSt', 'modalityOptions')}
                     onChange={(_event: any, newValue: optionsType | null) => {
-                        handleChangeTax('taxModalityBCIdSt', newValue?.id)
+                        handleChangeTax('taxModalityBCIdSt', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
                     getOptionLabel={(option) => (option.description)}

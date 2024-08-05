@@ -66,8 +66,8 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
             brand: props.itemData?.brand ?? null,
             exTipi: props.itemData?.exTipi ?? null,
             name: props.itemData?.name ?? '',
-            value: props.itemData?.value ?? null,
-            quantity: props.itemData?.quantity ?? null,
+            value: props.itemData?.value ?? 0,
+            quantity: props.itemData?.quantity ?? 0,
             active: props.itemData?.active ?? true,
             cost: props.itemData?.cost ?? null,
             profitMargin: props.itemData?.profitMargin ?? null,
@@ -106,14 +106,14 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                 taxRedBCICMS: (props.itemData?.taxIcms[0]?.taxIcmsNoPayer[0]?.taxRedBCICMS) ?? null,
             },
             TaxIcmsST: {
-                taxAliquotIcmsInner: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxRedBCICMSInner) ?? null,
+                taxAliquotIcmsInner: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxAliquotIcmsInner) ?? null,
                 taxCfopInterstateIdSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCfopInterstateIdSt) ?? null,
                 taxCfopStateIdSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCfopStateIdSt) ?? null,
                 taxCstIcmsStId: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCstIcmsStId) ?? null,
-                taxMvaPauta: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxMvaPauta) ?? null,
+                taxMvaPauta: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxMvaPauta) ?? null,                
                 taxModalityBCIdSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxModalityBCIdSt) ?? null,
-                taxRedBCICMSInner: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCstIcmsStId) ?? null,
-                taxRedBCICMSSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCstIcmsStId) ?? null
+                taxRedBCICMSInner: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxRedBCICMSInner) ?? null,
+                taxRedBCICMSSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxRedBCICMSSt) ?? null
             }
         },
         cofins: {

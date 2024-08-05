@@ -9,26 +9,26 @@ export type ipiPisCofinsProps = {
 }
 
 export type taxPisType = {
-    taxCstPisExitId: Number | null
-    taxCstPisEntranceId: Number | null
-    taxAliquotPisExit: Number | null
-    taxAliquotPisEntrance: Number | null
+    taxCstPisExitId: number | null
+    taxCstPisEntranceId: number | null
+    taxAliquotPisExit: number | null
+    taxAliquotPisEntrance: number | null
 }
 
 export type taxIpiType = {
-    taxCstIpiExitId: Number | null
-    taxCstIpiEntranceId: Number | null
-    taxAliquotIpi: Number | null
-    taxClassificationClassIpi: String | null
-    taxStampIpi: String | null
-    taxQtdStampControlIpi: Number | null
-    taxCodEnquadLegalIpi: String | null
-    taxCnpjProd: String | null
+    taxCstIpiExitId: number | null
+    taxCstIpiEntranceId: number | null
+    taxAliquotIpi: number | null
+    taxClassificationClassIpi: string | null
+    taxStampIpi: string | null
+    taxQtdStampControlIpi: number | null
+    taxCodEnquadLegalIpi: string | null
+    taxCnpjProd: string | null
 }
 
 export type taxCofinsType = {
-    taxCstCofinsExitId: Number | null
-    taxCstCofinsEntranceId: Number | null
-    taxAliquotCofinsExit: Number | null
-    taxAliquotCofinsEntrance: Number | null
+    taxCstCofinsExitId: number | null
+    taxCstCofinsEntranceId: number | null
+    taxAliquotCofinsExit: number | null
+    taxAliquotCofinsEntrance: number | null
 }

@@ -7,6 +7,7 @@ import { typeChangeForgotPassword } from '../pages/Login/Modals/validateEmail';
 import { typeReqChangeFiscalParameters } from '../pages/Settings/tabs/FiscalParameters/interfaces';
 import { addEditProductDataSend } from '../pages/InventoryManagement/Modals/AddEditProduct/interfaces';
 import { uploadImageType } from '../components/uploadImage/interfaces';
+import { createFiscalNoteType } from '../pages/Sell/Modals/CheckOut';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -201,7 +202,7 @@ export const useApi = () => ({
         const response = await api.delete('/deleteFile', { params: { imageId, userId } })
         return response.data
     },
-    deleteLogo: async (idUser: number, module:string) => {
+    deleteLogo: async (idUser: number, module: string) => {
         const response = await api.delete('/deleteLogo', { params: { storeId: idUser, module } })
         return response.data
     },
@@ -220,6 +221,11 @@ export const useApi = () => ({
         return response.data
     }, changeFiscalParameters: async (dataChangeFicalParameters: typeReqChangeFiscalParameters) => {
         const response = await api.post('/changeFiscalParameters', { ...dataChangeFicalParameters })
+        return response.data
+    }, createFiscalNote: async (dataCreateFiscalNote: createFiscalNoteType) => {
+        const response = await api.post('/createSellFiscalNote',
+            { ...dataCreateFiscalNote },
+            { responseType: 'blob' })
         return response.data
     }
 });

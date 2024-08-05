@@ -51,42 +51,42 @@ export type optionsType = {
 }
 
 export type TaxIcmsType = {
-    taxIcmsOriginId: Number | null
-    fcpAliquot?: Number | null
+    taxIcmsOriginId: number | null
+    fcpAliquot: number | null
 }
 
 export type TaxIcmsNfeType = {
-    taxCstIcmsId: Number | null
-    taxModalityBCId?: Number | null
-    taxReasonExemptionId?: Number | null
-    taxCfopStateId?: Number | null
-    taxCfopInterstateId?: Number | null
-    taxRedBCICMS?: Number | null
-    taxAliquotIcms?: Number | null
+    taxCstIcmsId: number | null
+    taxModalityBCId: number | null
+    taxReasonExemptionId: number | null
+    taxCfopStateId: number | null
+    taxCfopInterstateId: number | null
+    taxRedBCICMS: number | null
+    taxAliquotIcms: number | null
 }
 
 export type TaxIcmsNfceType = {
-    taxCstIcmsId: Number | null
-    taxCfopId?: Number | null
-    taxCfopDevolutionId?: Number | null
-    taxRedBCICMS?: Number | null
-    taxAliquotIcms?: Number | null
+    taxCstIcmsId: number | null
+    taxCfopId: number | null
+    taxCfopDevolutionId: number | null
+    taxRedBCICMS: number | null
+    taxAliquotIcms: number | null
 }
 
 export type TaxIcmsNoPayerType = {
-    taxCstIcmsId?: Number | null
-    taxRedBCICMS?: Number | null
-    taxAliquotIcms?: Number | null
+    taxCstIcmsId: number | null
+    taxRedBCICMS: number | null
+    taxAliquotIcms: number | null
 }
 
 export type TaxIcmsSTType = {
-    taxCstIcmsStId?: Number | null
-    taxCfopStateIdSt?: Number | null
-    taxCfopInterstateIdSt?: Number | null
-    taxModalityBCIdSt?: Number | null
-    taxRedBCICMSSt?: Number | null
-    taxAliquotIcmsInner?: Number | null
-    taxRedBCICMSInner?: Number | null
-    taxMvaPauta?: Number | null
+    taxCstIcmsStId: number | null
+    taxCfopStateIdSt: number | null
+    taxCfopInterstateIdSt: number | null
+    taxModalityBCIdSt: number | null
+    taxRedBCICMSSt: number | null
+    taxAliquotIcmsInner: number | null
+    taxRedBCICMSInner: number | null
+    taxMvaPauta: number | null
 }
 

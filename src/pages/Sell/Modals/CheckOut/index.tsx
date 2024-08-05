@@ -109,17 +109,27 @@ interface ModalCheckOutProps {
     sumDiscount: number
 }
 
+export type createFiscalNoteType = {
+    sellId: number,
+    userId: number
+}
+
+export type resultSellType = {
+    sellId: number | null,
+    codRef: number | null
+}
 
 export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
     const Theme = useDarkMode()
     const { MessageBox } = useMessageBoxContext()
     const auth = useContext(AuthContext);
-    const { addsell, findSellers, findClients } = useApi()
+    const { addsell, findSellers, findClients, createFiscalNote } = useApi()
     const [isSellEnded, setisSellEnded] = useState(false)
     const [inputSeller, setInputSeller] = useState<SellersandClientsType | null>(null)
     const [inputClient, setInputClient] = useState<ClientsType | null>(null)
-    const [codRefSell, setCodRefSell] = useState<number | null>(null)
+    const [resultSell, setResultSell] = useState<resultSellType>({ codRef: null, sellId: null })
+    const [pdfNF, setPdfNF] = useState<string | null>(null)
     const [sellers, setSellers] = useState<SellersandClientsType[]>([])
     const [clients, setClients] = useState<ClientsType[]>([])
     const [selectedDeliveryType, setSelectedDeliveryType] = useState('instantDelivery');
@@ -175,6 +185,14 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
         ClientsSearch();
         SellersSearch();
     }, [])
+
+    useEffect(() => {
+        return () => {
+            if (pdfNF) {
+                URL.revokeObjectURL(pdfNF);
+            }
+        };
+    }, [pdfNF]);
 
     const handleAddMethod = (valuetype: typesPayment) => {
         const alreadyexistMethod = verifyifexistsMethod(valuetype)
@@ -300,7 +318,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                             throw new Error(data.Erro)
                         }
                         setisSellEnded(true)
-                        setCodRefSell(data.codRef)
+                        setResultSell({ codRef: data.codRef, sellId: data.sellId })
                     } catch (error) {
                         MessageBox('error', (error as Error).message)
                     }
@@ -315,11 +333,26 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                         throw new Error(data.Erro)
                     }
                     setisSellEnded(true)
-                    setCodRefSell(data.codRef)
+                    setResultSell({ codRef: data.codRef, sellId: data.sellId })
                 } catch (error) {
                     MessageBox('error', (error as Error).message)
                 }
             }
+        }
+    }
+
+    const handleCreateFiscalNote = async (props: createFiscalNoteType) => {
+        try {
+            const result = await createFiscalNote(props)
+            if (result.erro) throw new Error(result.erro)
+            console.log(result)
+            const blob = new Blob([result], { type: 'application/pdf' });
+            console.log(blob)
+            const url = URL.createObjectURL(blob);
+            console.log(url)
+            setPdfNF(url)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
         }
     }
 
@@ -328,13 +361,19 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             <Modal open={props.isModalConfirmSellOpen} onClose={handleCloseModalConfirmSell}>
                 <MuiBox desktopWidth={650} mobileWidthPercent='90%' padding='25px'>
                     <S.SectionMConfirmSell>
-                        {(isSellEnded && codRefSell) && <div style={{ fontSize: '1.1rem' }}><b>Código da venda: </b> {codRefSell}</div>}
+                        {(isSellEnded && resultSell.codRef) && <div style={{ fontSize: '1.1rem' }}><b>Código da venda: </b> {resultSell.codRef}</div>}
                         <div style={{ fontSize: '1.1rem', marginBottom: '0px' }}><b>Total:</b> {props.sumvalueformated}</div>
                         {props.needReturnCash === 'N' ? <div style={{ fontSize: '1.1rem' }}><b>Restante:</b> {props.formatedmissvalue}</div> : ''}
                         {props.needReturnCash === 'Y' && <div style={{ fontSize: '1.1rem', color: 'red' }}><b>Troco:</b> {props.formatedmissvalue}</div>}
                         {props.needReturnCash === 'OK' && <div style={{ fontSize: '1.1rem', color: 'green' }}><b>Restante:</b> {props.formatedmissvalue}</div>}
                     </S.SectionMConfirmSell>
-                    {isSellEnded ? <S.LabelSellEnded><HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" /> Venda confirmada com sucesso ! </S.LabelSellEnded> : ''}
+                    {isSellEnded && (
+                        pdfNF ? <embed src={pdfNF} style={{ width: '100%', height: '100%', border: 'none' }} /> :
+                            <S.LabelSellEnded>
+                                <HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" />
+                                Venda confirmada com sucesso !
+                            </S.LabelSellEnded>)
+                    }
 
                     {isSellEnded ? '' :
                         <div>
@@ -400,7 +439,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                                     name="radio-buttons"
                                     inputProps={{ 'aria-label': 'A' }}
                                 />
-                                Entrega Imediata
+                                Retirada
                                 <Radio
                                     checked={selectedDeliveryType === 'futureDelivery'}
                                     onChange={handleChangeDeliveryType}
@@ -408,7 +447,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                                     name="radio-buttons"
                                     inputProps={{ 'aria-label': 'B' }}
                                 />
-                                Entrega Futura
+                                Entrega
                             </div>
                             {selectedDeliveryType === 'futureDelivery' &&
                                 <DeliveryAddressClient
@@ -440,11 +479,15 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
                     <S.DivModalButtons>
                         {isSellEnded ?
-                            <S.ButtonPrint onClick={(e) => GeneratePDFSell(props.sumDiscount, props.sumvalue, props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), codRefSell, auth.user)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
+                            <>
+                                <S.ButtonPrint onClick={(e) => GeneratePDFSell(props.sumDiscount, props.sumvalue, props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), resultSell.codRef, auth.user)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
+                                <DefaultButton selectedColor='--Blue' fontSize='1.08rem' padding='7px 25px 7px 25px' borderRadius='13px' onClick={() => resultSell.sellId && handleCreateFiscalNote({ sellId: resultSell.sellId, userId: auth.idUser })}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Emitir Nota Fiscal</DefaultButton>
+                            </>
                             :
                             <>
-                                <DefaultButton onClick={(e) => GeneratePDFBudget(props.sumDiscount, props.sumvalue, props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), codRefSell, auth.user, inputClient, inputSeller)} selectedColor='--NoColor' fontSize='1.01rem' padding='7px 10px 7px 10px' borderRadius='13px'> <RiFileList3Line style={{ marginRight: 2 }} /> Orçamento</DefaultButton>
+                                <DefaultButton onClick={(e) => GeneratePDFBudget(props.sumDiscount, props.sumvalue, props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), resultSell.codRef, auth.user, inputClient, inputSeller)} selectedColor='--NoColor' fontSize='1.01rem' padding='7px 10px 7px 10px' borderRadius='13px'> <RiFileList3Line style={{ marginRight: 2 }} /> Orçamento</DefaultButton>
                                 <DefaultButton selectedColor='--Green' fontSize='1.08rem' padding='7px 25px 7px 25px' borderRadius='13px' onClick={() => handleSendtoApi(finallistapi)}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Finalizar</DefaultButton>
+
                             </>
                         }
                     </S.DivModalButtons>
