@@ -2,7 +2,7 @@ import Modal from '@mui/material/Modal';
 import * as S from "./style"
 import * as type from "./interfaces"
 import TextField from '@mui/material/TextField';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import axios from 'axios';
 import { useDarkMode } from '../../../../../contexts/DarkMode/DarkModeProvider';
@@ -18,13 +18,32 @@ import { cellNumberFormat, cepFormat, cpfCnpjFormat, optionsUF, phoneNumberForma
 import { MuiBox } from '../../../../../components/box/muiBox';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../components/buttons/closeButtonModal';
 import { ClientsReturnApiProps } from '../..';
+import { editClientTypeReq } from '../../../../../interfaces/useApi/editClientTypeReq';
 
 export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
 
+    useEffect(() => {
+        const getDefaultCity = async () => {
+            if (props.client?.address?.city.ibge) {
+                const city = await handleGetCitiesIbge(props.client?.address?.city.ibge)
+                if (city) setSelectedCity(city[0])
+            }
+        }
+        if (props.type === 'add') {
+            handleGetCities(null)
+        } else if (props.type === 'edit') {
+            getDefaultCity()
+        }
+    }, [])
+
+
+
     const Theme = useDarkMode()
-    const { addClient, editClient } = useApi()
+    const { addClient, editClient, getCities } = useApi()
     const { MessageBox } = useMessageBoxContext()
     const auth = useContext(AuthContext)
+    const [citiesOptions, setCitiesOptions] = useState<type.CityStateType[] | null>(null)
+    const [selectedCity, setSelectedCity] = useState<type.CityStateType | null>(null)
     const defaultClientData: type.TypeClientData = {
         name: props.client?.name ?? "",
         gender: props.client?.gender ?? "",
@@ -32,20 +51,21 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
         email: props.client?.email ?? "",
         ie: props.client?.ie ?? "",
         suframa: props.client?.suframa ?? "",
-        finalCostumer: props.client?.finalCostumer ?? false,
+        finalCostumer: (props.type === 'add') ? true : (props.client?.finalCostumer ?? false),
         birthDate: props.client?.birthDate ?? null,
         phoneNumber: phoneNumberFormat(props.client?.phoneNumber ?? ''),
         cellNumber: cellNumberFormat(props.client?.cellNumber ?? ""),
-        adressStreet: props.client?.adressStreet ?? "",
-        adressNumber: props.client?.adressNumber ?? "",
-        adressNeighborhood: props.client?.adressNeighborhood ?? "",
-        adressComplement: props.client?.adressComplement ?? "",
-        adressCity: props.client?.adressCity ?? "",
-        adressState: props.client?.adressState ?? "",
-        adressCep: cepFormat(props.client?.adressCep ?? ""),
         active: props.client?.active ?? true,
         taxRegimeId: props.client?.taxRegimeId ?? null,
-        taxPayerTypeId: props.client?.taxPayerTypeId ?? null
+        taxPayerTypeId: props.client?.taxPayerTypeId ?? null,
+        address: {
+            addressStreet: props.client?.address?.addressStreet ?? "",
+            addressNumber: props.client?.address?.addressNumber ?? "",
+            addressNeighborhood: props.client?.address?.addressNeighborhood ?? "",
+            addressComplement: props.client?.address?.addressComplement ?? "",
+            addressCityId: props.client?.address?.cityId ?? 0,
+            addressCep: cepFormat(props.client?.address?.addressCep ?? "")
+        }
     }
     const optionsTaxPayerId: type.typeOptions[] = [{ id: 1, description: "1 - Contribuinte ICMS" },
     { id: 2, description: "2 - Contribuinte Isento" },
@@ -57,7 +77,25 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
     const [selectedTaxPayerId, setSelectedTaxPayerId] = useState<type.typeOptions | null>(optionsTaxPayerId.find(item => item.id === props.client?.taxPayerTypeId) ?? null)
     const [selectedTaxRegimeId, setSelectedTaxRegimeId] = useState<type.typeOptions | null>(optionsTaxRegimeId.find(item => item.id === props.client?.taxRegimeId) ?? null)
 
+    function handleChangeClientDataAddress<T extends keyof type.Address>(
+        property: T, value: type.Address[T]) {
+        setClientData(prevState => {
+            return {
+                ...prevState,
+                address: {
+                    ...prevState.address,
+                    [property]: value
+                }
+            }
+        })
+    }
 
+    async function handleSelectCity(newValue: type.CityStateType | null) {
+        setSelectedCity(newValue)
+        if (newValue) {
+            handleChangeClientDataAddress('addressCityId', newValue.id)
+        }
+    }
     async function handleCloseModalAddClient() {
         props.setisModalAddEditClientOpen(false)
         if (props.type === 'add') setClientData(defaultClientData)
@@ -70,24 +108,51 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
         setSelectedTaxRegimeId(newValue)
         setClientData({ ...clientData, taxRegimeId: (newValue?.id ?? null) })
     }
-    async function handleConsultCep(cep: string) {
-        const cepformated = removeNotNumerics(cep)
 
+    async function handleGetCities(city: string | null) {
+        try {
+            const response = await getCities(city)
+            if (!response.Success) throw new Error(response.erro ?? 'Erro desconhecido')
+            setCitiesOptions(response.cities)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
+        }
+    }
+
+    async function handleGetCitiesIbge(ibge: number | null): Promise<type.CityStateType[] | undefined> {
+        try {
+            const response = await getCities(undefined, ibge)
+            if (!response.Success) throw new Error(response.erro ?? 'Erro desconhecido')
+            return response.cities
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
+        }
+    }
+
+    async function handleConsultCep(cep: string) {
+
+        const cepformated = removeNotNumerics(cep)
         if (cepformated.length === 8) {
             try {
                 const { data } = await axios.get(`https://viacep.com.br/ws/${cepformated}/json/`)
 
-                if (data.erro) {
-                    MessageBox('error', 'CEP invalido')
-                }
+                if (data.erro) { MessageBox('error', 'CEP invalido') }
                 else {
-                    setClientData({
-                        ...clientData,
-                        adressStreet: data.logradouro,
-                        adressNeighborhood: data.bairro,
-                        adressCity: data.localidade,
-                        adressState: data.uf
-                    })
+                    const city = await handleGetCitiesIbge(data.ibge)
+
+                    if (city) {
+                        setClientData({
+                            ...clientData,
+                            address: {
+                                ...clientData.address,
+                                addressCityId: city[0].id,
+                                addressStreet: data.logradouro,
+                                addressNeighborhood: data.bairro
+                            }
+                        })
+
+                        setSelectedCity(city[0])
+                    }
                 }
             }
             catch (error) {
@@ -97,20 +162,23 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
 
     }
 
-    const finaldataAddClientToSendApi: ClientsReturnApiProps = {
+    const finaldataAddClientToSendApi: editClientTypeReq = {
         storeId: auth.idUser,
-        idClient: props.client?.id,
+        id: props.client?.id ?? null,
+        addressId: 1,
+        created_at: null,
         name: clientData.name,
         active: clientData.active,
         email: clientData.email ?? null,
-        adressCep: (removeNotNumerics(clientData.adressCep)) ?? null,
-        adressCity: clientData.adressCity ?? null,
-        adressComplement: clientData.adressComplement ?? null,
-        adressNeighborhood: clientData.adressNeighborhood ?? null,
-        adressNumber: clientData.adressNumber ?? null,
-        adressState: clientData.adressState ?? null,
-        adressStreet: clientData.adressStreet ?? null,
-        adressUF: clientData.adressState ?? null,
+        address: {
+            cityId: clientData.address.addressCityId ?? null,
+            addressCep: removeNotNumerics(clientData.address.addressCep) ?? null,
+            addressComplement: clientData.address.addressComplement ?? null,
+            addressNeighborhood: clientData.address.addressNeighborhood ?? null,
+            addressNumber: clientData.address.addressNumber ?? null,
+            addressStreet: clientData.address.addressStreet ?? null,
+            addressTypeId: 2 // 2 = principal
+        },
         birthDate: clientData.birthDate ?? null,
         cellNumber: (removeNotNumerics(clientData.cellNumber)) ?? null,
         cpf: (removeNotNumerics(clientData.cpf)) ?? null,
@@ -377,9 +445,9 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
 
                         <TextField
-                            value={clientData.adressCep}
+                            value={clientData.address.addressCep}
                             onChange={(e) => {
-                                setClientData({ ...clientData, adressCep: cepFormat(e.target.value, clientData.adressCep) })
+                                handleChangeClientDataAddress('addressCep', cepFormat(e.target.value, clientData.address.addressCep))
                             }}
                             onBlur={(e) => handleConsultCep(e.target.value)}
                             id="outlined-basic"
@@ -390,14 +458,10 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                         />
 
                         <TextField
-                            value={clientData.adressStreet}
+                            value={clientData.address.addressStreet}
                             onChange={(e) => {
-                                setClientData(
-                                    e.target.value.length > 50 ?
-                                        clientData
-                                        :
-                                        { ...clientData, adressStreet: e.target.value }
-                                )
+                                handleChangeClientDataAddress('addressStreet', e.target.value.length > 50 ?
+                                    clientData.address.addressStreet : e.target.value)
                             }}
                             id="outlined-basic"
                             label="Endereço"
@@ -407,14 +471,10 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                         />
 
                         <TextField
-                            value={clientData.adressNumber}
+                            value={clientData.address.addressNumber}
                             onChange={(e) => {
-                                setClientData(
-                                    e.target.value.length > 5 ?
-                                        clientData
-                                        :
-                                        { ...clientData, adressNumber: e.target.value }
-                                )
+                                handleChangeClientDataAddress('addressNumber', e.target.value.length > 5 ?
+                                    clientData.address.addressNumber : e.target.value)
                             }}
                             id="outlined-basic"
                             label="Nº"
@@ -427,12 +487,12 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
 
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
                         <TextField
-                            value={clientData.adressNeighborhood}
-                            onChange={(e) => setClientData(
+                            value={clientData.address.addressNeighborhood}
+                            onChange={(e) => handleChangeClientDataAddress('addressNeighborhood',
                                 e.target.value.length > 30 ?
-                                    clientData
+                                    clientData.address.addressNeighborhood
                                     :
-                                    { ...clientData, adressNeighborhood: e.target.value })}
+                                    e.target.value)}
                             type="text"
                             id="outlined-basic"
                             label="Bairro"
@@ -440,25 +500,33 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                             size='small'
                             sx={{ width: '40%' }} />
 
-                        <TextField
-                            value={clientData.adressCity}
-                            onChange={(e) => setClientData(
-                                e.target.value.length > 30 ?
-                                    clientData
-                                    :
-                                    { ...clientData, adressCity: e.target.value })}
-                            type="text"
-                            id="outlined-basic"
-                            label="Cidade"
-                            size='small'
-                            variant="outlined"
-                            sx={{ width: '40%' }} />
 
 
                         <Autocomplete
-                            value={clientData.adressState}
+                            value={selectedCity}
+                            onChange={(event: any, newValue: type.CityStateType | null) => {
+                                handleSelectCity(newValue)
+                            }}
+                            noOptionsText="Não encontrado"
+                            id="controllable-states-demo"
+                            size='small'
+                            options={citiesOptions ?? []}
+                            getOptionLabel={(option) => (
+                                option.name + ' - ' + option.state.uf
+                            )}
+                            sx={{ width: '58%' }}
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                    label="Cidade"
+                                    onChange={(e) => { handleGetCities(e.target.value) }}
+                                />
+                            } />
+
+                        {/* <Autocomplete
+                            value={clientData.addressState}
                             onChange={(event: any, newValue: string | null) => {
-                                setClientData({ ...clientData, adressState: newValue });
+                                setClientData({ ...clientData, addressState: newValue });
                             }}
                             noOptionsText="Não encontrado"
                             id="controllable-states-demo"
@@ -471,7 +539,7 @@ export const ModalAddEditClient = (props: type.ListClientstoAddClientProps) => {
                                     label="UF"
 
                                 />
-                            } />
+                            } /> */}
                     </label>
                     <label style={{ display: 'flex', width: '95%' }}>
                         <input checked={clientData.finalCostumer ?? false} type='checkbox' onChange={(e) => {

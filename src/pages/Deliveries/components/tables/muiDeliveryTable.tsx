@@ -21,7 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { DefaultButton } from '../../../../components/buttons/defaultButton'
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import { Deliveries, DeliveriesReturnApiProps, TypeDeliveries } from '../..';
+import { Deliveries, TypeDeliveries } from '../..';
 import { DeliveryAddressClient } from '../../../Sell/Modals/CheckOut/Components/AddressClient';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 import { useApi } from '../../../../hooks/useApi';
@@ -30,6 +30,7 @@ import { GeneratePDFDeliveryList } from '../../../../components/pdfGenerator/Gen
 import { User } from '../../../../types/User';
 import { ModalDeliveryChanges } from './modals/modalDeliveryChanges';
 import { ModalDeliveryDone } from './modals/modalDeliveryDone';
+import { ResultDeliveryType } from '../../../../interfaces/useApi/findDeliveries';
 
 export interface DataDeliveryTableType {
   itemSell: string
@@ -42,7 +43,7 @@ export interface DataDeliveryTableType {
 }
 interface MuiTableProps {
   width: string
-  Deliveries: DeliveriesReturnApiProps[],
+  Deliveries: ResultDeliveryType[],
   rows: DataDeliveryTableType[],
   searchDeliveries: () => void
   type: TypeDeliveries
@@ -224,7 +225,7 @@ interface EnhancedTableToolbarProps {
   selected: readonly string[]
   searchDeliveries: () => void
   typeDelivery: TypeDeliveries
-  deliveries: DeliveriesReturnApiProps[]
+  deliveries: ResultDeliveryType[]
   user: User | null
   isModalDeliveryChangesOpen: boolean,
   setIsModalDeliveryChangesOpen: (value: boolean) => void

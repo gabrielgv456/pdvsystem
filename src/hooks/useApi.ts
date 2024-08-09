@@ -8,6 +8,9 @@ import { typeReqChangeFiscalParameters } from '../pages/Settings/tabs/FiscalPara
 import { addEditProductDataSend } from '../pages/InventoryManagement/Modals/AddEditProduct/interfaces';
 import { uploadImageType } from '../components/uploadImage/interfaces';
 import { createFiscalNoteType } from '../pages/Sell/Modals/CheckOut';
+import { findClientsType } from '../interfaces/useApi/findClientsType';
+import { editClientTypeReq } from '../interfaces/useApi/editClientTypeReq';
+import { findDeliveriesType } from '../interfaces/useApi/findDeliveries';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -104,9 +107,10 @@ export const useApi = () => ({
     },
     findClients: async (userId: number) => {
         const response = await api.post('/findclients', { userId })
-        return response.data
+        const data: findClientsType = response.data
+        return data
     },
-    editClient: async (dataEditClient: object) => {
+    editClient: async (dataEditClient: editClientTypeReq) => {
         const response = await api.post('/editclient', { ...dataEditClient })
         return response.data
     },
@@ -174,7 +178,8 @@ export const useApi = () => ({
                 finalDate: data.finalDate
             }
         })
-        return response.data
+        const result: findDeliveriesType = response.data
+        return result
     },
     changeStatusDeliveries: async (dataChangeStatusDeliveries: TypeChangeStatusDeliveriesRequest) => {
         const response = await api.patch('/changeStatusDeliveries', { dataChangeStatusDeliveries })
@@ -226,6 +231,14 @@ export const useApi = () => ({
         const response = await api.post('/createSellFiscalNote',
             { ...dataCreateFiscalNote },
             { responseType: 'blob' })
+        if (response.status !== 200) {
+            const errorResponse = await response.data.text();
+            const errorJson = JSON.parse(errorResponse);
+            return errorJson
+        }
+        return response.data
+    }, getCities: async (city?: string | null, ibge?: number | null) => {
+        const response = await api.get('/cities', { params: { city, ibge } })
         return response.data
     }
 });

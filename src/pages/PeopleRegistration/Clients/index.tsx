@@ -13,36 +13,12 @@ import { ModalAddEditClient } from "./Modals/addEditClient/addEditClient";
 import { ModalSuccessClient } from "./Modals/Success/modalSuccess";
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
 import { useLayout } from "../../../contexts/Layout/layoutContext";
+import { AddressType } from "./Modals/addEditClient/interfaces";
+import { ClientType_FindClients } from "../../../interfaces/useApi/findClientsType";
 
 
 
-export interface ClientsReturnApiProps {
-    storeId?: number,
-    id?: number;
-    idClient?: number;
-    name: string;
-    gender: string | null;
-    cpf: string | null;
-    email: string | null;
-    created_at?: Date;
-    active: boolean;
-    birthDate: Date | string | null,
-    phoneNumber: string | null,
-    cellNumber: string | null,
-    adressStreet: string | null,
-    adressNumber: string | null,
-    adressNeighborhood: string,
-    adressComplement: string | null,
-    adressCity: string | null,
-    adressState: string | null,
-    adressCep: string | null,
-    adressUF: string | null,
-    ie: string,
-    suframa: string,
-    finalCostumer: boolean | null,
-    taxRegimeId: number | null,
-    taxPayerTypeId: number | null
-}
+export type ClientsReturnApiProps = ClientType_FindClients
 
 interface SidebartoPeopleRegistrationProps {
     PeopleMode: string,

@@ -1,10 +1,10 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { DeliveriesReturnApiProps } from "../../pages/Deliveries";
 import { DateFormatWeek, cellNumberFormat, cpfCnpjFormat, phoneNumberFormat } from "../../utils/utils";
 import { User } from "../../types/User";
+import { ResultDeliveryType } from "../../interfaces/useApi/findDeliveries";
 
-export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], storeName: string, userInfo:User|null) => {
+export const GeneratePDFDeliveryList = (deliveries: ResultDeliveryType[], storeName: string, userInfo: User | null) => {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -13,7 +13,7 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
         const countRowSpam = deliveries.reduce((acc, item) => {
             if (item.itemSell.sell.codRef === delivery.itemSell.sell.codRef) { return acc + 1; } else { return acc; }
         }, 0);
-        lastDeliveries.push(delivery.itemSell.sell.codRef)
+        if (delivery.itemSell.sell.codRef) lastDeliveries.push(delivery.itemSell.sell.codRef)
         const countLastDeliveries = lastDeliveries.reduce((acc, item) => {
             if (item === delivery.itemSell.sell.codRef) { return acc + 1 } else { return acc }
         }, 0)
@@ -27,7 +27,7 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
             },
             {
                 text: `${countLastDeliveries <= 1 ?
-                    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(delivery.onDeliveryPayValue)
+                    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(delivery.onDeliveryPayValue ?? 0)
                     : ''}`, rowSpan: countRowSpam
             },
             { text: delivery.itemSell.descriptionProduct },
@@ -36,8 +36,8 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
                 text: delivery.address.addressStreet + ', '
                     + delivery.address.addressNumber + ', '
                     + delivery.address.addressNeighborhood + ', '
-                    + delivery.address.addressCity + ' - '
-                    + delivery.address.addressState
+                    + (delivery.address.city?.name ?? '') + ' - '
+                    + (delivery.address.city?.state.uf ?? '')
             },
             {
                 text: DateFormatWeek(delivery.scheduledDate)
@@ -158,8 +158,8 @@ export const GeneratePDFDeliveryList = (deliveries: DeliveriesReturnApiProps[], 
             title: {
                 fontSize: 15, bold: true
             },
-            subTitle : {
-                fontSize: 16, bold: true,  decoration: "underline",
+            subTitle: {
+                fontSize: 16, bold: true, decoration: "underline",
             },
             tableItens: {
                 fontSize: 9

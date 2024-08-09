@@ -20,6 +20,7 @@ import { TabShippingDeliveries } from './tabs/shippingDelivery';
 import { TabDoneDeliveries } from './tabs/doneDelivery';
 import { typesPayment } from '../Sell/Modals/CheckOut';
 import { useLayout } from '../../contexts/Layout/layoutContext';
+import { ResultDeliveryType } from '../../interfaces/useApi/findDeliveries';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -29,41 +30,6 @@ interface TabPanelProps {
 
 export type TypeDeliveries = 'Pending' | 'Done' | 'Shipping'
 
-export interface DeliveriesReturnApiProps {
-    id: number,
-    client: {
-        name: string
-    } | null,
-    scheduledDate: string | null,
-    deliveredDate: string | null,
-    status: 'Pending' | 'Shipping' | 'Done',
-    onDeliveryPayValue: number,
-    address: {
-        id: number,
-        addressStreet: string,
-        addressNumber: string,
-        addressNeighborhood: string,
-        addressComplement: string,
-        addressCity: string,
-        addressState: string | null,
-        addressCep: string,
-    }
-    itemSell: {
-        id: number,
-        descriptionProduct: string,
-        totalValue: number,
-        sell: {
-            id: number,
-            codRef: number,
-            sellValue: number,
-            paymentsells: [{
-                typepayment: typesPayment,
-                value: number,
-            }]
-        },
-        quantity: number
-    }
-}
 
 export interface TypeDeliveriesRequest {
     finalDate: string,
@@ -79,7 +45,7 @@ export const Deliveries = () => {
     const auth = useContext(AuthContext);
     const { findDeliveries } = useApi()
     const atualdata = ReturnData()
-    const [DeliveriesReturnApi, setDeliveriesReturnApi] = useState<DeliveriesReturnApiProps[]>([])
+    const [DeliveriesReturnApi, setDeliveriesReturnApi] = useState<ResultDeliveryType[]>([])
     const [initialDate, setinitialDate] = useState(atualdata)
     const [finalDate, SetfinalDate] = useState(atualdata)
     const { MessageBox } = useMessageBoxContext()

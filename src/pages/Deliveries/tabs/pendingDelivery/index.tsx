@@ -2,11 +2,11 @@
 import * as S from "./style"
 import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
 import MuiTableDeliveries, { DataDeliveryTableType } from "../../components/tables/muiDeliveryTable";
-import { DeliveriesReturnApiProps } from "../..";
 import { DateFormatWeek } from "../../../../utils/utils";
+import { ResultDeliveryType } from "../../../../interfaces/useApi/findDeliveries";
 
 interface DeliveriesProps {
-    Deliveries: DeliveriesReturnApiProps[],
+    Deliveries: ResultDeliveryType[],
     searchDeliveries: () => void
 }
 interface Data {
@@ -26,7 +26,7 @@ export const TabPendingDeliveries = ({ Deliveries, searchDeliveries }: Deliverie
             itemSell: String(delivery.itemSell.id),
             sell: String(delivery.itemSell.sell.codRef),
             client: delivery.client?.name ?? 'Não informado',
-            address: delivery.address.addressStreet + ', ' + delivery.address.addressNumber + ', ' + delivery.address.addressNeighborhood + ', ' + delivery.address.addressCity + ' - ' + delivery.address.addressState,
+            address: delivery.address.addressStreet + ', ' + delivery.address.addressNumber + ', ' + delivery.address.addressNeighborhood + ', ' + (delivery.address.city?.name ?? '') + ' - ' + (delivery.address.city?.state.uf ?? ''),
             product: delivery.itemSell.descriptionProduct,
             scheduledDate: DateFormatWeek(delivery.scheduledDate),
             deliveredDate: DateFormatWeek(delivery.deliveredDate)

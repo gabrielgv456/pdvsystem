@@ -2,25 +2,27 @@ import Modal from '@mui/material/Modal';
 import { MuiBox } from '../../../../../../components/box/muiBox';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { DeliveriesReturnApiProps, TypeDeliveries } from '../../../..';
+import { TypeDeliveries } from '../../../..';
 import { useState } from 'react';
 import { DeliveryAddressChange } from '../components/changeAddress';
 import * as S from './style'
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
+import { ResultDeliveryType } from '../../../../../../interfaces/useApi/findDeliveries';
 
 
 interface ModalDeliveryChangesProps {
     isModalDeliveryChangesOpen: boolean,
     setIsModalDeliveryChangesOpen: (value: boolean) => void
-    deliveriesFiltered: DeliveriesReturnApiProps[]
+    deliveriesFiltered: ResultDeliveryType[]
     searchDeliveries: () => void
     typeDelivery: TypeDeliveries
 }
 
 export const ModalDeliveryChanges = (props: ModalDeliveryChangesProps) => {
 
-    const [selectedDeliveryModal, setSelectedDeliveryModal] = useState<DeliveriesReturnApiProps>(props.deliveriesFiltered[0])
+    const [selectedDeliveryModal, setSelectedDeliveryModal] = useState<ResultDeliveryType>(props.deliveriesFiltered[0])
     const moreOneDelivery = props.deliveriesFiltered.length > 1
+
 
     function handleCloseModalDeliveryChanges() {
         props.setIsModalDeliveryChangesOpen(false)
@@ -35,7 +37,7 @@ export const ModalDeliveryChanges = (props: ModalDeliveryChangesProps) => {
                 <S.ModalDiv>
                     <Autocomplete
                         value={selectedDeliveryModal}
-                        onChange={(event: any, newValue: DeliveriesReturnApiProps | null) => {
+                        onChange={(event: any, newValue: ResultDeliveryType | null) => {
                             if (newValue) setSelectedDeliveryModal(newValue);
                         }}
                         noOptionsText="Não encontrado"

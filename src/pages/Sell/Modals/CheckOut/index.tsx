@@ -27,6 +27,8 @@ import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../comp
 import { DefaultButton } from '../../../../components/buttons/defaultButton';
 import { RiFileList3Line } from 'react-icons/ri';
 import { GeneratePDFBudget } from '../../../../components/pdfGenerator/GeneratePDFBudget';
+import { Address, CityStateType } from '../../../PeopleRegistration/Clients/Modals/addEditClient/interfaces';
+import { ClientType_FindClients } from '../../../../interfaces/useApi/findClientsType';
 
 interface handleChangeProps {
     UserId: number;
@@ -53,36 +55,15 @@ export interface SellersandClientsType {
     cpf: string;
     active: boolean;
 }
-export interface ClientsType {
-    id: number;
-    name: string;
-    gender: string;
-    cpf: string;
-    email: string | null;
-    created_at: Date;
-    active: boolean;
-    birthDate: Date,
-    phoneNumber: string | null,
-    cellNumber: string | null,
-    adressStreet: string | null,
-    adressNumber: string | null,
-    adressNeighborhood: string,
-    adressComplement: string | null,
-    adressCity: string | null,
-    adressState: string | null,
-    adressCep: string | null,
-    adressUF: string | null
-}
+export type ClientsType = ClientType_FindClients
 
 export interface deliveryAddressClientType {
     addressStreet: string | null,
     addressNumber: string | null,
     addressNeighborhood: string | null,
     addressComplement: string | null,
-    addressCity: string | null,
-    addressState: string | null,
+    addressCityId: number | null,
     addressCep: string,
-    addressUF: string | null,
     scheduledDate: Date | null
     | null
 }
@@ -124,7 +105,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const Theme = useDarkMode()
     const { MessageBox } = useMessageBoxContext()
     const auth = useContext(AuthContext);
-    const { addsell, findSellers, findClients, createFiscalNote } = useApi()
+    const { addsell, findSellers, findClients, createFiscalNote, getCities } = useApi()
     const [isSellEnded, setisSellEnded] = useState(false)
     const [inputSeller, setInputSeller] = useState<SellersandClientsType | null>(null)
     const [inputClient, setInputClient] = useState<ClientsType | null>(null)
@@ -135,7 +116,30 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
     const [selectedDeliveryType, setSelectedDeliveryType] = useState('instantDelivery');
     const [isModalAddEditClientOpen, setisModalAddEditClientOpen] = useState(false)
     const [isModalAddSellerOpen, setisModalAddSellerOpen] = useState(false)
-    const [addressDeliveryClient, setDeliveryClientType] = useState<deliveryAddressClientType>({ addressCep: '', addressCity: '', addressComplement: '', addressNeighborhood: '', addressNumber: '', addressState: '', addressStreet: '', addressUF: '', scheduledDate: null })
+    const [addressDeliveryClient, setDeliveryClientType] = useState<deliveryAddressClientType>({ addressCep: '', addressCityId: 0, addressComplement: '', addressNeighborhood: '', addressNumber: '', addressStreet: '', scheduledDate: null })
+    const [selectedCity, setSelectedCity] = useState<CityStateType | null>(null)
+    const [citiesOptions, setCitiesOptions] = useState<CityStateType[] | null>(null)
+
+    async function handleGetCities(city: string | null) {
+        try {
+            const response = await getCities(city)
+            if (!response.Success) throw new Error(response.erro ?? 'Erro desconhecido')
+            setCitiesOptions(response.cities)
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
+        }
+    }
+
+    async function handleGetCitiesIbge(ibge: number | null): Promise<CityStateType[] | undefined> {
+        try {
+            const response = await getCities(undefined, ibge)
+            if (!response.Success) throw new Error(response.erro ?? 'Erro desconhecido')
+            return response.cities
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
+        }
+    }
+
     const handleChangeDeliveryType = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.value === 'instantDelivery') {
             props.setMethods(props.listMethods.filter(method => method.type !== 'onDelivery'))
@@ -149,16 +153,18 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
     async function handleChangeClient(newClient: ClientsType | null) {
         setInputClient(newClient);
+        if (newClient?.address?.city.ibge) {
+            const city = await handleGetCitiesIbge(newClient.address.city.ibge)
+            if (city) { setSelectedCity(city[0]) }
+        }
         setDeliveryClientType({
             ...addressDeliveryClient,
-            addressCep: newClient?.adressCep ?? '',
-            addressCity: newClient?.adressCity ?? '',
-            addressComplement: newClient?.adressComplement ?? '',
-            addressNeighborhood: newClient?.adressNeighborhood ?? '',
-            addressNumber: newClient?.adressNumber ?? '',
-            addressState: newClient?.adressState ?? '',
-            addressStreet: newClient?.adressStreet ?? '',
-            addressUF: newClient?.adressUF ?? ''
+            addressCep: newClient?.address?.addressCep ?? '',
+            addressCityId: newClient?.address?.cityId ?? 0,
+            addressComplement: newClient?.address?.addressComplement ?? '',
+            addressNeighborhood: newClient?.address?.addressNeighborhood ?? '',
+            addressNumber: newClient?.address?.addressNumber ?? '',
+            addressStreet: newClient?.address?.addressStreet ?? ''
         })
     }
 
@@ -174,12 +180,13 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             }
         }
         const ClientsSearch = async () => {
-            const data = await findClients(auth.idUser);
-            if (data.Success) {
+            try {
+                const data = await findClients(auth.idUser);
+                if (!data.Success) throw new Error(data.erro ?? 'Erro desconhecido')
                 setClients(data.findClients)
             }
-            else {
-                MessageBox('error', data.erro)
+            catch (error) {
+                MessageBox('error', 'Ocorreu uma falha ao lcoalizar os clientes! ' + (error as Error).message)
             }
         }
         ClientsSearch();
@@ -253,7 +260,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             setInputClient(null)
             setInputSeller(null)
             setSelectedDeliveryType('instantDelivery')
-            setDeliveryClientType({ addressCep: '', addressCity: '', addressComplement: '', addressNeighborhood: '', addressNumber: '', addressState: '', addressStreet: '', addressUF: '', scheduledDate: null })
+            setDeliveryClientType({ addressCep: '', addressCityId: 0, addressComplement: '', addressNeighborhood: '', addressNumber: '', addressStreet: '', scheduledDate: null })
             props.setinputProducts(null)
             props.setisModalConfirmSellOpen(false)
             setisSellEnded(false)
@@ -297,10 +304,9 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
         if (valuesSelltoSendApi.isDelivery) {
             try {
                 if (!valuesSelltoSendApi.delivery.addressCep) throw new Error(`Cep obrigatório!`)
-                if (!valuesSelltoSendApi.delivery.addressCity) throw new Error(`Cidade obrigatória!`)
+                if (valuesSelltoSendApi.delivery.addressCityId === 0) throw new Error(`Cidade obrigatória!`)
                 if (!valuesSelltoSendApi.delivery.addressNeighborhood) throw new Error(`Bairro obrigatório!`)
                 if (!valuesSelltoSendApi.delivery.addressNumber) throw new Error(`Número residencia obrigatório!`)
-                if (!valuesSelltoSendApi.delivery.addressState) throw new Error(`Estado obrigatório!`)
                 if (!valuesSelltoSendApi.delivery.addressStreet) throw new Error(`Rua obrigatória!`)
                 if (!valuesSelltoSendApi.delivery.scheduledDate) throw new Error(`Data de entrega obrigatória!`)
             } catch (error) {
@@ -345,11 +351,8 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
         try {
             const result = await createFiscalNote(props)
             if (result.erro) throw new Error(result.erro)
-            console.log(result)
             const blob = new Blob([result], { type: 'application/pdf' });
-            console.log(blob)
             const url = URL.createObjectURL(blob);
-            console.log(url)
             setPdfNF(url)
         } catch (error) {
             MessageBox('error', (error as Error).message)
@@ -358,17 +361,17 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
     return (
         <>
-            <Modal open={props.isModalConfirmSellOpen} onClose={handleCloseModalConfirmSell}>
+            <Modal open={props.isModalConfirmSellOpen} onClose={handleCloseModalConfirmSell} >
                 <MuiBox desktopWidth={650} mobileWidthPercent='90%' padding='25px'>
                     <S.SectionMConfirmSell>
                         {(isSellEnded && resultSell.codRef) && <div style={{ fontSize: '1.1rem' }}><b>Código da venda: </b> {resultSell.codRef}</div>}
-                        <div style={{ fontSize: '1.1rem', marginBottom: '0px' }}><b>Total:</b> {props.sumvalueformated}</div>
+                        {!pdfNF && <div style={{ fontSize: '1.1rem', marginBottom: '0px' }}><b>Total:</b> {props.sumvalueformated}</div>}
                         {props.needReturnCash === 'N' ? <div style={{ fontSize: '1.1rem' }}><b>Restante:</b> {props.formatedmissvalue}</div> : ''}
                         {props.needReturnCash === 'Y' && <div style={{ fontSize: '1.1rem', color: 'red' }}><b>Troco:</b> {props.formatedmissvalue}</div>}
-                        {props.needReturnCash === 'OK' && <div style={{ fontSize: '1.1rem', color: 'green' }}><b>Restante:</b> {props.formatedmissvalue}</div>}
+                        {(props.needReturnCash === 'OK' && !pdfNF) && <div style={{ fontSize: '1.1rem', color: 'green' }}><b>Restante:</b> {props.formatedmissvalue}</div>}
                     </S.SectionMConfirmSell>
                     {isSellEnded && (
-                        pdfNF ? <embed src={pdfNF} style={{ width: '100%', height: '100%', border: 'none' }} /> :
+                        pdfNF ? <embed src={pdfNF} style={{ width: '100%', height: '400px', border: 'none' }} /> :
                             <S.LabelSellEnded>
                                 <HiBadgeCheck className="HiBadgeCheck" style={{ color: 'var(--Green)' }} size="130" />
                                 Venda confirmada com sucesso !
@@ -454,6 +457,11 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                                     setDeliveryClientType={setDeliveryClientType}
                                     addressDeliveryClient={addressDeliveryClient}
                                     inputClient={inputClient}
+                                    handleGetCitiesIbge={handleGetCitiesIbge}
+                                    handleGetCities={handleGetCities}
+                                    setSelectedCity={setSelectedCity}
+                                    selectedCity={selectedCity}
+                                    citiesOptions={citiesOptions}
                                 />
                             }
                             <S.PHeaderModal>Qual a forma de pagamento?</S.PHeaderModal>

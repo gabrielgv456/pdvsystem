@@ -4,25 +4,50 @@ import { cepFormat, optionsUF, removeNotNumerics } from '../../../../../../utils
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import axios from 'axios';
 import * as S from './style'
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ClientsType, deliveryAddressClientType } from '../..';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ptBR from 'dayjs/locale/pt-br'
+import { CityStateType } from '../../../../../PeopleRegistration/Clients/Modals/addEditClient/interfaces';
 
 interface DeliveryAddressClientProps {
-    setDeliveryClientType: (value: deliveryAddressClientType) => void
+    setDeliveryClientType: Dispatch<SetStateAction<deliveryAddressClientType>>
+    setSelectedCity: Dispatch<SetStateAction<CityStateType | null>>
     addressDeliveryClient: deliveryAddressClientType
     inputClient: ClientsType | null
+    handleGetCitiesIbge(ibge: number | null): Promise<CityStateType[] | undefined>
+    handleGetCities(city: string | null): void
+    citiesOptions: CityStateType[] | null
+    selectedCity: CityStateType | null
 }
 
 
 export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
 
+    useEffect(() => {
+        props.handleGetCities(null)
+    }, [])
+
     const { MessageBox } = useMessageBoxContext()
 
-    
+    async function handleSelectCity(newValue: CityStateType | null) {
+        props.setSelectedCity(newValue)
+        if (newValue) {
+            handleChangeAddress('addressCityId', newValue.id)
+        }
+    }
+
+    function handleChangeAddress<T extends keyof deliveryAddressClientType>(
+        property: T, value: deliveryAddressClientType[T]) {
+        props.setDeliveryClientType(prevState => {
+            return {
+                ...prevState,
+                [property]: value
+            }
+        })
+    }
 
     async function handleConsultCep(cep: string) {
         const cepformated = removeNotNumerics(cep)
@@ -36,17 +61,21 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                 }
                 else {
                     if (props.addressDeliveryClient) {
-                        props.setDeliveryClientType({
-                            ...props.addressDeliveryClient,
-                            addressNeighborhood: data.bairro,
-                            addressState: data.uf,
-                            addressStreet: data.logradouro,
-                            addressCity: data.localidade,
-                            addressCep: props.addressDeliveryClient.addressCep,
-                            addressComplement: '',
-                            addressNumber: '',
-                            addressUF: data.uf
-                        })
+
+                        const city = await props.handleGetCitiesIbge(data.ibge)
+                        if (city) {
+                            props.setDeliveryClientType({
+                                ...props.addressDeliveryClient,
+                                addressNeighborhood: data.bairro,
+                                addressStreet: data.logradouro,
+                                addressCityId: city[0].id,
+                                addressCep: props.addressDeliveryClient.addressCep,
+                                addressComplement: '',
+                                addressNumber: ''
+                            })
+
+                            props.setSelectedCity(city[0])
+                        }
                     }
                 }
             }
@@ -69,7 +98,7 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                         disablePast={true}
                         value={props.addressDeliveryClient.scheduledDate}
                         onChange={(newValue) => {
-                            props.setDeliveryClientType({ ...props.addressDeliveryClient, scheduledDate: newValue });
+                            handleChangeAddress('scheduledDate', newValue);
                         }}
                         renderInput={(params) => <TextField size="small" sx={{ width: '30%' }} {...params} />}
                     />
@@ -78,7 +107,7 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                 <TextField
                     value={props.addressDeliveryClient.addressCep}
                     onChange={(e) => {
-                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressCep: cepFormat(e.target.value, props.addressDeliveryClient.addressCep) })
+                        handleChangeAddress('addressCep', cepFormat(e.target.value, props.addressDeliveryClient.addressCep))
                     }}
                     onBlur={(e) => handleConsultCep(e.target.value)}
                     size='small'
@@ -91,7 +120,7 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                 <TextField
                     value={props.addressDeliveryClient.addressStreet}
                     onChange={(e) => {
-                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressStreet: `${e.target.value.length > 50 ? props.addressDeliveryClient.addressStreet : e.target.value}` })
+                        handleChangeAddress('addressStreet', `${e.target.value.length > 50 ? props.addressDeliveryClient.addressStreet : e.target.value}`)
                     }}
                     id="outlined-basic"
                     label="Endereço"
@@ -103,7 +132,7 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                 <TextField
                     value={props.addressDeliveryClient.addressNumber}
                     onChange={(e) => {
-                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressNumber: `${e.target.value.length > 5 ? props.addressDeliveryClient.addressNumber : e.target.value}` })
+                        handleChangeAddress('addressNumber', `${e.target.value.length > 5 ? props.addressDeliveryClient.addressNumber : e.target.value}`)
                     }}
                     id="outlined-basic"
                     label="Nº"
@@ -118,28 +147,37 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                 <TextField
                     value={props.addressDeliveryClient.addressNeighborhood}
                     onChange={(e) =>
-                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressNeighborhood: `${e.target.value.length > 30 ? props.addressDeliveryClient.addressNeighborhood : e.target.value}` })
+                        handleChangeAddress('addressNeighborhood', `${e.target.value.length > 30 ? props.addressDeliveryClient.addressNeighborhood : e.target.value}`)
                     }
                     type="text"
                     id="outlined-basic"
                     size='small'
                     label="Bairro"
                     variant="outlined"
-                    sx={{ width: '35%' }} />
-
-                <TextField
-                    value={props.addressDeliveryClient.addressCity}
-                    onChange={(e) =>
-                        props.setDeliveryClientType({ ...props.addressDeliveryClient, addressCity: `${e.target.value.length > 30 ? props.addressDeliveryClient.addressCity : e.target.value}` })
-                    }
-                    type="text"
-                    id="outlined-basic"
-                    label="Cidade"
-                    variant="outlined"
-                    size='small'
-                    sx={{ width: '45%' }} />
+                    sx={{ width: '41%' }} />
 
                 <Autocomplete
+                    value={props.selectedCity}
+                    onChange={(event: any, newValue: CityStateType | null) => {
+                        handleSelectCity(newValue)
+                    }}
+                    noOptionsText="Não encontrado"
+                    id="controllable-states-demo"
+                    size='small'
+                    options={props.citiesOptions ?? []}
+                    getOptionLabel={(option) => (
+                        option.name + ' - ' + option.state.uf
+                    )}
+                    sx={{ width: '58%' }}
+                    renderInput={(params) =>
+                        <TextField
+                            {...params}
+                            label="Cidade"
+                            onChange={(e) => { props.handleGetCities(e.target.value) }}
+                        />
+                    } />
+
+                {/* <Autocomplete
                     value={props.addressDeliveryClient.addressState}
                     onChange={(event: any, newValue: string | null) => {
                         props.setDeliveryClientType({ ...props.addressDeliveryClient, addressState: newValue })
@@ -155,7 +193,7 @@ export const DeliveryAddressClient = (props: DeliveryAddressClientProps) => {
                             label="UF"
 
                         />
-                    } />
+                    } /> */}
             </label>
         </S.DivModal>
 

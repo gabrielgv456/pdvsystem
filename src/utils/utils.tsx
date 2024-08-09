@@ -132,7 +132,7 @@ export function currencyRemoveNotNumbers(value: string | null) {
   return value.replace(/[^\d.]/g, '')
 }
 
-export function DateFormatWeek(value: string | null) {
+export function DateFormatWeek(value: Date | string | null) {
   if (!value) return ''
   return new Date(value).toLocaleString('pt-BR', {
     day: 'numeric',

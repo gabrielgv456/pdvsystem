@@ -12,7 +12,7 @@ interface ProductsType {
     quantity: number;
 };
 
-export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number,sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null, clientInfo: ClientsType | null, sellerInfo: SellersandClientsType | null) => {
+export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number, sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null, clientInfo: ClientsType | null, sellerInfo: SellersandClientsType | null) => {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -80,12 +80,12 @@ export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number,su
                         [{ text: `Cliente: ${clientInfo?.name ?? 'Não informado'} ` }, { text: `CPF/CNPJ: ${cpfCnpjFormat(clientInfo?.cpf ?? '', clientInfo?.cpf ?? '') ?? ''} ` }, { text: `E-mail: ${clientInfo?.email ?? ''} ` }],
                         [{ text: `Celular: ${cellNumberFormat(clientInfo?.cellNumber ?? '', clientInfo?.cellNumber ?? '') ?? ''} ` }, { text: `Telefone: ${phoneNumberFormat(clientInfo?.phoneNumber ?? '', clientInfo?.phoneNumber ?? '') ?? ''} `, colSpan: 2 }, {}],
                         [{
-                            text: `Endereço: ${clientInfo?.adressState ? (
-                                clientInfo?.adressStreet + ', '
-                                + clientInfo?.adressNumber + ', '
-                                + clientInfo?.adressNeighborhood + ', '
-                                + clientInfo?.adressCity + ' - '
-                                + clientInfo?.adressState) : ''
+                            text: `Endereço: ${clientInfo?.address?.addressStreet ? (
+                                clientInfo?.address.addressStreet + ', '
+                                + clientInfo?.address.addressNumber + ', '
+                                + clientInfo?.address.addressNeighborhood + ', '
+                                + clientInfo?.address.city.name + ' - '
+                                + clientInfo?.address.city.state.uf) : ''
                                 }`, colSpan: 3
                         }, {}, {}],
                         [{ text: '' }, {}, {}],
@@ -102,7 +102,7 @@ export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number,su
                         ...ProductData,
                         [{ text: ' ' }, { text: ' ' }, { text: ' ' }, { text: ' ' }],
                         [{ text: 'Total s/ Descontos', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValue + sumDiscount), colSpan: 2, alignment: 'center' }, {}],
-                        [{ text: 'Desconto Total', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumDiscount) , colSpan: 2, alignment: 'center'}, {}],
+                        [{ text: 'Desconto Total', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumDiscount), colSpan: 2, alignment: 'center' }, {}],
                         [{ text: 'VALOR TOTAL', colSpan: 2, style: 'bold' }, {}, { text: sumvalueformated, colSpan: 2, alignment: 'center', style: 'bold' }, {}],
                         [{ text: 'QUANTIDADE TOTAL', colSpan: 2, style: 'bold' }, {}, { text: sumquantity, alignment: 'center', colSpan: 2, style: 'bold' }, {}],
                     ]

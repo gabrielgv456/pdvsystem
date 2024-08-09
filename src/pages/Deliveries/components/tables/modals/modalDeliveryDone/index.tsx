@@ -2,7 +2,7 @@ import Modal from '@mui/material/Modal';
 import { MuiBox } from '../../../../../../components/box/muiBox';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { DeliveriesReturnApiProps, TypeDeliveries } from '../../../..';
+import { TypeDeliveries } from '../../../..';
 import { useContext, useState } from 'react';
 import * as S from './style'
 import { DateDelivered } from '../components/dateDelivered';
@@ -13,11 +13,12 @@ import { PaymentDelivery } from '../components/Payment';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { useApi } from '../../../../../../hooks/useApi';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
+import { ResultDeliveryType } from '../../../../../../interfaces/useApi/findDeliveries';
 
 interface ModalDeliveryChangesProps {
     isModalDeliveryDoneOpen: boolean,
     setIsModalDeliveryDoneOpen: (value: boolean) => void
-    deliveriesFiltered: DeliveriesReturnApiProps[]
+    deliveriesFiltered: ResultDeliveryType[]
     searchDeliveries: () => void
     typeDelivery: TypeDeliveries
     itensSelected: number[]
@@ -44,7 +45,7 @@ export const ModalDeliveryDone = (props: ModalDeliveryChangesProps) => {
     const [value, setValue] = useState([0])
 
     const payOnDeliveryFiltered = (props.deliveriesFiltered.filter(deliveryFilter => deliveryFilter.onDeliveryPayValue))
-    const [selectedPayOnDeliveryModal, setselectedPayOnDeliveryModal] = useState<DeliveriesReturnApiProps | null>(payOnDeliveryFiltered.length === 1 ? payOnDeliveryFiltered[0] : null)
+    const [selectedPayOnDeliveryModal, setselectedPayOnDeliveryModal] = useState<ResultDeliveryType | null>(payOnDeliveryFiltered.length === 1 ? payOnDeliveryFiltered[0] : null)
 
 
     function handleCloseModalDeliveryDone() {
@@ -113,7 +114,7 @@ export const ModalDeliveryDone = (props: ModalDeliveryChangesProps) => {
                             Existem vendas com metódo de pagamento "na entrega", antes informe qual foi o tipo de pagamento:
                             <Autocomplete
                                 value={selectedPayOnDeliveryModal}
-                                onChange={(event: any, newValue: DeliveriesReturnApiProps | null) => {
+                                onChange={(event: any, newValue: ResultDeliveryType | null) => {
                                     setselectedPayOnDeliveryModal(newValue)
                                 }}
                                 noOptionsText="Não encontrado"
@@ -122,7 +123,7 @@ export const ModalDeliveryDone = (props: ModalDeliveryChangesProps) => {
                                 getOptionLabel={(option) => (
                                     option.itemSell.sell.codRef + ' - ' +
                                     (option.client?.name ?? 'Cliente não informado') + ' - ' +
-                                    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(option.onDeliveryPayValue)
+                                    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(option.onDeliveryPayValue ?? 0)
                                 )}
                                 sx={{ width: '100%' }}
                                 renderInput={(params) =>
