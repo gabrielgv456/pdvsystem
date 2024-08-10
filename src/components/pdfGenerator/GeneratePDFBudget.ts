@@ -54,12 +54,12 @@ export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number, s
                         [{}, { text: userInfo?.phone ? 'Telefone: ' + phoneNumberFormat(userInfo?.phone ?? '', userInfo?.phone ?? '') + '\n' : '' }, {}],
                         [{}, { text: userInfo?.cellPhone ? 'Celular: ' + cellNumberFormat(userInfo?.cellPhone ?? '', userInfo?.cellPhone ?? '') + '\n' : '' }, {}],
                         [{}, {
-                            text: userInfo?.adressStreet ? (
-                                userInfo?.adressStreet + ', '
-                                + userInfo?.adressNumber + ', '
-                                + userInfo?.adressNeighborhood + ', '
-                                + userInfo?.adressCity + ' - '
-                                + userInfo?.adressState) : ''
+                            text: userInfo?.address?.addressStreet ? (
+                                userInfo?.address?.addressStreet ?? '' + ', '
+                                + userInfo?.address?.addressNumber ?? '' + ', '
+                                + userInfo?.address?.addressNeighborhood ?? '' + ', '
+                                + userInfo?.address?.city.name ?? '' + ' - '
+                                + userInfo?.address?.city.state.uf ?? '') : ''
                         }, {}]
                     ]
                 },

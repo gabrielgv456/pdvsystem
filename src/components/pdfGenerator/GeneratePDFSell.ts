@@ -67,12 +67,12 @@ export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvaluef
                     (userInfo?.cnpj ? 'Cnpj: ' + cpfCnpjFormat(userInfo.cnpj, userInfo.cnpj) + '\n' : ''),
                     userInfo?.phone ? 'Telefone: ' + phoneNumberFormat(userInfo?.phone ?? '', userInfo?.phone ?? '') + '\n' : '',
                     userInfo?.cellPhone ? 'Celular: ' + cellNumberFormat(userInfo?.cellPhone ?? '', userInfo?.cellPhone ?? '') + '\n' : '',
-                    userInfo?.adressStreet ? (
-                        userInfo?.adressStreet + ', '
-                        + userInfo?.adressNumber + ', '
-                        + userInfo?.adressNeighborhood + ', '
-                        + userInfo?.adressCity + ' - '
-                        + userInfo?.adressState) + '\n\n' : '',
+                    userInfo?.address?.addressStreet ? (
+                        userInfo?.address.addressStreet ?? '' + ', '
+                        + userInfo?.address.addressNumber ?? '' + ', '
+                        + userInfo?.address.addressNeighborhood ?? '' + ', '
+                        + userInfo?.address.city.name ?? '' + ' - '
+                        + userInfo?.address.city.state.uf ?? '') + '\n\n' : '',
                 ],
                 margins: [0, 0, 0, 0]
             },

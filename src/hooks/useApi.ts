@@ -11,6 +11,8 @@ import { createFiscalNoteType } from '../pages/Sell/Modals/CheckOut';
 import { findClientsType } from '../interfaces/useApi/findClientsType';
 import { editClientTypeReq } from '../interfaces/useApi/editClientTypeReq';
 import { findDeliveriesType } from '../interfaces/useApi/findDeliveries';
+import { findAbourCorporationType } from '../interfaces/useApi/findAboutCorporation';
+import { validateTokenType } from '../interfaces/useApi/validateToken';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -27,7 +29,8 @@ export const useApi = () => ({
 
     validateToken: async (token: string) => {
         const response = await api.post('/validate', { token });
-        return response.data;
+        const result : validateTokenType = response.data
+        return result;
     },
     signin: async (email: string, password: string) => {
         const response = await api.post('/signin', { email, password });
@@ -152,7 +155,8 @@ export const useApi = () => ({
     },
     findAboutCorporation: async (userId: number) => {
         const response = await api.get(`/aboutCorporation?storeId=${userId}`)
-        return response.data
+        const result : findAbourCorporationType = response.data
+        return result
     },
     findIcmsOptions: async () => {
         const response = await api.get('/findIcmsOptions')

@@ -13,29 +13,31 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const api = useApi();
     const [isLoading, setIsLoading] = useState(true)
     const { MessageBox } = useMessageBoxContext()
+
     useEffect(() => {
         const validateToken = async () => {
-            setIsLoading(true)
-            const storageData = localStorage.getItem('authToken');
-            if (storageData) {
-                const data = await api.validateToken(storageData);
-                if (data.user) {
-                    setUser(data.user);
-                    setToken(data.token);
-                    setidUser(data.user.id);
-                    setmasterkey(data.user.masterkey)
+            try {
+                setIsLoading(true)
+                const storageData = localStorage.getItem('authToken');
+                if (storageData) {
+                    const data = await api.validateToken(storageData);
+                    if (data.error) throw new Error(data.error)
+                    setUserValid(data.valid);
+                    if (data.user) {
+                        const user: User = data.user
+                        setUser(user);
+                        setToken(data.token);
+                        setidUser(data.user.id);
+                        setmasterkey(data.user.masterkey)
+                    }
                 }
-                if (data.valid) {
-                    setUserValid(true);
-                }
-                if (!data.valid) {
-
-                }
-            }
-            else {
+                else { setUserValid(false) }
+            } catch (error) {
                 setUserValid(false)
+                MessageBox('error', 'Erro ao validar acesso! ' + (error as Error).message)
+            } finally {
+                setIsLoading(false)
             }
-            setIsLoading(false)
         }
         validateToken();
     }, []);

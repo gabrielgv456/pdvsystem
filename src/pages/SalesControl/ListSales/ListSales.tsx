@@ -7,6 +7,10 @@ import { AiFillPrinter } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
 import { useContext } from 'react'
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
+import NfeIcon from '../../../images/nfe.svg'
+import { createFiscalNoteType } from "../../Sell/Modals/CheckOut";
+import { useApi } from "../../../hooks/useApi";
+import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
 
 
 interface Props {
@@ -25,7 +29,9 @@ interface Props {
 export function Listagem(props: Props) {
 
    const Theme = useDarkMode();
-   const { user } = useContext(AuthContext)
+   const { user, idUser } = useContext(AuthContext)
+   const { createFiscalNote } = useApi()
+   const { MessageBox } = useMessageBoxContext()
    const remove = () => {
       props.handleRemoveTask(props.item.id, props.item.sellValue)
    }
@@ -51,7 +57,7 @@ export function Listagem(props: Props) {
 
 
    const handlePrint = () => {
-      GeneratePDFSell(sumTotalDiscountThisSell, sumtotalValuethisSell,sumtotalValuethisSellFormated, sumtotalQuantitythisSell, props.listSellsProducts.filter(item => item.sellId === props.item.id).map(item => { return { name: item.descriptionProduct, id: item.id, initialvalue: item.totalCost, quantity: item.quantity, totalvalue: item.totalValue } }), dataSellPrint, props.item.codRef, user)
+      GeneratePDFSell(sumTotalDiscountThisSell, sumtotalValuethisSell, sumtotalValuethisSellFormated, sumtotalQuantitythisSell, props.listSellsProducts.filter(item => item.sellId === props.item.id).map(item => { return { name: item.descriptionProduct, id: item.id, initialvalue: item.totalCost, quantity: item.quantity, totalvalue: item.totalValue } }), dataSellPrint, props.item.codRef, user)
    }
    const handleEdit = async () => {
 
@@ -61,9 +67,23 @@ export function Listagem(props: Props) {
 
    }
 
+   const handleCreateFiscalNote = async (props: createFiscalNoteType) => {
+      try {
+         const ok = window.confirm('Deseja emitir a nota fiscal?')
+         if (!ok) return
+         const result = await createFiscalNote(props)
+         if (result.erro) throw new Error(result.erro)
+         const blob = new Blob([result], { type: 'application/pdf' });
+         const url = URL.createObjectURL(blob);
+         window.open(url, '_blank')
+      } catch (error) {
+         MessageBox('error', (error as Error).message)
+      }
+   }
+
    return (
 
-      <S.Container isDarkMode={Theme.DarkMode}> 
+      <S.Container isDarkMode={Theme.DarkMode}>
          <S.DivTitle>
             <S.DivTipo>
                {/* {dataSell} */}
@@ -124,7 +144,7 @@ export function Listagem(props: Props) {
                <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.sellerName ?? "Não informado"}</S.LabelItem>
             </S.span>
 
-
+            <S.ButtonPrint isDarkMode={Theme.DarkMode} title="Emitir Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><img src={NfeIcon} style={{ width: 40 }} /></S.ButtonPrint>
             <S.ButtonPrint isDarkMode={Theme.DarkMode} title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.ButtonPrint>
             <S.ButtonTrash title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.ButtonTrash>
 

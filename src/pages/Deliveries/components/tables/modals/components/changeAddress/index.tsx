@@ -42,7 +42,7 @@ export const DeliveryAddressChange = (props: DeliveryAddressClientProps) => {
 
     useEffect(() => {
         getDefaultCity()
-    }, [props.selectedDeliveryModal])
+    }, [props.selectedDeliveryModal.id])
 
     const { MessageBox } = useMessageBoxContext()
     const auth = useContext(AuthContext)

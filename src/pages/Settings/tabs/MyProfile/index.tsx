@@ -2,7 +2,7 @@ import { useState, useContext, useEffect, DragEvent, ChangeEvent } from 'react';
 import * as S from './style'
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import Autocomplete from '@mui/material/Autocomplete';
+
 import { Divider } from "@mui/material";
 import { AuthContext } from '../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../hooks/useApi';
@@ -10,32 +10,76 @@ import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBox
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { cellNumberFormat, cepFormat, convertToBase64, cpfCnpjFormat, optionsUF, phoneNumberFormat, removeNotNumerics } from '../../../../utils/utils';
 import { User } from '../../../../types/User';
+import { editUserTypeReq } from '../../../../interfaces/useApi/editUserTypeReq';
+import { CityStateType } from '../../../PeopleRegistration/Clients/Modals/addEditClient/interfaces';
+import { CityAutoComplete } from '../../../../components/autoComplete/cityAutoComplete';
 
 
 export const TabMyProfile = () => {
 
-    const [nameCorporation, setNameCorporation] = useState('')
-    const [cnpjCorporation, setCnpjCorporation] = useState('')
-    const [emailCorporation, setEmailCorporation] = useState('')
-    const [ieCorporation, setIeCorporation] = useState('')
-    const [phoneNumberCorporation, setPhoneNumberCorporation] = useState('')
-    const [cellNumberCorporation, setCellNumberCorporation] = useState('')
-    const [adressCepCorporation, setAdressCepCorporation] = useState('')
-    const [adressStreetCorporation, setAdressStreetCorporation] = useState('')
-    const [adressNumberCorporation, setAdressNumberCorporation] = useState('')
-    const [adressNeighborhoodCorporation, setAdressNeighborhoodCorporation] = useState('')
-    const [adressCityCorporation, setAdressCityCorporation] = useState('')
-    const [adressStateCorporation, setAdressStateCorporation] = useState<string | null>('')
-    const [fantasyNameCorporation, setFantasyNameCorporation] = useState('')
+    useEffect(() => {
+        const searchAboutCorporation = async () => {
+            try {
+                const dataFindAboutCorporation = await findAboutCorporation(auth.idUser)
+                if (!dataFindAboutCorporation.Success) { throw new Error(dataFindAboutCorporation.erro) }
+                const { resultAboutCorporation } = dataFindAboutCorporation
+                console.log(resultAboutCorporation)
+                setDataProfile({
+                    name: resultAboutCorporation.name,
+                    cnpj: resultAboutCorporation.cnpj,
+                    email: resultAboutCorporation.email,
+                    fantasyName: resultAboutCorporation.fantasyName,
+                    ie: resultAboutCorporation.ie,
+                    phone: phoneNumberFormat(resultAboutCorporation.phone ?? ''),
+                    cellPhone: cellNumberFormat(resultAboutCorporation.cellPhone ?? ''),
+                    addressId: resultAboutCorporation.addressRelation?.id ?? null,
+                    addressCep: cepFormat(resultAboutCorporation.addressRelation?.addressCep ?? ''),
+                    addressCityId: resultAboutCorporation.addressRelation?.city.id ?? null,
+                    addressNeighborhood: resultAboutCorporation.addressRelation?.addressNeighborhood ?? null,
+                    addressNumber: resultAboutCorporation.addressRelation?.addressNumber ?? null,
+                    addressStreet: resultAboutCorporation.addressRelation?.addressStreet ?? null,
+                    storeId: auth.idUser
+                })
+                if (resultAboutCorporation.addressRelation?.city.ibge) {
+                    const city = await handleGetCitiesIbge(resultAboutCorporation.addressRelation?.city.ibge)
+                    if (city) setSelectedCity(city[0])
+                }
+            } catch (error) {
+                MessageBox('warning', 'Ocorreu uma falha ao buscar as informações cadatrarais! ' + (error as Error).message)
+            }
+
+        }
+        searchAboutCorporation()
+    }, [])
+
+
+    const [dataProfile, setDataProfile] = useState<editUserTypeReq>({} as editUserTypeReq)
+    const [citiesOptions, setCitiesOptions] = useState<CityStateType[] | null>(null)
+    const [selectedCity, setSelectedCity] = useState<CityStateType | null>(null)
     const [actualPass, setActualPass] = useState('')
     const [newPass, setNewPass] = useState('')
     const [confirmNewPass, setConfirmNewPass] = useState('')
     const [changeImage, setChangeImage] = useState(false)
     const auth = useContext(AuthContext)
-    const { changePassword, changeAboutCorporation, findAboutCorporation, uploadFile, deleteLogo } = useApi()
+    const { getCities, changePassword, changeAboutCorporation, findAboutCorporation, uploadFile, deleteLogo } = useApi()
     const { MessageBox } = useMessageBoxContext()
     const [dragOver, setDragOver] = useState(false);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+    useEffect(() => {
+        if (selectedCity?.id) handleChangeDataProfile('addressCityId', selectedCity?.id)
+    }, [selectedCity])
+
+    function handleChangeDataProfile<T extends keyof editUserTypeReq>(
+        property: T, value: editUserTypeReq[T]) {
+        setDataProfile(prevState => {
+            return {
+                ...prevState,
+                [property]: value
+            }
+        })
+    }
+
 
     const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
         event.preventDefault();
@@ -73,7 +117,7 @@ export const TabMyProfile = () => {
             setSelectedImage(imageLogo);
             const formData = new FormData();
             formData.append('file', imageLogo);
-            const result = await uploadFile(formData, { 'userId': auth.idUser, owner: 'local', host: process.env.REACT_APP_API ?? '', module:'User' })
+            const result = await uploadFile(formData, { 'userId': auth.idUser, owner: 'local', host: process.env.REACT_APP_API ?? '', module: 'User' })
             if (!result.Success) {
                 throw new Error('Sem sucesso ao atualizar o arquivo! ' + result.erro)
             }
@@ -88,7 +132,7 @@ export const TabMyProfile = () => {
 
     const handleDeleteLogo = async () => {
         try {
-            const result = await deleteLogo(auth.idUser,'User')
+            const result = await deleteLogo(auth.idUser, 'User')
             if (!result.Success) {
                 throw new Error('Falha ao deletar logo! ' + result.erro)
             }
@@ -102,34 +146,7 @@ export const TabMyProfile = () => {
     }
 
 
-    useEffect(() => {
-        const searchAboutCorporation = async () => {
-            try {
-                const dataFindAboutCorporation = await findAboutCorporation(auth.idUser)
-                if (!dataFindAboutCorporation.Success) {
-                    throw new Error("Falha ao buscar dados da empresa! " + dataFindAboutCorporation.erro)
-                }
-                const { resultAboutCorporation } = dataFindAboutCorporation
-                setNameCorporation(resultAboutCorporation.name)
-                setCnpjCorporation(cpfCnpjFormat(resultAboutCorporation.cnpj, resultAboutCorporation.cnpj))
-                setEmailCorporation(resultAboutCorporation.email)
-                setIeCorporation(resultAboutCorporation.ie)
-                setPhoneNumberCorporation(phoneNumberFormat(resultAboutCorporation.phone, resultAboutCorporation.phone))
-                setCellNumberCorporation(cellNumberFormat(resultAboutCorporation.cellPhone, resultAboutCorporation.cellPhone))
-                setAdressCepCorporation(cepFormat(resultAboutCorporation.adressCep, resultAboutCorporation.adressCep))
-                setAdressStreetCorporation(resultAboutCorporation.adressStreet)
-                setAdressNumberCorporation(resultAboutCorporation.adressNumber)
-                setAdressNeighborhoodCorporation(resultAboutCorporation.adressNeighborhood)
-                setAdressCityCorporation(resultAboutCorporation.adressCity)
-                setAdressStateCorporation(resultAboutCorporation.adressState)
-                setFantasyNameCorporation(resultAboutCorporation.fantasyName)
-            } catch (error) {
-                MessageBox('warning', (error as Error).message)
-            }
 
-        }
-        searchAboutCorporation()
-    }, [])
 
     async function handleChangePass() {
         try {
@@ -156,11 +173,12 @@ export const TabMyProfile = () => {
     }
     async function handleChangeAboutCorporation() {
         try {
-            const dataChangeAboutCorporation = await changeAboutCorporation(finalDataChangeAboutCorporation)
+            const dataChangeAboutCorporation = await changeAboutCorporation(dataProfile)
             if (!dataChangeAboutCorporation.Success) {
                 throw new Error("Erro ao atualizar dados da empresa! " + dataChangeAboutCorporation.erro)
             }
             const newUser: User | null = dataChangeAboutCorporation.updateAbouteCorporation
+            console.log(newUser)
             if (auth.user) {
                 auth.setUser({ ...auth.user, ...newUser })
             }
@@ -170,28 +188,21 @@ export const TabMyProfile = () => {
         }
     }
 
-    const finalDataChangeAboutCorporation = {
-        storeId: auth.idUser,
-        name: nameCorporation === '' ? null : nameCorporation,
-        cnpj: cnpjCorporation === '' ? null : removeNotNumerics(cnpjCorporation),
-        //email: emailCorporation,
-        phone: phoneNumberCorporation === '' ? null : removeNotNumerics(phoneNumberCorporation),
-        cellPhone: cellNumberCorporation === '' ? null : removeNotNumerics(cellNumberCorporation),
-        adressCep: adressCepCorporation === '' ? null : removeNotNumerics(adressCepCorporation),
-        adressStreet: adressStreetCorporation === '' ? null : adressStreetCorporation,
-        adressNumber: adressNumberCorporation === '' ? null : adressNumberCorporation,
-        adressNeighborhood: adressNeighborhoodCorporation === '' ? null : adressNeighborhoodCorporation,
-        adressCity: adressCityCorporation === '' ? null : adressCityCorporation,
-        adressState: adressStateCorporation === '' ? null : adressStateCorporation,
-        fantasyName: fantasyNameCorporation === '' ? null : fantasyNameCorporation,
-        ie: ieCorporation === '' ? null : ieCorporation
-    }
-
     const finalDataChangePass = {
         storeId: auth.idUser,
         actualPass,
         newPass,
         confirmNewPass
+    }
+
+    async function handleGetCitiesIbge(ibge: number | null): Promise<CityStateType[] | undefined> {
+        try {
+            const response = await getCities(undefined, ibge)
+            if (!response.Success) throw new Error(response.erro ?? 'Erro desconhecido')
+            return response.cities
+        } catch (error) {
+            MessageBox('error', (error as Error).message)
+        }
     }
 
     async function handleConsultCep(cep: string) {
@@ -205,10 +216,17 @@ export const TabMyProfile = () => {
                     MessageBox('error', 'CEP invalido')
                 }
                 else {
-                    setAdressStreetCorporation(data.logradouro)
-                    setAdressNeighborhoodCorporation(data.bairro)
-                    setAdressCityCorporation(data.localidade)
-                    setAdressStateCorporation(data.uf)
+                    const city = await handleGetCitiesIbge(data.ibge)
+
+                    if (city) {
+                        setSelectedCity(city[0])
+                        setDataProfile({
+                            ...dataProfile,
+                            addressStreet: data.logradouro,
+                            addressNeighborhood: data.bairro,
+                            addressCityId: city[0].id
+                        })
+                    }
                 }
             }
             catch (error) {
@@ -217,6 +235,7 @@ export const TabMyProfile = () => {
         }
 
     }
+
 
     return (
         <S.Container>
@@ -254,13 +273,11 @@ export const TabMyProfile = () => {
                 <b>Sobre o estabelecimento</b>
                 <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <TextField
-                        value={nameCorporation}
+                        value={dataProfile.name}
                         onChange={(e) => {
-                            setNameCorporation(
+                            handleChangeDataProfile('name',
                                 e.target.value.length > 40 ?
-                                    nameCorporation
-                                    :
-                                    e.target.value)
+                                    dataProfile.name : e.target.value)
                         }}
                         id="outlined-basic"
                         label="Razão Social *"
@@ -272,9 +289,9 @@ export const TabMyProfile = () => {
 
                 <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <TextField
-                        value={cnpjCorporation}
+                        value={dataProfile.cnpj}
                         onChange={(e) => {
-                            setCnpjCorporation(cpfCnpjFormat(e.target.value, cnpjCorporation))
+                            handleChangeDataProfile('cnpj', cpfCnpjFormat(e.target.value, dataProfile.cnpj ?? ''))
                         }}
                         label="CNPJ"
                         id="outlined-basic"
@@ -283,8 +300,8 @@ export const TabMyProfile = () => {
                     />
 
                     <TextField
-                        value={fantasyNameCorporation}
-                        onChange={(e) => { setFantasyNameCorporation(e.target.value) }}
+                        value={dataProfile.fantasyName}
+                        onChange={(e) => { handleChangeDataProfile('fantasyName', e.target.value) }}
                         label="Nome Fantasia"
                         id="outlined-basic"
                         variant="outlined"
@@ -296,13 +313,11 @@ export const TabMyProfile = () => {
                 </label>
                 <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <TextField
-                        value={emailCorporation}
+                        value={dataProfile.email}
                         onChange={(e) => {
-                            setEmailCorporation(
+                            handleChangeDataProfile('email',
                                 e.target.value.length > 40 ?
-                                    emailCorporation
-                                    :
-                                    e.target.value)
+                                    dataProfile.email : e.target.value)
                         }}
                         id="outlined-basic"
                         label="E-mail"
@@ -311,13 +326,11 @@ export const TabMyProfile = () => {
                         disabled={true}
                     />
                     <TextField
-                        value={ieCorporation}
+                        value={dataProfile.ie}
                         onChange={(e) => {
-                            setIeCorporation(
+                            handleChangeDataProfile('ie',
                                 e.target.value.length > 20 ?
-                                    ieCorporation
-                                    :
-                                    removeNotNumerics(e.target.value))
+                                    dataProfile.ie : removeNotNumerics(e.target.value))
                         }}
                         id="outlined-basic"
                         label="Inscrição Estadual"
@@ -327,9 +340,9 @@ export const TabMyProfile = () => {
                 </label>
                 <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <TextField
-                        value={phoneNumberCorporation}
+                        value={dataProfile.phone}
                         onChange={(e) => {
-                            setPhoneNumberCorporation(phoneNumberFormat(e.target.value, phoneNumberCorporation))
+                            handleChangeDataProfile('phone', phoneNumberFormat(e.target.value, dataProfile.phone ?? ''))
                         }}
                         id="outlined-basic"
                         label="Telefone"
@@ -338,9 +351,9 @@ export const TabMyProfile = () => {
                     />
 
                     <TextField
-                        value={cellNumberCorporation}
+                        value={dataProfile.cellPhone}
                         onChange={(e) => {
-                            setCellNumberCorporation(cellNumberFormat(e.target.value, cellNumberCorporation))
+                            handleChangeDataProfile('cellPhone', cellNumberFormat(e.target.value, dataProfile.cellPhone ?? ''))
                         }}
                         id="outlined-basic"
                         label="Celular"
@@ -353,9 +366,9 @@ export const TabMyProfile = () => {
                 <label style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
 
                     <TextField
-                        value={adressCepCorporation}
+                        value={dataProfile.addressCep}
                         onChange={(e) => {
-                            setAdressCepCorporation(cepFormat(e.target.value, adressCepCorporation))
+                            handleChangeDataProfile('addressCep', cepFormat(e.target.value, dataProfile.addressCep ?? ''))
                         }}
                         onBlur={(e) => handleConsultCep(e.target.value)}
                         id="outlined-basic"
@@ -365,13 +378,11 @@ export const TabMyProfile = () => {
                     />
 
                     <TextField
-                        value={adressStreetCorporation}
+                        value={dataProfile.addressStreet}
                         onChange={(e) => {
-                            setAdressStreetCorporation(
+                            handleChangeDataProfile('addressStreet',
                                 e.target.value.length > 50 ?
-                                    adressStreetCorporation
-                                    :
-                                    e.target.value
+                                    dataProfile.addressStreet : e.target.value
                             )
                         }}
                         id="outlined-basic"
@@ -381,13 +392,11 @@ export const TabMyProfile = () => {
                     />
 
                     <TextField
-                        value={adressNumberCorporation}
+                        value={dataProfile.addressNumber}
                         onChange={(e) => {
-                            setAdressNumberCorporation(
+                            handleChangeDataProfile('addressNumber',
                                 e.target.value.length > 5 ?
-                                    adressNumberCorporation
-                                    :
-                                    e.target.value
+                                    dataProfile.addressNumber : e.target.value
                             )
                         }}
                         id="outlined-basic"
@@ -401,47 +410,25 @@ export const TabMyProfile = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
 
                     <TextField
-                        value={adressNeighborhoodCorporation}
-                        onChange={(e) => setAdressNeighborhoodCorporation(
+                        value={dataProfile.addressNeighborhood}
+                        onChange={(e) => handleChangeDataProfile('addressNeighborhood',
                             e.target.value.length > 30 ?
-                                adressNeighborhoodCorporation
-                                :
-                                e.target.value)}
+                                dataProfile.addressNeighborhood : e.target.value)}
                         type="text"
                         id="outlined-basic"
                         label="Bairro"
                         variant="outlined"
-                        sx={{ width: '38%' }} />
+                        sx={{ width: '45%' }} />
 
-                    <TextField
-                        value={adressCityCorporation}
-                        onChange={(e) => setAdressCityCorporation(
-                            e.target.value.length > 30 ?
-                                adressCityCorporation
-                                :
-                                e.target.value)}
-                        type="text"
-                        id="outlined-basic"
-                        label="Cidade"
-                        variant="outlined"
-                        sx={{ width: '38%' }} />
+                    <CityAutoComplete
+                        citiesOptions={citiesOptions}
+                        selectedCity={selectedCity}
+                        setCitiesOptions={setCitiesOptions}
+                        setSelectedCity={setSelectedCity}
+                        widthPercent={53}
+                        size='medium'
+                    />
 
-                    <Autocomplete
-                        value={adressStateCorporation}
-                        onChange={(event: any, newValue: string | null) => {
-                            setAdressStateCorporation(newValue);
-                        }}
-                        noOptionsText="Não encontrado"
-                        id="controllable-states-demo"
-                        options={optionsUF}
-                        sx={{ width: '21%' }}
-                        renderInput={(params) =>
-                            <TextField
-                                {...params}
-                                label="UF"
-
-                            />
-                        } />
                 </div>
 
                 <S.ButtonSave onClick={() => handleChangeAboutCorporation()} ><b>Salvar</b></S.ButtonSave>
