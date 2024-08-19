@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/Auth/AuthContext";
 import TextField from '@mui/material/TextField';
 import * as S from "./style"
@@ -10,10 +10,10 @@ import { useApi } from '../../hooks/useApi';
 import { ListTransactions } from './ListTransactions/ListTransactions';
 import { HiTrendingDown, HiTrendingUp } from 'react-icons/hi';
 import { MdAddTask, MdChevronLeft, MdChevronRight } from 'react-icons/md';
-import { CurrencyMask } from '../../masks/CurrencyMask';
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import { ReturnData } from "../../utils/utils";
 import { useLayout } from "../../contexts/Layout/layoutContext";
+import { formatCurrencyNew, removeCurrencyMaskNew } from "../../masks/CurrencyMask";
 
 export interface TransactionsReturnApiProps {
     id: number,
@@ -50,8 +50,6 @@ export const Transactions = () => {
     const datafindTransactions = { FinalDate, InitialDate, userID: auth.idUser }
     const [inputdescriptionExit, setinputdescriptionExit] = useState("")
     const [inputdescriptionEntry, setinputdescriptionEntry] = useState("")
-    const [inputvalueExit, setinputvalueExit] = useState<string | null>(null)
-    const [inputvalueEntry, setinputvalueEntry] = useState<string | null>(null)
     const [finalvalueExit, setfinalvalueExit] = useState(0)
     const [finalvalueEntry, setfinalvalueEntry] = useState(0)
     const dataAddTransactionExit = { type: 'exit_manual', description: inputdescriptionExit, value: finalvalueExit, UserId: auth.idUser }
@@ -63,25 +61,15 @@ export const Transactions = () => {
     const sumValueTransactionsFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueEntriesTransactions)
     const sumExitsTransactionsFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueExitsTransactions)
     const totalTransactionsFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValueEntriesTransactions - sumValueExitsTransactions)
-    const {MessageBox} = useMessageBoxContext()
-    const changeValueInputExit = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const { MessageBox } = useMessageBoxContext()
 
-        setinputvalueExit(e.target.value)
-
-        let formatvalue = e.target.value
-        formatvalue = formatvalue.replace(/\D/g, "")
-        formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
-        setfinalvalueExit(parseFloat(formatvalue))
-
+    const changeValueInputExit = async (value: string) => {
+        const newValueExit = removeCurrencyMaskNew(value)
+        setfinalvalueExit(newValueExit)
     }
-    const changeValueInputEntry = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-
-        setinputvalueEntry(e.target.value)
-
-        let formatvalue = e.target.value
-        formatvalue = formatvalue.replace(/\D/g, "")
-        formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
-        setfinalvalueEntry(parseFloat(formatvalue))
+    const changeValueInputEntry = async (value: string) => {
+        const newValueEntry = removeCurrencyMaskNew(value)
+        setfinalvalueEntry(newValueEntry)
     }
 
 
@@ -93,8 +81,8 @@ export const Transactions = () => {
 
     const searchTransactions = async () => {
         if (InitialDate > FinalDate) {
-            MessageBox('info','Data inicial maior do que a final!')
-        } 
+            MessageBox('info', 'Data inicial maior do que a final!')
+        }
         else {
             const data = await findTransactions(datafindTransactions)
             setTransactionsReturnApi(data)
@@ -130,16 +118,15 @@ export const Transactions = () => {
 
             if (dataExit.Success === true) {
                 setinputdescriptionExit("")
-                setinputvalueExit("")
                 setisOpenExists(false)
                 setisProcedimentSucess(true)
                 searchTransactions()
             }
             else {
-                MessageBox('error',JSON.stringify(dataExit))
+                MessageBox('error', JSON.stringify(dataExit))
             }
         } else {
-            MessageBox('error','Insira todos dados corretamente!')
+            MessageBox('error', 'Insira todos dados corretamente!')
         }
     }
 
@@ -148,16 +135,15 @@ export const Transactions = () => {
             const dataEntry = await addTransactions(dataAddTransactionEntry)
             if (dataEntry.Success === true) {
                 setinputdescriptionEntry("")
-                setinputvalueEntry(null)
                 setisOpenEntries(false)
                 setisProcedimentSucess(true)
                 searchTransactions()
             }
             else {
-                MessageBox('error',JSON.stringify(dataEntry))
+                MessageBox('error', JSON.stringify(dataEntry))
             }
         } else {
-            MessageBox('error','Insira todos dados corretamente!')
+            MessageBox('error', 'Insira todos dados corretamente!')
         }
     }
 
@@ -306,14 +292,12 @@ export const Transactions = () => {
                             />
 
                             <TextField
-                                value={inputvalueExit}
-                                onChange={(e) => changeValueInputExit(CurrencyMask(e))}
+                                value={formatCurrencyNew(finalvalueExit)}
+                                onChange={(e) => changeValueInputExit(e.target.value)}
                                 id="outlined-basic"
                                 label="Valor"
                                 variant="outlined"
                                 className="TextField"
-
-
                             />
 
                             <S.ButtonAddExit onClick={handleAddExit}>
@@ -337,8 +321,8 @@ export const Transactions = () => {
                             />
 
                             <TextField
-                                value={inputvalueEntry}
-                                onChange={(e) => changeValueInputEntry(CurrencyMask(e))}
+                                value={formatCurrencyNew(finalvalueEntry)}
+                                onChange={(e) => changeValueInputEntry(e.target.value)}
                                 id="outlined-basic"
                                 label="Valor"
                                 variant="outlined"

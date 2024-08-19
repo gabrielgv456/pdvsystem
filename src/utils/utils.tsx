@@ -56,10 +56,6 @@ export function cpfCnpjFormat(text: string | null, max?: string, onlyCpf: boolea
           onlyCpf ? (max ?? localMax) : cpfCnpj)
 }
 
-export function currencyFormat(value: number | null) {
-  if (!value) return ''
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
-}
 
 export function percentFormatIntl(value: number | null) {
   if (!value) return ''
@@ -97,13 +93,8 @@ export function cepFormat(text: string, max?: string) {
       :
       text
 }
-export function FormatCurrencytoFloatdb(value: string | null) {
-  if (!value) { return 0 };
-  let formatvalue = value
-  formatvalue = formatvalue.replace(/[^\d.-]/g, '')
-  formatvalue = formatvalue.replace(/(\d)(\d{2})$/, "$1.$2")
-  return (parseFloat(formatvalue))
-}
+
+export const onlyNumbers = (value: string): string => value.replace(/\D/g, '')
 
 export function strTofixed2Float(value: string | null | undefined) {
   if (!value) return null
@@ -124,12 +115,6 @@ export function FormatPercent(value: string | null) {
   value = value.replace(/(\d)(\d{2})$/, "$1.$2")
   value = value.replace(/(?=(\d{3})+(\D))\B/g, ".");
   return value
-}
-
-
-export function currencyRemoveNotNumbers(value: string | null) {
-  if (!value) { return '' }
-  return value.replace(/[^\d.]/g, '')
 }
 
 export function DateFormatWeek(value: Date | string | null) {

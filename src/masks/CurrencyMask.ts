@@ -1,39 +1,13 @@
-import React from "react";
+import { onlyNumbers } from "../utils/utils";
 
-export const CurrencyMask = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    let format = e.target.value
-    format = format.replace(/\D/g, "")
-    format = format.replace(/(\d)(\d{2})$/, "$1,$2")
-    format = format.replace(/(?=(\d{3})+(\D))\B/g, ".");
-    format = `R$${format}`
-    e.target.value = format
-    return e
+export const formatCurrencyNew = (value: number|null, noSymbol = false): string => {
+    if(!value) value = 0;
+    return value.toLocaleString('pt-BR', {
+        style: noSymbol ? 'decimal' : 'currency',
+        ...(noSymbol ? { minimumFractionDigits: 2, maximumFractionDigits: 2 } : { currency: 'BRL' })
+    })
 }
 
-export const CurrencyNumberMask = (e:number) => {
-    if (!e) { return ''}
-    let format = String(e)
-    format = parseFloat(String(e)).toFixed(2)
-    format = "R$" + format.replace('.', ',')
-    return format
+export const removeCurrencyMaskNew = (value: string) => {
+    return Number(onlyNumbers(value)) / 100
 }
-
-export const CurrencyMaskValue = (e: string) => {
-    let format = e
-    format = format.replace(/\D/g, "")
-    format = format.replace(/(\d)(\d{2})$/, "$1,$2")
-    format = format.replace(/(?=(\d{3})+(\D))\B/g, ".");
-    format = `R$${format}`
-    e = format
-    return e
-}
-
-export const CurrencyMaskWithOutRS = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    let format = e.target.value
-    format = format.replace(/\D/g, "")
-    format = format.replace(/(\d)(\d{2})$/, "$1,$2")
-    format = format.replace(/(?=(\d{3})+(\D))\B/g, ".");
-    e.target.value = format
-    return e
-}
-

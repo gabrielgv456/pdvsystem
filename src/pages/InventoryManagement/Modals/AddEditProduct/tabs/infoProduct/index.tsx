@@ -1,15 +1,13 @@
 import * as S from './style'
 import * as type from './interfaces'
 import Switch from '@mui/material/Switch';
-import { CurrencyMask, CurrencyMaskValue } from '../../../../../../masks/CurrencyMask';
+import { removeCurrencyMaskNew, formatCurrencyNew } from '../../../../../../masks/CurrencyMask';
 import TextField from '@mui/material/TextField';
-import { useState, DragEvent, ChangeEvent, useEffect, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { useApi } from '../../../../../../hooks/useApi';
 import Autocomplete from '@mui/material/Autocomplete';
-import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
-import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { FormatChangePercent, FormatCurrencytoFloatdb, FormatPercent, currencyFormat, currencyRemoveNotNumbers, percentFormatIntl, removeNotNumerics, strTofixed2Float } from '../../../../../../utils/utils';
+import { removeNotNumerics, strTofixed2Float } from '../../../../../../utils/utils';
 import { addEditProductDataPrincipal } from '../../saveProduct/interfaces';
 import { UploadImage } from '../../../../../../components/uploadImage/uploadImage';
 
@@ -89,27 +87,28 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
     }, [])
 
     const changeValueProduct = async (value: string) => {
-        const valueProduct = FormatCurrencytoFloatdb(value ?? '0')
-        handleChangeData('value', valueProduct)
+        const newValue = removeCurrencyMaskNew(value)
 
-        const costProduct = FormatCurrencytoFloatdb(props.dataAddEditProduct.principal.cost?.toString() ?? '0')
+        handleChangeData('value', newValue)
+
+        const costProduct = props.dataAddEditProduct.principal.cost ?? 0
 
         if (costProduct !== 0) {
-            const profit = valueProduct - costProduct;
+            const profit = newValue - costProduct;
             const percentualProfit = (profit / costProduct) * 100;
             handleChangeData('profitMargin', parseFloat(percentualProfit.toFixed(2)))
         }
     }
 
     const changeCostProduct = async (value: string) => {
+        const newCost =  removeCurrencyMaskNew(value)
 
-        handleChangeData('cost', FormatCurrencytoFloatdb(value))
+        handleChangeData('cost', newCost)
         const valueProduct = props.dataAddEditProduct.principal.value ?? 0
 
         if (valueProduct !== 0) {
-            const costProduct = FormatCurrencytoFloatdb(value)
-            const profit = valueProduct - costProduct;
-            const percentualProfit = (profit / costProduct) * 100;
+            const profit = valueProduct - newCost;
+            const percentualProfit = (profit / newCost) * 100;
             handleChangeData('profitMargin', parseFloat(percentualProfit.toFixed(2)))
         }
     }
@@ -164,7 +163,7 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                 className='InputSection'
             />
             <TextField
-                value={currencyFormat(props.dataAddEditProduct.principal.cost)}
+                value={formatCurrencyNew(props.dataAddEditProduct.principal.cost)}
                 onChange={(e) => changeCostProduct(e.target.value)}
                 id="outlined-basic"
                 label="Custo*"
@@ -182,7 +181,7 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                 }}
                 variant="outlined" />
             <TextField
-                value={currencyFormat(props.dataAddEditProduct.principal.value)}
+                value={formatCurrencyNew(props.dataAddEditProduct.principal.value)}
                 onChange={(e) => changeValueProduct(e.target.value)}
                 id="outlined-basic"
                 className='InputSection'

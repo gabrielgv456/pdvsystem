@@ -6,8 +6,8 @@ import { Divider } from '@mui/material';
 import { DefaultButton } from '../../../../components/buttons/defaultButton';
 import { ListSellProps } from '../../ListSell/ListSell';
 import { useState } from 'react'
-import { CurrencyMaskValue, CurrencyNumberMask } from '../../../../masks/CurrencyMask';
-import { FormatChangePercent, FormatCurrencytoFloatdb, FormatPercent } from '../../../../utils/utils';
+import {  formatCurrencyNew, removeCurrencyMaskNew } from '../../../../masks/CurrencyMask';
+import { FormatChangePercent, FormatPercent } from '../../../../utils/utils';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 
 interface ModalDiscountProps {
@@ -19,22 +19,24 @@ interface ModalDiscountProps {
 export const ModalDiscount = (props: ModalDiscountProps) => {
 
     const [DiscountValues, setDiscountValues] = useState({
-        valueProduct: 'R$' + (props.props.item.initialvalue - (props.props.item.discountValue ?? 0)),
+        valueProduct: props.props.item.initialvalue - (props.props.item.discountValue ?? 0),
         percentDiscount: FormatPercent((props.props.item.discountPercent ?? 0) + ''),
-        realDiscount: CurrencyNumberMask(props.props.item.discountValue ?? 0)
+        realDiscount: (props.props.item.discountValue ?? 0)
     })
     const { MessageBox } = useMessageBoxContext()
 
     const changeRealDiscount = async (value: string) => {
-        const valueDiscount = FormatCurrencytoFloatdb(value ?? '0')
+
+        const valueDiscount = removeCurrencyMaskNew(value ?? '0')
+
         if (valueDiscount >= props.props.item.initialvalue) {
             MessageBox('info', `Valor do desconto não pode ser maior ou igual a R$${props.props.item.initialvalue}`)
             return
         }
         setDiscountValues({
-            realDiscount: CurrencyMaskValue(value),
+            realDiscount: (valueDiscount),
             percentDiscount: FormatChangePercent(((valueDiscount / props.props.item.initialvalue) * 100) + ''),
-            valueProduct: CurrencyNumberMask((props.props.item.initialvalue - valueDiscount))
+            valueProduct: ((props.props.item.initialvalue - valueDiscount))
         })
     }
 
@@ -47,34 +49,36 @@ export const ModalDiscount = (props: ModalDiscountProps) => {
         const discountValue = isNaN(floatPercentDiscount) ? 0 : (floatPercentDiscount / 100) * props.props.item.initialvalue
 
         setDiscountValues({
-            realDiscount: CurrencyNumberMask(discountValue),
+            realDiscount: (discountValue),
             percentDiscount: FormatPercent(value),
-            valueProduct: CurrencyNumberMask(props.props.item.initialvalue - discountValue)
+            valueProduct: (props.props.item.initialvalue - discountValue)
         })
     }
 
     const changeValueProduct = async (value: string) => {
-        const floatValueProduct = FormatCurrencytoFloatdb(value ?? 0)
-        if (floatValueProduct <= 0) {
+
+        const newValueProduct = removeCurrencyMaskNew(value ?? 0)
+
+        if (newValueProduct <= 0) {
             MessageBox('info', 'Preço do produto precisa ser maior que zero!')
             return
         }
-        if (floatValueProduct > props.props.item.initialvalue) {
+        if (newValueProduct > props.props.item.initialvalue) {
             MessageBox('info', `Preço do produto pode ser no máximo R$${props.props.item.initialvalue} ! Se precisar aumentar o valor do produto acesse o modulo de "Gestão de Estoque" `)
             return
         }
         setDiscountValues({
-            realDiscount: CurrencyNumberMask(props.props.item.initialvalue - floatValueProduct),
-            percentDiscount: FormatPercent((((props.props.item.initialvalue - floatValueProduct) / props.props.item.initialvalue) * 100).toFixed(2) + ''),
-            valueProduct: CurrencyMaskValue(value)
+            realDiscount: (props.props.item.initialvalue - newValueProduct),
+            percentDiscount: FormatPercent((((props.props.item.initialvalue - newValueProduct) / props.props.item.initialvalue) * 100).toFixed(2) + ''),
+            valueProduct: (newValueProduct)
         })
     }
 
     const handleSave = async () => {
-        if (props.props.item.initialCost > FormatCurrencytoFloatdb(DiscountValues.valueProduct)) {
+        if (props.props.item.initialCost > DiscountValues.valueProduct) {
             if (!window.confirm('Deseja realmente vender o item abaixo do valor de custo?')) return
         }
-        props.props.handleDiscount(props.props.item.id, FormatCurrencytoFloatdb(DiscountValues.realDiscount) > 0 ? FormatCurrencytoFloatdb(DiscountValues.realDiscount) : null, parseFloat(FormatPercent(DiscountValues.percentDiscount)))
+        props.props.handleDiscount(props.props.item.id, DiscountValues.realDiscount > 0 ? DiscountValues.realDiscount : null, parseFloat(FormatPercent(DiscountValues.percentDiscount)))
         MessageBox('success', 'Desconto aplicado com sucesso!')
         props.setIsModalDiscountOpen(false)
     }
@@ -87,13 +91,13 @@ export const ModalDiscount = (props: ModalDiscountProps) => {
 
                     <label><b>Produto:</b> {props.props.item.name}</label>
                     <Divider />
-                    <div style={{display:'flex',flexDirection:'column'}}>
-                    <label>Preço unitário original: R${props.props.item.initialvalue}</label>
-                    Custo: R${props.props.item.initialCost}
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <label>Preço unitário original: R${props.props.item.initialvalue}</label>
+                        Custo: R${props.props.item.initialCost}
                     </div>
                     <S.DivInputs>
                         <S.InputTextField
-                            value={DiscountValues.valueProduct}
+                            value={formatCurrencyNew(DiscountValues.valueProduct)}
                             onChange={(e) => { changeValueProduct(e.target.value) }}
                             label='Preço Unitário'
                             variant="outlined"
@@ -105,7 +109,7 @@ export const ModalDiscount = (props: ModalDiscountProps) => {
                             variant="outlined"
                         />
                         <S.InputTextField
-                            value={DiscountValues.realDiscount}
+                            value={formatCurrencyNew(DiscountValues.realDiscount)}
                             onChange={(e) => { changeRealDiscount(e.target.value) }}
                             label='Desconto (R$)'
                             variant="outlined"

@@ -5,20 +5,16 @@ import * as type from './interfaces'
 import { BiTransfer } from "react-icons/bi"
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 import { useContext, useState } from "react";
 import TextField from '@mui/material/TextField';
-import Switch from '@mui/material/Switch';
-import { AiOutlineClose, AiOutlineEdit } from "react-icons/ai";
 import { useApi } from "../../../hooks/useApi";
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import { RiAdminLine } from "react-icons/ri";
-import { CurrencyMask } from "../../../masks/CurrencyMask"
+import { formatCurrencyNew } from "../../../masks/CurrencyMask"
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
-import { ModalAddEditProduct } from "../Modals/AddEditProduct";
 import { MuiBox } from "../../../components/box/muiBox";
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../../components/buttons/closeButtonModal";
-import { currencyFormat } from "../../../utils/utils";
+
 
 export const ListProducts = (props: type.ListProductsProps) => {
 
@@ -26,13 +22,13 @@ export const ListProducts = (props: type.ListProductsProps) => {
     const auth = useContext(AuthContext)
     const Theme = useDarkMode();
     const gethoursTransactions = new Date(props.item.created_at).toLocaleString('pt-BR', { timeZone: 'UTC' })
-    const formatedItemValue = currencyFormat(props.item.value)
+    const formatedItemValue = formatCurrencyNew(props.item.value)
     const [isModalEditProductOpen, setisModalEditProductOpen] = useState(false);
     const [isModalMasterKeyOpen, setisModalMasterKeyOpen] = useState(false)
     const [inputMasterKey, setinputMasterKey] = useState("")
     const [isModalDeleteProductOpen, setisModalDeleteProductOpen] = useState(false)
     const [isModalSucessOpen, setisModalSucessOpen] = useState(false)
-    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(currencyFormat(props.item.value))
+    const [inputvalueProduct, setinputvalueProduct] = useState<string | null>(formatCurrencyNew(props.item.value))
     const [valueInputProductName, setvalueInputProductName] = useState(props.item.name)
     const [finalvalueProduct, setfinalvalueProduct] = useState(props.item.value)
     const [valueInputProductQuantity, setvalueInputProductQuantity] = useState(props.item.quantity)
@@ -92,7 +88,7 @@ export const ListProducts = (props: type.ListProductsProps) => {
         setfinalvalueProduct(props.item.value)
         setvalueInputProductQuantity(props.item.quantity)
         setvalueInputProductActive(props.item.active)
-        setinputvalueProduct(currencyFormat(props.item.value))
+        setinputvalueProduct(formatCurrencyNew(props.item.value))
         setisModalEditProductOpen(false)
     }
 

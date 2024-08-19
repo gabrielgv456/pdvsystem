@@ -201,7 +201,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
         };
     }, [pdfNF]);
 
-    const handleAddMethod = (valuetype: typesPayment) => {
+    const handleAddMethod = async (valuetype: typesPayment) => {
         const alreadyexistMethod = verifyifexistsMethod(valuetype)
         if (!alreadyexistMethod) {
             let newMethods = [...props.listMethods]
@@ -213,6 +213,9 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
             })
             props.setMethods(newMethods)
+            setTimeout(() => {
+                document.getElementById(('Method'+String(props.listMethods.length + 1)))?.focus();
+              }, 0);
 
         }
     }
