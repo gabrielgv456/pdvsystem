@@ -22,6 +22,8 @@ import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContex
 import { MdOutlineTrendingUp } from "react-icons/md";
 import { ReturnData } from "../../utils/utils";
 import { useLayout } from "../../contexts/Layout/layoutContext";
+import { ClientSharedType } from "../../interfaces/useApi/shared/client";
+import { SellerSharedType } from "../../interfaces/useApi/shared/seller";
 // end imports menu MUI //
 
 export interface SellsProductsReceiveApi {
@@ -33,7 +35,7 @@ export interface SellsProductsReceiveApi {
     valueProduct: number;
     totalValue: number;
     totalCost: number;
-    totalDiscount:number;
+    totalDiscount: number;
     descriptionProduct: string;
     created_at: Date;
 };
@@ -41,12 +43,13 @@ export interface SellsProductsReceiveApi {
 export interface Sell {
     id: number;
     storeId: number,
-    clientName: string | null,
-    sellerName: string | null,
+    client: ClientSharedType | null,
+    seller: SellerSharedType | null,
+    existsFiscalNote: boolean,
     sellerId: number | null,
     clientId: number | null,
     sellValue: number;
-    cost:number;
+    cost: number;
     valuePayment: number;
     created_at: Date;
     codRef: number
@@ -72,8 +75,8 @@ export const SalesControl = () => {
     const sumItens = listSellsProducts.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);
     const sumCash = listSells.map(item => item.sellValue).reduce((prev, curr) => prev + curr, 0);
     const sumCashFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumCash)
-    const listSellFiltered = listSellsProducts.filter(sell=>sell.totalCost > 0) 
-    const sumProfit = listSellFiltered.map(item => item.totalValue).reduce((prev, curr) => prev + curr, 0) - listSellFiltered.map(item => item.totalCost).reduce((prev, curr) => prev + curr, 0) ;
+    const listSellFiltered = listSellsProducts.filter(sell => sell.totalCost > 0)
+    const sumProfit = listSellFiltered.map(item => item.totalValue).reduce((prev, curr) => prev + curr, 0) - listSellFiltered.map(item => item.totalCost).reduce((prev, curr) => prev + curr, 0);
     const sumProfitFormated = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumProfit)
     const [ismodalDeleteOpen, setismodalDeleteOpen] = useState(false)
     const [ismodalMasterkeyEditOpen, setismodalMasterkeyEditOpen] = useState(false)
@@ -120,7 +123,7 @@ export const SalesControl = () => {
         defaultSendtoApi()
     }, [])
 
-    
+
     const handleSendtoApi = async () => {
         if (InitialDate > FinalDate) {
             MessageBox('info', ' Data inicial maior do que a data final!')
@@ -272,7 +275,7 @@ export const SalesControl = () => {
                         <MdOutlineTrendingUp size="2.5rem" color="var(--AppBar)" />
                         <label>
                             <section>Lucro</section>
-                            <S.SectionValuesBoxResume>{sumProfitFormated }</S.SectionValuesBoxResume>
+                            <S.SectionValuesBoxResume>{sumProfitFormated}</S.SectionValuesBoxResume>
                         </label>
                     </S.BoxResume>
                 </S.BoxResumeGroup>
@@ -294,7 +297,7 @@ export const SalesControl = () => {
                     item={item}
                     handleRemoveTask={handleRemoveTask}
                     listSellsProducts={listSellsProducts}
-                    setismodalMasterkeyEditOpen={setismodalMasterkeyEditOpen}
+                    setismodalEditSellOpen={setismodalMasterkeyEditOpen}
                     setidselltoEdit={setidselltoEdit}
 
                 />

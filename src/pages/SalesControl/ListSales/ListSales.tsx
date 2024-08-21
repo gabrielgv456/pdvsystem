@@ -11,6 +11,8 @@ import NfeIcon from '../../../images/nfe.svg'
 import { createFiscalNoteType } from "../../Sell/Modals/CheckOut";
 import { useApi } from "../../../hooks/useApi";
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
+import { TbFileTypeXml, TbFileTypePdf } from "react-icons/tb";
+import { downloadXMLFile } from "../../../utils/utils";
 
 
 interface Props {
@@ -18,7 +20,7 @@ interface Props {
    item: Sell;
    listSellsProducts: SellsProductsReceiveApi[];
    handleRemoveTask(id: number, sellValue: number): void;
-   setismodalMasterkeyEditOpen: (value: boolean) => void;
+   setismodalEditSellOpen: (value: boolean) => void;
    setidselltoEdit: (value: number) => void;
    SearchSellers: () => void;
    filterSellerandClient: (sellerId: number | null, clientId: number | null) => void;
@@ -30,7 +32,7 @@ export function Listagem(props: Props) {
 
    const Theme = useDarkMode();
    const { user, idUser } = useContext(AuthContext)
-   const { createFiscalNote } = useApi()
+   const { createFiscalNote, getXmlFiscalNote } = useApi()
    const { MessageBox } = useMessageBoxContext()
    const remove = () => {
       props.handleRemoveTask(props.item.id, props.item.sellValue)
@@ -63,7 +65,7 @@ export function Listagem(props: Props) {
 
       props.setidselltoEdit(props.item.id)
       props.filterSellerandClient(props.item.sellerId, props.item.clientId)
-      props.setismodalMasterkeyEditOpen(true)
+      props.setismodalEditSellOpen(true)
 
    }
 
@@ -81,6 +83,16 @@ export function Listagem(props: Props) {
       }
    }
 
+   const handleGetXml = async (sellId: number) => {
+      try {
+         const result = await getXmlFiscalNote(sellId)
+         if (!result.Success) throw new Error(result.Erro ?? 'Erro Desconhecido')
+         console.log(result)
+         downloadXMLFile(result.xml, result.keyNF)
+      } catch (error) {
+         MessageBox('error', 'Ocorreu uma falha ao baixar o XML! ' + (error as Error).message)
+      }
+   }
    return (
 
       <S.Container isDarkMode={Theme.DarkMode}>
@@ -92,7 +104,7 @@ export function Listagem(props: Props) {
             </S.DivTipo>
          </S.DivTitle>
          <S.DivContent>
-            <S.ButtonEdit isDarkMode={Theme.DarkMode} title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
+            <S.Button color="gold" isDarkMode={Theme.DarkMode} title="Editar Venda" onClick={() => handleEdit()}><HiOutlinePencilAlt size="20" /></S.Button>
             <S.span isDarkMode={Theme.DarkMode}>
                <S.bItem isDarkMode={Theme.DarkMode}>Qtd</S.bItem>
                <S.DivListQuantity>
@@ -107,7 +119,7 @@ export function Listagem(props: Props) {
                <S.DivListItens isDarkMode={Theme.DarkMode}>
                   {props.listSellsProducts.map((products) => (
                      products.sellId === props.item.id &&
-                     <S.LabelItem title={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(products.totalValue / products.quantity)} isDarkMode={Theme.DarkMode}>{products.descriptionProduct} </S.LabelItem>
+                     <S.LabelItem title={products.descriptionProduct} isDarkMode={Theme.DarkMode}>{products.descriptionProduct} </S.LabelItem>
                   ))}
                </S.DivListItens>
             </S.span>
@@ -137,16 +149,23 @@ export function Listagem(props: Props) {
             </S.span>
             <S.span isDarkMode={Theme.DarkMode}>
                <S.bItem isDarkMode={Theme.DarkMode}>Cliente</S.bItem>
-               <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.clientName ?? "Não informado"}</S.LabelItem>
+               <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.client?.name ?? "Não informado"}</S.LabelItem>
             </S.span>
             <S.span isDarkMode={Theme.DarkMode}>
                <S.bItem isDarkMode={Theme.DarkMode}>Vendedor</S.bItem>
-               <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.sellerName ?? "Não informado"}</S.LabelItem>
+               <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.seller?.name ?? "Não informado"}</S.LabelItem>
             </S.span>
+            {props.item.existsFiscalNote ?
+               <>
+                  <S.Button color="#e85100" isDarkMode={Theme.DarkMode} title="Visualizar PDF Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><TbFileTypePdf size={22} /></S.Button>
+                  <S.Button color="green" isDarkMode={Theme.DarkMode} title="Baixar XML Nota Fiscal" onClick={() => handleGetXml(props.item.id)}><TbFileTypeXml size={22} /></S.Button>
+               </>
+               :
+               <S.Button color="" isDarkMode={Theme.DarkMode} title="Emitir Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><img src={NfeIcon} style={{ width: 40 }} /></S.Button>
 
-            <S.ButtonPrint isDarkMode={Theme.DarkMode} title="Emitir Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><img src={NfeIcon} style={{ width: 40 }} /></S.ButtonPrint>
-            <S.ButtonPrint isDarkMode={Theme.DarkMode} title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.ButtonPrint>
-            <S.ButtonTrash title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.ButtonTrash>
+            }
+            <S.Button color="#007fff" isDarkMode={Theme.DarkMode} title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.Button>
+            <S.Button color="red" isDarkMode={Theme.DarkMode} title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.Button>
 
             {/* 
             <S.LabelDate title={gethoursSell_title}>{dataSell}</S.LabelDate>

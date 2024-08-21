@@ -1,8 +1,10 @@
 import styled from "styled-components";
 
-interface DarkModeProps {
-    isDarkMode:Boolean;
+type DarkModeProps = {
+    isDarkMode: Boolean;
 }
+type buttonProps = { color: string } & DarkModeProps
+
 export const Container = styled.div <DarkModeProps>`
 
     width: 100%;
@@ -10,8 +12,8 @@ export const Container = styled.div <DarkModeProps>`
     margin-bottom: 10px;
     font-family: sans-serif;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
-    background-color: ${props=>props.isDarkMode ? 'var(--DarkMode)' : '#fff'};
-`   
+    background-color: ${props => props.isDarkMode ? 'var(--DarkMode)' : '#fff'};
+`
 // export const Container = styled.div <DarkModeProps>`
 //     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
 //     box-shadow: ${props => (props.isDarkMode ? '' : '0px 0px 5px #CCC')}; 
@@ -31,8 +33,8 @@ export const Container = styled.div <DarkModeProps>`
 // `
 
 export const span = styled.span <DarkModeProps>`
-    border-right: ${props=>props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : '0.1px solid #e8e8e8' } ;
-    border: ${props=>props.isDarkMode ?  '0.1px solid var(--backgroundDarkMode)' : '' };
+    border-right: ${props => props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : '0.1px solid #e8e8e8'} ;
+    border: ${props => props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : ''};
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,7 +42,7 @@ export const span = styled.span <DarkModeProps>`
 `
 
 export const bItem = styled.b <DarkModeProps> `
-    background-color: ${props=>props.isDarkMode ? 'var(--backgroundDarkMode)' : '#efefef' } ;
+    background-color: ${props => props.isDarkMode ? 'var(--backgroundDarkMode)' : '#efefef'} ;
     border-radius: 1px;
     width:100%;
     display: flex;
@@ -51,7 +53,7 @@ export const bItem = styled.b <DarkModeProps> `
         padding: 4px;
     }
 `
-export const DivTitle = styled.div `
+export const DivTitle = styled.div`
     width: 100%;
     border-bottom: 1px solid silver;
     box-sizing: border-box;
@@ -61,49 +63,36 @@ export const DivTitle = styled.div `
     border-radius: 5px 5px 0px 0px;
 `
 
-export const DivTipo = styled.div `
+export const DivTipo = styled.div`
     display: flex;
     align-items:flex-end;
     justify-content: space-between;
     font-size: 0.8rem;
     
 `
-export const DivContent = styled.div `
+export const DivContent = styled.div`
     width: 100%;
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
 `
 
-
-export const ButtonPrint= styled.button <DarkModeProps>`
+export const Button = styled.button <buttonProps>`
     text-decoration: none;
     background: none;
     border:none;
-    color:#007fff;
-     border-right: ${props=>props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : '0.1px solid #e8e8e8' } ;
-    border: ${props=>props.isDarkMode ?  '0.1px solid var(--backgroundDarkMode)' : '' };
-`
-export const ButtonEdit= styled.button <DarkModeProps> `
-    text-decoration: none;
-    background: none;
-    border:none;
-    color:gold;
-     border-right: ${props=>props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : '0.1px solid #e8e8e8' } ;
-    border: ${props=>props.isDarkMode ?  '0.1px solid var(--backgroundDarkMode)' : '' };
+    color:${props => props.color};
+     border-right: ${props => props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : '0.1px solid #e8e8e8'} ;
+    border: ${props => props.isDarkMode ? '0.1px solid var(--backgroundDarkMode)' : ''};
 `
 
-export const ButtonTrash = styled.button `
-     text-decoration: none;
-    background: none;
-    border:none;
-    color:red;
-    cursor: pointer;
-`
 export const LabelItem = styled.label<DarkModeProps>`
     height: 100%;
+    max-width:200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     align-items: center;
-    display: flex;
     font-size: 0.85rem;
 `
 export const DivListItens = styled.div<DarkModeProps> `
@@ -111,24 +100,21 @@ export const DivListItens = styled.div<DarkModeProps> `
     display: flex;
     flex-direction: column;
     color: ${props => (props.isDarkMode ? 'white' : '')};
-    max-width:95%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+
 `
-export const DivListQuantity = styled.div `
+export const DivListQuantity = styled.div`
     display: flex;
     flex-direction: column;
     width: 3%;
 `
-export const LabelNameSeller = styled.label `
+export const LabelNameSeller = styled.label`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 15%;
     min-width: 15%;
 `
-export const LabelValue= styled.label `
+export const LabelValue = styled.label`
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -136,10 +122,10 @@ export const LabelValue= styled.label `
     max-width: 10%;
     min-width: 10%;
 `
-export const LabelDate = styled.label `
+export const LabelDate = styled.label`
     width: 10%;
     min-width: min-content;
 `
-export const LabelQuantaty = styled.label `
+export const LabelQuantaty = styled.label`
     font-size: 0.8rem;
 `

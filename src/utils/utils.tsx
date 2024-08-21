@@ -230,6 +230,19 @@ export const convertToBase64 = (file: File | null): Promise<string> => {
   });
 };
 
+export const downloadXMLFile = (xmlString: string, fileName:string) => {
+
+  const blob = new Blob([xmlString], { type: 'application/xml' });
+
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 
 export function CustomizedSnackbars() {
 

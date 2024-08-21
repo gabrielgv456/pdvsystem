@@ -29,7 +29,7 @@ export const useApi = () => ({
 
     validateToken: async (token: string) => {
         const response = await api.post('/validate', { token });
-        const result : validateTokenType = response.data
+        const result: validateTokenType = response.data
         return result;
     },
     signin: async (email: string, password: string) => {
@@ -155,7 +155,7 @@ export const useApi = () => ({
     },
     findAboutCorporation: async (userId: number) => {
         const response = await api.get(`/aboutCorporation?storeId=${userId}`)
-        const result : findAbourCorporationType = response.data
+        const result: findAbourCorporationType = response.data
         return result
     },
     findIcmsOptions: async () => {
@@ -243,6 +243,9 @@ export const useApi = () => ({
         return response.data
     }, getCities: async (city?: string | null, ibge?: number | null) => {
         const response = await api.get('/cities', { params: { city, ibge } })
+        return response.data
+    }, getXmlFiscalNote: async (sellId: number) => {
+        const response = await api.get('/getXmlFiscalNote', { params: { sellId } })
         return response.data
     }
 });

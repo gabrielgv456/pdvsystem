@@ -409,7 +409,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                                         )}
                                     />
                                     <button style={{ border: 'none', background: 'none' }}>
-                                        <MdAddCircleOutline size='22' color='var(--Green)' onClick={() => setisModalAddEditClientOpen(true)} />
+                                        <MdAddCircleOutline title='Cadastrar Novo Cliente' size='22' color='var(--Green)' onClick={() => setisModalAddEditClientOpen(true)} />
                                     </button>
                                 </S.labelClient>
                                 <S.labelSeller>
@@ -432,7 +432,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                                         )}
                                     />
                                     <button style={{ border: 'none', background: 'none' }}>
-                                        <MdAddCircleOutline size='22' color='var(--Green)' onClick={() => setisModalAddSellerOpen(true)} />
+                                        <MdAddCircleOutline title='Cadastrar Novo Vendedor' size='22' color='var(--Green)' onClick={() => setisModalAddSellerOpen(true)} />
                                     </button>
                                 </S.labelSeller>
                             </S.DivInputs>

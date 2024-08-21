@@ -1,6 +1,6 @@
 import { BsTrash } from "react-icons/bs";
 import { IoMdAddCircleOutline, IoMdRemoveCircleOutline } from "react-icons/io";
-import { TbDiscount2 } from "react-icons/tb";
+import { TbDiscount } from "react-icons/tb";
 import styled from "styled-components";
 
 interface DarkModeProps {
@@ -84,7 +84,7 @@ export const ButtonTrash = styled.button`
     border:none;
     color:red;
 `
-export const IconDiscount = styled(TbDiscount2) <DiscountProps> `
+export const IconDiscount = styled(TbDiscount) <DiscountProps> `
   width: 22px;
   height: 22px;
   color: #FFA500;
