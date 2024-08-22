@@ -14,7 +14,7 @@ import { AuthContext } from '../../../../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../../../../hooks/useApi';
 import { CityStateType } from '../../../../../../PeopleRegistration/Clients/Modals/addEditClient/interfaces';
 import { ResultDeliveryType } from '../../../../../../../interfaces/useApi/findDeliveries';
-import { AddressSharedType } from '../../../../../../../interfaces/useApi/shared/address';
+import { AddressSharedType } from "@shared/address";
 
 interface DeliveryAddressClientProps {
     selectedDeliveryModal: ResultDeliveryType,

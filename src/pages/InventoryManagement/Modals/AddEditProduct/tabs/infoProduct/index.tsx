@@ -3,19 +3,21 @@ import * as type from './interfaces'
 import Switch from '@mui/material/Switch';
 import { removeCurrencyMaskNew, formatCurrencyNew } from '../../../../../../masks/CurrencyMask';
 import TextField from '@mui/material/TextField';
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useContext } from 'react';
 import { useApi } from '../../../../../../hooks/useApi';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { removeNotNumerics, strTofixed2Float } from '../../../../../../utils/utils';
 import { addEditProductDataPrincipal } from '../../saveProduct/interfaces';
 import { UploadImage } from '../../../../../../components/uploadImage/uploadImage';
+import { AuthContext } from 'src/contexts/Auth/AuthContext';
 
 export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
 
     const { findItemType, findNCM } = useApi()
     const [selectedUnitMeasurement, setSelectedUnitMeasurement] = useState<string | null>(props.itemData?.unitMeasurement ?? 'UN')
     const { MessageBox } = useMessageBoxContext()
+    const { user } = useContext(AuthContext)
     const [optionsItensType, setOptionsItensType] = useState<type.itemType[]>([])
     const [selectedItemType, setSelectedItemType] = useState<type.itemType | null>(null)
     const optionsUnitMeasurement = ['UN']
@@ -101,7 +103,7 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
     }
 
     const changeCostProduct = async (value: string) => {
-        const newCost =  removeCurrencyMaskNew(value)
+        const newCost = removeCurrencyMaskNew(value)
 
         handleChangeData('cost', newCost)
         const valueProduct = props.dataAddEditProduct.principal.value ?? 0

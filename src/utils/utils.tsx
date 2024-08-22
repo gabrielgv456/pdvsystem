@@ -3,6 +3,8 @@ import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useMessageBoxContext } from '../contexts/MessageBox/MessageBoxContext';
+import { css } from 'styled-components';
+import { useDarkMode } from 'src/contexts/DarkMode/DarkModeProvider';
 
 
 export function removeNotNumerics(text: string) {
@@ -230,7 +232,7 @@ export const convertToBase64 = (file: File | null): Promise<string> => {
   });
 };
 
-export const downloadXMLFile = (xmlString: string, fileName:string) => {
+export const downloadXMLFile = (xmlString: string, fileName: string) => {
 
   const blob = new Blob([xmlString], { type: 'application/xml' });
 
@@ -315,3 +317,39 @@ export function CustomizedSnackbars() {
     </Stack>
   );
 }
+
+
+
+
+export const CustomizedScrollBar = () => {
+
+  const { DarkMode } = useDarkMode()
+  
+  return (css`
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    width: 12px; 
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: ${DarkMode ? 'var(--backgroundInputDarkMode)' : '#f1f1f1'};
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${DarkMode ? 'var(--backgroundDarkMode2)' : 'rgba(94, 53, 177, 0.85)'};
+    border-radius: 10px;
+    border: 3px solid ${DarkMode ? 'var(--backgroundInputDarkMode)' : '#f1f1f1'};; 
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #5e0acc; 
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background-color: #4b0082; 
+  }
+`)
+}
+

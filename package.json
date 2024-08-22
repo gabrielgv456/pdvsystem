@@ -36,10 +36,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "yarn pull-shared-types && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "pull-shared-types" : "cd src/shared-types && git pull origin HEAD", 
+    "commit-shared-types": "cd src/shared-types && git pull origin HEAD && git add . && git commit -m \"updates\" && git push -u origin HEAD"
   },
   "eslintConfig": {
     "extends": [

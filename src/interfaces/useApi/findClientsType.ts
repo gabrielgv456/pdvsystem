@@ -1,4 +1,4 @@
-import { AddressSharedType } from "./shared/address";
+import { AddressSharedType } from "@shared/address";
 
 export type ClientType_FindClients = {
     id: number;

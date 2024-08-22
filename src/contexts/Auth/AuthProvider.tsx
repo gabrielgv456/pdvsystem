@@ -3,9 +3,10 @@ import { useApi } from "../../hooks/useApi";
 import { User } from "../../types/User";
 import { AuthContext } from "./AuthContext";
 import { useMessageBoxContext } from "../MessageBox/MessageBoxContext";
+import { SharedUser } from "@shared/api/validate";
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<SharedUser | null>(null);
     const [idUser, setidUser] = useState(0)
     const [isUserValid, setUserValid] = useState(false)
     const [masterkey, setmasterkey] = useState("")
@@ -24,7 +25,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                     if (data.error) throw new Error(data.error)
                     setUserValid(data.valid);
                     if (data.user) {
-                        const user: User = data.user
+                        const user: SharedUser = data.user
                         setUser(user);
                         setToken(data.token);
                         setidUser(data.user.id);

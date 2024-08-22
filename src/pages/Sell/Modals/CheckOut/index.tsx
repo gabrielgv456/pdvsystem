@@ -2,7 +2,8 @@ import Modal from '@mui/material/Modal';
 import { useState, useEffect, useContext } from 'react';
 import { MdAddCircleOutline, MdPending } from "react-icons/md"
 import { HiBadgeCheck } from "react-icons/hi"
-import { AiFillCloseCircle, AiFillPrinter, AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai"
+import { AiFillPrinter, AiOutlineCloseCircle } from "react-icons/ai"
+import { BiCloudUpload } from "react-icons/bi";
 import { BsFillBagCheckFill, BsFillCreditCardFill, BsFillCreditCard2FrontFill, BsPersonBadge, BsFillPersonFill } from "react-icons/bs"
 import { PaymentMethods } from "../../PaymentMethods/PaymentMethods";
 import { GeneratePDFSell } from "../../../../components/pdfGenerator/GeneratePDFSell";
@@ -214,8 +215,8 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             })
             props.setMethods(newMethods)
             setTimeout(() => {
-                document.getElementById(('Method'+String(props.listMethods.length + 1)))?.focus();
-              }, 0);
+                document.getElementById(('Method' + String(props.listMethods.length + 1)))?.focus();
+            }, 0);
 
         }
     }
@@ -352,6 +353,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
     const handleCreateFiscalNote = async (props: createFiscalNoteType) => {
         try {
+            if (!window.confirm('Confirma emissão da nota fiscal?')) return
             const result = await createFiscalNote(props)
             if (result.erro) throw new Error(result.erro)
             const blob = new Blob([result], { type: 'application/pdf' });
@@ -491,8 +493,10 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                     <S.DivModalButtons>
                         {isSellEnded ?
                             <>
-                                <S.ButtonPrint onClick={(e) => GeneratePDFSell(props.sumDiscount, props.sumvalue, props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), resultSell.codRef, auth.user)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</S.ButtonPrint>
-                                <DefaultButton selectedColor='--Blue' fontSize='1.08rem' padding='7px 25px 7px 25px' borderRadius='13px' onClick={() => resultSell.sellId && handleCreateFiscalNote({ sellId: resultSell.sellId, userId: auth.idUser })}><BsFillBagCheckFill style={{ marginRight: 2 }} /> Emitir Nota Fiscal</DefaultButton>
+                                <DefaultButton selectedColor='--Blue' fontSize='1.08rem' padding='7px 25px 7px 25px' borderRadius='13px' onClick={(e) => GeneratePDFSell(props.sumDiscount, props.sumvalue, props.sumvalueformated, props.sumquantity, props.listProducts, new Date().toLocaleDateString(), resultSell.codRef, auth.user)}><AiFillPrinter style={{ marginRight: 2 }} />Comprovante</DefaultButton>
+                                {(auth.user?.plans?.fiscalAccess ?? false) &&
+                                    <DefaultButton selectedColor='--Pink' fontSize='1.08rem' padding='7px 25px 7px 25px' borderRadius='13px' onClick={() => resultSell.sellId && handleCreateFiscalNote({ sellId: resultSell.sellId, userId: auth.idUser })}><BiCloudUpload size={22} style={{ marginRight: 2 }} /> Emitir Nota Fiscal</DefaultButton>
+                                }
                             </>
                             :
                             <>

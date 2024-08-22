@@ -1,4 +1,4 @@
-import { AddressSharedType } from "./address"
+import { AddressSharedType } from "@shared/address"
 
 export type UserSharedType = {
     email: string,

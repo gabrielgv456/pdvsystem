@@ -13,6 +13,7 @@ import { editClientTypeReq } from '../interfaces/useApi/editClientTypeReq';
 import { findDeliveriesType } from '../interfaces/useApi/findDeliveries';
 import { findAbourCorporationType } from '../interfaces/useApi/findAboutCorporation';
 import { validateTokenType } from '../interfaces/useApi/validateToken';
+import { sharedValidate } from '@shared/api/validate';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -29,7 +30,7 @@ export const useApi = () => ({
 
     validateToken: async (token: string) => {
         const response = await api.post('/validate', { token });
-        const result: validateTokenType = response.data
+        const result: sharedValidate = response.data
         return result;
     },
     signin: async (email: string, password: string) => {

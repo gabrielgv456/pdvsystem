@@ -1,4 +1,4 @@
-import { AddressSharedType } from "../interfaces/useApi/shared/address"
+import { AddressSharedType } from "@shared/address"
 
 export type User = {
     id: number

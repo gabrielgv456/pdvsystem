@@ -1,3 +1,4 @@
+import { CustomizedScrollBar } from "src/utils/utils";
 import styled from "styled-components";
 
 interface DarkModeProps {
@@ -51,6 +52,9 @@ export const Div = styled.div<DarkModeProps> `
     background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : 'rgb(237, 231, 246)')};
     color: rgb(94, 53, 177);
     } 
+ 
+    ${CustomizedScrollBar}
+
 `
 
 export const DivSwitch = styled.div<DarkModeProps> `
@@ -59,10 +63,7 @@ export const DivSwitch = styled.div<DarkModeProps> `
     width:100%;
     justify-content: center;
     align-items:center;
-    position: absolute;
-    bottom: 0;
-   
-    
+    padding-top: 1.2rem;
 `
 export const ButtonRetract = styled.button <DarkModeProps>`
 

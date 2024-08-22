@@ -155,14 +155,15 @@ export function Listagem(props: Props) {
                <S.bItem isDarkMode={Theme.DarkMode}>Vendedor</S.bItem>
                <S.LabelItem isDarkMode={Theme.DarkMode}>{props.item.seller?.name ?? "Não informado"}</S.LabelItem>
             </S.span>
-            {props.item.existsFiscalNote ?
-               <>
-                  <S.Button color="#e85100" isDarkMode={Theme.DarkMode} title="Visualizar PDF Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><TbFileTypePdf size={22} /></S.Button>
-                  <S.Button color="green" isDarkMode={Theme.DarkMode} title="Baixar XML Nota Fiscal" onClick={() => handleGetXml(props.item.id)}><TbFileTypeXml size={22} /></S.Button>
-               </>
-               :
-               <S.Button color="" isDarkMode={Theme.DarkMode} title="Emitir Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><img src={NfeIcon} style={{ width: 40 }} /></S.Button>
-
+            {(user?.plans?.fiscalAccess ?? false) && (
+               props.item.existsFiscalNote ?
+                  <>
+                     <S.Button color="#e85100" isDarkMode={Theme.DarkMode} title="Visualizar PDF Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><TbFileTypePdf size={22} /></S.Button>
+                     <S.Button color="green" isDarkMode={Theme.DarkMode} title="Baixar XML Nota Fiscal" onClick={() => handleGetXml(props.item.id)}><TbFileTypeXml size={22} /></S.Button>
+                  </>
+                  :
+                  <S.Button color="" isDarkMode={Theme.DarkMode} title="Emitir Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><img src={NfeIcon} style={{ width: 40 }} /></S.Button>
+            )
             }
             <S.Button color="#007fff" isDarkMode={Theme.DarkMode} title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.Button>
             <S.Button color="red" isDarkMode={Theme.DarkMode} title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.Button>

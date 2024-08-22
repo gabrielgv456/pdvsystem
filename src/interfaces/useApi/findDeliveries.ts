@@ -1,5 +1,5 @@
 import { TypeDeliveries } from "../../pages/Deliveries";
-import { AddressSharedType } from "./shared/address";
+import { AddressSharedType } from "@shared/address";
 import { ClientSharedType } from "./shared/client";
 import { ItensSellSharedType } from "./shared/ItensSell"
 

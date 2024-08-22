@@ -2,6 +2,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { cellNumberFormat, cpfCnpjFormat, phoneNumberFormat } from "../../utils/utils";
 import { User } from "../../types/User";
+import { SharedUser } from "@shared/api/validate";
 
 interface ProductsType {
     name: string;
@@ -11,7 +12,7 @@ interface ProductsType {
     quantity: number;
 };
 
-export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null) => {
+export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: SharedUser | null) => {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -67,12 +68,12 @@ export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvaluef
                     (userInfo?.cnpj ? 'Cnpj: ' + cpfCnpjFormat(userInfo.cnpj, userInfo.cnpj) + '\n' : ''),
                     userInfo?.phone ? 'Telefone: ' + phoneNumberFormat(userInfo?.phone ?? '', userInfo?.phone ?? '') + '\n' : '',
                     userInfo?.cellPhone ? 'Celular: ' + cellNumberFormat(userInfo?.cellPhone ?? '', userInfo?.cellPhone ?? '') + '\n' : '',
-                    userInfo?.address?.addressStreet ? (
-                        userInfo?.address.addressStreet ?? '' + ', '
-                        + userInfo?.address.addressNumber ?? '' + ', '
-                        + userInfo?.address.addressNeighborhood ?? '' + ', '
-                        + userInfo?.address.city.name ?? '' + ' - '
-                        + userInfo?.address.city.state.uf ?? '') + '\n\n' : '',
+                    userInfo?.addressRelation?.addressStreet ? (
+                        (userInfo?.addressRelation?.addressStreet ?? '') + ', '
+                        + (userInfo?.addressRelation?.addressNumber ?? '') + ', '
+                        + (userInfo?.addressRelation?.addressNeighborhood ?? '') + ', '
+                        + (userInfo?.addressRelation?.city.name ?? '') + ' - '
+                        + (userInfo?.addressRelation?.city.state.uf ?? '') + '\n\n') : '',
                 ],
                 margins: [0, 0, 0, 0]
             },
