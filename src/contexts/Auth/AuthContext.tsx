@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { SharedUser } from '@shared/api/validate';
+import { SharedUser } from '@shared/api/login/validate';
 
 export type AuthContextType = {
     user: SharedUser | null;

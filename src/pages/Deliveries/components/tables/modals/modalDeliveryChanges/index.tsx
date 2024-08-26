@@ -7,20 +7,20 @@ import { useState } from 'react';
 import { DeliveryAddressChange } from '../components/changeAddress';
 import * as S from './style'
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
-import { ResultDeliveryType } from '../../../../../../interfaces/useApi/findDeliveries';
+import { sharedDeliveriesSuccess } from '@shared/api/deliveries/findDeliveries';
 
 
 interface ModalDeliveryChangesProps {
     isModalDeliveryChangesOpen: boolean,
     setIsModalDeliveryChangesOpen: (value: boolean) => void
-    deliveriesFiltered: ResultDeliveryType[]
+    deliveriesFiltered: sharedDeliveriesSuccess[]
     searchDeliveries: () => void
     typeDelivery: TypeDeliveries
 }
 
 export const ModalDeliveryChanges = (props: ModalDeliveryChangesProps) => {
 
-    const [selectedDeliveryModal, setSelectedDeliveryModal] = useState<ResultDeliveryType>(props.deliveriesFiltered[0])
+    const [selectedDeliveryModal, setSelectedDeliveryModal] = useState<sharedDeliveriesSuccess>(props.deliveriesFiltered[0])
     const moreOneDelivery = props.deliveriesFiltered.length > 1
 
 
@@ -37,7 +37,7 @@ export const ModalDeliveryChanges = (props: ModalDeliveryChangesProps) => {
                 <S.ModalDiv>
                     <Autocomplete
                         value={selectedDeliveryModal}
-                        onChange={(event: any, newValue: ResultDeliveryType | null) => {
+                        onChange={(event: any, newValue: sharedDeliveriesSuccess | null) => {
                             if (newValue) setSelectedDeliveryModal(newValue);
                         }}
                         noOptionsText="Não encontrado"

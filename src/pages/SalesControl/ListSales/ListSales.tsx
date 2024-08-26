@@ -75,7 +75,9 @@ export function Listagem(props: Props) {
          if (!ok) return
          const result = await createFiscalNote(props)
          if (result.erro) throw new Error(result.erro)
-         const blob = new Blob([result], { type: 'application/pdf' });
+         if (!result.danfe) throw new Error('Falha ao gerar danfe!')
+         const base64 = await fetch(`data:application/pdf;base64,${result.danfe}`)
+         const blob = await base64.blob();
          const url = URL.createObjectURL(blob);
          window.open(url, '_blank')
       } catch (error) {

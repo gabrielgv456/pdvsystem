@@ -2,7 +2,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { cellNumberFormat, cpfCnpjFormat, phoneNumberFormat } from "../../utils/utils";
 import { User } from "../../types/User";
-import { SharedUser } from "@shared/api/validate";
+import { SharedUser } from "@shared/api/login/validate";
 
 interface ProductsType {
     name: string;

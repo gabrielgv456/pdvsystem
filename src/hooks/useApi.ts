@@ -10,10 +10,10 @@ import { uploadImageType } from '../components/uploadImage/interfaces';
 import { createFiscalNoteType } from '../pages/Sell/Modals/CheckOut';
 import { findClientsType } from '../interfaces/useApi/findClientsType';
 import { editClientTypeReq } from '../interfaces/useApi/editClientTypeReq';
-import { findDeliveriesType } from '../interfaces/useApi/findDeliveries';
 import { findAbourCorporationType } from '../interfaces/useApi/findAboutCorporation';
-import { validateTokenType } from '../interfaces/useApi/validateToken';
-import { sharedValidate } from '@shared/api/validate';
+import { sharedValidate } from '@shared/api/login/validate';
+import { sharedDeliveriesResponse } from '@shared/api/deliveries/findDeliveries';
+import { SharedFiscalParametersResponse } from '@shared/api/settings/fiscalParameters';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -183,7 +183,7 @@ export const useApi = () => ({
                 finalDate: data.finalDate
             }
         })
-        const result: findDeliveriesType = response.data
+        const result: sharedDeliveriesResponse = response.data
         return result
     },
     changeStatusDeliveries: async (dataChangeStatusDeliveries: TypeChangeStatusDeliveriesRequest) => {
@@ -228,19 +228,13 @@ export const useApi = () => ({
         return response.data
     }, getFiscalParameters: async (idUser: number) => {
         const response = await api.get('/fiscalParameters', { params: { storeId: idUser } })
-        return response.data
+        const result: SharedFiscalParametersResponse = response.data
+        return result
     }, changeFiscalParameters: async (dataChangeFicalParameters: typeReqChangeFiscalParameters) => {
         const response = await api.post('/changeFiscalParameters', { ...dataChangeFicalParameters })
         return response.data
     }, createFiscalNote: async (dataCreateFiscalNote: createFiscalNoteType) => {
-        const response = await api.post('/createSellFiscalNote',
-            { ...dataCreateFiscalNote },
-            { responseType: 'blob' })
-        if (response.status !== 200) {
-            const errorResponse = await response.data.text();
-            const errorJson = JSON.parse(errorResponse);
-            return errorJson
-        }
+        const response = await api.post('/createSellFiscalNote', { ...dataCreateFiscalNote })
         return response.data
     }, getCities: async (city?: string | null, ibge?: number | null) => {
         const response = await api.get('/cities', { params: { city, ibge } })

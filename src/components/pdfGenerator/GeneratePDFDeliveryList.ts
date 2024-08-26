@@ -2,9 +2,9 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DateFormatWeek, cellNumberFormat, cpfCnpjFormat, phoneNumberFormat } from "../../utils/utils";
 import { User } from "../../types/User";
-import { ResultDeliveryType } from "../../interfaces/useApi/findDeliveries";
+import { sharedDeliveriesSuccess } from "@shared/api/deliveries/findDeliveries";
 
-export const GeneratePDFDeliveryList = (deliveries: ResultDeliveryType[], storeName: string, userInfo: User | null) => {
+export const GeneratePDFDeliveryList = (deliveries: sharedDeliveriesSuccess[], storeName: string, userInfo: User | null) => {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
 

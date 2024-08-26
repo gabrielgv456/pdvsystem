@@ -3,10 +3,10 @@ import * as S from "./style"
 import { useDarkMode } from '../../../../contexts/DarkMode/DarkModeProvider';
 import MuiTableDeliveries, { DataDeliveryTableType } from "../../components/tables/muiDeliveryTable";
 import { DateFormatWeek } from "../../../../utils/utils";
-import { ResultDeliveryType } from "../../../../interfaces/useApi/findDeliveries";
+import { sharedDeliveriesSuccess } from "@shared/api/deliveries/findDeliveries";
 
 interface DeliveriesProps {
-    Deliveries: ResultDeliveryType[]
+    Deliveries: sharedDeliveriesSuccess[]
     searchDeliveries: () => void
 }
 interface Data {

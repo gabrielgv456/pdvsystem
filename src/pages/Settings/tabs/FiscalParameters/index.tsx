@@ -7,6 +7,7 @@ import { FormatPercent } from '../../../../utils/utils'
 import { useApi } from '../../../../hooks/useApi'
 import { AuthContext } from '../../../../contexts/Auth/AuthContext'
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext'
+import { UploadImage } from 'src/components/uploadImage/uploadImage'
 
 export const TabFiscalParameters = () => {
 
@@ -38,7 +39,7 @@ export const TabFiscalParameters = () => {
     async function loadFiscalParameters() {
         try {
             const result = await getFiscalParameters(idUser)
-            if (!result.Success) { throw new Error(result.Erro ?? '') }
+            if (!result.Success) { throw new Error(result.erro ?? '') }
             setFiscalParameters(result.fiscalParameters)
             setCrtOptions(result.crtOptions)
             setCstPisOptions(result.cstPisOptions)
@@ -89,6 +90,58 @@ export const TabFiscalParameters = () => {
 
     return (
         <S.Container>
+            <b>Parametrização</b>
+            Certificado Digital
+            <UploadImage
+                maxSize={1}
+                url={''}
+                idImage={1}
+                setIdImage={() => (console.log('a'))}
+            />
+            <TextField
+                value={fiscalParameters?.taxCstCofinsAliquot}
+                onChange={(e) => {
+                    setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
+                }}
+                id="outlined-basic"
+                label="Série NFe"
+                variant="outlined"
+                sx={{ width: '25%' }}
+                disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+            />
+            <TextField
+                value={fiscalParameters?.taxCstCofinsAliquot}
+                onChange={(e) => {
+                    setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
+                }}
+                id="outlined-basic"
+                label="Série NFCe"
+                variant="outlined"
+                sx={{ width: '25%' }}
+                disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+            />
+            <TextField
+                value={fiscalParameters?.taxCstCofinsAliquot}
+                onChange={(e) => {
+                    setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
+                }}
+                id="outlined-basic"
+                label="Ultimo nº NFe Emitida"
+                variant="outlined"
+                sx={{ width: '25%' }}
+                disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+            />
+            <TextField
+                value={fiscalParameters?.taxCstCofinsAliquot}
+                onChange={(e) => {
+                    setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
+                }}
+                id="outlined-basic"
+                label="Ultimo nº NFCe Emitida"
+                variant="outlined"
+                sx={{ width: '25%' }}
+                disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+            />
             <b>Tributação</b>
             <S.DivItemTrib>
                 <Autocomplete
@@ -137,7 +190,7 @@ export const TabFiscalParameters = () => {
                     }}
                     id="outlined-basic"
                     label="Alíquota COFINS (%)"
-                    
+
                     variant="outlined"
                     sx={{ width: '25%' }}
                     disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
@@ -163,7 +216,7 @@ export const TabFiscalParameters = () => {
                     }}
                     id="outlined-basic"
                     label="Alíquota PIS (%)"
-                    
+
                     variant="outlined"
                     disabled={fiscalParameters.taxCstPisId ? idsZeroAliquot.includes(fiscalParameters.taxCstPisId) : false}
                     sx={{ width: '25%' }}

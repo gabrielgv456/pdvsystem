@@ -3,7 +3,7 @@ import { useApi } from "../../hooks/useApi";
 import { User } from "../../types/User";
 import { AuthContext } from "./AuthContext";
 import { useMessageBoxContext } from "../MessageBox/MessageBoxContext";
-import { SharedUser } from "@shared/api/validate";
+import { SharedUser } from "@shared/api/login/validate";
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const [user, setUser] = useState<SharedUser | null>(null);

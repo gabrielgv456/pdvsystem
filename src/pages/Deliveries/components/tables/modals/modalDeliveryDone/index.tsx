@@ -13,12 +13,12 @@ import { PaymentDelivery } from '../components/Payment';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { useApi } from '../../../../../../hooks/useApi';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
-import { ResultDeliveryType } from '../../../../../../interfaces/useApi/findDeliveries';
+import { sharedDeliveriesSuccess } from '@shared/api/deliveries/findDeliveries';
 
 interface ModalDeliveryChangesProps {
     isModalDeliveryDoneOpen: boolean,
     setIsModalDeliveryDoneOpen: (value: boolean) => void
-    deliveriesFiltered: ResultDeliveryType[]
+    deliveriesFiltered: sharedDeliveriesSuccess[]
     searchDeliveries: () => void
     typeDelivery: TypeDeliveries
     itensSelected: number[]
@@ -45,7 +45,7 @@ export const ModalDeliveryDone = (props: ModalDeliveryChangesProps) => {
     const [value, setValue] = useState([0])
 
     const payOnDeliveryFiltered = (props.deliveriesFiltered.filter(deliveryFilter => deliveryFilter.onDeliveryPayValue))
-    const [selectedPayOnDeliveryModal, setselectedPayOnDeliveryModal] = useState<ResultDeliveryType | null>(payOnDeliveryFiltered.length === 1 ? payOnDeliveryFiltered[0] : null)
+    const [selectedPayOnDeliveryModal, setselectedPayOnDeliveryModal] = useState<sharedDeliveriesSuccess | null>(payOnDeliveryFiltered.length === 1 ? payOnDeliveryFiltered[0] : null)
 
 
     function handleCloseModalDeliveryDone() {
@@ -114,7 +114,7 @@ export const ModalDeliveryDone = (props: ModalDeliveryChangesProps) => {
                             Existem vendas com metódo de pagamento "na entrega", antes informe qual foi o tipo de pagamento:
                             <Autocomplete
                                 value={selectedPayOnDeliveryModal}
-                                onChange={(event: any, newValue: ResultDeliveryType | null) => {
+                                onChange={(event: any, newValue: sharedDeliveriesSuccess | null) => {
                                     setselectedPayOnDeliveryModal(newValue)
                                 }}
                                 noOptionsText="Não encontrado"

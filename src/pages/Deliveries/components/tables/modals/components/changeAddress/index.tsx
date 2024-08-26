@@ -13,14 +13,14 @@ import { DefaultButton } from '../../../../../../../components/buttons/defaultBu
 import { AuthContext } from '../../../../../../../contexts/Auth/AuthContext';
 import { useApi } from '../../../../../../../hooks/useApi';
 import { CityStateType } from '../../../../../../PeopleRegistration/Clients/Modals/addEditClient/interfaces';
-import { ResultDeliveryType } from '../../../../../../../interfaces/useApi/findDeliveries';
 import { AddressSharedType } from "@shared/address";
+import { sharedDeliveriesSuccess } from '@shared/api/deliveries/findDeliveries';
 
 interface DeliveryAddressClientProps {
-    selectedDeliveryModal: ResultDeliveryType,
+    selectedDeliveryModal: sharedDeliveriesSuccess,
     moreOneDelivery: boolean,
     searchDeliveries: () => void
-    setSelectedDeliveryModal: (value: ResultDeliveryType) => void
+    setSelectedDeliveryModal: (value: sharedDeliveriesSuccess) => void
 }
 export type typeRequestDeliveryAdressChange = {
     scheduledDate: Date;

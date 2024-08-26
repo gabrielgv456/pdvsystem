@@ -169,12 +169,15 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                     <Tabs value={value} onChange={handleChange}  >
                         <Tab label={isLess900 ? '' : 'Principal'} title='Principal' sx={{ borderRadius: '10px 0px 0px 0px' }} {...a11yProps(0)} icon={<FiPackage size={20} />} iconPosition='start' />
                         {(auth.user?.plans?.fiscalAccess ?? false) &&
-                            <>
-                                <Tab label={isLess900 ? '' : "ICMS"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />
-                                <Tab label={isLess900 ? '' : "ICMS ST"} title='Parâmetros Fiscais' {...a11yProps(2)} icon={<MdAssignment size={20} />} iconPosition='start' />
-                                <Tab label={isLess900 ? '' : "IPI/PIS/COFINS"} title='Parâmetros Fiscais' {...a11yProps(3)} icon={<MdAssignment size={20} />} iconPosition='start' />
-                            </>
+                            <Tab label={isLess900 ? '' : "ICMS"} title='Parâmetros Fiscais' {...a11yProps(1)} icon={<MdAssignment size={20} />} iconPosition='start' />
                         }
+                        {(auth.user?.plans?.fiscalAccess ?? false) &&
+                            <Tab label={isLess900 ? '' : "ICMS ST"} title='Parâmetros Fiscais' {...a11yProps(2)} icon={<MdAssignment size={20} />} iconPosition='start' />
+                        }
+                        {(auth.user?.plans?.fiscalAccess ?? false) &&
+                            <Tab label={isLess900 ? '' : "IPI/PIS/COFINS"} title='Parâmetros Fiscais' {...a11yProps(3)} icon={<MdAssignment size={20} />} iconPosition='start' />
+                        }
+
                     </Tabs>
                 </Box>
                 <div>
@@ -185,27 +188,30 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                             itemData={props.itemData}
                         />
                     </TabPanel>
-                    <TabPanel value={value} index={1}>
-                        <TabIcmsProduct
-                            dataAddEditProduct={dataAddEditProduct}
-                            setDataAddEditProduct={setDataAddEditProduct}
-                            icmsOptions={icmsOptions}
-                        />
-                    </TabPanel>
-                    <TabPanel value={value} index={2}>
-                        <TabIcmsSTProduct
-                            dataAddEditProduct={dataAddEditProduct}
-                            setDataAddEditProduct={setDataAddEditProduct}
-                            icmsOptions={icmsOptions}
-                        />
-                    </TabPanel>
-                    <TabPanel value={value} index={3}>
-                        <TabIpiPisCofinsProduct
-                            dataAddEditProduct={dataAddEditProduct}
-                            setDataAddEditProduct={setDataAddEditProduct}
-                            taxOptions={icmsOptions}
-                        />
-                    </TabPanel>
+                    {(auth.user?.plans?.fiscalAccess ?? false) &&
+                        <>
+                            <TabPanel value={value} index={1}>
+                                <TabIcmsProduct
+                                    dataAddEditProduct={dataAddEditProduct}
+                                    setDataAddEditProduct={setDataAddEditProduct}
+                                    icmsOptions={icmsOptions}
+                                />
+                            </TabPanel>
+                            <TabPanel value={value} index={2}>
+                                <TabIcmsSTProduct
+                                    dataAddEditProduct={dataAddEditProduct}
+                                    setDataAddEditProduct={setDataAddEditProduct}
+                                    icmsOptions={icmsOptions}
+                                />
+                            </TabPanel>
+                            <TabPanel value={value} index={3}>
+                                <TabIpiPisCofinsProduct
+                                    dataAddEditProduct={dataAddEditProduct}
+                                    setDataAddEditProduct={setDataAddEditProduct}
+                                    taxOptions={icmsOptions}
+                                />
+                            </TabPanel>
+                        </>}
                 </div>
 
                 <SaveProduct

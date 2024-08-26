@@ -30,7 +30,7 @@ import { GeneratePDFDeliveryList } from '../../../../components/pdfGenerator/Gen
 import { User } from '../../../../types/User';
 import { ModalDeliveryChanges } from './modals/modalDeliveryChanges';
 import { ModalDeliveryDone } from './modals/modalDeliveryDone';
-import { ResultDeliveryType } from '../../../../interfaces/useApi/findDeliveries';
+import { sharedDeliveriesSuccess } from '@shared/api/deliveries/findDeliveries';
 
 export interface DataDeliveryTableType {
   itemSell: string
@@ -43,7 +43,7 @@ export interface DataDeliveryTableType {
 }
 interface MuiTableProps {
   width: string
-  Deliveries: ResultDeliveryType[],
+  Deliveries: sharedDeliveriesSuccess[],
   rows: DataDeliveryTableType[],
   searchDeliveries: () => void
   type: TypeDeliveries
@@ -225,7 +225,7 @@ interface EnhancedTableToolbarProps {
   selected: readonly string[]
   searchDeliveries: () => void
   typeDelivery: TypeDeliveries
-  deliveries: ResultDeliveryType[]
+  deliveries: sharedDeliveriesSuccess[]
   user: User | null
   isModalDeliveryChangesOpen: boolean,
   setIsModalDeliveryChangesOpen: (value: boolean) => void

@@ -20,7 +20,7 @@ import { TabShippingDeliveries } from './tabs/shippingDelivery';
 import { TabDoneDeliveries } from './tabs/doneDelivery';
 import { typesPayment } from '../Sell/Modals/CheckOut';
 import { useLayout } from '../../contexts/Layout/layoutContext';
-import { ResultDeliveryType } from '../../interfaces/useApi/findDeliveries';
+import { sharedDeliveriesSuccess } from '@shared/api/deliveries/findDeliveries';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -45,7 +45,7 @@ export const Deliveries = () => {
     const auth = useContext(AuthContext);
     const { findDeliveries } = useApi()
     const atualdata = ReturnData()
-    const [DeliveriesReturnApi, setDeliveriesReturnApi] = useState<ResultDeliveryType[]>([])
+    const [DeliveriesReturnApi, setDeliveriesReturnApi] = useState<sharedDeliveriesSuccess[]>([])
     const [initialDate, setinitialDate] = useState(atualdata)
     const [finalDate, SetfinalDate] = useState(atualdata)
     const { MessageBox } = useMessageBoxContext()
