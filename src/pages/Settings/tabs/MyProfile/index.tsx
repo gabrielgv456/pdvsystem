@@ -281,6 +281,7 @@ export const TabMyProfile = () => {
                         }}
                         id="outlined-basic"
                         label="Razão Social *"
+                        InputLabelProps={{ shrink: !!dataProfile.name }}
                         variant="outlined"
                         autoFocus
                         sx={{ width: '100%' }}
@@ -294,9 +295,11 @@ export const TabMyProfile = () => {
                             handleChangeDataProfile('cnpj', cpfCnpjFormat(e.target.value, dataProfile.cnpj ?? ''))
                         }}
                         label="CNPJ"
+                        InputLabelProps={{ shrink: !!dataProfile.cnpj }}
                         id="outlined-basic"
                         variant="outlined"
                         sx={{ width: '49%' }}
+                        disabled={true}
                     />
 
                     <TextField
@@ -304,6 +307,7 @@ export const TabMyProfile = () => {
                         onChange={(e) => { handleChangeDataProfile('fantasyName', e.target.value) }}
                         label="Nome Fantasia"
                         id="outlined-basic"
+                        InputLabelProps={{ shrink: !!dataProfile.fantasyName }}
                         variant="outlined"
                         sx={{ width: '49%' }}
                     />
@@ -320,6 +324,7 @@ export const TabMyProfile = () => {
                                     dataProfile.email : e.target.value)
                         }}
                         id="outlined-basic"
+                        InputLabelProps={{ shrink: !!dataProfile.email }}
                         label="E-mail"
                         variant="outlined"
                         sx={{ width: '70%' }}
@@ -333,6 +338,7 @@ export const TabMyProfile = () => {
                                     dataProfile.ie : removeNotNumerics(e.target.value))
                         }}
                         id="outlined-basic"
+                        InputLabelProps={{ shrink: !!dataProfile.ie }}
                         label="Inscrição Estadual"
                         variant="outlined"
                         sx={{ width: '28%' }}
@@ -345,6 +351,7 @@ export const TabMyProfile = () => {
                             handleChangeDataProfile('phone', phoneNumberFormat(e.target.value, dataProfile.phone ?? ''))
                         }}
                         id="outlined-basic"
+                        InputLabelProps={{ shrink: !!dataProfile.phone }}
                         label="Telefone"
                         variant="outlined"
                         sx={{ width: '49%' }}
@@ -356,6 +363,7 @@ export const TabMyProfile = () => {
                             handleChangeDataProfile('cellPhone', cellNumberFormat(e.target.value, dataProfile.cellPhone ?? ''))
                         }}
                         id="outlined-basic"
+                        InputLabelProps={{ shrink: !!dataProfile.cellPhone }}
                         label="Celular"
                         variant="outlined"
                         sx={{ width: '49%' }}
@@ -371,6 +379,7 @@ export const TabMyProfile = () => {
                             handleChangeDataProfile('addressCep', cepFormat(e.target.value, dataProfile.addressCep ?? ''))
                         }}
                         onBlur={(e) => handleConsultCep(e.target.value)}
+                        InputLabelProps={{ shrink: !!dataProfile.addressCep }}
                         id="outlined-basic"
                         label="CEP"
                         variant="outlined"
@@ -386,6 +395,7 @@ export const TabMyProfile = () => {
                             )
                         }}
                         id="outlined-basic"
+                        InputLabelProps={{ shrink: !!dataProfile.addressStreet }}
                         label="Endereço"
                         variant="outlined"
                         sx={{ width: '57%' }}
@@ -400,6 +410,7 @@ export const TabMyProfile = () => {
                             )
                         }}
                         id="outlined-basic"
+                        InputLabelProps={{ shrink: !!dataProfile.addressNumber }}
                         label="Nº"
                         variant="outlined"
                         sx={{ width: '13%' }}
@@ -416,6 +427,7 @@ export const TabMyProfile = () => {
                                 dataProfile.addressNeighborhood : e.target.value)}
                         type="text"
                         id="outlined-basic"
+                        InputLabelProps={{ shrink: !!dataProfile.addressNeighborhood }}
                         label="Bairro"
                         variant="outlined"
                         sx={{ width: '45%' }} />
@@ -443,6 +455,7 @@ export const TabMyProfile = () => {
                     onChange={(e) => setActualPass(e.target.value)}
                     type="password"
                     id="outlined-basic"
+                    InputLabelProps={{ shrink: !!actualPass }}
                     label="Senha Atual"
                     variant="outlined"
                     sx={{ width: '250px' }} />
@@ -451,6 +464,7 @@ export const TabMyProfile = () => {
                     onChange={(e) => setNewPass(e.target.value)}
                     type="password"
                     id="outlined-basic"
+                    InputLabelProps={{ shrink: !!newPass }}
                     label="Nova Senha"
                     variant="outlined"
                     sx={{ width: '250px' }} />
@@ -459,6 +473,7 @@ export const TabMyProfile = () => {
                     onChange={(e) => setConfirmNewPass(e.target.value)}
                     type="password"
                     id="outlined-basic"
+                    InputLabelProps={{ shrink: !!confirmNewPass }}
                     label="Repita Nova Senha"
                     variant="outlined"
                     sx={{ width: '250px' }} />

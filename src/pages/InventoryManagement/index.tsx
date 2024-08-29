@@ -15,6 +15,7 @@ import { ModalAddEditProduct } from "./Modals/AddEditProduct";
 import { MuiBox } from "../../components/box/muiBox";
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from "../../components/buttons/closeButtonModal";
 import { useLayout } from "../../contexts/Layout/layoutContext";
+import { CircularProgressSpinner } from "src/spinners/progress/CircularProgressSpinner";
 
 
 export const InventoryManagement = () => {
@@ -24,6 +25,7 @@ export const InventoryManagement = () => {
     const { findProducts } = useApi()
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
+    const [isLoading, setIsLoading] = useState(true)
     const [actualItemEdit, setActualItemEdit] = useState<type.ProductsReturnApiProps | undefined>()
     const [ProductsReturnApi, setProductsReturnApi] = useState<type.ProductsReturnApiProps[]>([])
     const [ItensPerPageExtract, SetItensPerPageExtract] = useState(10)
@@ -66,6 +68,7 @@ export const InventoryManagement = () => {
     const SearchProducts = async () => {
         const data = await findProducts(auth.idUser)
         setProductsReturnApi(data.listProducts)
+        setIsLoading(false)
     }
 
     return (
@@ -98,88 +101,89 @@ export const InventoryManagement = () => {
                         </label>
                     </S.Header>
 
+                    {isLoading ? <CircularProgressSpinner /> :
+                        <S.DivListProducts>
 
-                    <S.DivListProducts>
+                            <S.DivTitleListProducts isDarkMode={Theme.DarkMode}>
+                                <S.labelEdit></S.labelEdit>
+                                <S.labelProduct><b>Produto</b></S.labelProduct>
+                                <S.labelStatus><b>Status</b></S.labelStatus>
+                                <S.labelQuantity><b>Disponível</b></S.labelQuantity>
+                                <S.labelQuantity><b>Reservado</b></S.labelQuantity>
+                                <S.labelValue><b>Valor</b></S.labelValue>
+                                <S.labelCriadoEm ><b>Criado em</b></S.labelCriadoEm>
+                                <S.labelTrash></S.labelTrash>
+                                <S.labelTrash></S.labelTrash>
 
-                        <S.DivTitleListProducts isDarkMode={Theme.DarkMode}>
-                            <S.labelEdit></S.labelEdit>
-                            <S.labelProduct><b>Produto</b></S.labelProduct>
-                            <S.labelStatus><b>Status</b></S.labelStatus>
-                            <S.labelQuantity><b>Disponível</b></S.labelQuantity>
-                            <S.labelQuantity><b>Reservado</b></S.labelQuantity>
-                            <S.labelValue><b>Valor</b></S.labelValue>
-                            <S.labelCriadoEm ><b>Criado em</b></S.labelCriadoEm>
-                            <S.labelTrash></S.labelTrash>
-                            <S.labelTrash></S.labelTrash>
-
-                        </S.DivTitleListProducts>
+                            </S.DivTitleListProducts>
 
 
 
-                        {paginedTransactionsReturnApi.map((item) => (
-                            <ListProducts
-                                key={item.id}
-                                item={item}
-                                isModalTransactionsProductsOpen={isModalTransactionsProductsOpen}
-                                setisModalTransactionsProductsOpen={setisModalTransactionsProductsOpen}
-                                searchProduct={SearchProducts}
-                                dataTransactionsProductsReturnApi={dataTransactionsProductsReturnApi}
-                                setdataTransactionsProductsReturnApi={setdataTransactionsProductsReturnApi}
-                                setActualItemEdit={setActualItemEdit}
-                                isModalAddEditProductOpen={isModalAddEditProductOpen}
-                                setisModalAddEditProductOpen={setisModalAddEditProductOpen}
-                                reservedQuantity={item.deliveries.reduce((acc, item) => {
-                                    return acc + item.itemSell.quantity
-                                }, 0)}
-                            />
+                            {paginedTransactionsReturnApi.map((item) => (
+                                <ListProducts
+                                    key={item.id}
+                                    item={item}
+                                    isModalTransactionsProductsOpen={isModalTransactionsProductsOpen}
+                                    setisModalTransactionsProductsOpen={setisModalTransactionsProductsOpen}
+                                    searchProduct={SearchProducts}
+                                    dataTransactionsProductsReturnApi={dataTransactionsProductsReturnApi}
+                                    setdataTransactionsProductsReturnApi={setdataTransactionsProductsReturnApi}
+                                    setActualItemEdit={setActualItemEdit}
+                                    isModalAddEditProductOpen={isModalAddEditProductOpen}
+                                    setisModalAddEditProductOpen={setisModalAddEditProductOpen}
+                                    reservedQuantity={item.deliveries.reduce((acc, item) => {
+                                        return acc + item.itemSell.quantity
+                                    }, 0)}
+                                />
 
-                        ))
-                        }
+                            ))
+                            }
 
-                        {ProductsReturnApi.length === 0 &&
-                            <h5 style={{ color: '#485059', marginTop: '5%' }}>Nenhum resultado encontrado</h5>
-                        }
+                            {ProductsReturnApi.length === 0 &&
+                                <h5 style={{ color: '#485059', marginTop: '5%' }}>Nenhum resultado encontrado</h5>
+                            }
 
-                        <S.DivFooterListProducts isDarkMode={Theme.DarkMode}>
-                            <select value={ItensPerPageExtract}
-                                onChange={(e) => EditItensPerPage(Number(e.target.value))}
-                                style={{ border: 'none', width: '40px', background: 'none', color: '#67636d' }}>
-                                <option value={5}>5</option>
-                                <option value={10}>10</option>
-                                <option value={25}>25</option>
-                                <option value={10000}>*</option>
-                            </select>
-                            <S.DivRightFooterProducts>
-                                <label>Qtd Total: {ProductsReturnApi.reduce((acc, item) => { return acc + (item.quantity ?? 0) }, 0)}</label>
-                                <label>Valor Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(ProductsReturnApi.reduce((acc, item) => { return acc + item.totalValue }, 0))}</label>
+                            <S.DivFooterListProducts isDarkMode={Theme.DarkMode}>
+                                <select value={ItensPerPageExtract}
+                                    onChange={(e) => EditItensPerPage(Number(e.target.value))}
+                                    style={{ border: 'none', width: '40px', background: 'none', color: '#67636d' }}>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={25}>25</option>
+                                    <option value={10000}>*</option>
+                                </select>
+                                <S.DivRightFooterProducts>
+                                    <label>Qtd Total: {ProductsReturnApi.reduce((acc, item) => { return acc + (item.quantity ?? 0) }, 0)}</label>
+                                    <label>Valor Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(ProductsReturnApi.reduce((acc, item) => { return acc + item.totalValue }, 0))}</label>
 
-                                {PagesExtract > 0 ? <label> Página {atualPageExtract + 1} de {PagesExtract}</label> : <label></label>}
+                                    {PagesExtract > 0 ? <label> Página {atualPageExtract + 1} de {PagesExtract}</label> : <label></label>}
 
-                                <S.DivAlterPage>
+                                    <S.DivAlterPage>
 
-                                    {atualPageExtract <= PagesExtract && atualPageExtract > 0 ?
-                                        <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract - 1)}>
-                                            <MdChevronLeft color='#4b535c' size="25" />
-                                        </button>
-                                        :
-                                        <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
-                                            <MdChevronLeft color='#b8c0c9' size="25" />
-                                        </button>
-                                    }
-                                    {atualPageExtract + 1 >= PagesExtract ?
-                                        <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
-                                            <MdChevronRight color='#b8c0c9' size="25" />
-                                        </button>
-                                        :
-                                        <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract + 1)}>
-                                            <MdChevronRight color='#4b535c' size="25" />
-                                        </button>
-                                    }
-                                </S.DivAlterPage>
-                            </S.DivRightFooterProducts>
+                                        {atualPageExtract <= PagesExtract && atualPageExtract > 0 ?
+                                            <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract - 1)}>
+                                                <MdChevronLeft color='#4b535c' size="25" />
+                                            </button>
+                                            :
+                                            <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
+                                                <MdChevronLeft color='#b8c0c9' size="25" />
+                                            </button>
+                                        }
+                                        {atualPageExtract + 1 >= PagesExtract ?
+                                            <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
+                                                <MdChevronRight color='#b8c0c9' size="25" />
+                                            </button>
+                                            :
+                                            <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract + 1)}>
+                                                <MdChevronRight color='#4b535c' size="25" />
+                                            </button>
+                                        }
+                                    </S.DivAlterPage>
+                                </S.DivRightFooterProducts>
 
-                        </S.DivFooterListProducts>
-                    </S.DivListProducts>
+                            </S.DivFooterListProducts>
+                        </S.DivListProducts>
+                    }
 
                     {/******     Modals Start  *********/}
 

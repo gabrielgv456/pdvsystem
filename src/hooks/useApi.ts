@@ -4,7 +4,6 @@ import { TypeChangeStatusDeliveriesRequest } from '../pages/Deliveries/component
 import { typeRequestDeliveryAdressChange } from '../pages/Deliveries/components/tables/modals/components/changeAddress';
 import { typeSetPaymentsonDelivery } from '../pages/Deliveries/components/tables/modals/modalDeliveryDone';
 import { typeChangeForgotPassword } from '../pages/Login/Modals/validateEmail';
-import { typeReqChangeFiscalParameters } from '../pages/Settings/tabs/FiscalParameters/interfaces';
 import { addEditProductDataSend } from '../pages/InventoryManagement/Modals/AddEditProduct/interfaces';
 import { uploadImageType } from '../components/uploadImage/interfaces';
 import { createFiscalNoteType } from '../pages/Sell/Modals/CheckOut';
@@ -14,6 +13,7 @@ import { findAbourCorporationType } from '../interfaces/useApi/findAboutCorporat
 import { sharedValidate } from '@shared/api/login/validate';
 import { sharedDeliveriesResponse } from '@shared/api/deliveries/findDeliveries';
 import { SharedFiscalParametersResponse } from '@shared/api/settings/fiscalParameters';
+import { SharedChangeFiscalParametersRequest } from '@shared/api/settings/changeFiscalParameters';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -230,7 +230,7 @@ export const useApi = () => ({
         const response = await api.get('/fiscalParameters', { params: { storeId: idUser } })
         const result: SharedFiscalParametersResponse = response.data
         return result
-    }, changeFiscalParameters: async (dataChangeFicalParameters: typeReqChangeFiscalParameters) => {
+    }, changeFiscalParameters: async (dataChangeFicalParameters: SharedChangeFiscalParametersRequest) => {
         const response = await api.post('/changeFiscalParameters', { ...dataChangeFicalParameters })
         return response.data
     }, createFiscalNote: async (dataCreateFiscalNote: createFiscalNoteType) => {

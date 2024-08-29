@@ -3,7 +3,7 @@ export type uploadImageProps = {
     idImage: number | null,
     setIdImage: (newValue: number | null) => void
     url?: string | null
-
+    type: 'image'|'cert'
 }
 
 export type uploadImageType = {

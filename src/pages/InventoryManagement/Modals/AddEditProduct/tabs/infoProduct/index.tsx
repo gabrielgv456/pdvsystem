@@ -133,6 +133,7 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
         <S.DivModalAddProduct>
             <div style={{ width: '100%', gap: 20, alignItems: 'center', display: 'flex' }}>
                 <UploadImage
+                    type='image'
                     maxSize={1}
                     url={props.dataAddEditProduct.principal.urlImage}
                     idImage={props.dataAddEditProduct.principal.imageId}

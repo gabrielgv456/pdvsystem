@@ -1,11 +1,11 @@
-import { ChangeEvent, DragEvent, useContext, useState } from "react";
+import { ChangeEvent, DragEvent, useContext, useEffect, useState } from "react";
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import * as S from './style'
 import * as type from './interfaces'
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { useApi } from "../../hooks/useApi";
 import { AuthContext } from "../../contexts/Auth/AuthContext";
-import { url } from "inspector";
+import certImage from '../../images/certificado-digital.png'
 
 export const UploadImage = (props: type.uploadImageProps) => {
     const [dragOver, setDragOver] = useState(false);
@@ -14,6 +14,10 @@ export const UploadImage = (props: type.uploadImageProps) => {
     const { uploadFile, deleteFile } = useApi()
     const auth = useContext(AuthContext)
     const [changeImage, setChangeImage] = useState(false)
+
+    useEffect(() => {
+        setSelectedImage(props.url)
+    }, [props.url])
 
     const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
         event.preventDefault();
@@ -42,7 +46,10 @@ export const UploadImage = (props: type.uploadImageProps) => {
             if (!imageLogo) {
                 throw new Error('Selecione um arquivo!')
             }
-            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(imageLogo.type)) {
+            if ((props.type === 'image') && !['image/jpeg', 'image/png', 'image/jpg'].includes(imageLogo.type)) {
+                throw new Error('Formato de arquivo inválido!')
+            }
+            if ((props.type === 'cert') && !['application/x-pkcs12'].includes(imageLogo.type)) {
                 throw new Error('Formato de arquivo inválido!')
             }
             if (imageLogo.size >= 1000000 * maxSize) {
@@ -56,7 +63,7 @@ export const UploadImage = (props: type.uploadImageProps) => {
             }
             setSelectedImage(result.url)
             props.setIdImage(result.id)
-            MessageBox('success', 'Imagem enviada com sucesso! ')
+            MessageBox('success', 'Arquivo enviado com sucesso! Clique em salvar para aplicar')
         } catch (error) {
             MessageBox('warning', (error as Error).message)
         }
@@ -64,14 +71,14 @@ export const UploadImage = (props: type.uploadImageProps) => {
 
     const handleDelete = async () => {
         try {
-            if (!props.idImage) throw new Error('Não foi encontrado o id da imagem')
+            if (!props.idImage) throw new Error('Não foi encontrado o id do arquivo')
             const result = await deleteFile(props.idImage, auth.idUser)
             if (!result.Success) {
-                throw new Error('Falha ao deletar logo! ' + result.erro ?? '')
+                throw new Error('Falha ao deletar arquivo! ' + result.erro ?? '')
             }
             props.setIdImage(null)
             setSelectedImage(null)
-            MessageBox('success', 'Imagem exclusa com sucesso!')
+            MessageBox('success', 'Arquivo excluso com sucesso!')
         } catch (error) {
             MessageBox('error', (error as Error).message)
         }
@@ -92,19 +99,28 @@ export const UploadImage = (props: type.uploadImageProps) => {
                                 onDrop={(e) => handleDrop(e, props.maxSize)}
                                 dragOver={dragOver}>
                                 <AiOutlineCloudUpload size='30' />
-                                Selecione ou arraste uma imagem
+                                {(props.type === 'image') &&
+                                    'Selecione ou arraste uma imagem'}
+                                {(props.type === 'cert') &&
+                                    'Selecione ou arraste um arquivo'}
                                 <input type='file' onChange={(e) => handleFileChange(e, props.maxSize)} style={{ display: 'none' }} />
                             </S.labelChangeImg>
                         </>
                         :
                         <>
-                            <img alt='' style={{ width: 'auto', maxHeight: 100 }} src={selectedImage}></img>
+                            <img alt='' style={{ width: 'auto', maxHeight: 100 }} src={(props.type === 'cert') ? certImage : selectedImage}></img>
                             <S.ButtonChangeImg onClick={() => setChangeImage(true)}><b>Alterar</b></S.ButtonChangeImg>
                             <S.ButtonDeletar onClick={() => handleDelete()}><b>Deletar</b></S.ButtonDeletar>
                         </>
                     }
                 </div>
-                <S.labelRecomendationsImg> Dimensões recomendadas: 170x50, tamanho maximo: {props.maxSize}mb </S.labelRecomendationsImg>
+                <S.labelRecomendationsImg>
+                    {(props.type === 'image') &&
+                        `Dimensões recomendadas: 170x50, tamanho maximo: ${props.maxSize}mb `}
+                    {(props.type === 'cert') &&
+                        `Arquivo .pfx`}
+
+                </S.labelRecomendationsImg>
             </div>
 
         </S.DivPicture>

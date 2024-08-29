@@ -8,6 +8,10 @@ import { useApi } from '../../../../hooks/useApi'
 import { AuthContext } from '../../../../contexts/Auth/AuthContext'
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext'
 import { UploadImage } from 'src/components/uploadImage/uploadImage'
+import { SharedFiscalParametersResponse } from '@shared/api/settings/fiscalParameters'
+import { DatePicker, LocalizationProvider, ptBR } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { CircularProgressSpinner } from 'src/spinners/progress/CircularProgressSpinner'
 
 export const TabFiscalParameters = () => {
 
@@ -16,6 +20,7 @@ export const TabFiscalParameters = () => {
     }, [])
 
     const { getFiscalParameters, changeFiscalParameters } = useApi()
+    const [isLoading, setIsloading] = useState(true)
     const { idUser } = useContext(AuthContext)
     const { MessageBox } = useMessageBoxContext()
     const [regimeOptions, setRegimeOptions] = useState<type.typeOptions[]>([])
@@ -27,18 +32,27 @@ export const TabFiscalParameters = () => {
     const [cstCofinsOptions, setCstCofinsOptions] = useState<type.typeOptions[]>([])
     const [selectedCstCofinsOptions, setSelectedCstCofinsOptions] = useState<type.typeOptions | null>(null)
     const idsZeroAliquot = [3, 4, 5, 6, 7, 8, 9, 99]
-    const [fiscalParameters, setFiscalParameters] = useState<type.typeFiscalParameters>({
+    const [fiscalParameters, setFiscalParameters] = useState<SharedFiscalParametersResponse['fiscalParameters']>({
         taxCrtId: null,
         taxRegimeId: null,
         taxCstPisId: null,
         taxCstPisAliquot: null,
         taxCstCofinsId: null,
-        taxCstCofinsAliquot: null
+        taxCstCofinsAliquot: null,
+        lastNumberNF: null,
+        lastNumberNFCE: null,
+        passCert: null,
+        validityCert: null,
+        fileCert: null,
+        fileCertId: null,
+        urlFileCert: null,
+        codCSC: null
     })
 
     async function loadFiscalParameters() {
         try {
             const result = await getFiscalParameters(idUser)
+            setIsloading(false)
             if (!result.Success) { throw new Error(result.erro ?? '') }
             setFiscalParameters(result.fiscalParameters)
             setCrtOptions(result.crtOptions)
@@ -88,141 +102,176 @@ export const TabFiscalParameters = () => {
         }
     }
 
+    function handleSelectImage(newValue: number | null) {
+        setFiscalParameters({ ...fiscalParameters, fileCertId: newValue })
+    }
+
     return (
-        <S.Container>
-            <b>Parametrização</b>
-            Certificado Digital
-            <UploadImage
-                maxSize={1}
-                url={''}
-                idImage={1}
-                setIdImage={() => (console.log('a'))}
-            />
-            <TextField
-                value={fiscalParameters?.taxCstCofinsAliquot}
-                onChange={(e) => {
-                    setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
-                }}
-                id="outlined-basic"
-                label="Série NFe"
-                variant="outlined"
-                sx={{ width: '25%' }}
-                disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
-            />
-            <TextField
-                value={fiscalParameters?.taxCstCofinsAliquot}
-                onChange={(e) => {
-                    setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
-                }}
-                id="outlined-basic"
-                label="Série NFCe"
-                variant="outlined"
-                sx={{ width: '25%' }}
-                disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
-            />
-            <TextField
-                value={fiscalParameters?.taxCstCofinsAliquot}
-                onChange={(e) => {
-                    setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
-                }}
-                id="outlined-basic"
-                label="Ultimo nº NFe Emitida"
-                variant="outlined"
-                sx={{ width: '25%' }}
-                disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
-            />
-            <TextField
-                value={fiscalParameters?.taxCstCofinsAliquot}
-                onChange={(e) => {
-                    setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
-                }}
-                id="outlined-basic"
-                label="Ultimo nº NFCe Emitida"
-                variant="outlined"
-                sx={{ width: '25%' }}
-                disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
-            />
-            <b>Tributação</b>
-            <S.DivItemTrib>
-                <Autocomplete
-                    value={selectedCrtOptions}
-                    onChange={(event: any, newValue: type.typeOptions | null) => {
-                        handleSelectCrtOptions(newValue)
-                    }}
-                    noOptionsText="Não encontrado"
-                    id="controllable-states-demo"
-                    options={crtOptions}
-                    getOptionLabel={(option) => (option.description)}
-                    sx={{ width: '60%' }}
-                    renderInput={(params) => <TextField  {...params} label="CRT" />}
-                />
-                <Autocomplete
-                    value={selectedRegimeOptions}
-                    onChange={(event: any, newValue: type.typeOptions | null) => {
-                        handleSelectRegimeOptions(newValue)
-                    }}
-                    noOptionsText="Não encontrado"
-                    id="controllable-states-demo"
-                    options={regimeOptions}
-                    getOptionLabel={(option) => (option.description)}
-                    sx={{ width: '35%' }}
-                    renderInput={(params) => <TextField  {...params} label="Regime Tributário" />}
-                    disabled={selectedCrtOptions?.id !== 3}
-                />
-            </S.DivItemTrib>
-            <S.DivItemTrib>
-                <Autocomplete
-                    value={selectedCstCofinsOptions}
-                    onChange={(event: any, newValue: type.typeOptions | null) => {
-                        handleSelectCstCofinsOptions(newValue)
-                    }}
-                    noOptionsText="Não encontrado"
-                    id="controllable-states-demo"
-                    options={cstCofinsOptions}
-                    getOptionLabel={(option) => (option.description)}
-                    sx={{ width: '70%' }}
-                    renderInput={(params) => <TextField  {...params} label="CST COFINS" />}
-                />
-                <TextField
-                    value={fiscalParameters?.taxCstCofinsAliquot}
-                    onChange={(e) => {
-                        setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
-                    }}
-                    id="outlined-basic"
-                    label="Alíquota COFINS (%)"
+        isLoading ? <CircularProgressSpinner /> :
+            <S.Container>
 
-                    variant="outlined"
-                    sx={{ width: '25%' }}
-                    disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+                <b>Parametrização</b>
+                Certificado Digital
+                <UploadImage
+                    type='cert'
+                    maxSize={1}
+                    url={fiscalParameters.urlFileCert}
+                    idImage={fiscalParameters.fileCertId}
+                    setIdImage={(newValue: number | null) => handleSelectImage(newValue)}
                 />
-            </S.DivItemTrib>
-            <S.DivItemTrib>
-                <Autocomplete
-                    value={selectedCstPisOptions}
-                    onChange={(event: any, newValue: type.typeOptions | null) => {
-                        handleSelectCstPisOptions(newValue)
-                    }}
-                    noOptionsText="Não encontrado"
-                    id="controllable-states-demo"
-                    options={cstPisOptions}
-                    getOptionLabel={(option) => (option.description)}
-                    sx={{ width: '70%' }}
-                    renderInput={(params) => <TextField  {...params} label="CST PIS" />}
-                />
-                <TextField
-                    value={fiscalParameters?.taxCstPisAliquot}
-                    onChange={(e) => {
-                        setFiscalParameters({ ...fiscalParameters, taxCstPisAliquot: parseFloat(FormatPercent(e.target.value)) })
-                    }}
-                    id="outlined-basic"
-                    label="Alíquota PIS (%)"
 
-                    variant="outlined"
-                    disabled={fiscalParameters.taxCstPisId ? idsZeroAliquot.includes(fiscalParameters.taxCstPisId) : false}
-                    sx={{ width: '25%' }}
-                />
-            </S.DivItemTrib>
-            <S.ButtonSave onClick={() => reqChangeFiscalParameters()} ><b>Salvar</b></S.ButtonSave>
-        </S.Container>
+                <S.DivParams>
+                    <TextField
+                        value={fiscalParameters?.passCert}
+                        onChange={(e) => {
+                            setFiscalParameters({ ...fiscalParameters, passCert: e.target.value })
+                        }}
+                        id="outlined-basic"
+                        label="Senha Certificado"
+                        InputLabelProps={{ shrink: !!fiscalParameters?.passCert }}
+                        type='password'
+                        variant="outlined"
+                        sx={{}}
+                        disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ptBR}>
+                        <DatePicker
+                            disableFuture
+                            label={"Validade Certificado"}
+                            openTo="year"
+                            views={['year', 'month', 'day']}
+                            value={fiscalParameters?.validityCert}
+                            onChange={(newValue) => {
+                                setFiscalParameters({ ...fiscalParameters, validityCert: newValue });
+                            }}
+                            renderInput={(params) => <TextField sx={{}} {...params} variant="outlined" />}
+                        />
+
+                    </LocalizationProvider>
+
+                    <TextField
+                        value={fiscalParameters?.lastNumberNF}
+                        onChange={(e) => {
+                            setFiscalParameters({ ...fiscalParameters, lastNumberNF: Number(e.target.value) })
+                        }}
+                        id="outlined-basic"
+                        label="Ultimo nº NFe Emitida"
+                        InputLabelProps={{ shrink: !!fiscalParameters?.lastNumberNF }}
+                        variant="outlined"
+                        sx={{}}
+                        disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+                    />
+                    <TextField
+                        value={fiscalParameters?.lastNumberNFCE}
+                        onChange={(e) => {
+                            setFiscalParameters({ ...fiscalParameters, lastNumberNFCE: Number(e.target.value) })
+                        }}
+                        id="outlined-basic"
+                        InputLabelProps={{ shrink: !!fiscalParameters?.lastNumberNFCE }}
+                        label="Ultimo nº NFCe Emitida"
+                        variant="outlined"
+                        sx={{}}
+                        disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+                    />
+                    <TextField
+                        value={fiscalParameters?.codCSC}
+                        onChange={(e) => {
+                            setFiscalParameters({ ...fiscalParameters, codCSC: e.target.value })
+                        }}
+                        id="outlined-basic"
+                        InputLabelProps={{ shrink: !!fiscalParameters?.codCSC }}
+                        title='Token para geração do QRCode NFCe'
+                        label="Código CSC"
+                        variant="outlined"
+                        sx={{}}
+                        disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+                    />
+                </S.DivParams>
+                <b>Tributação</b>
+                <S.DivItem>
+                    <Autocomplete
+                        value={selectedCrtOptions}
+                        onChange={(event: any, newValue: type.typeOptions | null) => {
+                            handleSelectCrtOptions(newValue)
+                        }}
+                        noOptionsText="Não encontrado"
+                        id="controllable-states-demo"
+                        options={crtOptions}
+                        getOptionLabel={(option) => (option.description)}
+                        sx={{ width: '60%' }}
+                        renderInput={(params) => <TextField title='Código de Regime Tributário'  {...params} label="CRT" />}
+                    />
+                    <Autocomplete
+                        value={selectedRegimeOptions}
+                        onChange={(event: any, newValue: type.typeOptions | null) => {
+                            handleSelectRegimeOptions(newValue)
+                        }}
+                        noOptionsText="Não encontrado"
+                        id="controllable-states-demo"
+                        options={regimeOptions}
+                        getOptionLabel={(option) => (option.description)}
+                        sx={{ width: '38%' }}
+                        renderInput={(params) => <TextField  {...params} label="Regime Tributário" />}
+                        disabled={selectedCrtOptions?.id !== 3}
+                    />
+                </S.DivItem>
+                <S.DivItem>
+                    <Autocomplete
+                        value={selectedCstCofinsOptions}
+                        onChange={(event: any, newValue: type.typeOptions | null) => {
+                            handleSelectCstCofinsOptions(newValue)
+                        }}
+                        noOptionsText="Não encontrado"
+                        id="controllable-states-demo"
+                        options={cstCofinsOptions}
+                        getOptionLabel={(option) => (option.description)}
+                        sx={{ width: '70%' }}
+                        renderInput={(params) => <TextField  {...params} label="CST COFINS" />}
+                    />
+                    <TextField
+                        value={fiscalParameters?.taxCstCofinsAliquot}
+                        onChange={(e) => {
+                            setFiscalParameters({ ...fiscalParameters, taxCstCofinsAliquot: parseFloat(FormatPercent(e.target.value)) })
+                        }}
+                        id="outlined-basic"
+                        label="Alíquota COFINS (%)"
+                        type="number"
+                        InputLabelProps={{ shrink: !!fiscalParameters?.taxCstCofinsAliquot }}
+                        variant="outlined"
+                        sx={{ width: '28%' }}
+                        disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
+                    />
+                </S.DivItem>
+                <S.DivItem>
+                    <Autocomplete
+                        value={selectedCstPisOptions}
+                        onChange={(event: any, newValue: type.typeOptions | null) => {
+                            handleSelectCstPisOptions(newValue)
+                        }}
+                        noOptionsText="Não encontrado"
+                        id="controllable-states-demo"
+                        options={cstPisOptions}
+                        getOptionLabel={(option) => (option.description)}
+                        sx={{ width: '70%' }}
+                        renderInput={(params) => <TextField  {...params} label="CST PIS" />}
+                    />
+                    <TextField
+                        value={fiscalParameters?.taxCstPisAliquot}
+                        onChange={(e) => {
+                            setFiscalParameters({ ...fiscalParameters, taxCstPisAliquot: parseFloat(FormatPercent(e.target.value)) })
+                        }}
+                        id="outlined-basic"
+                        label="Alíquota PIS (%)"
+                        type="number"
+                        InputLabelProps={{ shrink: !!fiscalParameters?.taxCstPisAliquot }}
+                        variant="outlined"
+                        disabled={fiscalParameters.taxCstPisId ? idsZeroAliquot.includes(fiscalParameters.taxCstPisId) : false}
+                        sx={{ width: '28%' }}
+                    />
+                </S.DivItem>
+                <S.ButtonSave onClick={() => reqChangeFiscalParameters()} ><b>Salvar</b></S.ButtonSave>
+
+            </S.Container>
+
     )
 }

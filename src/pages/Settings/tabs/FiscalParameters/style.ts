@@ -7,11 +7,19 @@ export const Container = styled.div `
     flex-direction: column;
     gap:10px;
 `
-
-export const DivItemTrib = styled.div `
+export const DivParams = styled.div`
     display: flex;
     width: 100%;
-    justify-content: space-around;
+    gap:1rem;
+  
+    flex-wrap: wrap;
+`
+
+export const DivItem = styled.div `
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
 `
 export const ButtonSave = styled.button  `
     align-self:flex-end;
