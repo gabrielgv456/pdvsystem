@@ -39,7 +39,7 @@ export const TabIpiPisCofinsProduct = (props: ipiPisCofinsProps) => {
 
     return (
         <S.Container>
-            <S.SectionContainer>
+            <S.SectionContainer style={{ marginTop: 0 }}>
                 <b style={{ display: 'flex', alignSelf: 'flex-start', flex: '1 1 100%' }}>IPI</b>
                 <Autocomplete
                     value={findOption('ipi', 'taxCstIpiExitId', 'cstIpiExitOptions')}
@@ -61,6 +61,7 @@ export const TabIpiPisCofinsProduct = (props: ipiPisCofinsProps) => {
                 <TextField
                     value={props.dataAddEditProduct.ipi.taxAliquotIpi}
                     onChange={(e) => handleChangeTax('ipi', 'taxAliquotIpi', Number(e.target.value))}
+                    disabled={!findOption('ipi', 'taxCstIpiExitId', 'cstIpiExitOptions')}
                     type="number"
                     id="outlined-basic"
                     label="Alíquota IPI(%)"
@@ -158,6 +159,7 @@ export const TabIpiPisCofinsProduct = (props: ipiPisCofinsProps) => {
                 <TextField
                     value={props.dataAddEditProduct.pis.taxAliquotPisExit}
                     onChange={(e) => handleChangeTax('pis', 'taxAliquotPisExit', Number(e.target.value))}
+                    disabled={!findOption('pis', 'taxCstPisExitId', 'cstPisExitOptions')}
                     type="number"
                     id="outlined-basic"
                     size='small'
@@ -185,6 +187,7 @@ export const TabIpiPisCofinsProduct = (props: ipiPisCofinsProps) => {
                 <TextField
                     value={props.dataAddEditProduct.pis.taxAliquotPisEntrance}
                     onChange={(e) => handleChangeTax('pis', 'taxAliquotPisEntrance', Number(e.target.value))}
+                    disabled={!findOption('pis', 'taxCstPisEntranceId', 'cstPisExitOptions')}
                     type="number"
                     size='small'
                     id="outlined-basic"
@@ -216,6 +219,7 @@ export const TabIpiPisCofinsProduct = (props: ipiPisCofinsProps) => {
                 <TextField
                     value={props.dataAddEditProduct.cofins.taxAliquotCofinsExit}
                     onChange={(e) => handleChangeTax('cofins', 'taxAliquotCofinsExit', Number(e.target.value))}
+                    disabled={!findOption('cofins', 'taxCstCofinsExitId', 'cstCofinsExitOptions')}
                     type="number"
                     id="outlined-basic"
                     size='small'
@@ -243,6 +247,7 @@ export const TabIpiPisCofinsProduct = (props: ipiPisCofinsProps) => {
                 <TextField
                     value={props.dataAddEditProduct.cofins.taxAliquotCofinsEntrance}
                     onChange={(e) => handleChangeTax('cofins', 'taxAliquotCofinsEntrance', Number(e.target.value))}
+                    disabled={!findOption('cofins', 'taxCstCofinsEntranceId', 'cstCofinsEntranceOptions')}
                     type="number"
                     size='small'
                     id="outlined-basic"

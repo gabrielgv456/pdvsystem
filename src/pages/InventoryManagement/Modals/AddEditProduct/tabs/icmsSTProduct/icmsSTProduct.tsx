@@ -60,6 +60,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                     onChange={(_event: any, newValue: optionsType | null) => {
                         handleChangeTax('taxCfopStateIdSt', newValue?.id ?? null)
                     }}
+                    disabled={!findOption('taxCstIcmsStId', 'cstOptions')}
                     noOptionsText="Não encontrado"
                     id="controllable-states-demo"
                     getOptionLabel={(option) => (option.id + ' - ' + option.description)}
@@ -77,6 +78,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                     onChange={(_event: any, newValue: optionsType | null) => {
                         handleChangeTax('taxCfopInterstateIdSt', newValue?.id ?? null)
                     }}
+                    disabled={!findOption('taxCstIcmsStId', 'cstOptions')}
                     noOptionsText="Não encontrado"
                     getOptionLabel={(option) => (option.id + ' - ' + option.description)}
                     id="controllable-states-demo"
@@ -94,6 +96,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                     onChange={(_event: any, newValue: optionsType | null) => {
                         handleChangeTax('taxModalityBCIdSt', newValue?.id ?? null)
                     }}
+                    disabled={!findOption('taxCstIcmsStId', 'cstOptions')}
                     noOptionsText="Não encontrado"
                     getOptionLabel={(option) => (option.description)}
                     id="controllable-states-demo"
@@ -109,6 +112,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                 <TextField
                     value={props.dataAddEditProduct.icms.TaxIcmsST.taxMvaPauta}
                     onChange={(e) => handleChangeTax('taxMvaPauta', strTofixed2Float(e.target.value))}
+                    disabled={!findOption('taxCstIcmsStId', 'cstOptions')}
                     type="number"
                     id="outlined-basic"
                     label="MVA (%) / Pauta"
@@ -118,6 +122,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                 <TextField
                     value={props.dataAddEditProduct.icms.TaxIcmsST.taxRedBCICMSSt}
                     onChange={(e) => handleChangeTax('taxRedBCICMSSt', strTofixed2Float(e.target.value))}
+                    disabled={!findOption('taxCstIcmsStId', 'cstOptions')}
                     type="number"
                     id="outlined-basic"
                     label="Redução BC ICMS ST (%)"
@@ -128,6 +133,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                 <TextField
                     value={props.dataAddEditProduct.icms.TaxIcmsST.taxAliquotIcmsInner}
                     onChange={(e) => handleChangeTax('taxAliquotIcmsInner', strTofixed2Float(e.target.value))}
+                    disabled={!findOption('taxCstIcmsStId', 'cstOptions')}
                     type="number"
                     id="outlined-basic"
                     label="Alíquota ICMS Interna (%)"
@@ -138,6 +144,7 @@ export const TabIcmsSTProduct = (props: icmsProductProps) => {
                 <TextField
                     value={props.dataAddEditProduct.icms.TaxIcmsST.taxRedBCICMSInner}
                     onChange={(e) => handleChangeTax('taxRedBCICMSInner', strTofixed2Float(e.target.value))}
+                    disabled={!findOption('taxCstIcmsStId', 'cstOptions')}
                     type="number"
                     id="outlined-basic"
                     label="Redução BC ICMS Interna (%)"

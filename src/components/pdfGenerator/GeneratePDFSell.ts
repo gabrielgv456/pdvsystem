@@ -3,6 +3,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import { cellNumberFormat, cpfCnpjFormat, phoneNumberFormat } from "../../utils/utils";
 import { User } from "../../types/User";
 import { SharedUser } from "@shared/api/login/validate";
+import { formatCurrencyNew } from "src/masks/CurrencyMask";
 
 interface ProductsType {
     name: string;
@@ -10,6 +11,7 @@ interface ProductsType {
     totalvalue: number;
     initialvalue: number;
     quantity: number;
+    totalDiscount: number | null;
 };
 
 export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: SharedUser | null) => {
@@ -18,7 +20,7 @@ export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvaluef
 
     const ProductData = listProducts.map((product) => {
         return [
-            { text: product.quantity }, { text: product.name }, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.totalvalue) }
+            { text: product.quantity }, { text: product.name }, { text: formatCurrencyNew(product.totalDiscount) }, { text: formatCurrencyNew(product.totalvalue) }
         ]
     })
 
@@ -26,8 +28,8 @@ export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvaluef
 
     const docParams = {
         pageSize: {
-            width: 200,
-            height: 'auto' as number | "auto",
+            width: 210,
+            height: 'auto'
         },
         pageMargins: 15,
         PageOrientation: 'landscape',
@@ -47,10 +49,10 @@ export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvaluef
             {
                 style: 'title',
                 table: {
-                    widths: [170],
+                    widths: [180],
                     alignment: 'center',
                     body: [
-                        [userInfo?.urlLogo ? { image: 'logo', width: 170, alignment: 'center' } : { text: '' }],
+                        [userInfo?.urlLogo ? { image: 'logo', width: 180, alignment: 'center' } : { text: '' }],
                     ]
                 },
                 layout: 'noBorders',
@@ -92,42 +94,100 @@ export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvaluef
                 style: 'main',
                 text: [
                     'Itens da venda\n',
-                    '_________________________________________\n',
+                    '____________________________________________\n',
                 ],
                 margins: [0, 0, 0, 0]
             },
             {
                 style: 'tableItens',
                 table: {
-                    widths: ['auto', 90, 'auto'],
+                    widths: ['auto', 65, 'auto', 'auto'],
                     body: [
-                        [{ text: 'Qnt' }, { text: 'Item' }, { text: 'Valor' }],
-                        ...ProductData,
-                        [{ text: ' ' }, { text: ' ' }, { text: ' ' }],
-                        [{ text: 'QTD ITENS:', colSpan: 2 }, {}, { text: sumquantity, alignment: 'left' }],
-                        [{ text: 'TOTAL S/ DESCONTOS:', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValue + sumDiscount) }],
-                        [{ text: 'DESCONTO TOTAL:', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumDiscount) }],
-                        [{ text: 'VALOR TOTAL:', colSpan: 2 }, {}, { text: sumvalueformated, style: 'bold' }],
-                        [{ text: ' ' }, { text: ' ' }, { text: ' ' }],
-                        [{ text: 'VENDA Nº:', colSpan: 2 }, {}, { text: codRef, alignment: 'right' }],
-                        [{ text: ' ' }, { text: ' ' }, { text: ' ' }],
-                        [{ text: 'SEM VALOR FISCAL', colSpan: 3, alignment: 'center' }, {}, {}],
-                        [{ text: `${dataSell}`, colSpan: 3, alignment: 'center' }, {}, {}],
+                        [{ text: 'Qtd' }, { text: 'Item' }, { text: 'Desc.' }, { text: 'Valor' }],
+                        ...ProductData
                     ]
                 },
                 layout: 'noBorders'
             },
             {
                 style: 'main',
-                text: [
-                    //'\n****************Sem valor fiscal***************\n',
-                    //`${CurrentData}`,
-
-
-
-                ],
-
-
+                alignment: 'left',
+                margin: [0, 3],
+                columns: [
+                    {
+                        text: 'Qtd Total Itens:',
+                        alignment: 'left'
+                    }, {
+                        text: sumquantity,
+                        alignment: 'right'
+                    }
+                ]
+            },
+            {
+                style: 'main',
+                alignment: 'left',
+                margin: [0, 0],
+                columns: [
+                    {
+                        text: 'Subtotal:',
+                        alignment: 'left'
+                    }, {
+                        text: formatCurrencyNew(sumValue + sumDiscount),
+                        alignment: 'right'
+                    }
+                ]
+            },
+            {
+                style: 'main',
+                alignment: 'left',
+                margin: [0, 0],
+                columns: [
+                    {
+                        text: 'Desconto:',
+                        alignment: 'left'
+                    }, {
+                        text: formatCurrencyNew(sumDiscount),
+                        alignment: 'right'
+                    }
+                ]
+            },
+            {
+                style: 'highLight',
+                alignment: 'left',
+                margin: [0, 0],
+                columns: [
+                    {
+                        text: 'Total:',
+                        alignment: 'left'
+                    }, {
+                        text: sumvalueformated,
+                        alignment: 'right'
+                    }
+                ]
+            },
+            {
+                style: 'main',
+                alignment: 'left',
+                margin: [0, 8],
+                columns: [
+                    {
+                        text: 'Venda Nº:',
+                        alignment: 'left'
+                    }, {
+                        text: codRef,
+                        alignment: 'right'
+                    }
+                ]
+            },
+            {
+                style: 'main',
+                alignment: 'center',
+                text: 'SEM VALOR FISCAL'
+            },
+            {
+                style: 'main',
+                alignment: 'center',
+                text: `${dataSell}`
             },
             {
                 style: 'footer',
@@ -143,6 +203,9 @@ export const GeneratePDFSell = (sumDiscount: number, sumValue: number, sumvaluef
             },
             tableItens: {
                 fontSize: 9
+            },
+            highLight: {
+                fontSize: 11, bold: true
             },
             main: {
 

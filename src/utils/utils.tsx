@@ -255,7 +255,7 @@ export function CustomizedSnackbars() {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
-  const { openError, openInfo, openSuccess, openWarning, message, setOpenError, setOpenInfo, setOpenSuccess, setOpenWarning } = useMessageBoxContext()
+  const { openError, openInfo, openSuccess, openWarning, message, setOpenError, setOpenInfo, setOpenSuccess, setOpenWarning, duration } = useMessageBoxContext()
 
 
   const handleCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -289,25 +289,25 @@ export function CustomizedSnackbars() {
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>
 
-      <Snackbar open={openSuccess} autoHideDuration={3000} onClose={handleCloseSuccess} anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+      <Snackbar open={openSuccess} autoHideDuration={duration} onClose={handleCloseSuccess} anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
         <Alert onClose={handleCloseSuccess} sx={{ width: '100%' }} severity="success">
           {message}
         </Alert>
       </Snackbar>
 
-      <Snackbar open={openError} autoHideDuration={3000} onClose={handleCloseError} anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+      <Snackbar open={openError} autoHideDuration={duration} onClose={handleCloseError} anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
         <Alert onClose={handleCloseError} sx={{ width: '100%' }} severity="error">
           {message}
         </Alert>
       </Snackbar>
 
-      <Snackbar open={openWarning} autoHideDuration={3000} onClose={handleCloseWarning} anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+      <Snackbar open={openWarning} autoHideDuration={duration} onClose={handleCloseWarning} anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
         <Alert onClose={handleCloseWarning} sx={{ width: '100%' }} severity="warning">
           {message}
         </Alert>
       </Snackbar>
 
-      <Snackbar open={openInfo} autoHideDuration={3000} onClose={handleCloseInfo} anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+      <Snackbar open={openInfo} autoHideDuration={duration} onClose={handleCloseInfo} anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
         <Alert onClose={handleCloseInfo} sx={{ width: '100%' }} severity="info">
           {message}
         </Alert>

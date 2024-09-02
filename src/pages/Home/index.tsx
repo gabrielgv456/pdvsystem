@@ -53,7 +53,7 @@ export const Home = () => {
                         <S.LabelTopHeader><b>Comparativo Mensal</b>
                             <S.labelPeriod>
                                 <MenuMui
-                                    selectedPeriod={periodBarChart}
+                                    selected={periodBarChart}
                                     options={[
                                         {
                                             option: 'Últimos 3 meses',
@@ -91,7 +91,7 @@ export const Home = () => {
                         <S.LabelTopHeader> <b>Vendas por Gênero</b>
                             <S.labelPeriod>
                                 <MenuMui
-                                    selectedPeriod={periodDoughnutChart}
+                                    selected={periodDoughnutChart}
                                     options={[{
                                         option: 'Este mês',
                                         value: 1,
@@ -137,7 +137,7 @@ export const Home = () => {
                         <S.LabelTopHeader><b>Vendas Diárias</b>
                             <S.labelPeriod>
                                 <MenuMui
-                                    selectedPeriod={periodAreaChart}
+                                    selected={periodAreaChart}
                                     options={[{
                                         option: 'Últimos 3 dias',
                                         value: 3,
@@ -185,7 +185,7 @@ export const Home = () => {
                         <S.LabelTopHeader><b>Produtos mais vendidos</b>
                             <S.labelPeriod>
                                 <MenuMui
-                                    selectedPeriod={periodHorizontalChart}
+                                    selected={periodHorizontalChart}
                                     options={[{
                                         option: 'Este mês',
                                         value: 1,
@@ -227,7 +227,7 @@ export const Home = () => {
                         <S.LabelTopHeader><b>Transações por Método</b>
                             <S.labelPeriod>
                                 <MenuMui
-                                    selectedPeriod={periodRadarChart}
+                                    selected={periodRadarChart}
                                     options={[
                                         {
                                             option: 'Últimos 3 meses',

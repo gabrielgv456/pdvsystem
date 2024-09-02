@@ -3,6 +3,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import { cellNumberFormat, cpfCnpjFormat, phoneNumberFormat } from "../../utils/utils";
 import { User } from "../../types/User";
 import { ClientsType, SellersandClientsType } from "../../pages/Sell/Modals/CheckOut";
+import { formatCurrencyNew } from "src/masks/CurrencyMask";
 
 interface ProductsType {
     name: string;
@@ -10,6 +11,7 @@ interface ProductsType {
     totalvalue: number;
     initialvalue: number;
     quantity: number;
+    totalDiscount: number | null
 };
 
 export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number, sumvalueformated: string, sumquantity: number, listProducts: ProductsType[], dataSell: String, codRef: number | null, userInfo: User | null, clientInfo: ClientsType | null, sellerInfo: SellersandClientsType | null) => {
@@ -18,7 +20,7 @@ export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number, s
 
     const ProductData = listProducts.map((product) => {
         return [
-            { text: product.quantity }, { text: product.name }, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.initialvalue) }, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.totalvalue) }
+            { text: product.quantity }, { text: product.name }, { text: formatCurrencyNew(product.totalDiscount ?? 0) }, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.totalvalue) }
         ]
     })
 
@@ -98,13 +100,14 @@ export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number, s
                 table: {
                     widths: ['auto', 'star', 'auto', 'auto'],
                     body: [
-                        [{ text: 'Quantidade', style: 'bold' }, { text: 'Descrição do produto', style: 'bold' }, { text: 'Valor Unitário', style: 'bold' }, { text: 'Valor Total', style: 'bold' }],
+                        [{ text: 'Qtd', style: 'bold' }, { text: 'Descrição do produto', style: 'bold' }, { text: 'Desconto Total', style: 'bold' }, { text: 'Valor Total', style: 'bold' }],
                         ...ProductData,
                         [{ text: ' ' }, { text: ' ' }, { text: ' ' }, { text: ' ' }],
-                        [{ text: 'Total s/ Descontos', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumValue + sumDiscount), colSpan: 2, alignment: 'center' }, {}],
-                        [{ text: 'Desconto Total', colSpan: 2 }, {}, { text: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sumDiscount), colSpan: 2, alignment: 'center' }, {}],
-                        [{ text: 'VALOR TOTAL', colSpan: 2, style: 'bold' }, {}, { text: sumvalueformated, colSpan: 2, alignment: 'center', style: 'bold' }, {}],
-                        [{ text: 'QUANTIDADE TOTAL', colSpan: 2, style: 'bold' }, {}, { text: sumquantity, alignment: 'center', colSpan: 2, style: 'bold' }, {}],
+                        [{ text: 'Qtd total itens', colSpan: 2 }, {}, { text: sumquantity, alignment: 'center', colSpan: 2 }, {}],
+                        [{ text: 'Subtotal', colSpan: 2 }, {}, { text: formatCurrencyNew(sumValue + sumDiscount), colSpan: 2, alignment: 'center' }, {}],
+                        [{ text: 'Desconto', colSpan: 2 }, {}, { text: formatCurrencyNew(sumDiscount), colSpan: 2, alignment: 'center' }, {}],
+                        [{ text: 'TOTAL', colSpan: 2, style: 'highlight' }, {}, { text: sumvalueformated, colSpan: 2, alignment: 'center', style: 'highlight' }, {}],
+
                     ]
                 }
             },
@@ -119,6 +122,9 @@ export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number, s
 
             title: {
                 fontSize: 16, bold: true,
+            },
+            highlight:{
+                fontSize: 14, bold: true,
             },
             bold: {
                 bold: true

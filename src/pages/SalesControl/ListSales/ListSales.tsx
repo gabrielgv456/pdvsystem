@@ -5,7 +5,7 @@ import { Sell, SellsProductsReceiveApi } from "../index"
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { AiFillPrinter } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import NfeIcon from '../../../images/nfe.svg'
 import { createFiscalNoteType } from "../../Sell/Modals/CheckOut";
@@ -13,6 +13,9 @@ import { useApi } from "../../../hooks/useApi";
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
 import { TbFileTypeXml, TbFileTypePdf } from "react-icons/tb";
 import { downloadXMLFile } from "../../../utils/utils";
+import { MenuMui } from "src/components/menuSelect/muiMenu";
+import { MdCancel } from "react-icons/md";
+import { ModalCancelNote } from "./Modals/modalCancelNote/modalCancelNote";
 
 
 interface Props {
@@ -24,7 +27,7 @@ interface Props {
    setidselltoEdit: (value: number) => void;
    SearchSellers: () => void;
    filterSellerandClient: (sellerId: number | null, clientId: number | null) => void;
-
+   searchSells: () => void;
 }
 
 
@@ -34,6 +37,7 @@ export function Listagem(props: Props) {
    const { user, idUser } = useContext(AuthContext)
    const { createFiscalNote, getXmlFiscalNote } = useApi()
    const { MessageBox } = useMessageBoxContext()
+   const [isModalCancelNoteOpen, setIsModalCancelNoteOpen] = useState(false)
    const remove = () => {
       props.handleRemoveTask(props.item.id, props.item.sellValue)
    }
@@ -59,7 +63,7 @@ export function Listagem(props: Props) {
 
 
    const handlePrint = () => {
-      GeneratePDFSell(sumTotalDiscountThisSell, sumtotalValuethisSell, sumtotalValuethisSellFormated, sumtotalQuantitythisSell, props.listSellsProducts.filter(item => item.sellId === props.item.id).map(item => { return { name: item.descriptionProduct, id: item.id, initialvalue: item.totalCost, quantity: item.quantity, totalvalue: item.totalValue } }), dataSellPrint, props.item.codRef, user)
+      GeneratePDFSell(sumTotalDiscountThisSell, sumtotalValuethisSell, sumtotalValuethisSellFormated, sumtotalQuantitythisSell, props.listSellsProducts.filter(item => item.sellId === props.item.id).map(item => { return { name: item.descriptionProduct, id: item.id, initialvalue: item.totalCost, quantity: item.quantity, totalvalue: item.totalValue, totalDiscount: item.totalDiscount } }), dataSellPrint, props.item.codRef, user)
    }
    const handleEdit = async () => {
 
@@ -69,19 +73,20 @@ export function Listagem(props: Props) {
 
    }
 
-   const handleCreateFiscalNote = async (props: createFiscalNoteType) => {
+   const handleCreateFiscalNote = async (data: createFiscalNoteType) => {
       try {
          const ok = window.confirm('Deseja emitir a nota fiscal?')
          if (!ok) return
-         const result = await createFiscalNote(props)
+         const result = await createFiscalNote(data)
          if (result.erro) throw new Error(result.erro)
          if (!result.danfe) throw new Error('Falha ao gerar danfe!')
          const base64 = await fetch(`data:application/pdf;base64,${result.danfe}`)
          const blob = await base64.blob();
          const url = URL.createObjectURL(blob);
          window.open(url, '_blank')
+         props.searchSells()
       } catch (error) {
-         MessageBox('error', (error as Error).message)
+         MessageBox('error', (error as Error).message, 100000)
       }
    }
 
@@ -95,6 +100,11 @@ export function Listagem(props: Props) {
          MessageBox('error', 'Ocorreu uma falha ao baixar o XML! ' + (error as Error).message)
       }
    }
+
+   async function handleOpenModalCancelNote() {
+      setIsModalCancelNoteOpen(true)
+   }
+
    return (
 
       <S.Container isDarkMode={Theme.DarkMode}>
@@ -160,7 +170,7 @@ export function Listagem(props: Props) {
             {(user?.plans?.fiscalAccess ?? false) && (
                props.item.existsFiscalNote ?
                   <>
-                     <S.Button color="#e85100" isDarkMode={Theme.DarkMode} title="Visualizar PDF Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><TbFileTypePdf size={22} /></S.Button>
+                     <S.Button color="#e85100" isDarkMode={Theme.DarkMode} title="Visualizar DANFE Nota Fiscal" onClick={() => handleCreateFiscalNote({ sellId: props.item.id, userId: idUser })}><TbFileTypePdf size={22} /></S.Button>
                      <S.Button color="green" isDarkMode={Theme.DarkMode} title="Baixar XML Nota Fiscal" onClick={() => handleGetXml(props.item.id)}><TbFileTypeXml size={22} /></S.Button>
                   </>
                   :
@@ -169,7 +179,22 @@ export function Listagem(props: Props) {
             }
             <S.Button color="#007fff" isDarkMode={Theme.DarkMode} title="Imprimir 2ª via Comprovante" onClick={handlePrint}><AiFillPrinter size="18" /></S.Button>
             <S.Button color="red" isDarkMode={Theme.DarkMode} title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.Button>
+            {(user?.plans?.fiscalAccess ?? false) && (
 
+               // apenas exibe abaixo se tiver acesso fiscal
+               props.item.existsFiscalNote &&
+               <MenuMui
+                  selected=""
+                  sizeIcon={18}
+                  options={[
+                     {
+                        option: 'Cancelar Nota Fiscal',
+                        icon: <MdCancel size={22} color="red" />,
+                        actionGeneric: () => handleOpenModalCancelNote()
+                     }
+                  ]} />
+            )
+            }
             {/* 
             <S.LabelDate title={gethoursSell_title}>{dataSell}</S.LabelDate>
             <S.DivListQuantity>
@@ -196,6 +221,7 @@ export function Listagem(props: Props) {
                <S.ButtonTrash title="Estornar Venda" type="button" onClick={remove}><BsTrash size="16" /></S.ButtonTrash>
             </label> */}
          </S.DivContent>
+         <ModalCancelNote sell={props.item} isModalOpen={isModalCancelNoteOpen} setIsModalOpen={setIsModalCancelNoteOpen} searchSells={props.searchSells} />
       </S.Container>
 
    )

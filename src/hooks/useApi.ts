@@ -14,6 +14,7 @@ import { sharedValidate } from '@shared/api/login/validate';
 import { sharedDeliveriesResponse } from '@shared/api/deliveries/findDeliveries';
 import { SharedFiscalParametersResponse } from '@shared/api/settings/fiscalParameters';
 import { SharedChangeFiscalParametersRequest } from '@shared/api/settings/changeFiscalParameters';
+import { SharedEventCancelNoteRequest, SharedEventCancelNoteResponse } from '@shared/api/fiscal/EventCancelNote';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -242,5 +243,9 @@ export const useApi = () => ({
     }, getXmlFiscalNote: async (sellId: number) => {
         const response = await api.get('/getXmlFiscalNote', { params: { sellId } })
         return response.data
+    }, eventCancelNote: async (req: SharedEventCancelNoteRequest) => {
+        const response = await api.post('/eventCancelNote', { ...req })
+        const result: SharedEventCancelNoteResponse = response.data
+        return result
     }
 });

@@ -20,10 +20,16 @@ export const MenuMui = (props: type.MenuMuiProps) => {
 
     async function handleAction(propsItem: type.optionItem) {
         try {
-            const result = await propsItem.action(auth.idUser, propsItem.value)
-            if (!result.Success) { throw new Error(result.erro) }
-            propsItem.state(result.content)
-            propsItem.stateOption(propsItem.option)
+            if (propsItem.action) {
+                if (!propsItem.value) throw new Error('Para executar a ação, informe um valor.')
+                const result = await propsItem.action(auth.idUser, propsItem.value)
+                if (!result.Success) { throw new Error(result.erro) }
+                if (propsItem.state) propsItem.state(result.content)
+            }
+            if (propsItem.actionGeneric) {
+                await propsItem.actionGeneric()
+            }
+            if (propsItem.stateOption) propsItem.stateOption(propsItem.option)
             handleClose()
 
         } catch (error) {
@@ -38,7 +44,7 @@ export const MenuMui = (props: type.MenuMuiProps) => {
     return (
         <>
             <S.ButtonPeriod onClick={handleClick} >
-                {props.selectedPeriod}<MdArrowDropDown size={9} />
+                {props.selected}<MdArrowDropDown size={props.sizeIcon ?? 9} />
             </S.ButtonPeriod>
 
             <Menu
@@ -59,10 +65,11 @@ export const MenuMui = (props: type.MenuMuiProps) => {
                 {props.options.map((item, index) => (
                     <MenuItem
                         key={item.option}
-                        selected={item.option === props.selectedPeriod}
+                        selected={item.option === props.selected}
                         onClick={() => handleAction(item)}
-                        style={{fontSize:'0.65rem'}}
+                        style={{ fontSize: '0.65rem', display: 'flex', gap: '3px' }}
                     >
+                        {item.icon}
                         {item.option}
                     </MenuItem>
                 ))}

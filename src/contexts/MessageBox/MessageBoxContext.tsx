@@ -1,42 +1,44 @@
-import {useState,createContext, ReactNode,useContext} from 'react';
+import { useState, createContext, ReactNode, useContext } from 'react';
 
 
 interface CreateContextProps {
-    MessageBox: (type:'error'|'warning'|'info'|'success',message: string) => void;
-    openSuccess:boolean;
-    setOpenSuccess:(data:boolean)=>void;
-    openError:boolean;
-    setOpenError:(data:boolean)=>void;
-    openWarning:boolean;
-    setOpenWarning:(data:boolean)=>void
-    openInfo:boolean;
-    setOpenInfo:(data:boolean)=>void,
-    message:string
+    MessageBox: (type: 'error' | 'warning' | 'info' | 'success', message: string, duration?:number) => void;
+    openSuccess: boolean;
+    setOpenSuccess: (data: boolean) => void;
+    openError: boolean;
+    setOpenError: (data: boolean) => void;
+    openWarning: boolean;
+    setOpenWarning: (data: boolean) => void
+    openInfo: boolean;
+    setOpenInfo: (data: boolean) => void,
+    message: string,
+    duration: number
 }
 
 type ChildrenProps = {
-    children: ReactNode 
+    children: ReactNode
 }
 
 const MessageBoxContext = createContext({} as CreateContextProps)
 
-export const MessageBoxProvider = ({children}:ChildrenProps) => {
+export const MessageBoxProvider = ({ children }: ChildrenProps) => {
 
     const [openSuccess, setOpenSuccess] = useState(false);
-    const [openError,setOpenError] = useState(false)
-    const [openWarning,setOpenWarning] = useState(false)
-    const [openInfo,setOpenInfo] = useState(false)
-    const [message,setMessage] = useState('')
+    const [openError, setOpenError] = useState(false)
+    const [openWarning, setOpenWarning] = useState(false)
+    const [openInfo, setOpenInfo] = useState(false)
+    const [message, setMessage] = useState('')
+    const [duration, setDuration] = useState(5000)
 
-    const FunctionMessageBox = (type:'error'|'warning'|'info'|'success',info: string) => { 
+    const FunctionMessageBox = (type: 'error' | 'warning' | 'info' | 'success', info: string, newDuration?: number) => {
         switch (type) {
-            case 'success':               
+            case 'success':
                 setOpenError(false)
                 setOpenWarning(false)
                 setOpenInfo(false)
                 setOpenSuccess(true)
                 break;
-            case 'error':             
+            case 'error':
                 setOpenWarning(false)
                 setOpenInfo(false)
                 setOpenSuccess(false)
@@ -44,21 +46,22 @@ export const MessageBoxProvider = ({children}:ChildrenProps) => {
                 break;
             case 'info':
                 setOpenError(false)
-                setOpenWarning(false)         
+                setOpenWarning(false)
                 setOpenSuccess(false)
                 setOpenInfo(true)
                 break;
             case 'warning':
-                setOpenError(false)      
+                setOpenError(false)
                 setOpenInfo(false)
                 setOpenSuccess(false)
-                setOpenWarning(true) 
-                break;           
-        } 
+                setOpenWarning(true)
+                break;
+        }
         setMessage(info)
+        if (newDuration) setDuration(newDuration)
     }
 
-    return(
+    return (
         <MessageBoxContext.Provider value={{
             MessageBox: FunctionMessageBox,
             openSuccess,
@@ -69,7 +72,8 @@ export const MessageBoxProvider = ({children}:ChildrenProps) => {
             setOpenError,
             setOpenInfo,
             setOpenSuccess,
-            setOpenWarning
+            setOpenWarning,
+            duration
         }}>
 
             {children}
@@ -79,6 +83,6 @@ export const MessageBoxProvider = ({children}:ChildrenProps) => {
 }
 
 export const useMessageBoxContext = () => {
-    const context = useContext( MessageBoxContext)
+    const context = useContext(MessageBoxContext)
     return context
 }

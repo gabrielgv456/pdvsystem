@@ -8,12 +8,6 @@ import { FaSearch, FaShoppingCart } from "react-icons/fa"
 import { Listagem } from './ListSales/ListSales'
 import { useState, useContext, KeyboardEvent, useEffect } from "react"
 import { useApi } from '../../hooks/useApi';
-
-// start imports menu MUI //
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { ModalDelete } from './Modals/DeleteSell/ModalDelete';
 import { ModalMasterKeyEdit, ModalMasterKeyDelete } from './Modals/MasterKey/MasterKeyModal';
 import { ModalSuccess } from './Modals/Success/ModalSucess';
@@ -93,24 +87,6 @@ export const SalesControl = () => {
 
     const dataToSendApi = { userId: auth.idUser, InitialDate, FinalDate }
 
-    // Start params menu MUI //
-    const options = ["Exportar como Excel", "Exportar como PDF"]
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-    const handleExportExcel = () => {
-        MessageBox("info", "Em construção")
-        handleClose()
-    }
-    const handleExportPDF = () => {
-        MessageBox('info', "Em construção")
-        handleClose()
-    }
     const defaultSendtoApi = async () => {
 
         const data = await findSells(dataToSendApi)
@@ -136,11 +112,7 @@ export const SalesControl = () => {
 
         }
     }
-    const handleKeyUP = (e: KeyboardEvent) => {
-        if (e.code === 'Enter' && InitialDate !== '') {
 
-        }
-    }
 
     const [valueSellModal, setvalueSellModal] = useState(0)
     const [idSellDeleteModal, setidSellDeleteModal] = useState(0)
@@ -198,48 +170,7 @@ export const SalesControl = () => {
                 <S.Box><label>Data Inicial</label><S.Input isDarkMode={Theme.DarkMode} type="date" value={InitialDate} onChange={(e) => setInitialDate(e.target.value)}></S.Input></S.Box>
                 <S.Box><label>Data Final</label><S.Input isDarkMode={Theme.DarkMode} type="date" value={FinalDate} onChange={(e) => setFinalDate(e.target.value)}></S.Input></S.Box>
                 <S.DivSearch><S.Button onClick={handleSendtoApi} ><FaSearch size="13" /></S.Button>
-                    <label style={{ display: 'flex', marginBottom: "-3px" }}>
-                        <div>
-                            <IconButton
-                                aria-label="more"
-                                id="long-button"
-                                aria-controls={open ? 'long-menu' : undefined}
-                                aria-expanded={open ? 'true' : undefined}
-                                aria-haspopup="true"
-                                onClick={handleClick}
-                            >
-                                <MoreVertIcon />
-                            </IconButton>
-                            <Menu
-                                id="long-menu"
-                                MenuListProps={{
-                                    'aria-labelledby': 'long-button',
-                                }}
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
-                                PaperProps={{
-                                    style: {
-                                        maxHeight: 48 * 4.5,
-                                        width: '20ch',
-                                    },
-                                }}
-                            >
-                                {options.map((option, index) => (
-                                    <MenuItem
-                                        key={option}
-                                        selected={option === 'Pyxis'}
-                                        onClick={index === 0 ? handleExportExcel :
-                                            index === 1 ? handleExportPDF :
-                                                handleClose
-                                        }
-                                    >
-                                        {option}
-                                    </MenuItem>
-                                ))}
-                            </Menu>
-                        </div>
-                    </label>
+                  
                 </S.DivSearch>
             </S.Header>
             <S.SubHeader>
@@ -299,7 +230,7 @@ export const SalesControl = () => {
                     listSellsProducts={listSellsProducts}
                     setismodalEditSellOpen={setismodalMasterkeyEditOpen}
                     setidselltoEdit={setidselltoEdit}
-
+                    searchSells={handleSendtoApi}
                 />
             ))}
 

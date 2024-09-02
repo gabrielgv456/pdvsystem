@@ -57,6 +57,7 @@ animation: tilt-in-top-1 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 export const DivButtonsAddRemove = styled.div`
 display: flex;
 width: 48px;
+min-width: max-content;
 align-items: flex-start;
 height: 24px;
 

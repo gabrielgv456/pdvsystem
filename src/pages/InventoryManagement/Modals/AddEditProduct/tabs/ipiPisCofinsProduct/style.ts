@@ -5,6 +5,7 @@ export const SectionContainer = styled.div`
     gap: 10px;
     flex-wrap: wrap;
     width: 100%;
+    margin-top: 15px;
 `
 export const Container = styled.div`
     width: 100%;

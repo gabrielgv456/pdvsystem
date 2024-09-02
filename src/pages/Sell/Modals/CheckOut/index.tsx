@@ -368,7 +368,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             const url = URL.createObjectURL(blob);
             setPdfNF(url)
         } catch (error) {
-            MessageBox('error', (error as Error).message)
+            MessageBox('error', (error as Error).message, 100000)
         } finally {
             setIsLoading(false)
         }
