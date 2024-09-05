@@ -29,7 +29,7 @@ export interface TransactionsReturnApiProps {
 export const Transactions = () => {
 
     const { setActualPage } = useLayout();
-    setActualPage('Movimentações')
+    setActualPage('Balanço Financeiro')
     const auth = useContext(AuthContext);
     const Theme = useDarkMode();
     const { findTransactions, addTransactions } = useApi()

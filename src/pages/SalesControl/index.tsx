@@ -272,6 +272,7 @@ export const SalesControl = () => {
                 sellerfiltered={sellerfiltered}
             />
 
+
         </S.Container>
 
     )

@@ -13,5 +13,5 @@ export type optionItem = {
     action?: (userId: number, lastPeriod: number) => Promise<any>
     state?: (newValue: any) => void,
     stateOption?: (newValue: any) => void
-    actionGeneric?: () => Promise<void>
+    actionGeneric?: () => void
 }

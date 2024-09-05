@@ -16,6 +16,8 @@ import { downloadXMLFile } from "../../../utils/utils";
 import { MenuMui } from "src/components/menuSelect/muiMenu";
 import { MdCancel } from "react-icons/md";
 import { ModalCancelNote } from "./Modals/modalCancelNote/modalCancelNote";
+import { ModalFiscalEvents } from "./Modals/modalFiscalEvents/modalFiscalEvents";
+import { LuFileSearch } from "react-icons/lu";
 
 
 interface Props {
@@ -38,6 +40,7 @@ export function Listagem(props: Props) {
    const { createFiscalNote, getXmlFiscalNote } = useApi()
    const { MessageBox } = useMessageBoxContext()
    const [isModalCancelNoteOpen, setIsModalCancelNoteOpen] = useState(false)
+   const [isModalFiscalEventsOpen, setIsModalFiscalEventsOpen] = useState(false)
    const remove = () => {
       props.handleRemoveTask(props.item.id, props.item.sellValue)
    }
@@ -99,10 +102,6 @@ export function Listagem(props: Props) {
       } catch (error) {
          MessageBox('error', 'Ocorreu uma falha ao baixar o XML! ' + (error as Error).message)
       }
-   }
-
-   async function handleOpenModalCancelNote() {
-      setIsModalCancelNoteOpen(true)
    }
 
    return (
@@ -182,7 +181,6 @@ export function Listagem(props: Props) {
             {(user?.plans?.fiscalAccess ?? false) && (
 
                // apenas exibe abaixo se tiver acesso fiscal
-               props.item.existsFiscalNote &&
                <MenuMui
                   selected=""
                   sizeIcon={18}
@@ -190,9 +188,14 @@ export function Listagem(props: Props) {
                      {
                         option: 'Cancelar Nota Fiscal',
                         icon: <MdCancel size={22} color="red" />,
-                        actionGeneric: () => handleOpenModalCancelNote()
+                        actionGeneric: () => setIsModalCancelNoteOpen(true)
+                     },
+                     {
+                        option: 'Eventos Nota Fiscal',
+                        icon: <LuFileSearch size={22} color="#437fff" />,
+                        actionGeneric: () => setIsModalFiscalEventsOpen(true)
                      }
-                  ]} />
+                  ].filter((_item, index) => index === 0 ? props.item.existsFiscalNote : true)} />
             )
             }
             {/* 
@@ -222,6 +225,7 @@ export function Listagem(props: Props) {
             </label> */}
          </S.DivContent>
          <ModalCancelNote sell={props.item} isModalOpen={isModalCancelNoteOpen} setIsModalOpen={setIsModalCancelNoteOpen} searchSells={props.searchSells} />
+         <ModalFiscalEvents sellId={props.item.id} isModalOpen={isModalFiscalEventsOpen} setIsModalOpen={setIsModalFiscalEventsOpen} />
       </S.Container>
 
    )

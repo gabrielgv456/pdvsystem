@@ -59,6 +59,7 @@ export const Sell = () => {
     const { MessageBox } = useMessageBoxContext()
     // const [isClientNecessary, setisClientNecessary] = useState(false)
     // const [isSellerNecessary, setisSellerNecessary] = useState(false)
+    const [textInput, setTextInput] = useState('')
 
     useEffect(() => {
         const Productsresult = async () => {
@@ -77,6 +78,7 @@ export const Sell = () => {
     }, [NoFilteredProducts])
 
 
+
     const options = Products.map((option) => {
         const firstLetter = option.name[0].toUpperCase();
         return {
@@ -84,6 +86,12 @@ export const Sell = () => {
             ...option,
         };
     });
+
+    async function handleSelectItem(newValue: ProductsTypeOptions | null) {
+        setinputProducts(newValue)
+        handleAddProduct(newValue)
+    }
+
 
     // FUNCTIONS FOR PAYMENT METHODS //
 
@@ -95,38 +103,38 @@ export const Sell = () => {
     const [listProducts, setListProducts] = useState<ProductsType[]>([])
     const [inputProducts, setinputProducts] = useState<ProductsTypeOptions | null>(null)
 
-    const handleAddProduct = () => {
+
+    const handleAddProduct = async (newProduct: ProductsTypeOptions | undefined | null) => {
 
         let newList = [...listProducts]
-        if (inputProducts) {
-            let verifyexistsProduct = newList.some((item) => item.id === inputProducts.id)
+        const newItem = newProduct ?? inputProducts
+
+        if (newItem) {
+            let verifyexistsProduct = newList.some((item) => item.id === newItem.id)
             if (verifyexistsProduct) {
                 if (window.confirm("Produto já incluso, deseja inserir mais uma unidade?")) {
-                    handleEditItem(inputProducts.id, 0, 1, 'add')
-                    setinputProducts(null)
-                } else {
-                    setinputProducts(null)
+                    handleEditItem(newItem.id, 0, 1, 'add')
                 }
-
             } else {
                 newList.push({
-                    name: inputProducts.name,
-                    id: inputProducts.id,
+                    name: newItem.name,
+                    id: newItem.id,
                     quantity: 1,
-                    initialvalue: inputProducts.value,
-                    totalvalue: inputProducts.value,
-                    initialCost: inputProducts.cost,
-                    totalCost: inputProducts.cost,
-                    urlImage: inputProducts.urlImage,
+                    initialvalue: newItem.value,
+                    totalvalue: newItem.value,
+                    initialCost: newItem.cost,
+                    totalCost: newItem.cost,
+                    urlImage: newItem.urlImage,
                     discountPercent: null,
                     discountValue: null,
                     totalDiscount: null
                 })
                 setListProducts(newList)
-                setinputProducts(null)
             }
         }
+        setinputProducts(null)
     }
+
     function handleRemoveItem(id: number) {
         let filtereditems = listProducts.filter(list => list.id !== id)
         setListProducts(filtereditems)
@@ -193,13 +201,13 @@ export const Sell = () => {
         setListProducts(newList)
 
     }
-    const handleKeyUP = (e: KeyboardEvent) => {
+    // const handleKeyUP = (e: KeyboardEvent) => {
 
-        if (e.code === 'Enter' || e.code === 'NumpadEnter' && inputProducts) {
+    //     if (e.code === 'Enter' || e.code === 'NumpadEnter' && inputProducts) {
 
-            handleAddProduct()
-        }
-    }
+    //         handleAddProduct()
+    //     }
+    // }
     const [isModalConfirmSellOpen, setisModalConfirmSellOpen] = useState(false);
 
     function handleOpenModalConfirmSell() {
@@ -238,17 +246,21 @@ export const Sell = () => {
                     <S.Box>
                         <Autocomplete
                             value={inputProducts}
-                            onChange={(event: any, newValue: ProductsTypeOptions | null) => setinputProducts(newValue)}
-                            id="grouped-demo"
+                            onChange={(event: any, newValue: ProductsTypeOptions | null) => handleSelectItem(newValue)}
+                            inputValue={textInput}
+                            onInputChange={(e, newValue) => setTextInput(newValue)}
                             noOptionsText={"Nenhum Resultado"}
+                            clearOnBlur={true}
+                            clearOnEscape={true}
+                            onOpen={() => textInput.length > 3 && setTextInput('')}
                             options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
-                            groupBy={(option) => option.firstLetter}
-                            getOptionLabel={(option) => option.name}
+                            groupBy={(option) => option?.firstLetter ?? ''}
+                            getOptionLabel={(option) => option?.name ?? ''}
                             sx={{ boxShadow: 'rgba(58, 53, 65, 0.1) 0px 1px 2px 0px', border: '#fff', width: '100%', '& input': { color: Theme.DarkMode ? '#fff' : '', "& .MuiInputLabel-root": { color: 'green' } } }}
                             renderOption={(props, option) => (
 
                                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                                    {option.urlImage &&
+                                    {option?.urlImage &&
                                         <img
                                             loading="lazy"
                                             width="20"
@@ -256,18 +268,19 @@ export const Sell = () => {
                                             src={option.urlImage}
                                             alt=""
                                         />}
-                                    {option.name}
+                                    {option?.name ?? ''}
                                 </Box>
                             )}
                             renderInput={(params) => <TextField {...params}
+
                                 sx={{ borderColor: '#fff' }}
-                                onKeyUp={handleKeyUP}
-                                onSelect={handleAddProduct}
+                                //onKeyUp={handleKeyUP}
+                                onSelect={() => handleAddProduct}
                                 label="Selecione um produto"
                                 autoFocus />}
                         />
                     </S.Box>
-                    <S.Button onClick={handleAddProduct}>
+                    <S.Button onClick={() => handleAddProduct}>
                         <RiAddCircleFill size="25" />
                     </S.Button>
                 </S.Header>

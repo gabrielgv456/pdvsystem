@@ -6,8 +6,8 @@ type LayoutProps = {
 
 }
 
-export type typeActualPage = 'Página Inicial' | 'Realizar Vendas' | 'Controle de Vendas' | 'Entregas' | 'Movimentações' | 'Pessoas' | 'Gestão de Estoque' | 'Ajustes'
-export const descriptionPages: typeActualPage[] = ['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Entregas', 'Movimentações', 'Pessoas', 'Gestão de Estoque', 'Ajustes']
+export type typeActualPage = 'Página Inicial' | 'Realizar Vendas' | 'Controle de Vendas' | 'Entregas' | 'Balanço Financeiro' | 'Pessoas' | 'Gestão de Estoque' | 'Ajustes'
+export const descriptionPages: typeActualPage[] = ['Página Inicial', 'Realizar Vendas', 'Controle de Vendas', 'Entregas', 'Balanço Financeiro', 'Pessoas', 'Gestão de Estoque', 'Ajustes']
 
 type ChildrenProps = {
     children: ReactNode

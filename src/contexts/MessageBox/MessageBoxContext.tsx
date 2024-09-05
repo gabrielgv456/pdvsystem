@@ -2,7 +2,7 @@ import { useState, createContext, ReactNode, useContext } from 'react';
 
 
 interface CreateContextProps {
-    MessageBox: (type: 'error' | 'warning' | 'info' | 'success', message: string, duration?:number) => void;
+    MessageBox: (type: 'error' | 'warning' | 'info' | 'success', message: string, duration?: number) => void;
     openSuccess: boolean;
     setOpenSuccess: (data: boolean) => void;
     openError: boolean;
@@ -59,6 +59,7 @@ export const MessageBoxProvider = ({ children }: ChildrenProps) => {
         }
         setMessage(info)
         if (newDuration) setDuration(newDuration)
+        else setDuration(5000)
     }
 
     return (

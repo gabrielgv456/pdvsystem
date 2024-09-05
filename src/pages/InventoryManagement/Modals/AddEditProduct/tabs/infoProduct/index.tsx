@@ -131,7 +131,7 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
     return (
 
         <S.DivModalAddProduct>
-            <div style={{ width: '100%', gap: 20, alignItems: 'center', display: 'flex' }}>
+            <div style={{ width: '100%', gap: 20, alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}>
                 <UploadImage
                     type='image'
                     maxSize={1}
@@ -249,7 +249,7 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                 noOptionsText="Não encontrado"
                 id="controllable-states-demo"
                 options={optionsItensType}
-                className='InputSection'
+                sx={{ flex: '1 1 300px' }}
                 getOptionLabel={(option) => (option.id + ' ' + option.description)}
                 renderInput={(params) =>
                     <TextField
@@ -266,7 +266,7 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                 noOptionsText="Não encontrado"
                 id="controllable-states-demo"
                 options={optionsNCM}
-                className='InputSection'
+                sx={{ flex: '1 1 300px' }}
                 getOptionLabel={(option) => (option.Codigo + ' ' + option.Descricao)}
                 renderInput={(params) =>
                     <TextField
