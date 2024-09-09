@@ -367,8 +367,9 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
             const blob = await base64.blob()
             const url = URL.createObjectURL(blob);
             setPdfNF(url)
+            MessageBox('success', 'Nota emitida com sucesso!')
         } catch (error) {
-            MessageBox('error', (error as Error).message, 100000)
+            MessageBox('error', (error as Error).message, 15000)
         } finally {
             setIsLoading(false)
         }

@@ -89,7 +89,7 @@ export function Listagem(props: Props) {
          window.open(url, '_blank')
          props.searchSells()
       } catch (error) {
-         MessageBox('error', (error as Error).message, 100000)
+         MessageBox('error', (error as Error).message, 15000)
       }
    }
 

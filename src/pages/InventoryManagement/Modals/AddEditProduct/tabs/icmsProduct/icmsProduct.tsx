@@ -153,7 +153,6 @@ export const TabIcmsProduct = (props: type.icmsProductProps) => {
                         handleChangeTax('TaxIcmsNfe', 'taxCfopStateId', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
-                    disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions')}
                     id="controllable-states-demo"
                     getOptionLabel={(option) => (option.id + ' - ' + option.description)}
                     options={props.icmsOptions?.cfopStateOptions ?? []}
@@ -171,7 +170,6 @@ export const TabIcmsProduct = (props: type.icmsProductProps) => {
                         handleChangeTax('TaxIcmsNfe', 'taxCfopInterstateId', newValue?.id ?? null)
                     }}
                     noOptionsText="Não encontrado"
-                    disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions')}
                     id="controllable-states-demo"
                     options={props.icmsOptions?.cfopInterstateOptions ?? []}
                     getOptionLabel={(option) => (option.id + ' - ' + option.description)}
