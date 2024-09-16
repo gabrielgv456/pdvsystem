@@ -100,7 +100,7 @@ export const GeneratePDFBudget = async (sumDiscount: number, sumValue: number, s
                 table: {
                     widths: ['auto', 'star', 'auto', 'auto'],
                     body: [
-                        [{ text: 'Qtd', style: 'bold' }, { text: 'Descrição do produto', style: 'bold' }, { text: 'Desconto Total', style: 'bold' }, { text: 'Valor Total', style: 'bold' }],
+                        [{ text: 'Qtd', style: 'bold' }, { text: 'Descrição do produto', style: 'bold' }, { text: 'Desconto', style: 'bold' }, { text: 'Valor', style: 'bold' }],
                         ...ProductData,
                         [{ text: ' ' }, { text: ' ' }, { text: ' ' }, { text: ' ' }],
                         [{ text: 'Qtd total itens', colSpan: 2 }, {}, { text: sumquantity, alignment: 'center', colSpan: 2 }, {}],

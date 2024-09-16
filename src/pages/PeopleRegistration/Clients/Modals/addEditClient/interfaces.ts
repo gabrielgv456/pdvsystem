@@ -6,7 +6,6 @@ export interface ListClientstoAddClientProps {
     client?: ClientsReturnApiProps
     isModalAddEditClientOpen: boolean;
     setisModalAddEditClientOpen: (value: boolean) => void;
-    setisModalSucessOpen?: (value: boolean) => void;
     searchClients?: () => void;
     handleChangeClient?: (newClient: ClientsType) => void
 }

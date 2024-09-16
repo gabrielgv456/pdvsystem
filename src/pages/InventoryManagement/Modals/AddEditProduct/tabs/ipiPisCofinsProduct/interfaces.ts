@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from "react"
 import { searchOptions } from "../icmsProduct/interfaces"
-import { addEditProductDataSend } from "../../interfaces"
+import { sharedAddEditProductRequest } from "@shared/api/inventoryManagement/productsRequest"
 
 export type ipiPisCofinsProps = {
-    dataAddEditProduct: addEditProductDataSend
-    setDataAddEditProduct: Dispatch<SetStateAction<addEditProductDataSend>>
+    dataAddEditProduct: sharedAddEditProductRequest
+    setDataAddEditProduct: Dispatch<SetStateAction<sharedAddEditProductRequest>>
     taxOptions: searchOptions | null
 }
 

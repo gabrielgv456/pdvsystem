@@ -44,3 +44,26 @@ export const DivModal = styled.div `
     align-items: center;
     margin: 30px 0 30px 0;
 `
+
+export const ButtonExitSucessClientModal = styled.button `
+    background:none;
+    border:none;
+    border-radius:5px;
+    padding:10px 25px;
+    color:#7d888d;
+    &:hover{
+        background:#f0f0f0;
+        
+    }
+`
+
+export const ButtonAddSucessClientModal = styled.button `
+    background:var(--Green);
+    border:none;
+    border-radius:5px;
+    padding:10px 25px;
+    color:#fff;
+    &:hover{
+        background: ${darken(0.02, '#33CC95')}
+    }
+`

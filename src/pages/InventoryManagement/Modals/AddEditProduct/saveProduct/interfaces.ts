@@ -1,12 +1,13 @@
-import { addEditProductDataSend } from "../interfaces"
+import { sharedAddEditProductRequest } from "@shared/api/inventoryManagement/productsRequest"
+
 
 export type SaveProductProps = {
     type: 'Add' | 'Edit'
-    dataToSend: addEditProductDataSend
+    dataToSend: sharedAddEditProductRequest
     setisModalSucessOpen: (newValue: boolean) => void
     setisModalAddEditProductOpen: (newValue: boolean) => void
-    setDataAddEditProduct: (newValue: addEditProductDataSend) => void
-    defaultDataEditProduct: addEditProductDataSend
+    setDataAddEditProduct: (newValue: sharedAddEditProductRequest) => void
+    defaultDataEditProduct: sharedAddEditProductRequest
 }
 
 export type addEditProductDataPrincipal = {

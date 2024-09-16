@@ -1,9 +1,9 @@
+import { sharedAddEditProductRequest } from "@shared/api/inventoryManagement/productsRequest"
 import { Dispatch, SetStateAction } from "react"
-import { addEditProductDataSend } from "../../interfaces"
 
 export type icmsProductProps = {
-    dataAddEditProduct: addEditProductDataSend
-    setDataAddEditProduct: Dispatch<SetStateAction<addEditProductDataSend>>
+    dataAddEditProduct: sharedAddEditProductRequest
+    setDataAddEditProduct: Dispatch<SetStateAction<sharedAddEditProductRequest>>
     icmsOptions: searchOptions | null
 }
 

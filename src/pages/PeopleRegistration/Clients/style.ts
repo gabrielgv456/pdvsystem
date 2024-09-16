@@ -22,6 +22,7 @@ export const Content = styled.div<DarkModeProps> `
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
     border-radius: 10px;
     padding: 20px;
+    overflow: auto;
 `
 export const Header = styled.div`
     display: flex;
@@ -80,38 +81,27 @@ export const ButtonCloseModal = styled.button <DarkModeProps>`
         color: ${darken(0.02, 'gray')}
     }
 `
-export const DivListClients = styled.div `
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+export const TableClients = styled.table `
     width:100%;
-
-   
 `
-export const DivTitleListClients = styled.div <DarkModeProps>`
-    /* min-width: min-content; */
+export const THeadClients = styled.thead <DarkModeProps>`
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};
     //border: ${props => (props.isDarkMode ? '1px solid gray' : '1px solid silver')}; 
     border-radius: 10px;
     color: #67636d;
     padding:10px;
     width:100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; 
     font-size: 0.85rem;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
       @media screen and (max-width:930px) {
         font-size: 0.7rem;
     }
 `
-export const DivFooterListClients = styled.div <DarkModeProps>`
+export const TFootListClients = styled.tfoot <DarkModeProps>`
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};
     width: 100%;
-    padding:20px;
-    border-radius: 0px 0px 20px 20px;
-    display:flex;
-    justify-content: space-between;
+    height: 70px;
+    border-radius: 0px 0px 20px 20px;;
 
 `
 export const DivAlterPage = styled.div `
@@ -121,48 +111,51 @@ export const DivAlterPage = styled.div `
     justify-content: space-between;
     align-items: flex-start;
 `
-
-export const labelNomeRazao = styled.label `
+export const ButtonEdit= styled.button `
+    text-decoration: none;
+    background: none;
+    border:none;
+    color:gold;
+    width:min-content;
+`
+export const ThNomeRazao = styled.th `
      overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 25%;
 `
-export const labelCpfCnpj = styled.label `
-    width: 15%;
+
+export const ButtonTrash = styled.button `
+    text-decoration: none;
+    color:red;
+    background: none;
+    border:none;
     display: flex;
+    justify-content: center;
+    /* min-width: min-content; */
+    width:min-content;
 `
-export const labelCelular = styled.label `
-    width: 15%;
-    display: flex;
+export const DivLengthAjust = styled.div`
+    max-width: 50ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @media screen and (max-width:930px) {
+        max-width: 18ch;
+    }
+`
+
+export const ThCelular = styled.th `
     @media screen and (max-width:930px) {
         display: none;
     }
     
 
 `
-export const labelEmail = styled.label `
-    width: 20%;
-    display: flex;
+export const ThEmail = styled.th `
     @media screen and (max-width:930px) {
         display: none;
     }
 `
-export const labelEdit = styled.label `
-    width: 2.5rem; 
-    display: flex; 
-    @media screen and (max-width:930px) {
-        width: 1.4rem; 
-    }
-`
-export const labelExcluir = styled.label `
-    width: 2.5rem;
-    display: flex;
-    @media screen and (max-width:930px) {
-        width: 1.5rem; 
-    }
-`
-
 
 
 

@@ -231,7 +231,30 @@ export const ButtonExitSucessSellerModal = styled.button `
     }
 `
 
+export const ButtonEdit= styled.button `
+    text-decoration: none;
+    background: none;
+    border:none;
+    color:gold;
+`
 
-
-
+export const DivLengthAjust = styled.div`
+    max-width: 50ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @media screen and (max-width:930px) {
+        max-width: 18ch;
+    }
+`
+export const ButtonTrash = styled.button `
+    text-decoration: none;
+    color:red;
+    background: none;
+    border:none;
+    display: flex;
+    justify-content: center;
+    /* min-width: min-content; */
+    width:min-content;
+`
 

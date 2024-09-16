@@ -5,17 +5,19 @@ import { useDarkMode } from 'src/contexts/DarkMode/DarkModeProvider'
 
 type PaginatedFooterProps = {
     data: any[],
-    setData: Dispatch<SetStateAction<any[] | null>>
+    setPaginatedData?: Dispatch<SetStateAction<any[] | null>>
 }
 
-export const PaginatedFooter = ({ data, setData }: PaginatedFooterProps) => {
+export const PaginatedFooter = ({ data, setPaginatedData }: PaginatedFooterProps) => {
 
     const [ItensPerPage, SetItensPerPage] = useState(10)
     const [atualPage, SetAtualPage] = useState(0)
+
     const Pages = Math.ceil(data.length / ItensPerPage)
     const StartIndex = atualPage * ItensPerPage
     const EndIndex = StartIndex + ItensPerPage
     const paginedData = data.slice(StartIndex, EndIndex)
+
     const Theme = useDarkMode()
 
     const EditItensPerPage = (ItensPerPage: number) => {
@@ -24,14 +26,9 @@ export const PaginatedFooter = ({ data, setData }: PaginatedFooterProps) => {
     }
 
     useEffect(() => {
-        if (data !== paginedData)
-            setData(paginedData)
-    }, [])
-
-    useEffect(() => {
-        if (data !== paginedData)
-            setData(paginedData)
-    }, [ItensPerPage])
+        if (setPaginatedData)
+            setPaginatedData(paginedData)
+    }, [data, atualPage, ItensPerPage])
 
     return (
         <S.DivFooter isDarkMode={Theme.DarkMode}>

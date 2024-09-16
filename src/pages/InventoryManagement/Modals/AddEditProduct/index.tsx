@@ -21,6 +21,8 @@ import { ProductsReturnApiProps } from '../../interfaces';
 import { searchOptions } from './tabs/icmsProduct/interfaces';
 import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBoxContext';
 import { useApi } from '../../../../hooks/useApi';
+import { sharedProdutcsType } from '@shared/api/inventoryManagement/productsResponse';
+import { sharedAddEditProductRequest } from '@shared/api/inventoryManagement/productsRequest';
 
 
 
@@ -29,7 +31,7 @@ interface PropsModalAddProduct {
     setisModalAddEditProductOpen: (value: boolean) => void;
     setisModalSucessOpen: (value: boolean) => void;
     type: 'Add' | 'Edit';
-    itemData?: ProductsReturnApiProps;
+    itemData?: sharedProdutcsType;
 }
 
 export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
@@ -58,9 +60,9 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
     const isLess900 = useMediaQuery('(max-width:100px)')
     const [value, setValue] = useState(0);
 
-    const defaultDataEditProduct: type.addEditProductDataSend = {
+    const defaultDataEditProduct: sharedAddEditProductRequest = {
         principal: {
-            id: props.itemData?.id,
+            id: props.itemData?.id ?? null,
             userId: auth.idUser,
             codRef: props.itemData?.codRef ?? null,
             brand: props.itemData?.brand ?? null,
@@ -74,73 +76,72 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
             barCode: props.itemData?.barCode ?? null,
             ncmCode: props.itemData?.ncmCode ?? null,
             itemTypeId: (props.itemData ? props.itemData.itemTypeId : null),
-            cfopId: props.itemData?.cfopId ?? null,
             unitMeasurement: props.itemData?.unitMeasurement ?? 'UN',
             imageId: props.itemData?.imageId ?? null,
             urlImage: props.itemData?.urlImage ?? null
         },
         icms: {
             TaxIcms: {
-                taxIcmsOriginId: (props.itemData?.taxIcms[0]?.taxIcmsOriginId) ?? null,
-                fcpAliquot: (props.itemData?.taxIcms[0]?.fcpAliquot) ?? null,
+                taxIcmsOriginId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsOriginId) ?? null,
+                fcpAliquot: (props.itemData?.taxGroup?.taxIcms?.fcpAliquot) ?? null,
             },
             TaxIcmsNfce: {
-                taxCstIcmsId: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxCstIcmsId) ?? null,
-                taxAliquotIcms: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxAliquotIcms) ?? null,
-                taxCfopDevolutionId: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxCfopDevolutionId) ?? null,
-                taxCfopId: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxCfopId) ?? null,
-                taxRedBCICMS: (props.itemData?.taxIcms[0]?.taxIcmsNfce[0]?.taxRedBCICMS) ?? null
+                taxCstIcmsId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfce?.taxCstIcmsId) ?? null,
+                taxAliquotIcms: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfce?.taxAliquotIcms) ?? null,
+                taxCfopDevolutionId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfce?.taxCfopDevolutionId) ?? null,
+                taxCfopId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfce?.taxCfopId) ?? null,
+                taxRedBCICMS: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfce?.taxRedBCICMS) ?? null
             },
             TaxIcmsNfe: {
-                taxCfopInterstateId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxCfopInterstateId) ?? null,
-                taxCstIcmsId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxCstIcmsId) ?? null,
-                taxAliquotIcms: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxAliquotIcms) ?? null,
-                taxCfopStateId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxCfopStateId) ?? null,
-                taxModalityBCId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxModalityBCId) ?? null,
-                taxReasonExemptionId: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxReasonExemptionId) ?? null,
-                taxRedBCICMS: (props.itemData?.taxIcms[0]?.taxIcmsNfe[0]?.taxRedBCICMS) ?? null,
+                taxCfopInterstateId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfe?.taxCfopInterstateId) ?? null,
+                taxCstIcmsId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfe?.taxCstIcmsId) ?? null,
+                taxAliquotIcms: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfe?.taxAliquotIcms) ?? null,
+                taxCfopStateId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfe?.taxCfopStateId) ?? null,
+                taxModalityBCId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfe?.taxModalityBCId) ?? null,
+                taxReasonExemptionId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfe?.taxReasonExemptionId) ?? null,
+                taxRedBCICMS: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNfe?.taxRedBCICMS) ?? null,
             },
             TaxIcmsNoPayer: {
-                taxAliquotIcms: (props.itemData?.taxIcms[0]?.taxIcmsNoPayer[0]?.taxAliquotIcms) ?? null,
-                taxCstIcmsId: (props.itemData?.taxIcms[0]?.taxIcmsNoPayer[0]?.taxCstIcmsId) ?? null,
-                taxRedBCICMS: (props.itemData?.taxIcms[0]?.taxIcmsNoPayer[0]?.taxRedBCICMS) ?? null,
+                taxAliquotIcms: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNoPayer?.taxAliquotIcms) ?? null,
+                taxCstIcmsId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNoPayer?.taxCstIcmsId) ?? null,
+                taxRedBCICMS: (props.itemData?.taxGroup?.taxIcms?.taxIcmsNoPayer?.taxRedBCICMS) ?? null,
             },
             TaxIcmsST: {
-                taxAliquotIcmsInner: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxAliquotIcmsInner) ?? null,
-                taxCfopInterstateIdSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCfopInterstateIdSt) ?? null,
-                taxCfopStateIdSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCfopStateIdSt) ?? null,
-                taxCstIcmsStId: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxCstIcmsStId) ?? null,
-                taxMvaPauta: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxMvaPauta) ?? null,
-                taxModalityBCIdSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxModalityBCIdSt) ?? null,
-                taxRedBCICMSInner: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxRedBCICMSInner) ?? null,
-                taxRedBCICMSSt: (props.itemData?.taxIcms[0]?.taxIcmsSt[0]?.taxRedBCICMSSt) ?? null
+                taxAliquotIcmsInner: (props.itemData?.taxGroup?.taxIcms?.taxIcmsSt?.taxAliquotIcmsInner) ?? null,
+                taxCfopInterstateIdSt: (props.itemData?.taxGroup?.taxIcms?.taxIcmsSt?.taxCfopInterstateIdSt) ?? null,
+                taxCfopStateIdSt: (props.itemData?.taxGroup?.taxIcms?.taxIcmsSt?.taxCfopStateIdSt) ?? null,
+                taxCstIcmsStId: (props.itemData?.taxGroup?.taxIcms?.taxIcmsSt?.taxCstIcmsStId) ?? null,
+                taxMvaPauta: (props.itemData?.taxGroup?.taxIcms?.taxIcmsSt?.taxMvaPauta) ?? null,
+                taxModalityBCIdSt: (props.itemData?.taxGroup?.taxIcms?.taxIcmsSt?.taxModalityBCIdSt) ?? null,
+                taxRedBCICMSInner: (props.itemData?.taxGroup?.taxIcms?.taxIcmsSt?.taxRedBCICMSInner) ?? null,
+                taxRedBCICMSSt: (props.itemData?.taxGroup?.taxIcms?.taxIcmsSt?.taxRedBCICMSSt) ?? null
             }
         },
         cofins: {
-            taxAliquotCofinsEntrance: (props.itemData?.taxCofins[0]?.taxAliquotCofinsEntrance) ?? null,
-            taxAliquotCofinsExit: (props.itemData?.taxCofins[0]?.taxAliquotCofinsExit) ?? null,
-            taxCstCofinsEntranceId: (props.itemData?.taxCofins[0]?.taxCstCofinsEntranceId) ?? null,
-            taxCstCofinsExitId: (props.itemData?.taxCofins[0]?.taxCstCofinsExitId) ?? null
+            taxAliquotCofinsEntrance: (props.itemData?.taxGroup?.taxCofins?.taxAliquotCofinsEntrance) ?? null,
+            taxAliquotCofinsExit: (props.itemData?.taxGroup?.taxCofins?.taxAliquotCofinsExit) ?? null,
+            taxCstCofinsEntranceId: (props.itemData?.taxGroup?.taxCofins?.taxCstCofinsEntranceId) ?? null,
+            taxCstCofinsExitId: (props.itemData?.taxGroup?.taxCofins?.taxCstCofinsExitId) ?? null
         },
         ipi: {
-            taxAliquotIpi: (props.itemData?.taxIpi[0]?.taxAliquotIpi) ?? null,
-            taxClassificationClassIpi: (props.itemData?.taxIpi[0]?.taxClassificationClassIpi) ?? null,
-            taxCnpjProd: (props.itemData?.taxIpi[0]?.taxCnpjProd) ?? null,
-            taxCodEnquadLegalIpi: (props.itemData?.taxIpi[0]?.taxCodEnquadLegalIpi) ?? null,
-            taxCstIpiEntranceId: (props.itemData?.taxIpi[0]?.taxCstIpiEntranceId) ?? null,
-            taxCstIpiExitId: (props.itemData?.taxIpi[0]?.taxCstIpiExitId) ?? null,
-            taxQtdStampControlIpi: (props.itemData?.taxIpi[0]?.taxQtdStampControlIpi) ?? null,
-            taxStampIpi: (props.itemData?.taxIpi[0]?.taxStampIpi) ?? null,
+            taxAliquotIpi: (props.itemData?.taxGroup?.taxIpi?.taxAliquotIpi) ?? null,
+            taxClassificationClassIpi: (props.itemData?.taxGroup?.taxIpi?.taxClassificationClassIpi) ?? null,
+            taxCnpjProd: (props.itemData?.taxGroup?.taxIpi?.taxCnpjProd) ?? null,
+            taxCodEnquadLegalIpi: (props.itemData?.taxGroup?.taxIpi?.taxCodEnquadLegalIpi) ?? null,
+            taxCstIpiEntranceId: (props.itemData?.taxGroup?.taxIpi?.taxCstIpiEntranceId) ?? null,
+            taxCstIpiExitId: (props.itemData?.taxGroup?.taxIpi?.taxCstIpiExitId) ?? null,
+            taxQtdStampControlIpi: (props.itemData?.taxGroup?.taxIpi?.taxQtdStampControlIpi) ?? null,
+            taxStampIpi: (props.itemData?.taxGroup?.taxIpi?.taxStampIpi) ?? null,
         },
         pis: {
-            taxAliquotPisEntrance: (props.itemData?.taxPis[0]?.taxAliquotPisEntrance) ?? null,
-            taxAliquotPisExit: (props.itemData?.taxPis[0]?.taxAliquotPisExit) ?? null,
-            taxCstPisEntranceId: (props.itemData?.taxPis[0]?.taxCstPisEntranceId) ?? null,
-            taxCstPisExitId: (props.itemData?.taxPis[0]?.taxCstPisExitId) ?? null,
+            taxAliquotPisEntrance: (props.itemData?.taxGroup?.taxPis?.taxAliquotPisEntrance) ?? null,
+            taxAliquotPisExit: (props.itemData?.taxGroup?.taxPis?.taxAliquotPisExit) ?? null,
+            taxCstPisEntranceId: (props.itemData?.taxGroup?.taxPis?.taxCstPisEntranceId) ?? null,
+            taxCstPisExitId: (props.itemData?.taxGroup?.taxPis?.taxCstPisExitId) ?? null,
         }
     }
 
-    const [dataAddEditProduct, setDataAddEditProduct] = useState<type.addEditProductDataSend>(defaultDataEditProduct)
+    const [dataAddEditProduct, setDataAddEditProduct] = useState<sharedAddEditProductRequest>(defaultDataEditProduct)
 
     function handleCloseModalAddProduct() {
         props.setisModalAddEditProductOpen(false)

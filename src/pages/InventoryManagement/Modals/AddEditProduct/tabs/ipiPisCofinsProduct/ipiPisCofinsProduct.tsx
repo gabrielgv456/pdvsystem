@@ -3,11 +3,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { optionsType, searchOptions } from '../icmsProduct/interfaces';
 import { ipiPisCofinsProps, taxCofinsType } from './interfaces';
-import { addEditProductDataSend } from '../../interfaces';
 import { cpfCnpjFormat } from '../../../../../../utils/utils';
+import { sharedAddEditProductRequest } from '@shared/api/inventoryManagement/productsRequest';
 
 export const TabIpiPisCofinsProduct = (props: ipiPisCofinsProps) => {
-    function findOption<T extends keyof addEditProductDataSend, S extends keyof searchOptions, K extends keyof addEditProductDataSend[T]>(
+    function findOption<T extends keyof sharedAddEditProductRequest, S extends keyof searchOptions, K extends keyof sharedAddEditProductRequest[T]>(
         property: T,
         key: K,
         option: S
@@ -20,10 +20,10 @@ export const TabIpiPisCofinsProduct = (props: ipiPisCofinsProps) => {
             ?? null
     }
 
-    function handleChangeTax<T extends keyof addEditProductDataSend, K extends keyof addEditProductDataSend[T]>(
+    function handleChangeTax<T extends keyof sharedAddEditProductRequest, K extends keyof sharedAddEditProductRequest[T]>(
         property: T,
         key: K,
-        value: addEditProductDataSend[T][K]
+        value: sharedAddEditProductRequest[T][K]
     ) {
         props.setDataAddEditProduct(prevState => {
             return {

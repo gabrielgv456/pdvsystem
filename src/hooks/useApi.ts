@@ -4,7 +4,6 @@ import { TypeChangeStatusDeliveriesRequest } from '../pages/Deliveries/component
 import { typeRequestDeliveryAdressChange } from '../pages/Deliveries/components/tables/modals/components/changeAddress';
 import { typeSetPaymentsonDelivery } from '../pages/Deliveries/components/tables/modals/modalDeliveryDone';
 import { typeChangeForgotPassword } from '../pages/Login/Modals/validateEmail';
-import { addEditProductDataSend } from '../pages/InventoryManagement/Modals/AddEditProduct/interfaces';
 import { uploadImageType } from '../components/uploadImage/interfaces';
 import { createFiscalNoteType } from '../pages/Sell/Modals/CheckOut';
 import { findClientsType } from '../interfaces/useApi/findClientsType';
@@ -16,6 +15,11 @@ import { SharedFiscalParametersResponse } from '@shared/api/settings/fiscalParam
 import { SharedChangeFiscalParametersRequest } from '@shared/api/settings/changeFiscalParameters';
 import { SharedEventCancelNoteRequest, SharedEventCancelNoteResponse } from '@shared/api/fiscal/EventCancelNote';
 import { sharedGetFiscalEvents } from '@shared/api/fiscal/getFiscalEvents';
+import { sharedSignInResponse } from '@shared/api/login/sign';
+import { sharedFiscalNotesSuccess } from '@shared/api/fiscal/getFiscalNotes';
+import { sharedProducts } from '@shared/api/inventoryManagement/productsResponse';
+import { sharedAddEditProductRequest } from '@shared/api/inventoryManagement/productsRequest';
+import { taxGroupsType } from '@shared/api/fiscal/getTaxGroups';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -37,7 +41,8 @@ export const useApi = () => ({
     },
     signin: async (email: string, password: string) => {
         const response = await api.post('/signin', { email, password });
-        return response.data;
+        const result: sharedSignInResponse = response.data
+        return result;
     },
     validateMail: async (userId: number) => {
         const response = await api.post('/validatemail', { userId })
@@ -57,7 +62,8 @@ export const useApi = () => ({
     },
     findProducts: async (userId: number) => {
         const response = await api.get('/products', { params: { userId } })
-        return response.data
+        const result: sharedProducts = response.data
+        return result
     },
     findSells: async (datafindSells: object) => {
         const response = await api.post('/findsells', { datafindSells })
@@ -67,11 +73,11 @@ export const useApi = () => ({
         const response = await api.post('/findtransactions', { datafindTransactions })
         return response.data
     },
-    addProducts: async (dataAddProduct: addEditProductDataSend) => {
+    addProducts: async (dataAddProduct: sharedAddEditProductRequest) => {
         const response = await api.post('/addproduct', { ...dataAddProduct })
         return response.data
     },
-    editProducts: async (dataEditProduct: addEditProductDataSend) => {
+    editProducts: async (dataEditProduct: sharedAddEditProductRequest) => {
         const response = await api.post('/editproduct', { ...dataEditProduct })
         return response.data
     },
@@ -251,6 +257,14 @@ export const useApi = () => ({
     }, getFiscalEvents: async (sellId: number) => {
         const response = await api.get('/fiscalEvents', { params: { sellId } })
         const result: sharedGetFiscalEvents = response.data
+        return result
+    }, getFiscalNotes: async (idUser: number) => {
+        const response = await api.get('/fiscalNotes', { params: { idUser } })
+        const result: sharedFiscalNotesSuccess = response.data
+        return result
+    }, getTaxGroups: async (idUser: number) => {
+        const response = await api.get('/taxGroups', { params: { idUser } })
+        const result: taxGroupsType = response.data
         return result
     }
 });

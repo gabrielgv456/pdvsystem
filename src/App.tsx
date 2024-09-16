@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { Settings } from './pages/Settings';
 import { CustomizedSnackbars } from './utils/utils';
 import { Deliveries } from './pages/Deliveries';
+import { Fiscal } from './pages/Fiscal/Fiscal';
 
 
 function App() {
@@ -60,14 +61,14 @@ function App() {
       }, MuiToggleButton: {
         styleOverrides: { root: { color: Theme.DarkMode ? "#706e6e" : '' } }
       },
-      MuiTableCell :{
+      MuiTableCell: {
         styleOverrides: { root: { color: Theme.DarkMode ? "#e8e7e7" : '#000' } }
       },
-      MuiTable :{
-        styleOverrides: { root: { backgroundColor : Theme.DarkMode ? "var(--backgroundDarkMode2)" : '#fff' } }
+      MuiTable: {
+        styleOverrides: { root: { backgroundColor: Theme.DarkMode ? "var(--backgroundDarkMode2)" : '#fff' } }
       },
-      MuiTablePagination :{
-        styleOverrides: { root: { backgroundColor : Theme.DarkMode ? "var(--backgroundDarkMode2)" : '#fff' , color: Theme.DarkMode ? "#fff" : '#000' } }
+      MuiTablePagination: {
+        styleOverrides: { root: { backgroundColor: Theme.DarkMode ? "var(--backgroundDarkMode2)" : '#fff', color: Theme.DarkMode ? "#fff" : '#000' } }
       },
       MuiOutlinedInput: {
         styleOverrides: {
@@ -96,11 +97,12 @@ function App() {
             <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
             <Route path="/sell" element={<RequireAuth><Sell /></RequireAuth>} />
             <Route path="/salescontrol" element={<RequireAuth><SalesControl /></RequireAuth>} />
-            <Route path="/deliveries" element={<RequireAuth><Deliveries/></RequireAuth>} />
+            <Route path="/deliveries" element={<RequireAuth><Deliveries /></RequireAuth>} />
             <Route path="/transactions" element={<RequireAuth><Transactions /></RequireAuth>} />
             <Route path="/inventorymanagement" element={<RequireAuth><InventoryManagement /></RequireAuth>} />
             <Route path="/peopleregistration" element={<RequireAuth>{PeopleMode === 'Clients' ? <ClientsRegistration PeopleMode={PeopleMode} setPeopleMode={setPeopleMode} /> : <SellersRegistration PeopleMode={PeopleMode} setPeopleMode={setPeopleMode} />}</RequireAuth>} />
             <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
+            <Route path="/fiscal" element={<RequireAuth><Fiscal /></RequireAuth>} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

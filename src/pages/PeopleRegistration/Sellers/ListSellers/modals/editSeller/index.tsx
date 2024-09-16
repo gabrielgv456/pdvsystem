@@ -23,8 +23,8 @@ import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../.
 interface ListSellerstoEditSellerProps {
     seller: SellersReturnApiProps;
     isModalEditSellerOpen: boolean;
-    setisModalEditSellerOpen: (value: boolean) => void;
-    setisModalSucessOpen: (value: boolean) => void;
+    handleCloseModalEditSeller: () => void;
+    searchSellers: () => void;
 }
 
 
@@ -57,10 +57,6 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
     const [valueInputSellerActive, setvalueInputSellerActive] = useState(props.seller.active)
     const optionsUF = ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
     const { MessageBox } = useMessageBoxContext()
-
-    function handleCloseModalEditSeller() {
-        props.setisModalEditSellerOpen(false)
-    }
 
     async function handleConsultCep(cep: string) {
         const cepformated = removeNotNumerics(cep)
@@ -120,8 +116,9 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
             if (!(validateCPForCNPJ(valueInputSellerCpfCnpj))) { throw new Error('Cpf inválido') }
             const data = await editSeller(finaldataEditSellerToSendApi)
             if (data.Success) {
-                props.setisModalEditSellerOpen(false)
-                props.setisModalSucessOpen(true)
+                props.handleCloseModalEditSeller()
+                MessageBox('success', 'Vendedor editado com sucesso!')
+                props.searchSellers()
             }
             else {
                 MessageBox('error', data.erro)
@@ -135,7 +132,7 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
 
     return (
 
-        <Modal open={props.isModalEditSellerOpen} onClose={handleCloseModalEditSeller}>
+        <Modal open={props.isModalEditSellerOpen} onClose={props.handleCloseModalEditSeller}>
             <MuiBox desktopWidth={500} mobileWidthPercent='80%' >
                 <S.DivModal>
                     <label style={{ display: 'flex', justifyContent: 'space-between', width: '95%' }}>
@@ -364,7 +361,7 @@ export const ModalEditSeller = (props: ListSellerstoEditSellerProps) => {
                     <AiOutlineEdit size="22" />
                     <b>FINALIZAR EDIÇÃO</b>
                 </S.ButtonModal>
-                <DefaultButtonCloseModal onClick={handleCloseModalEditSeller}>
+                <DefaultButtonCloseModal onClick={props.handleCloseModalEditSeller}>
                     <DefaultIconCloseModal />
                 </DefaultButtonCloseModal>
             </MuiBox>

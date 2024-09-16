@@ -5,35 +5,60 @@ import * as S from "./style"
 import { AiOutlineClose } from 'react-icons/ai';
 import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvider';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { MuiBox } from '../../../../../../components/box/muiBox';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../../components/buttons/closeButtonModal';
+import { useApi } from 'src/hooks/useApi';
+import { useMessageBoxContext } from 'src/contexts/MessageBox/MessageBoxContext';
+import { BsCheckCircle } from 'react-icons/bs';
 
 interface indextoModalDeleteClient {
-    setisModalDeleteClientOpen: (value: boolean) => void;
+    handleCloseModalDeleteClient: () => void;
     isModalDeleteClientOpen: boolean;
-    handleDeleteClientApi: () => void;
+    clientId: number
+    searchClients: () => void;
 }
 
 export const ModalDeleteClient = (props: indextoModalDeleteClient) => {
 
-    const Theme = useDarkMode()
-    //const auth = useContext(AuthContext)
+    const { MessageBox } = useMessageBoxContext()
+    const { deleteClient } = useApi()
+    const auth = useContext(AuthContext)
+    const [isSuccess, setIsSuccess] = useState(false)
 
-    function handleCloseModalDeleteClient() {
-        props.setisModalDeleteClientOpen(false)
+
+    const handleDeleteClientApi = async (clientId: number) => {
+        const data = await deleteClient({ clientId, storeId: auth.idUser })
+        if (data.Success) {
+            setIsSuccess(true)
+            props.searchClients()
+        }
+        else {
+            MessageBox('error', data.erro)
+        }
     }
+
     return (
-        <Modal open={props.isModalDeleteClientOpen} onClose={handleCloseModalDeleteClient}>
+        <Modal open={props.isModalDeleteClientOpen} onClose={props.handleCloseModalDeleteClient}>
             <MuiBox desktopWidth={500} mobileWidthPercent='80%'>
                 <S.DivDeleteClientModal>
-                    <h3 style={{ alignSelf: 'center' }}>Deseja realmente excluir o cliente?</h3>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '40%' }}>
-                        <S.ButtonYesDeleteClientModal onClick={props.handleDeleteClientApi}><b>SIM</b></S.ButtonYesDeleteClientModal>
-                        <S.ButtonNoDeleteClientModal onClick={handleCloseModalDeleteClient}><b>NÃO</b></S.ButtonNoDeleteClientModal>
-                    </div>
+                    {isSuccess ?
+
+                        <>
+                            <h3 style={{ alignSelf: 'center' }}>Procedimento realizado com sucesso!</h3>
+                            <BsCheckCircle color="var(--Green)" size="50" className="IconSucess" />
+                        </>
+                        :
+                        <>
+                            <h3 style={{ alignSelf: 'center' }}>Deseja realmente excluir o cliente?</h3>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '40%' }}>
+                                <S.ButtonYesDeleteClientModal onClick={() => handleDeleteClientApi(props.clientId)}><b>SIM</b></S.ButtonYesDeleteClientModal>
+                                <S.ButtonNoDeleteClientModal onClick={props.handleCloseModalDeleteClient}><b>NÃO</b></S.ButtonNoDeleteClientModal>
+                            </div>
+                        </>
+                    }
                 </S.DivDeleteClientModal>
-                <DefaultButtonCloseModal onClick={handleCloseModalDeleteClient}>
+                <DefaultButtonCloseModal onClick={props.handleCloseModalDeleteClient}>
                     <DefaultIconCloseModal />
                 </DefaultButtonCloseModal>
             </MuiBox>

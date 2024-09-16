@@ -323,7 +323,7 @@ export function CustomizedSnackbars() {
 export const CustomizedScrollBar = () => {
 
   const { DarkMode } = useDarkMode()
-  
+
   return (css`
   overflow-y: auto;
 
@@ -352,3 +352,13 @@ export const CustomizedScrollBar = () => {
 `)
 }
 
+export function limitLength(length: number, str: string) {
+  if (str.length > length)
+    return str.substring(0, length) + '...'
+  else
+    return str
+} 
+
+export function normalizeAndLowercase(str: string): string {
+  return str.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+}

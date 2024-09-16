@@ -25,6 +25,7 @@ export const Content = styled.div<DarkModeProps> `
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode)' : 'var(--background);')};
     border-radius: 10px;
     padding: 20px;
+        overflow: auto;
 `
 export const Header = styled.div`
     display: flex;
@@ -43,6 +44,18 @@ export const LabelSearchProduct = styled.label `
         width: 50%;
     }
 `
+
+export const InputSearch = styled.input<DarkModeProps>`
+    border: none;
+    background: none;
+    border-radius: 7px;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    font-size: 1rem;
+    color: ${props => props.isDarkMode ? '#fff' : '#000'};
+`
+
 export const ButtonAddProduct = styled.button <DarkModeProps> `
     flex-wrap: wrap;
     display: flex;
@@ -96,42 +109,29 @@ export const ButtonCloseModal = styled.button <DarkModeProps>`
         color: ${darken(0.02, 'gray')}
     }
 `
-export const DivListProducts = styled.div `
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+export const TableListProducts = styled.table `
+    border-collapse: collapse;
     width:100%;
-    @media screen and (max-width: 550px) {
-        width: 100%;
-    }
 `
-export const DivTitleListProducts = styled.div <DarkModeProps>`
-    //min-width: min-content;
+export const THeadListProducts = styled.thead <DarkModeProps>`
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};
     //border: ${props => (props.isDarkMode ? '1px solid gray' : '1px solid silver')}; 
     border-radius: 10px;
     color: #67636d;
-    padding:10px;
     width:100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; 
     font-size: 0.85rem;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 2px 0px;
     @media screen and (max-width:930px) {
         padding: 5px;
          font-size: 0.7rem;
     }
-    box-sizing: border-box;
 `
-export const DivFooterListProducts = styled.div <DarkModeProps>`
+export const TFootListProducts = styled.tfoot <DarkModeProps>`
     background-color:${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f4f6f8')};
     width: 100%;
-    padding:20px;
+    height:70px;
     border-radius: 0px 0px 20px 20px;
-    display:flex;
-    justify-content: space-between;
-
+    font-size: 0.7rem;
 `
 export const DivRightFooterProducts = styled.div `
  gap:5px;
@@ -147,54 +147,22 @@ export const DivRightFooterProducts = styled.div `
 }
 `
 
-
-export const DivAlterPage = styled.div `
-    min-width: max-content;
-    width: 10%;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+export const DivAlterPage = styled.span `
+   
 `
-export const labelCriadoEm = styled.label `
-    width:20%; 
-    display:flex;
+export const ThCriadoEm = styled.th `
     @media screen and (max-width:930px) {
         display: none ;
     }
 `
-export const labelProduct = styled.label `
-width:30%;
-//display:flex;
-@media screen and (max-width:930px){
-        width: 15%;
+export const Th = styled.th `
+    padding: 10px;
+    @media screen and (max-width:930px) {
+       max-width: 7ch;
+       overflow: hidden;
+       text-overflow: ellipsis;
+       white-space: nowrap;
     }
-`
-export const labelStatus = styled.label `
-width:15%;
-display:flex;
-@media screen and (max-width:930px) {
-    width:15%;
-    }
-`
-export const labelQuantity = styled.label `
-width:15%; 
-display:flex;
-justify-content:center;
-@media screen and (max-width:930px){
-        width: 5%;
-    }
-`
-export const labelValue = styled.label `
-width:10%; 
-display:flex;
-`
-export const labelEdit = styled.label `
-width:25px; 
-//display:flex;
-`
-export const labelTrash = styled.label `
-width:20px;
-//display:flex
 `
 
 export const DivModalSucess = styled.div ` 

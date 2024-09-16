@@ -4,7 +4,6 @@ import { AuthContext } from "../../contexts/Auth/AuthContext";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
@@ -16,11 +15,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import PaidIcon from '@mui/icons-material/Paid';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import SettingsIcon from '@mui/icons-material/Settings';
-import LocalShippingRoundedIcon from '@mui/icons-material/LocalShippingRounded';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import { DrawerStyle } from '../Layout/stylemui';
@@ -32,6 +29,7 @@ import logo from '../../images/logo.png'
 import { descriptionPages, typeActualPage, useLayout } from '../../contexts/Layout/layoutContext';
 import { BiMoon, BiSun } from 'react-icons/bi';
 import { FaTruck } from 'react-icons/fa';
+import { IoDocumentText } from 'react-icons/io5';
 
 interface Props {
   /**
@@ -85,57 +83,60 @@ export default function LayoutDefault(props: Props) {
       </Toolbar>
       {/* <Divider sx={{ borderColor: Theme.DarkMode ? 'var(--AppBar)' : '' }} /> */}
       <List sx={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {descriptionPages.map((text, index) => (
+        {descriptionPages.filter(item => item === 'Fiscal' ? (auth.user?.plans?.fiscalAccess ?? false) : true).map((text, index) => (
           <ListItem button key={text}
             onClick={() =>
-              index === 0 ? openPage('/home', text) :
-                index === 1 ? openPage('/sell', text) :
-                  index === 2 ? openPage('/salesControl', text) :
-                    index === 3 ? openPage('/deliveries', text) :
-                      index === 4 ? openPage('/transactions', text) :
-                        index === 5 ? openPage('/peopleRegistration', text) :
-                          index === 6 ? openPage('/inventoryManagement', text) :
-                            index === 7 ? openPage('/settings', text) : handleVoid
+              text === 'Página Inicial' ? openPage('/home', text) :
+                text === 'Realizar Vendas' ? openPage('/sell', text) :
+                  text === 'Controle de Vendas' ? openPage('/salesControl', text) :
+                    text === 'Entregas' ? openPage('/deliveries', text) :
+                      text === 'Balanço Financeiro' ? openPage('/transactions', text) :
+                        text === 'Pessoas' ? openPage('/peopleRegistration', text) :
+                          text === 'Gestão de Estoque' ? openPage('/inventoryManagement', text) :
+                            text === 'Ajustes' ? openPage('/settings', text) :
+                              text === 'Fiscal' ? openPage('/fiscal', text) : handleVoid
             } className={actualPage === text ? 'SelectedItem' : 'ListItem'} >
             <ListItemIcon className="ListIcon" sx={{ color: "inherit", minWidth: 0, paddingRight: 2 }}>
-              {index === 0 && <HomeIcon color="inherit" className="Icons" />}
-              {index === 1 && <StorefrontIcon className="Icons" />}
-              {index === 2 && <ReceiptLongIcon className="Icons" />}
-              {index === 3 && <FaTruck style={{ fontSize: '22px' }} className="Icons" />}
-              {index === 4 && <PaidIcon className="Icons" />}
-              {index === 5 && <BsFillPeopleFill size="22" className="Icons" />}
-              {index === 6 && <PieChartIcon className="Icons" />}
-              {index === 7 && <SettingsIcon style={{ fontSize: '23px' }} className="Icons" />}
+              {text === 'Página Inicial' && <HomeIcon color="inherit" className="Icons" />}
+              {text === 'Realizar Vendas' && <StorefrontIcon className="Icons" />}
+              {text === 'Controle de Vendas' && <ReceiptLongIcon className="Icons" />}
+              {text === 'Entregas' && <FaTruck style={{ fontSize: '22px' }} className="Icons" />}
+              {text === 'Balanço Financeiro' && <PaidIcon className="Icons" />}
+              {text === 'Pessoas' && <BsFillPeopleFill size="22" className="Icons" />}
+              {text === 'Gestão de Estoque' && <PieChartIcon className="Icons" />}
+              {text === 'Ajustes' && <SettingsIcon style={{ fontSize: '23px' }} className="Icons" />}
+              {text === 'Fiscal' && <IoDocumentText size="22" className="Icons" />}
             </ListItemIcon>
             <span style={{ fontSize: 12 }}>{text}</span>
           </ListItem>
         ))}
       </List>
 
-      {drawerWidth === 260 ?
-        <S.ButtonRetract
-          onClick={() => setdrawerWidth(0)}
-          style={{
-            position: 'fixed',
-            left: '259px',
-            top: '50%',
-          }}
-          isDarkMode={Theme.DarkMode}
-        >
-          <IoMdArrowRoundBack size="14" color="var(--AppBar)" />
-        </S.ButtonRetract>
-        :
-        <S.ButtonRetract
-          onClick={() => setdrawerWidth(260)}
-          style={{
-            position: 'fixed',
-            left: '0',
-            top: '50%',
-          }}
-          isDarkMode={Theme.DarkMode}
-        >
-          <IoMdArrowRoundForward color="var(--AppBar)" size="14" />
-        </S.ButtonRetract>
+      {
+        drawerWidth === 260 ?
+          <S.ButtonRetract
+            onClick={() => setdrawerWidth(0)}
+            style={{
+              position: 'fixed',
+              left: '259px',
+              top: '50%',
+            }}
+            isDarkMode={Theme.DarkMode}
+          >
+            <IoMdArrowRoundBack size="14" color="var(--AppBar)" />
+          </S.ButtonRetract>
+          :
+          <S.ButtonRetract
+            onClick={() => setdrawerWidth(260)}
+            style={{
+              position: 'fixed',
+              left: '0',
+              top: '50%',
+            }}
+            isDarkMode={Theme.DarkMode}
+          >
+            <IoMdArrowRoundForward color="var(--AppBar)" size="14" />
+          </S.ButtonRetract>
       }
       <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -157,7 +158,7 @@ export default function LayoutDefault(props: Props) {
         <BiMoon color="#727272" />
       </S.DivSwitch>
 
-    </S.Div>
+    </S.Div >
   );
 
 

@@ -10,32 +10,22 @@ interface ActiveProps {
 }
 
 
-export const Container = styled.div <ActiveProps>`
+export const TrContainer = styled.tr <ActiveProps>`
     text-decoration:${props => (props.isProductActive? '' : 'line-through' )} ;
     opacity: ${props => (props.isProductActive? '' : '0.6' )};
-    //min-width: min-content;
-    padding:20px;
+    height: 60px;
     width:100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; 
     font-size: 0.85rem;
     box-shadow: rgba(58, 53, 65, 0.1) 0px 1px 0px 0px;
     &:hover{
         background-color: ${props => (props.isDarkMode ? 'var(--backgroundDarkMode2)' : '#f7f7f8')};
     }
    @media screen and (max-width:930px) {
-        padding: 5px;
         font-size: 0.7rem;
     }
-    box-sizing: border-box;
 `
 
-export const LabelDate = styled.label `
-    color:#5fcd0e;
-    //display: flex;
-    justify-content: center;
-    width: 20%;
+export const TdDate = styled.td `
     color:#485059;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -44,80 +34,76 @@ export const LabelDate = styled.label `
         display: none;
     }
 `
-export const LabelStatus = styled.label <DarkModeProps>`
+export const SpanStatus = styled.span <DarkModeProps>`
     border-radius: 10px;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    width:15%;
+    padding: 11px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     @media screen and (max-width:930px) {
-        width:15%;
         font-size: 0.5rem;
+        padding: 0.5rem;
     }
 `
-export const LabelValue = styled.label <DarkModeProps> `
+export const TdValue = styled.td <DarkModeProps> `
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    //display: flex;
-    justify-content: center;
-    width:10%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     //min-width: max-content;
 `
-export const LabelNameProduct = styled.label <DarkModeProps>`
+
+export const imgProduct = styled.img`
+   width: 35px;
+   height: 'auto';
+   padding-right: 5;
+   @media screen and (max-width:930px){
+      width:18px;
+   }
+`
+
+export const TdNameProduct = styled.td <DarkModeProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width:30%;
+    max-width:40ch;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
     @media screen and (max-width:930px){
-        width: 15%;
+        max-width:20ch;
     }
     
 `
-export const LabelQuantity = styled.label <DarkModeProps>`
-    display: flex;
-    justify-content: center;
-    min-width: min-content;
+export const TdQuantity = styled.td <DarkModeProps>`
+    text-align: center;
     color: ${props => (props.isDarkMode ? '#485059' : '#3c454e')};
-    width:15%;
-    @media screen and (max-width:930px){
-        width: 5%;
-    }
 `
 
-export const ButtonEdit= styled.button `
+export const TdEdit= styled.td `
     text-decoration: none;
     background: none;
     border:none;
     color:gold;
+
 `
-export const ButtonInfo = styled.button `
+export const TdInfo = styled.td `
     text-decoration: none;
     color:var(--Blue);
     background: none;
     border:none;
-    display: flex;
-    justify-content: center;
+    text-align: center;
     //min-width: min-content;
     
     //max-width: 5%;
 `
 
-export const ButtonTrash = styled.button `
+export const TdTrash = styled.td `
     text-decoration: none;
     color:red;
     background: none;
     border:none;
-    //display: flex;
-    justify-content: center;
     min-width: min-content;
     width:min-content;
-     max-width: 2%;
+    text-align: center;
 `
 
 export const DivModalProduct = styled.div `

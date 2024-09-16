@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 const storageData = localStorage.getItem('authToken');
                 if (storageData) {
                     const data = await api.validateToken(storageData);
-                    if (data.error) throw new Error(data.error)
+                    if (!data.valid) throw new Error(data.error ?? 'Erro Desconhecido')
                     setUserValid(data.valid);
                     if (data.user) {
                         const user: SharedUser = data.user
@@ -43,9 +43,9 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         validateToken();
     }, []);
 
-    const signin = async (email: string, password: string) => {
+    const signin = async (email: string, password: string): Promise<'invalidMail' | 'true' | 'false'> => {
         const data = await api.signin(email, password);
-        if (data.user && data.token) {
+        if (data.Success && data.user && data.token) {
             setCodEmailValidate(data.user.codEmailValidate)
             setidUser(data.user.id)
             if (!data.user.isEmailValid) {

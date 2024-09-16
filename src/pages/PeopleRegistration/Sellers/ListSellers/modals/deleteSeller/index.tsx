@@ -1,8 +1,6 @@
 import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 import * as S from "./style"
 import { useDarkMode } from '../../../../../../contexts/DarkMode/DarkModeProvider';
-import { AiOutlineClose } from 'react-icons/ai';
 import { useApi } from '../../../../../../hooks/useApi';
 import { useContext } from 'react';
 import { AuthContext } from '../../../../../../contexts/Auth/AuthContext';
@@ -12,26 +10,26 @@ import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../../.
 
 interface indextoDeleteSellerModal {
     isModalDeleteSellerOpen: boolean;
-    setisModalDeleteSellerOpen: (value: boolean) => void;
-    setisModalSucessOpen: (value: boolean) => void;
+    handleCloseModalDeleteSeller: () => void;
     idSeller: Number;
+    searchSellers: () => void;
 }
 
 export const ModalDeleteSeller = (props: indextoDeleteSellerModal) => {
 
-    const Theme = useDarkMode()
     const { deleteSeller } = useApi()
     const auth = useContext(AuthContext)
     const { MessageBox } = useMessageBoxContext()
     function handleCloseModalDeleteSeller() {
-        props.setisModalDeleteSellerOpen(false)
+        props.handleCloseModalDeleteSeller()
     }
 
     const handleDeleteSellerApi = async () => {
         const data = await deleteSeller({ sellerId: props.idSeller, userId: auth.idUser })
         if (data.Success) {
-            props.setisModalDeleteSellerOpen(false)
-            props.setisModalSucessOpen(true)
+            props.handleCloseModalDeleteSeller()
+            MessageBox('success', 'Vendedor excluso com sucesso!')
+            props.searchSellers()
         }
         else {
             MessageBox('error', data.erro)

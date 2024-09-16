@@ -20,10 +20,8 @@ import { MethodsType, ProductsType, ProductsTypeOptions } from '../..';
 import Radio from '@mui/material/Radio';
 import { DeliveryAddressClient } from './Components/AddressClient';
 import { ModalAddEditClient } from '../../../PeopleRegistration/Clients/Modals/addEditClient/addEditClient';
-import { ModalSuccessClient } from '../../../PeopleRegistration/Clients/Modals/Success/modalSuccess';
 import { ModalAddSeller } from '../../../PeopleRegistration/Sellers/Modals/addSeller';
 import { MuiBox } from '../../../../components/box/muiBox';
-import { IoMdCloseCircle } from 'react-icons/io';
 import { DefaultButtonCloseModal, DefaultIconCloseModal } from '../../../../components/buttons/closeButtonModal';
 import { DefaultButton } from '../../../../components/buttons/defaultButton';
 import { RiFileList3Line } from 'react-icons/ri';
@@ -31,6 +29,7 @@ import { GeneratePDFBudget } from '../../../../components/pdfGenerator/GenerateP
 import { Address, CityStateType } from '../../../PeopleRegistration/Clients/Modals/addEditClient/interfaces';
 import { ClientType_FindClients } from '../../../../interfaces/useApi/findClientsType';
 import { CircularProgressSpinner } from 'src/spinners/progress/CircularProgressSpinner';
+
 
 interface handleChangeProps {
     UserId: number;
@@ -203,7 +202,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                 URL.revokeObjectURL(pdfNF);
             }
         };
-    }, [pdfNF]);
+    }, []);
 
     const handleAddMethod = async (valuetype: typesPayment) => {
         const alreadyexistMethod = verifyifexistsMethod(valuetype)
@@ -375,6 +374,29 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
         }
     }
 
+    const handlePrint = (file: string) => {
+
+        const newWindow = window.open(file);
+        if (newWindow) {
+            newWindow.onload = () => {
+                newWindow.print();
+            };
+
+        };
+    }
+
+    const sendToWhatsApp = ({ text, base64 }: { text: string, base64: string }) => {
+        const message = ` ${text}: ${base64}`;
+        const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(base64)}`;
+        window.open(whatsappUrl, '_blank');
+    };
+
+    const sendByEmail = ({ subject, bodyText, base64 }: { subject: string, base64: string, bodyText: string }) => {
+        const body = `${bodyText}: ${base64}`;
+        const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(mailtoUrl, '_blank');
+    };
+
     return (
         <>
             <Modal open={props.isModalConfirmSellOpen} onClose={handleCloseModalConfirmSell} >
@@ -503,7 +525,7 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
                             {props.listMethods.map((item) => (
                                 <PaymentMethods key={item.id} isSellEnded={isSellEnded} item={item} handleRemoveOneMethod={handleRemoveOneMethod} handleEditMethod={handleEditMethod} handleRemoveMethod={handleRemoveMethod} />
                             ))}
-                            {!pdfNF &&
+                            {!pdfNF ?
                                 <S.DivModalButtons>
 
                                     {
@@ -521,6 +543,10 @@ export const ModalCheckOut = (props: ModalCheckOutProps) => {
 
                                             </>
                                     }
+                                </S.DivModalButtons>
+                                :
+                                <S.DivModalButtons>
+                                    <DefaultButton selectedColor='--Blue' fontSize='1.08rem' padding='7px 25px 7px 25px' borderRadius='13px' onClick={() => handlePrint(pdfNF)}><AiFillPrinter size={22} style={{ marginRight: 2 }} /> Imprimir Nota Fiscal</DefaultButton>
                                 </S.DivModalButtons>
                             }
                             <DefaultButtonCloseModal onClick={handleCloseModalConfirmSell}>

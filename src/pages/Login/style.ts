@@ -117,7 +117,7 @@ export const H2 = styled.h2 `
 
 export const Button = styled.button `
     margin-top:15px;
-    background-color: #34cc96;
+    background-color: #7c04ac;
     border-radius: 13px;
     font-size:18px;
     width:100px;
@@ -129,8 +129,14 @@ export const Button = styled.button `
     padding:5px;
     transition: background-color 0.2s;
     &:hover{
-        background-color: ${darken(0.02,'#34cc96')}
+        background-color: ${darken(0.02,'#7c04ac')}
     }
+`
+
+export const imgLogo = styled.img `
+  width: auto;
+  max-height: 75px;
+  padding-bottom: 1rem;
 `
 
 

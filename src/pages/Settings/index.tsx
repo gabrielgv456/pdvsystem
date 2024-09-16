@@ -2,24 +2,17 @@ import { useDarkMode } from '../../contexts/DarkMode/DarkModeProvider'
 import * as S from './style'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useContext, useState } from 'react';
 import { TabMyProfile } from './tabs/MyProfile';
 import { TabFiscalParameters } from './tabs/FiscalParameters';
 import { TabSystem } from './tabs/System';
 import { CgProfile } from 'react-icons/cg';
-import { MdAssignment, MdSettingsInputComponent } from 'react-icons/md';
+import { MdAssignment } from 'react-icons/md';
 import { useMediaQuery } from '@mui/material';
 import { useLayout } from '../../contexts/Layout/layoutContext';
 import { AuthContext } from 'src/contexts/Auth/AuthContext';
-
-
-interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-}
+import { TabPanel } from 'src/components/tabPanel/tabPanel';
 
 export const Settings = () => {
 
@@ -28,25 +21,6 @@ export const Settings = () => {
     const Theme = useDarkMode()
     const user = useContext(AuthContext)
     const isLess900 = useMediaQuery('(max-width:900px)')
-    function TabPanel(props: TabPanelProps) {
-        const { children, value, index, ...other } = props;
-
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
-    }
 
     function a11yProps(index: number) {
         return {

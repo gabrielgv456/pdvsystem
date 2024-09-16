@@ -46,7 +46,7 @@ export const BestSellers = () => {
                 <S.DivContainer isDarkMode={Theme.DarkMode}>Nenhum vendedor encontrado no Ranking</S.DivContainer>
             :
             sellers.map((seller,index) => 
-                <S.DivContainer isDarkMode={Theme.DarkMode}>
+                <S.DivContainer key={index} isDarkMode={Theme.DarkMode}>
                     <div style={{width:'10%'}}>
                         {index === 0 && <img src={gold} width="35" height="45"></img>}
                         {index === 1 && <img src={silver} width="35" height="45"></img>}

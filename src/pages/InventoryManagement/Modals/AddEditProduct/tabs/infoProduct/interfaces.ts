@@ -1,12 +1,13 @@
 import { Dispatch, SetStateAction } from 'react';
-import { addEditProductDataSend } from '../../interfaces';
 import { ProductsReturnApiProps } from '../../../../interfaces';
+import { sharedAddEditProductRequest } from '@shared/api/inventoryManagement/productsRequest';
+import { sharedProdutcsType } from '@shared/api/inventoryManagement/productsResponse';
 
 
 export interface tabInfoProductProps {
-    dataAddEditProduct: addEditProductDataSend
-    setDataAddEditProduct: Dispatch<SetStateAction<addEditProductDataSend>>
-    itemData?: ProductsReturnApiProps;
+    dataAddEditProduct: sharedAddEditProductRequest
+    setDataAddEditProduct: Dispatch<SetStateAction<sharedAddEditProductRequest>>
+    itemData?: sharedProdutcsType;
 }
 
 export interface ncmType {

@@ -3,19 +3,21 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import * as S from "./style"
 import { useDarkMode } from '../../../contexts/DarkMode/DarkModeProvider';
-import { MdAdd, MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import { MdAdd, MdOutlineMail } from 'react-icons/md';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useApi } from '../../../hooks/useApi';
-import { BsSearch } from 'react-icons/bs';
-import { ListClients } from './ListClients/ListClients';
+import { BsSearch, BsTrash } from 'react-icons/bs';
 import { ModalAddEditClient } from "./Modals/addEditClient/addEditClient";
-import { ModalSuccessClient } from "./Modals/Success/modalSuccess";
 import { useMessageBoxContext } from "../../../contexts/MessageBox/MessageBoxContext";
 import { useLayout } from "../../../contexts/Layout/layoutContext";
-import { AddressType } from "./Modals/addEditClient/interfaces";
 import { ClientType_FindClients } from "../../../interfaces/useApi/findClientsType";
 import { CircularProgressSpinner } from "src/spinners/progress/CircularProgressSpinner";
+import { DefaultTable } from "../../../components/table/table";
+import { HiOutlinePencilAlt } from "react-icons/hi";
+import { ModalDeleteClient } from "./ListClients/Modals/deleteClient";
+import { cellNumberFormat, cpfCnpjFormat, limitLength, normalizeAndLowercase } from "src/utils/utils";
+import { RiWhatsappLine } from "react-icons/ri";
 
 
 
@@ -37,17 +39,14 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
     const Theme = useDarkMode();
     const [isLoading, setIsLoading] = useState(true)
     const [ClientsReturnApi, setClientsReturnApi] = useState<ClientsReturnApiProps[]>([])
-    const [ItensPerPageExtract, SetItensPerPageExtract] = useState(10)
-    const [atualPageExtract, SetAtualPageExtract] = useState(0)
     const [isModalAddEditClientOpen, setisModalAddEditClientOpen] = useState(false);
-    const [isModalSucessOpen, setisModalSucessOpen] = useState(false);
     const [inputSearchClient, setinputSearchClient] = useState("")
-    const inputSearchClientLowwer = inputSearchClient.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    const ClientsReturnApiFiltered = ClientsReturnApi.filter((Client) => Client.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(inputSearchClientLowwer))
-    const PagesExtract = Math.ceil(ClientsReturnApiFiltered.length / ItensPerPageExtract)
-    const StartIndexExtract = atualPageExtract * ItensPerPageExtract
-    const EndIndexExtract = StartIndexExtract + ItensPerPageExtract
-    const paginedTransactionsReturnApi = ClientsReturnApiFiltered.slice(StartIndexExtract, EndIndexExtract)
+    const inputSearchClientLowwer = normalizeAndLowercase(inputSearchClient)
+    const ClientsReturnApiFiltered = ClientsReturnApi.filter((Client) => normalizeAndLowercase(Client.name).includes(inputSearchClientLowwer))
+
+    const [isModalEditClientOpen, setisModalEditClientOpen] = useState(false)
+    const [isModalDeleteClientOpen, setisModalDeleteClientOpen] = useState(false)
+    const [selectedClient, setSelectedClient] = useState<ClientsReturnApiProps | null>(null)
 
     useEffect(() => {
         SearchClients()
@@ -59,20 +58,6 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
     }
 
 
-    function handleContinueAddingClients() {
-        setisModalAddEditClientOpen(true)
-        setisModalSucessOpen(false)
-    }
-
-
-
-
-
-
-    const EditItensPerPage = (ItensPerPage: number) => {
-        SetItensPerPageExtract(ItensPerPage)
-        SetAtualPageExtract(0)
-    }
     const SearchClients = async () => {
         try {
             setIsLoading(true)
@@ -95,6 +80,26 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
             props.setPeopleMode(newAlignment);
         }
     };
+
+    function handleEditClient(client: ClientsReturnApiProps) {
+        setSelectedClient(client)
+        setisModalEditClientOpen(true)
+    }
+
+    function handleCloseModalEditClient() {
+        setSelectedClient(null)
+        setisModalEditClientOpen(false)
+    }
+
+    function handleDeleteClient(client: ClientsReturnApiProps) {
+        setSelectedClient(client)
+        setisModalDeleteClientOpen(true)
+    }
+
+    function handleCloseModalDeleteClient() {
+        setSelectedClient(null)
+        setisModalDeleteClientOpen(false)
+    }
 
     return (
         <>
@@ -141,88 +146,67 @@ export const ClientsRegistration = (props: SidebartoPeopleRegistrationProps) => 
 
                     </S.Header>
 
-                    {isLoading ? <CircularProgressSpinner /> :
-                        <S.DivListClients>
+                    {isLoading ? <CircularProgressSpinner /> : (
+                        ClientsReturnApiFiltered &&
+                        <DefaultTable
+                            headers={['', 'Nome / Razão Social', 'CPF/CNPJ', '', 'Celular', '', 'Email', '']}
+                            rows={ClientsReturnApiFiltered.map(item => {
+                                return {
+                                    active: item.active,
+                                    columns: [
+                                        { component: <S.ButtonEdit onClick={() => handleEditClient(item)} title="Editar Cliente"><HiOutlinePencilAlt size="1rem" /></S.ButtonEdit> },
+                                        { component: item.name },
+                                        { component: cpfCnpjFormat(item.cpf) },
+                                        {
+                                            component: item.cellNumber ?
+                                                <a href={`https://wa.me/55${item.cellNumber}`} target="blank" title="Enviar WhatsApp"><RiWhatsappLine color="#47c254" size="1rem" /></a>
+                                                : ''
+                                        },
+                                        { component: cellNumberFormat(item.cellNumber ?? '') },
+                                        {
+                                            component: item.email ?
+                                                <a href={`mailto:${item.email}`} title="Enviar e-mail" ><MdOutlineMail color="#85cdc5" size="1rem" /></a>
+                                                : ''
+                                        },
+                                        { component: <S.DivLengthAjust>{item.email}</S.DivLengthAjust> },
+                                        { component: <S.ButtonTrash onClick={() => handleDeleteClient(item)} title="Excluir Cliente" ><BsTrash size="1rem" /></S.ButtonTrash> }
 
-                            <S.DivTitleListClients isDarkMode={Theme.DarkMode}>
-                                <S.labelEdit >&nbsp;</S.labelEdit>
-                                <S.labelNomeRazao><b>Nome / Razão Social </b></S.labelNomeRazao>
-                                <S.labelCpfCnpj ><b>CPF/CNPJ</b></S.labelCpfCnpj>
-                                <S.labelCelular><b>Celular</b></S.labelCelular>
-                                <S.labelEmail ><b>Email</b></S.labelEmail>
-                                <S.labelExcluir>&nbsp;</S.labelExcluir>
-                            </S.DivTitleListClients>
-
-
-
-                            {paginedTransactionsReturnApi.map((item) => (
-                                <ListClients
-                                    client={item}
-                                    key={item.id}
-                                    searchClient={SearchClients}
-                                    created_at={item.created_at ?? null} />
-                            ))
-                            }
-
-                            {ClientsReturnApi.length === 0 &&
-                                <h5 style={{ color: '#485059', marginTop: '5%' }}>Nenhum resultado encontrado</h5>
-                            }
-
-                            <S.DivFooterListClients isDarkMode={Theme.DarkMode}>
-                                <select value={ItensPerPageExtract}
-                                    onChange={(e) => EditItensPerPage(Number(e.target.value))}
-                                    style={{ border: 'none', width: '40px', background: 'none', color: '#67636d' }}>
-                                    <option value={5}>5</option>
-                                    <option value={10}>10</option>
-                                    <option value={25}>25</option>
-                                    <option value={10000}>*</option>
-                                </select>
-                                <div style={{ fontSize: '0.85rem', color: '#67636d', display: 'flex', width: '20%', justifyContent: 'space-between', minWidth: 'max-content', alignItems: 'center' }}>
-                                    {PagesExtract > 0 ? <label> Página {atualPageExtract + 1} de {PagesExtract}</label> : <label></label>}
-
-                                    <S.DivAlterPage>
-
-                                        {atualPageExtract <= PagesExtract && atualPageExtract > 0 ?
-                                            <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract - 1)}>
-                                                <MdChevronLeft color='#4b535c' size="25" />
-                                            </button>
-                                            :
-                                            <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
-                                                <MdChevronLeft color='#b8c0c9' size="25" />
-                                            </button>
-                                        }
-                                        {atualPageExtract + 1 >= PagesExtract ?
-                                            <button style={{ cursor: 'context-menu', border: 'none', background: 'none', margin: 0 }}>
-                                                <MdChevronRight color='#b8c0c9' size="25" />
-                                            </button>
-                                            :
-                                            <button style={{ border: 'none', background: 'none', margin: 0 }} onClick={(e) => SetAtualPageExtract(atualPageExtract + 1)}>
-                                                <MdChevronRight color='#4b535c' size="25" />
-                                            </button>
-                                        }
-                                    </S.DivAlterPage>
-                                </div>
-
-                            </S.DivFooterListClients>
-                        </S.DivListClients>
+                                    ]
+                                }
+                            })}
+                        />
+                    )
                     }
+
                 </S.Content>
             </S.Container>
 
 
             <ModalAddEditClient
                 setisModalAddEditClientOpen={setisModalAddEditClientOpen}
-                setisModalSucessOpen={setisModalSucessOpen}
                 isModalAddEditClientOpen={isModalAddEditClientOpen}
                 searchClients={SearchClients}
                 type="add"
             />
+            {selectedClient &&
+                <ModalAddEditClient
+                    client={selectedClient}
+                    isModalAddEditClientOpen={isModalEditClientOpen}
+                    setisModalAddEditClientOpen={handleCloseModalEditClient}
+                    searchClients={SearchClients}
+                    type="edit"
+                />
+            }
 
-            <ModalSuccessClient
-                setisModalSucessOpen={setisModalSucessOpen}
-                isModalSucessOpen={isModalSucessOpen}
-                handleContinueAddingClients={handleContinueAddingClients}
-            />
+            {selectedClient &&
+                <ModalDeleteClient
+                    clientId={selectedClient?.id}
+                    handleCloseModalDeleteClient={handleCloseModalDeleteClient}
+                    isModalDeleteClientOpen={isModalDeleteClientOpen}
+                    searchClients={SearchClients}
+                />
+            }
+
 
         </>
     )

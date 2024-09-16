@@ -4,9 +4,11 @@ import { AuthContext } from "../../contexts/Auth/AuthContext";
 import { HiOutlineMail } from 'react-icons/hi'
 import { RiLock2Line } from 'react-icons/ri'
 import * as S from './style'
+import logo from '../../images/logo.png'
 import { ModalValidateEmail, SuccessModalValidateEmail } from "./Modals/validateEmail";
 import { useMessageBoxContext } from "../../contexts/MessageBox/MessageBoxContext";
 import { useApi } from "../../hooks/useApi";
+import { DefaultButton } from "src/components/buttons/defaultButton";
 
 export type TypeValidateMail = 'newPass' | 'newUser' |'changePass'| null
 
@@ -127,7 +129,8 @@ export const Login = () => {
         <div>
             <S.Container>
                 <S.BoxLogin>
-                    <S.H2>Safyra®</S.H2>
+                    <S.imgLogo src={logo} style={{ width: 'auto', maxHeight: 75 }}/>
+               
                     <S.Div>
                         <HiOutlineMail size={20} className="icon_login" />
                         <S.InputMail

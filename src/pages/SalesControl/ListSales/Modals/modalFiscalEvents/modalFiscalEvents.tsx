@@ -22,9 +22,9 @@ export const ModalFiscalEvents = (props: ModalCancelNoteProps) => {
     const [isLoading, setIsLoading] = useState(true)
     const { MessageBox } = useMessageBoxContext()
     const [fiscalEvents, setFiscalEvents] = useState<sharedGetFiscalEvents['fiscalEvents'] | null>(null)
+    const [paginatedFiscalEvents, setPaginatedFiscalEvents] = useState(fiscalEvents)
 
-
-
+    useEffect(() => { setPaginatedFiscalEvents(fiscalEvents) }, [fiscalEvents])
 
     useEffect(() => {
         async function searchEvents() {
@@ -57,7 +57,7 @@ export const ModalFiscalEvents = (props: ModalCancelNoteProps) => {
                                 </tr>
                             </thead>
                             <tbody >
-                                {fiscalEvents?.map((event, index) =>
+                                {paginatedFiscalEvents?.map((event, index) =>
                                 (
                                     <tr key={index}>
                                         <S.Td>{event.fiscalNote.numberNF}</S.Td>
@@ -69,8 +69,8 @@ export const ModalFiscalEvents = (props: ModalCancelNoteProps) => {
                                 )}
                             </tbody>
                         </table>
-                        {fiscalEvents &&
-                            <PaginatedFooter data={fiscalEvents} setData={setFiscalEvents} />
+                        {(fiscalEvents && paginatedFiscalEvents) &&
+                            < PaginatedFooter data={fiscalEvents} setPaginatedData={setPaginatedFiscalEvents} />
                         }
                     </S.Container>
                 }

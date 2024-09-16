@@ -16,8 +16,8 @@ export const SaveProduct = (props: type.SaveProductProps) => {
     const AddProductApi = async () => {
         try {
             validateFields()
-            delete props.dataToSend.principal.id
-            const data = await addProducts(props.dataToSend)
+            const req = { ...props.dataToSend, principal: { ...props.dataToSend.principal, id: null } }
+            const data = await addProducts(req)
             if (!data.Success) {
                 throw new Error('Falha ao adicionar produto! ' + data.erro)
             }
@@ -71,7 +71,7 @@ export const SaveProduct = (props: type.SaveProductProps) => {
                         Editar Produto
                     </DefaultButton>
                 }
-            </div> 
+            </div>
 
         </>
     )

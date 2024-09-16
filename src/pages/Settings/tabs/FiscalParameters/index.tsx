@@ -46,7 +46,9 @@ export const TabFiscalParameters = () => {
         fileCert: null,
         fileCertId: null,
         urlFileCert: null,
-        codCSC: null
+        codCSC: null,
+        positionYEmitDataNFe: null,
+        positionYLogoNFe: null
     })
 
     async function loadFiscalParameters() {
@@ -132,7 +134,6 @@ export const TabFiscalParameters = () => {
                         type='password'
                         variant="outlined"
                         sx={{}}
-                        disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
                     />
                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ptBR}>
                         <DatePicker
@@ -159,7 +160,6 @@ export const TabFiscalParameters = () => {
                         InputLabelProps={{ shrink: !!fiscalParameters?.lastNumberNF }}
                         variant="outlined"
                         sx={{}}
-                        disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
                     />
                     <TextField
                         value={fiscalParameters?.lastNumberNFCE}
@@ -171,7 +171,6 @@ export const TabFiscalParameters = () => {
                         label="Ultimo nº NFCe Emitida"
                         variant="outlined"
                         sx={{}}
-                        disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
                     />
                     <TextField
                         value={fiscalParameters?.codCSC}
@@ -184,8 +183,35 @@ export const TabFiscalParameters = () => {
                         label="Código CSC"
                         variant="outlined"
                         sx={{}}
-                        disabled={fiscalParameters.taxCstCofinsId ? idsZeroAliquot.includes(fiscalParameters.taxCstCofinsId) : false}
                     />
+                    <TextField
+                        value={fiscalParameters?.positionYEmitDataNFe}
+                        onChange={(e) => {
+                            setFiscalParameters({ ...fiscalParameters, positionYEmitDataNFe: Number(e.target.value) })
+                        }}
+                        type='number'
+                        id="outlined-basic"
+                        InputLabelProps={{ shrink: !!fiscalParameters?.positionYEmitDataNFe }}
+                        title='Informe um número positivo ou negativo para posição vertical(Y) dos dados do emitente na NFE'
+                        label="Posição Dados Emit. NFe"
+                        variant="outlined"
+                        sx={{}}
+                    />
+
+                    <TextField
+                        value={fiscalParameters?.positionYLogoNFe}
+                        onChange={(e) => {
+                            setFiscalParameters({ ...fiscalParameters, positionYLogoNFe: Number(e.target.value) })
+                        }}
+                        type='number'
+                        id="outlined-basic"
+                        InputLabelProps={{ shrink: !!fiscalParameters?.positionYLogoNFe }}
+                        title='Informe um número positivo ou negativo para posição vertical(Y) da logo na NFE'
+                        label="Posição Logo NFe"
+                        variant="outlined"
+                        sx={{}}
+                    />
+
                 </S.DivParams>
                 <b>Tributação</b>
                 <S.DivItem>

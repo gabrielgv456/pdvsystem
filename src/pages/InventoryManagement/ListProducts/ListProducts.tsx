@@ -101,49 +101,52 @@ export const ListProducts = (props: type.ListProductsProps) => {
 
     return (
         <>
-            <S.Container isDarkMode={Theme.DarkMode} isProductActive={props.item.active}>
+            <S.TrContainer isDarkMode={Theme.DarkMode} isProductActive={props.item.active} >
 
-                <S.ButtonEdit onClick={() => {
+                <S.TdEdit ><HiOutlinePencilAlt onClick={() => {
                     props.setActualItemEdit(props.item)
                     props.setisModalAddEditProductOpen(true)
-                }} title="Editar Produto"><HiOutlinePencilAlt size="20" /></S.ButtonEdit>
-           
-                    <img src={props.item.urlImage ?? ''} style={{ width: 35, height: 'auto', paddingRight: 5 }} />
-                
-                <S.LabelNameProduct isDarkMode={Theme.DarkMode}>
+                }} title="Editar Produto" size="20" style={{ cursor: 'pointer' }} /></S.TdEdit>
+
+                <td>  <S.imgProduct src={props.item.urlImage ?? ''} /></td>
+
+                <S.TdNameProduct isDarkMode={Theme.DarkMode}>
                     <b>{props.item.name}</b>
-                </S.LabelNameProduct>
+                </S.TdNameProduct>
 
-                {(props.item.quantity ?? 0) > 0 ?
-                    <S.LabelStatus style={Theme.DarkMode ? { color: '#4daf42' } : { backgroundColor: '#eaf9e0', color: '#4daf42' }} isDarkMode={Theme.DarkMode}>
-                        <b>Em estoque</b>
-                    </S.LabelStatus>
-                    :
-                    <S.LabelStatus style={Theme.DarkMode ? { color: '#b82338' } : { backgroundColor: '#ffe2e1', color: '#b82338' }} isDarkMode={Theme.DarkMode}>
-                        <b>Sem estoque</b>
-                    </S.LabelStatus>
-                }
+                <td style={{ textAlign: 'center' }}>
+                    {(props.item.quantity ?? 0) > 0 ?
+                        <S.SpanStatus style={Theme.DarkMode ? { color: '#4daf42' } : { backgroundColor: '#eaf9e0', color: '#4daf42' }} isDarkMode={Theme.DarkMode}>
+                            <b>Em estoque</b>
+                        </S.SpanStatus>
+                        :
+                        <S.SpanStatus style={Theme.DarkMode ? { color: '#b82338' } : { backgroundColor: '#ffe2e1', color: '#b82338' }} isDarkMode={Theme.DarkMode}>
+                            <b>Sem estoque</b>
+                        </S.SpanStatus>
+                    }
 
-                <S.LabelQuantity isDarkMode={Theme.DarkMode}>
+                </td>
+
+                <S.TdQuantity isDarkMode={Theme.DarkMode}>
                     <b>{props.item.quantity}</b>
-                </S.LabelQuantity>
+                </S.TdQuantity>
 
-                <S.LabelQuantity isDarkMode={Theme.DarkMode}>
+                <S.TdQuantity isDarkMode={Theme.DarkMode}>
                     <b>{props.reservedQuantity > 0 ? props.reservedQuantity : ''}</b>
-                </S.LabelQuantity>
+                </S.TdQuantity>
 
-                <S.LabelValue isDarkMode={Theme.DarkMode}>
+                <S.TdValue isDarkMode={Theme.DarkMode}>
                     <b>{formatedItemValue}</b>
-                </S.LabelValue>
+                </S.TdValue>
 
-                <S.LabelDate >
+                <S.TdDate >
                     <b>{gethoursTransactions}</b>
-                </S.LabelDate>
+                </S.TdDate>
 
-                <S.ButtonInfo onClick={handleOpenModalTransactionsProducts} title="Movimentações"><BiTransfer size="16" /></S.ButtonInfo>
-                <S.ButtonTrash onClick={() => setisModalDeleteProductOpen(true)} title="Excluir Produto" ><BsTrash size="16" /></S.ButtonTrash>
+                <S.TdInfo ><BiTransfer onClick={handleOpenModalTransactionsProducts} title="Movimentações" style={{ width: '1rem', cursor: 'pointer' }} /></S.TdInfo>
+                <S.TdTrash  ><BsTrash onClick={() => setisModalDeleteProductOpen(true)} title="Excluir Produto" style={{ width: '1rem', cursor: 'pointer' }} /></S.TdTrash>
 
-            </S.Container>
+            </S.TrContainer>
 
 
 
