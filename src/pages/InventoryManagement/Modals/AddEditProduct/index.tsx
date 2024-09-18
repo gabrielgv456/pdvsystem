@@ -45,7 +45,7 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
             try {
                 const response = await findIcmsOptions()
                 if (!response.Success) { throw new Error(response.erro) }
-                setIcmsOptions(response)
+                settaxOptions(response)
             } catch (error) {
                 MessageBox('error', 'Falha ao buscar opções ICMS!' + ((error as Error).message ?? ''))
             }
@@ -53,7 +53,7 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
         searchOptions()
     }, [])
 
-    const [icmsOptions, setIcmsOptions] = useState<searchOptions | null>(null)
+    const [taxOptions, settaxOptions] = useState<searchOptions | null>(null)
     const auth = useContext(AuthContext)
     const { findIcmsOptions } = useApi()
     const { MessageBox } = useMessageBoxContext()
@@ -195,21 +195,21 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                                 <TabIcmsProduct
                                     dataAddEditProduct={dataAddEditProduct}
                                     setDataAddEditProduct={setDataAddEditProduct}
-                                    icmsOptions={icmsOptions}
+                                    taxOptions={taxOptions}
                                 />
                             </TabPanel>
                             <TabPanel value={value} index={2}>
                                 <TabIcmsSTProduct
                                     dataAddEditProduct={dataAddEditProduct}
                                     setDataAddEditProduct={setDataAddEditProduct}
-                                    icmsOptions={icmsOptions}
+                                    taxOptions={taxOptions}
                                 />
                             </TabPanel>
                             <TabPanel value={value} index={3}>
                                 <TabIpiPisCofinsProduct
                                     dataAddEditProduct={dataAddEditProduct}
                                     setDataAddEditProduct={setDataAddEditProduct}
-                                    taxOptions={icmsOptions}
+                                    taxOptions={taxOptions}
                                 />
                             </TabPanel>
                         </>}

@@ -1,10 +1,12 @@
 import { sharedAddEditProductRequest } from "@shared/api/inventoryManagement/productsRequest"
 import { Dispatch, SetStateAction } from "react"
 
-export type icmsProductProps = {
-    dataAddEditProduct: sharedAddEditProductRequest
-    setDataAddEditProduct: Dispatch<SetStateAction<sharedAddEditProductRequest>>
-    icmsOptions: searchOptions | null
+export type taxTabsType = {
+    dataAddEditProduct?: sharedAddEditProductRequest
+    setDataAddEditProduct?: Dispatch<SetStateAction<sharedAddEditProductRequest>>
+    dataAddEditTaxGroup?: Omit<sharedAddEditProductRequest, 'principal'>
+    setDataAddEditTaxGroup?: Dispatch<SetStateAction<Omit<sharedAddEditProductRequest, 'principal'>>>
+    taxOptions: searchOptions | null
 }
 
 export type icmsType = {
