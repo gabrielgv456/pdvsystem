@@ -23,6 +23,7 @@ import { useMessageBoxContext } from '../../../../contexts/MessageBox/MessageBox
 import { useApi } from '../../../../hooks/useApi';
 import { sharedProdutcsType } from '@shared/api/inventoryManagement/productsResponse';
 import { sharedAddEditProductRequest } from '@shared/api/inventoryManagement/productsRequest';
+import { sharedTaxOptions } from '@shared/api/inventoryManagement/findTaxOptions';
 
 
 
@@ -43,27 +44,28 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
     useEffect(() => {
         async function searchOptions() {
             try {
-                const response = await findIcmsOptions()
+                const response = await findTaxOptions(auth.idUser)
                 if (!response.Success) { throw new Error(response.erro) }
                 settaxOptions(response)
             } catch (error) {
-                MessageBox('error', 'Falha ao buscar opções ICMS!' + ((error as Error).message ?? ''))
+                MessageBox('error', 'Falha ao buscar opções!' + ((error as Error).message ?? ''))
             }
         }
         searchOptions()
     }, [])
 
-    const [taxOptions, settaxOptions] = useState<searchOptions | null>(null)
+    const [taxOptions, settaxOptions] = useState<sharedTaxOptions | null>(null)
     const auth = useContext(AuthContext)
-    const { findIcmsOptions } = useApi()
+    const { findTaxOptions } = useApi()
     const { MessageBox } = useMessageBoxContext()
     const isLess900 = useMediaQuery('(max-width:100px)')
     const [value, setValue] = useState(0);
 
+
     const defaultDataEditProduct: sharedAddEditProductRequest = {
         principal: {
             id: props.itemData?.id ?? null,
-            userId: auth.idUser,
+            userId: auth.idUser ?? 0,
             codRef: props.itemData?.codRef ?? null,
             brand: props.itemData?.brand ?? null,
             exTipi: props.itemData?.exTipi ?? null,
@@ -75,10 +77,11 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
             profitMargin: props.itemData?.profitMargin ?? null,
             barCode: props.itemData?.barCode ?? null,
             ncmCode: props.itemData?.ncmCode ?? null,
-            itemTypeId: (props.itemData ? props.itemData.itemTypeId : null),
+            itemTypeId: props.itemData?.itemTypeId ?? null,
             unitMeasurement: props.itemData?.unitMeasurement ?? 'UN',
             imageId: props.itemData?.imageId ?? null,
-            urlImage: props.itemData?.urlImage ?? null
+            urlImage: props.itemData?.urlImage ?? null,
+            taxGroupId: props.itemData?.taxGroupId ?? null
         },
         icms: {
             TaxIcms: {
@@ -181,39 +184,42 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
 
                     </Tabs>
                 </Box>
-                <div>
-                    <TabPanel value={value} index={0}>
-                        <TabInfoProduct
-                            dataAddEditProduct={dataAddEditProduct}
-                            setDataAddEditProduct={setDataAddEditProduct}
-                            itemData={props.itemData}
-                        />
-                    </TabPanel>
-                    {(auth.user?.plans?.fiscalAccess ?? false) &&
-                        <>
-                            <TabPanel value={value} index={1}>
-                                <TabIcmsProduct
-                                    dataAddEditProduct={dataAddEditProduct}
-                                    setDataAddEditProduct={setDataAddEditProduct}
-                                    taxOptions={taxOptions}
-                                />
-                            </TabPanel>
-                            <TabPanel value={value} index={2}>
-                                <TabIcmsSTProduct
-                                    dataAddEditProduct={dataAddEditProduct}
-                                    setDataAddEditProduct={setDataAddEditProduct}
-                                    taxOptions={taxOptions}
-                                />
-                            </TabPanel>
-                            <TabPanel value={value} index={3}>
-                                <TabIpiPisCofinsProduct
-                                    dataAddEditProduct={dataAddEditProduct}
-                                    setDataAddEditProduct={setDataAddEditProduct}
-                                    taxOptions={taxOptions}
-                                />
-                            </TabPanel>
-                        </>}
-                </div>
+                {taxOptions && (
+                    <div>
+                        <TabPanel value={value} index={0}>
+                            <TabInfoProduct
+                                dataAddEditProduct={dataAddEditProduct}
+                                setDataAddEditProduct={setDataAddEditProduct}
+                                itemData={props.itemData}
+                                taxGroupOptions={taxOptions.taxGroupsOptions}
+                            />
+                        </TabPanel>
+                        {(auth.user?.plans?.fiscalAccess ?? false) &&
+                            <>
+                                <TabPanel value={value} index={1}>
+                                    <TabIcmsProduct
+                                        dataAddEditProduct={dataAddEditProduct}
+                                        setDataAddEditProduct={setDataAddEditProduct}
+                                        taxOptions={taxOptions}
+                                    />
+                                </TabPanel>
+                                <TabPanel value={value} index={2}>
+                                    <TabIcmsSTProduct
+                                        dataAddEditProduct={dataAddEditProduct}
+                                        setDataAddEditProduct={setDataAddEditProduct}
+                                        taxOptions={taxOptions}
+                                    />
+                                </TabPanel>
+                                <TabPanel value={value} index={3}>
+                                    <TabIpiPisCofinsProduct
+                                        dataAddEditProduct={dataAddEditProduct}
+                                        setDataAddEditProduct={setDataAddEditProduct}
+                                        taxOptions={taxOptions}
+                                    />
+                                </TabPanel>
+                            </>}
+
+                    </div>)}
 
                 <SaveProduct
                     type={props.type}
@@ -222,7 +228,8 @@ export const ModalAddEditProduct = (props: PropsModalAddProduct) => {
                     setisModalSucessOpen={props.setisModalSucessOpen}
                     defaultDataEditProduct={defaultDataEditProduct}
                     setDataAddEditProduct={setDataAddEditProduct}
-                ></SaveProduct>
+                />
+
                 <DefaultButtonCloseModal onClick={handleCloseModalAddProduct}>
                     <DefaultIconCloseModal />
                 </DefaultButtonCloseModal>

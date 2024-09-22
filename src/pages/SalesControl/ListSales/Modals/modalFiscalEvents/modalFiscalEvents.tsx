@@ -1,4 +1,4 @@
-import { Modal } from "@mui/material"
+import { Modal, useMediaQuery } from "@mui/material"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { MuiBox } from "src/components/box/muiBox"
 import * as S from './style'
@@ -8,6 +8,7 @@ import { sharedGetFiscalEvents } from "@shared/api/fiscal/getFiscalEvents"
 import { CircularProgressSpinner } from "src/spinners/progress/CircularProgressSpinner"
 import { useMessageBoxContext } from "src/contexts/MessageBox/MessageBoxContext"
 import { PaginatedFooter } from "src/components/paginate/footerPaginate/paginatedFooter"
+import { addSpaces } from "src/utils/utils"
 
 
 type ModalCancelNoteProps = {
@@ -23,6 +24,7 @@ export const ModalFiscalEvents = (props: ModalCancelNoteProps) => {
     const { MessageBox } = useMessageBoxContext()
     const [fiscalEvents, setFiscalEvents] = useState<sharedGetFiscalEvents['fiscalEvents'] | null>(null)
     const [paginatedFiscalEvents, setPaginatedFiscalEvents] = useState(fiscalEvents)
+    const isLess900 = useMediaQuery('(max-width:900px)')
 
     useEffect(() => { setPaginatedFiscalEvents(fiscalEvents) }, [fiscalEvents])
 
@@ -44,7 +46,7 @@ export const ModalFiscalEvents = (props: ModalCancelNoteProps) => {
     return (
 
         <Modal open={props.isModalOpen} onClose={() => props.setIsModalOpen(false)} >
-            <MuiBox desktopWidth={650} mobileWidthPercent="80%" >
+            <MuiBox desktopWidth={1000} mobileWidthPercent="80%" >
                 {isLoading ? <CircularProgressSpinner /> :
                     <S.Container>
                         <table >
@@ -52,6 +54,7 @@ export const ModalFiscalEvents = (props: ModalCancelNoteProps) => {
                                 <tr >
                                     <th>Nº Nota Fiscal</th>
                                     <th>Tipo Evento</th>
+                                    {isLess900 ? '' : <th>Chave</th>}
                                     <th>Protocolo</th>
                                     <th>Horário</th>
                                 </tr>
@@ -62,6 +65,7 @@ export const ModalFiscalEvents = (props: ModalCancelNoteProps) => {
                                     <tr key={index}>
                                         <S.Td>{event.fiscalNote.numberNF}</S.Td>
                                         <S.Td>{event.fiscalEventType.description}</S.Td>
+                                        {isLess900 ? '' : <S.Td>{addSpaces(event.fiscalNote.keyNF, 4)}</S.Td>}
                                         <S.Td>{event.protocol}</S.Td>
                                         <S.Td>{new Date(event.createdAt).toLocaleString()}</S.Td>
                                     </tr>

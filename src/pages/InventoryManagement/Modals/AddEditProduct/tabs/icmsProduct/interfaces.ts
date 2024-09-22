@@ -1,11 +1,12 @@
+import { sharedTaxGroupReqType } from "@shared/api/fiscal/CreatePutTaxGroup"
 import { sharedAddEditProductRequest } from "@shared/api/inventoryManagement/productsRequest"
 import { Dispatch, SetStateAction } from "react"
 
 export type taxTabsType = {
     dataAddEditProduct?: sharedAddEditProductRequest
     setDataAddEditProduct?: Dispatch<SetStateAction<sharedAddEditProductRequest>>
-    dataAddEditTaxGroup?: Omit<sharedAddEditProductRequest, 'principal'>
-    setDataAddEditTaxGroup?: Dispatch<SetStateAction<Omit<sharedAddEditProductRequest, 'principal'>>>
+    dataAddEditTaxGroup?: sharedTaxGroupReqType
+    setDataAddEditTaxGroup?: Dispatch<SetStateAction<sharedTaxGroupReqType>>
     taxOptions: searchOptions | null
 }
 

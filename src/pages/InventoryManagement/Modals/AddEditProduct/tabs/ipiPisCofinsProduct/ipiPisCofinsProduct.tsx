@@ -5,6 +5,7 @@ import { optionsType, searchOptions, taxTabsType } from '../icmsProduct/interfac
 import { ipiPisCofinsProps, taxCofinsType } from './interfaces';
 import { cpfCnpjFormat } from '../../../../../../utils/utils';
 import { sharedAddEditProductRequest } from '@shared/api/inventoryManagement/productsRequest';
+import { DefaultPanel } from 'src/components/panels/defaultPanel';
 
 export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
 
@@ -35,9 +36,9 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                 ...prevState[property],
                 [key]: value,
             },
-         })
+        })
 
-         if (props.setDataAddEditProduct) {
+        if (props.setDataAddEditProduct) {
             props.setDataAddEditProduct(prevState => updateState(prevState));
         }
 
@@ -47,9 +48,12 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
 
     }
 
+    const useTaxGrouping = props.dataAddEditProduct?.principal.taxGroupId ? true : false
+
     if (data) {
         return (
             <S.Container>
+                {useTaxGrouping && <DefaultPanel type='info'> As informações estão definidas pelo grupo de tributação </DefaultPanel>}
                 <S.SectionContainer style={{ marginTop: 0 }}>
                     <b style={{ display: 'flex', alignSelf: 'flex-start', flex: '1 1 100%' }}>IPI</b>
                     <Autocomplete
@@ -61,6 +65,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         id="controllable-states-demo"
                         options={props.taxOptions?.cstIpiExitOptions ?? []}
                         size='small'
+                        disabled={useTaxGrouping}
                         getOptionLabel={(option) => (option.description)}
                         sx={{ flex: '1 1 200px' }}
                         renderInput={(params) =>
@@ -72,7 +77,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                     <TextField
                         value={data.ipi.taxAliquotIpi}
                         onChange={(e) => handleChangeTax('ipi', 'taxAliquotIpi', Number(e.target.value))}
-                        disabled={!findOption('ipi', 'taxCstIpiExitId', 'cstIpiExitOptions')}
+                        disabled={!findOption('ipi', 'taxCstIpiExitId', 'cstIpiExitOptions') || useTaxGrouping}
                         type="number"
                         id="outlined-basic"
                         label="Alíquota IPI(%)"
@@ -84,6 +89,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         onChange={(e) => handleChangeTax('ipi', 'taxClassificationClassIpi', e.target.value)}
                         size='small'
                         id="outlined-basic"
+                        disabled={useTaxGrouping}
                         label="Classe Enquadramento IPI"
                         variant="outlined"
                         sx={{ flex: '1 1 250px' }}
@@ -94,6 +100,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         id="outlined-basic"
                         size='small'
                         label="Selo IPI"
+                        disabled={useTaxGrouping}
                         variant="outlined"
                         sx={{ flex: '1 1 120px' }}
                     />
@@ -103,6 +110,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         type="number"
                         size='small'
                         id="outlined-basic"
+                        disabled={useTaxGrouping}
                         label="Qtde de Selo Controle"
                         variant="outlined"
                         sx={{ flex: '1 1 190px' }}
@@ -113,6 +121,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         type="number"
                         size='small'
                         id="outlined-basic"
+                        disabled={useTaxGrouping}
                         label="Cód. Enquadramento Legal"
                         variant="outlined"
                         sx={{ flex: '1 1 240px' }}
@@ -121,6 +130,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         value={data.ipi.taxCnpjProd}
                         onChange={(e) => handleChangeTax('ipi', 'taxCnpjProd', cpfCnpjFormat(e.target.value))}
                         size='small'
+                        disabled={useTaxGrouping}
                         id="outlined-basic"
                         label="CNPJ Produtor Mercadoria"
                         variant="outlined"
@@ -133,6 +143,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         }}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
+                        disabled={useTaxGrouping}
                         options={props.taxOptions?.cstIpiEntranceOptions ?? []}
                         getOptionLabel={(option) => (option.description)}
                         size='small'
@@ -156,6 +167,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         }}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
+                        disabled={useTaxGrouping}
                         options={props.taxOptions?.cstPisExitOptions ?? []}
                         getOptionLabel={(option) => (option.description)}
                         size='small'
@@ -170,7 +182,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                     <TextField
                         value={data.pis.taxAliquotPisExit}
                         onChange={(e) => handleChangeTax('pis', 'taxAliquotPisExit', Number(e.target.value))}
-                        disabled={!findOption('pis', 'taxCstPisExitId', 'cstPisExitOptions')}
+                        disabled={!findOption('pis', 'taxCstPisExitId', 'cstPisExitOptions') || useTaxGrouping}
                         type="number"
                         id="outlined-basic"
                         size='small'
@@ -188,7 +200,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         options={props.taxOptions?.cstPisEntranceOptions ?? []}
                         size='small'
                         sx={{ flex: '1 1 180px' }}
-
+                        disabled={useTaxGrouping}
                         renderInput={(params) =>
                             <TextField
                                 {...params}
@@ -198,7 +210,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                     <TextField
                         value={data.pis.taxAliquotPisEntrance}
                         onChange={(e) => handleChangeTax('pis', 'taxAliquotPisEntrance', Number(e.target.value))}
-                        disabled={!findOption('pis', 'taxCstPisEntranceId', 'cstPisExitOptions')}
+                        disabled={!findOption('pis', 'taxCstPisEntranceId', 'cstPisExitOptions') || useTaxGrouping}
                         type="number"
                         size='small'
                         id="outlined-basic"
@@ -220,7 +232,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         options={props.taxOptions?.cstCofinsExitOptions ?? []}
                         size='small'
                         sx={{ flex: '1 1 180px' }}
-
+                        disabled={useTaxGrouping}
                         renderInput={(params) =>
                             <TextField
                                 {...params}
@@ -230,7 +242,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                     <TextField
                         value={data.cofins.taxAliquotCofinsExit}
                         onChange={(e) => handleChangeTax('cofins', 'taxAliquotCofinsExit', Number(e.target.value))}
-                        disabled={!findOption('cofins', 'taxCstCofinsExitId', 'cstCofinsExitOptions')}
+                        disabled={!findOption('cofins', 'taxCstCofinsExitId', 'cstCofinsExitOptions') || useTaxGrouping}
                         type="number"
                         id="outlined-basic"
                         size='small'
@@ -248,7 +260,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                         options={props.taxOptions?.cstCofinsEntranceOptions ?? []}
                         size='small'
                         sx={{ flex: '1 1 200px' }}
-
+                        disabled={useTaxGrouping}
                         renderInput={(params) =>
                             <TextField
                                 {...params}
@@ -258,7 +270,7 @@ export const TabIpiPisCofinsProduct = (props: taxTabsType) => {
                     <TextField
                         value={data.cofins.taxAliquotCofinsEntrance}
                         onChange={(e) => handleChangeTax('cofins', 'taxAliquotCofinsEntrance', Number(e.target.value))}
-                        disabled={!findOption('cofins', 'taxCstCofinsEntranceId', 'cstCofinsEntranceOptions')}
+                        disabled={!findOption('cofins', 'taxCstCofinsEntranceId', 'cstCofinsEntranceOptions') || useTaxGrouping}
                         type="number"
                         size='small'
                         id="outlined-basic"

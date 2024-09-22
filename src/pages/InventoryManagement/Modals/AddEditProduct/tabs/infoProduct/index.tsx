@@ -8,24 +8,26 @@ import { useApi } from '../../../../../../hooks/useApi';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useMessageBoxContext } from '../../../../../../contexts/MessageBox/MessageBoxContext';
 import { removeNotNumerics, strTofixed2Float } from '../../../../../../utils/utils';
-import { addEditProductDataPrincipal } from '../../saveProduct/interfaces';
 import { UploadImage } from '../../../../../../components/uploadImage/uploadImage';
 import { AuthContext } from 'src/contexts/Auth/AuthContext';
+import { sharedAddEditProductRequest } from '@shared/api/inventoryManagement/productsRequest';
+import { optionsType } from '../icmsProduct/interfaces';
+import { taxGroupsOptions } from '@shared/api/inventoryManagement/findTaxOptions';
 
 export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
 
-    const { findItemType, findNCM } = useApi()
+    const { findItemType, findNCM, getTaxGroupsById } = useApi()
     const [selectedUnitMeasurement, setSelectedUnitMeasurement] = useState<string | null>(props.itemData?.unitMeasurement ?? 'UN')
     const { MessageBox } = useMessageBoxContext()
-    const { user } = useContext(AuthContext)
+    const { idUser } = useContext(AuthContext)
     const [optionsItensType, setOptionsItensType] = useState<type.itemType[]>([])
     const [selectedItemType, setSelectedItemType] = useState<type.itemType | null>(null)
     const optionsUnitMeasurement = ['UN']
     const [ncmCode, setNcmCode] = useState<type.ncmType | null>(null)
     const [optionsNCM, setOptionsNCM] = useState<type.ncmType[]>([])
 
-    function handleChangeData<T extends keyof addEditProductDataPrincipal>(
-        property: T, value: addEditProductDataPrincipal[T]) {
+    function handleChangeData<T extends keyof sharedAddEditProductRequest['principal']>(
+        property: T, value: sharedAddEditProductRequest['principal'][T]) {
         props.setDataAddEditProduct(prevState => {
             return {
                 ...prevState,
@@ -35,6 +37,15 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                 }
             }
         })
+    }
+
+    function findTaxGroupOption(): taxGroupsOptions | null {
+        if (!props.taxGroupOptions || !props.itemData) return null
+        const taxId = props.dataAddEditProduct.principal.taxGroupId
+        const array: taxGroupsOptions[] = props.taxGroupOptions
+        return array.find(
+            item => item.id === taxId)
+            ?? null
     }
 
     useEffect(() => {
@@ -127,6 +138,32 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
         const newValueProduct = parseFloat((costProduct + (costProduct * (profit / 100))) + "").toFixed(2)
         handleChangeData('value', Number(newValueProduct))
     }
+
+    async function handleChangeTaxGroup(newValue: taxGroupsOptions | null) {
+        try {
+            if (newValue?.id) {
+                const response = await getTaxGroupsById(idUser, newValue.id)
+                if (!response.Success) throw new Error(response.erro)
+                props.setDataAddEditProduct({
+                    ...props.dataAddEditProduct,
+                    cofins: response.taxGroup.taxCofins,
+                    ipi: response.taxGroup.taxIpi,
+                    pis: response.taxGroup.taxPis,
+                    icms: {
+                        ...props.dataAddEditProduct.icms,
+                        TaxIcmsNfce: response.taxGroup.taxIcms.taxIcmsNfce,
+                        TaxIcmsNfe: response.taxGroup.taxIcms.taxIcmsNfe,
+                        TaxIcmsNoPayer: response.taxGroup.taxIcms.taxIcmsNoPayer,
+                        TaxIcmsST: response.taxGroup.taxIcms.taxIcmsSt
+                    }
+                })
+            }
+            handleChangeData('taxGroupId', newValue?.id ?? null)
+        } catch (error) {
+            MessageBox('error', 'Ocorreu uma falha ao buscar o grupo de tributação! ' + (error as Error).message)
+        }
+    }
+
 
     return (
 
@@ -295,7 +332,22 @@ export const TabInfoProduct = memo((props: type.tabInfoProductProps) => {
                 } />
  */}
 
-
+            <Autocomplete
+                value={findTaxGroupOption()}
+                onChange={(event: any, newValue: taxGroupsOptions | null) => {
+                    handleChangeTaxGroup(newValue)
+                }}
+                noOptionsText="Não encontrado"
+                id="controllable-states-demo"
+                options={props.taxGroupOptions}
+                sx={{ flex: '1 1 600px' }}
+                getOptionLabel={(option) => (option.code + ' - ' + option.description)}
+                renderInput={(params) =>
+                    <TextField
+                        {...params}
+                        label="Grupo de tributação"
+                    />
+                } />
         </S.DivModalAddProduct >
     )
 })

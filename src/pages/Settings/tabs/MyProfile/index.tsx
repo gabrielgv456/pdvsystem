@@ -24,7 +24,6 @@ export const TabMyProfile = () => {
                 const dataFindAboutCorporation = await findAboutCorporation(auth.idUser)
                 if (!dataFindAboutCorporation.Success) { throw new Error(dataFindAboutCorporation.erro) }
                 const { resultAboutCorporation } = dataFindAboutCorporation
-                console.log(resultAboutCorporation)
                 setDataProfile({
                     name: resultAboutCorporation.name,
                     cnpj: resultAboutCorporation.cnpj,
@@ -181,7 +180,6 @@ export const TabMyProfile = () => {
                 throw new Error("Erro ao atualizar dados da empresa! " + dataChangeAboutCorporation.erro)
             }
             const newUser: User | null = dataChangeAboutCorporation.updateAbouteCorporation
-            console.log(newUser)
             if (auth.user) {
                 auth.setUser({ ...auth.user, ...newUser })
             }

@@ -97,7 +97,6 @@ export function Listagem(props: Props) {
       try {
          const result = await getXmlFiscalNote(sellId)
          if (!result.Success) throw new Error(result.Erro ?? 'Erro Desconhecido')
-         console.log(result)
          downloadXMLFile(result.xml, result.keyNF)
       } catch (error) {
          MessageBox('error', 'Ocorreu uma falha ao baixar o XML! ' + (error as Error).message)

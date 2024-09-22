@@ -19,7 +19,9 @@ import { sharedSignInResponse } from '@shared/api/login/sign';
 import { sharedFiscalNotesSuccess } from '@shared/api/fiscal/getFiscalNotes';
 import { sharedProducts } from '@shared/api/inventoryManagement/productsResponse';
 import { sharedAddEditProductRequest } from '@shared/api/inventoryManagement/productsRequest';
-import { taxGroupsType } from '@shared/api/fiscal/getTaxGroups';
+import { taxGroups, taxGroupsType, typeGroupByIdRes } from '@shared/api/fiscal/getTaxGroups';
+import { sharedTaxGroupReqType, sharedTaxGroupResType } from '@shared/api/fiscal/CreatePutTaxGroup';
+import { sharedTaxOptions } from '@shared/api/inventoryManagement/findTaxOptions';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API,
@@ -163,13 +165,14 @@ export const useApi = () => ({
         return response.data
     },
     findAboutCorporation: async (userId: number) => {
-        const response = await api.get(`/aboutCorporation?storeId=${userId}`)
+        const response = await api.get(`/aboutCorporation`, { params: { storeId: userId } })
         const result: findAbourCorporationType = response.data
         return result
     },
-    findIcmsOptions: async () => {
-        const response = await api.get('/findIcmsOptions')
-        return response.data
+    findTaxOptions: async (userId: number) => {
+        const response = await api.get('/findTaxOptions', { params: { userId } })
+        const result: sharedTaxOptions = response.data
+        return result
     },
     findNCM: async () => {
         const response = await api.get('/listNCM')
@@ -265,6 +268,18 @@ export const useApi = () => ({
     }, getTaxGroups: async (idUser: number) => {
         const response = await api.get('/taxGroups', { params: { idUser } })
         const result: taxGroupsType = response.data
+        return result
+    }, getTaxGroupsById: async (idUser: number, id: number) => {
+        const response = await api.get('/taxGroups', { params: { idUser, id } })
+        const result: typeGroupByIdRes  = response.data
+        return result
+    }, postTaxGroups: async (data: sharedTaxGroupReqType) => {
+        const response = await api.post('/taxGroups', { ...data })
+        const result: sharedTaxGroupResType = response.data
+        return result
+    }, putTaxGroups: async (data: sharedTaxGroupReqType) => {
+        const response = await api.put('/taxGroups', { ...data })
+        const result: sharedTaxGroupResType = response.data
         return result
     }
 });

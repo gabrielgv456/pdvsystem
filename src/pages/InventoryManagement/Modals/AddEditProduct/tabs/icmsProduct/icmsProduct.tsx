@@ -2,7 +2,8 @@ import * as S from './style'
 import * as type from './interfaces'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { removeNotNumerics, strTofixed2Float } from '../../../../../../utils/utils';
+import { strTofixed2Float } from '../../../../../../utils/utils';
+import { DefaultPanel } from 'src/components/panels/defaultPanel';
 
 export const TabIcmsProduct = (props: type.taxTabsType) => {
 
@@ -48,16 +49,19 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
         }
     }
 
+    const useTaxGrouping = props.dataAddEditProduct?.principal.taxGroupId ? true : false
 
     if (data) {
         return (
             <S.Container>
+                {useTaxGrouping && <DefaultPanel type='info'> As informações estão definidas pelo grupo de tributação </DefaultPanel>}
                 <S.SectionContainer style={{ marginTop: 0 }}>
                     <Autocomplete
                         value={findOption('TaxIcms', 'taxIcmsOriginId', 'originOptions')}
                         onChange={(event: any, newValue: type.optionsType | null) => {
                             handleChangeTax('TaxIcms', 'taxIcmsOriginId', newValue?.id ?? null)
                         }}
+                        disabled={useTaxGrouping}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
                         options={props.taxOptions?.originOptions ?? []}
@@ -77,6 +81,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         }}
                         type="number"
                         id="outlined-basic"
+                        disabled={useTaxGrouping}
                         label="Alíquota FCP(%)"
                         variant="outlined"
                         size='small'
@@ -90,6 +95,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         onChange={(_event: any, newValue: type.optionsType | null) => {
                             handleChangeTax('TaxIcmsNfe', 'taxCstIcmsId', newValue?.id ?? null)
                         }}
+                        disabled={useTaxGrouping}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
                         options={props.taxOptions?.cstOptions ?? []}
@@ -107,7 +113,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         onChange={(_event: any, newValue: type.optionsType | null) => {
                             handleChangeTax('TaxIcmsNfe', 'taxModalityBCId', newValue?.id ?? null)
                         }}
-                        disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
                         options={props.taxOptions?.modalityOptions ?? []}
@@ -124,7 +130,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         value={data.icms.TaxIcmsNfe.taxRedBCICMS}
                         onChange={(e) => handleChangeTax('TaxIcmsNfe', 'taxRedBCICMS', strTofixed2Float(e.target.value))}
                         type="number"
-                        disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         id="outlined-basic"
                         title='Percentual de redução da base de calculo ICMS'
                         label="Red. BC ICMS(%)"
@@ -137,7 +143,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         onChange={(e) => handleChangeTax('TaxIcmsNfe', 'taxAliquotIcms', strTofixed2Float(e.target.value))}
                         type="number"
                         id="outlined-basic"
-                        disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         label="Alíquota ICMS(%)"
                         variant="outlined"
                         size='small'
@@ -148,7 +154,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                             handleChangeTax('TaxIcmsNfe', 'taxReasonExemptionId', newValue?.id ?? null)
                         }}
                         noOptionsText="Não encontrado"
-                        disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNfe', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         id="controllable-states-demo"
                         options={props.taxOptions?.exemptionOptions ?? []}
                         sx={{ flex: '1 2 270px' }}
@@ -167,6 +173,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         }}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
+                        disabled={useTaxGrouping}
                         getOptionLabel={(option) => (option.id + ' - ' + option.description)}
                         options={props.taxOptions?.cfopStateOptions ?? []}
                         sx={{ flex: '1 1 170px' }}
@@ -186,6 +193,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         id="controllable-states-demo"
                         options={props.taxOptions?.cfopInterstateOptions ?? []}
                         getOptionLabel={(option) => (option.id + ' - ' + option.description)}
+                        disabled={useTaxGrouping}
                         sx={{ flex: '1 1 200px' }}
                         size='small'
                         renderInput={(params) =>
@@ -205,6 +213,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         }}
                         noOptionsText="Não encontrado"
                         id="controllable-states-demo"
+                        disabled={useTaxGrouping}
                         options={props.taxOptions?.cstOptions ?? []}
                         getOptionLabel={(option) => (option.description)}
                         sx={{ flex: '1 4 250px' }}
@@ -219,7 +228,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         value={data.icms.TaxIcmsNoPayer.taxRedBCICMS}
                         onChange={(e) => handleChangeTax('TaxIcmsNoPayer', 'taxRedBCICMS', strTofixed2Float(e.target.value))}
                         type="number"
-                        disabled={!findOption('TaxIcmsNoPayer', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNoPayer', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         id="outlined-basic"
                         label="Red. BC ICMS(%)"
                         variant="outlined"
@@ -231,7 +240,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         onChange={(e) => handleChangeTax('TaxIcmsNoPayer', 'taxAliquotIcms', strTofixed2Float(e.target.value))}
                         type="number"
                         id="outlined-basic"
-                        disabled={!findOption('TaxIcmsNoPayer', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNoPayer', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         label="Alíquota ICMS(%)"
                         variant="outlined"
                         size='small'
@@ -246,6 +255,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                             handleChangeTax('TaxIcmsNfce', 'taxCstIcmsId', newValue?.id ?? null)
                         }}
                         noOptionsText="Não encontrado"
+                        disabled={useTaxGrouping}
                         id="controllable-states-demo"
                         options={props.taxOptions?.cstOptions ?? []}
                         getOptionLabel={(option) => (option.description)}
@@ -261,7 +271,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         value={data.icms.TaxIcmsNfce.taxAliquotIcms}
                         onChange={(e) => handleChangeTax('TaxIcmsNfce', 'taxAliquotIcms', strTofixed2Float(e.target.value))}
                         type="number"
-                        disabled={!findOption('TaxIcmsNfce', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNfce', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         id="outlined-basic"
                         label="Alíquota ICMS(%)"
                         variant="outlined"
@@ -271,7 +281,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                         value={data.icms.TaxIcmsNfce.taxRedBCICMS}
                         onChange={(e) => handleChangeTax('TaxIcmsNfce', 'taxRedBCICMS', strTofixed2Float(e.target.value))}
                         type="number"
-                        disabled={!findOption('TaxIcmsNfce', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNfce', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         id="outlined-basic"
                         label="Red. BC ICMS(%)"
                         variant="outlined"
@@ -284,7 +294,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                             handleChangeTax('TaxIcmsNfce', 'taxCfopId', newValue?.id ?? null)
                         }}
                         noOptionsText="Não encontrado"
-                        disabled={!findOption('TaxIcmsNfce', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNfce', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         id="controllable-states-demo"
                         options={props.taxOptions?.cfopNfceOptions ?? []}
                         getOptionLabel={(option) => (option.id + ' - ' + option.description)}
@@ -302,7 +312,7 @@ export const TabIcmsProduct = (props: type.taxTabsType) => {
                             handleChangeTax('TaxIcmsNfce', 'taxCfopDevolutionId', newValue?.id ?? null)
                         }}
                         noOptionsText="Não encontrado"
-                        disabled={!findOption('TaxIcmsNfce', 'taxCstIcmsId', 'cstOptions')}
+                        disabled={!findOption('TaxIcmsNfce', 'taxCstIcmsId', 'cstOptions') || useTaxGrouping}
                         id="controllable-states-demo"
                         getOptionLabel={(option) => (option.id + ' - ' + option.description)}
                         options={props.taxOptions?.cfopNfceDevolutionOptions ?? []}

@@ -17,18 +17,7 @@ import { normalizeAndLowercase } from 'src/utils/utils'
 export const TabTaxGroups = () => {
 
     useEffect(() => {
-        async function load() {
-            try {
-                const result = await getTaxGroups(idUser)
-                if (!result.Success) throw new Error(result.erro ?? 'Erro Desconhecido')
-                setTaxGroups(result.taxGroups)
-            } catch (error) {
-                MessageBox('error', 'Ocorreu uma falaha ao localizar os grupos de tributação! ' + (error as Error).message)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        load()
+        searchTaxGroups()
     }, [])
 
     const { idUser } = useContext(AuthContext)
@@ -41,9 +30,28 @@ export const TabTaxGroups = () => {
     const [isModalAddTaxGroupOpen, setIsModalAddTaxGroupOpen] = useState(false)
     const [inputSearchTaxGroup, setInputSearchTaxGroup] = useState('')
     const filteredTaxGroups = taxGroups?.filter(item => normalizeAndLowercase(item.description).includes(normalizeAndLowercase(inputSearchTaxGroup)))
+    const [selectedTaxGroup, setSelectedTaxGroup] = useState<taxGroups | null>(null)
+
+    async function searchTaxGroups() {
+        try {
+            setIsLoading(true)
+            const result = await getTaxGroups(idUser)
+            if (!result.Success) throw new Error(result.erro ?? 'Erro Desconhecido')
+            setTaxGroups(result.taxGroups)
+        } catch (error) {
+            MessageBox('error', 'Ocorreu uma falha ao localizar os grupos de tributação! ' + (error as Error).message)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    function handleEditTaxGroup(taxGroup: taxGroups) {
+        setSelectedTaxGroup(taxGroup)
+        setIsModalEditTaxGroupOpen(true)
+    }
 
     return (
-        <>
+        <div>
             <S.Header>
                 <S.DivSearch>
                     <BsSearch style={{ margin: '15px', color: "#9eaab5" }} size="18" />
@@ -63,14 +71,15 @@ export const TabTaxGroups = () => {
 
             {isLoading ? <CircularProgressSpinner /> :
                 (filteredTaxGroups &&
-                    <DefaultTable headers={['', 'Descrição']}
+                    <DefaultTable headers={['', 'Código', 'Descrição']}
 
                         rows={filteredTaxGroups.map(item => {
                             return {
                                 active: true,
                                 alignment: 'center',
                                 columns: [
-                                    { component: <S.ButtonEdit onClick={() => { setIsModalEditTaxGroupOpen(true) }} title="Editar Grupo de Tributação"><HiOutlinePencilAlt size="1.2rem" /></S.ButtonEdit> },
+                                    { component: <S.ButtonEdit onClick={() => { handleEditTaxGroup(item) }} title="Editar Grupo de Tributação"><HiOutlinePencilAlt size="1.2rem" /></S.ButtonEdit> },
+                                    { component: item.code },
                                     { component: item.description }
                                 ]
                             }
@@ -82,13 +91,19 @@ export const TabTaxGroups = () => {
             <ModalAddEditTaxGroup
                 type='Add'
                 isModalOpen={isModalAddTaxGroupOpen}
+                searchTaxGroups={searchTaxGroups}
                 setIsModalOpen={setIsModalAddTaxGroupOpen}
             />
-            <ModalAddEditTaxGroup
-                type='Edit'
-                isModalOpen={isModalEditTaxGroupOpen}
-                setIsModalOpen={setIsModalEditTaxGroupOpen}
-            />
-        </>
+
+            {selectedTaxGroup &&
+                < ModalAddEditTaxGroup
+                    type='Edit'
+                    selectedTaxGroup={selectedTaxGroup}
+                    searchTaxGroups={searchTaxGroups}
+                    isModalOpen={isModalEditTaxGroupOpen}
+                    setIsModalOpen={setIsModalEditTaxGroupOpen}
+                />
+            }
+        </div>
     )
 }

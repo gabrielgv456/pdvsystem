@@ -155,7 +155,7 @@ export const InventoryManagement = () => {
 
 
                                     {/* <S.DivRightFooterProducts> */}
-                                    <td colSpan={2}>
+                                    <td colSpan={2} style={{textAlign:'center'}}>
                                         <label>Qtd Total: {ProductsReturnApi.reduce((acc, item) => { return acc + (item.quantity ?? 0) }, 0)}</label>
                                     </td>
                                     <td>

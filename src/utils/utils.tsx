@@ -357,8 +357,13 @@ export function limitLength(length: number, str: string) {
     return str.substring(0, length) + '...'
   else
     return str
-} 
+}
 
 export function normalizeAndLowercase(str: string): string {
   return str.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+}
+
+export function addSpaces(str: string, qtd: number) {
+  const regex = new RegExp(`(.{${qtd}})`, 'g');
+  return str.replace(regex, '$1 ').trim();
 }
