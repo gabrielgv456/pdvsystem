@@ -1,46 +1,177 @@
-# Getting Started with Create React App
+# 🛍️ PDV System Frontend (ReactJS)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A Point‑of‑Sale (PDV) frontend application built with React and TypeScript.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📑 Table of Contents
 
-### `npm start`
+- [ℹ️ About](#about)  
+- [✨ Features](#features)  
+- [🛠 Tech Stack](#tech-stack)  
+- [🚀 Getting Started](#getting-started)  
+  - [✅ Prerequisites](#prerequisites)  
+  - [📥 Installation](#installation)  
+  - [▶️ Running Locally](#running-locally)  
+  - [📦 Building for Production](#building-for-production)  
+- [⚙️ Environment Variables](#environment-variables)  
+- [📂 Project Structure](#project-structure)  
+- [🧪 Testing](#testing)  
+- [🌐 Deployment](#deployment)  
+- [🤝 Contributing](#contributing)  
+- [📜 License](#license)  
+- [📧 Contact](#contact)  
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## ℹ️ About
 
-### `npm test`
+**PDV System Frontend** is the user interface for a complete point-of-sale system.  
+It provides features such as product lookup, cart management, sales finalization, and more — built with React and TypeScript.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## ✨ Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- 🔎 Product browsing / search  
+- 🛒 Cart / checkout interface  
+- 🔗 Integration with backend APIs (for data, sales, inventory)  
+- 📱 Responsive UI  
+- 🟦 Type safety with TypeScript  
+- ⚡ Build optimized for production  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🛠 Tech Stack
 
-### `npm run eject`
+- ⚛️ **Framework / Library**: React  
+- 🟦 **Language**: TypeScript  
+- 📦 **Bundler / Tooling**: Create React App  
+- 🌍 **Version control**: Git / GitHub  
+- 🎨 **Styling**: (CSS Modules, Tailwind, etc.)  
+- 📡 **Other dependencies**: Axios / State Management  
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+---
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🚀 Getting Started
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### ✅ Prerequisites
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Make sure you have:
 
-## Learn More
+- 🟩 Node.js (≥ 16.x recommended)  
+- 📦 npm (or yarn)  
+- 🔑 Git  
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 📥 Installation
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Clone this repo:
+
+   ```bash
+   git clone https://github.com/gabrielgv456/pdvsystem.git
+   cd pdvsystem
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   # or
+   yarn
+   ```
+
+### ▶️ Running Locally
+
+To start the development server:
+
+```bash
+npm start
+# or
+yarn start
+```
+
+Access 👉 [http://localhost:3000](http://localhost:3000)
+
+### 📦 Building for Production
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+---
+
+## ⚙️ Environment Variables
+
+Example `.env`:
+
+```dotenv
+REACT_APP_API_BASE_URL=https://api.yourdomain.com
+```
+
+---
+
+## 📂 Project Structure
+
+```
+pdvsystem/
+├── public/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── hooks/
+│   ├── contexts/
+│   ├── styles/
+│   ├── utils/
+│   ├── App.tsx
+│   └── index.tsx
+├── .env
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+npm test
+# or
+yarn test
+```
+
+---
+
+## 🌐 Deployment
+
+- 🚀 Netlify, Vercel, GitHub Pages, or custom hosting.  
+
+---
+
+## 🤝 Contributing
+
+1. 🍴 Fork this repo  
+2. 🌱 Create a branch (`git checkout -b feature/xyz`)  
+3. 💾 Commit your changes  
+4. 📤 Push to your branch  
+5. 🔀 Open a Pull Request  
+
+---
+
+## 📜 License
+
+MIT License
+
+---
+
+## 📧 Contact
+
+👤 Author: [Gabriel Gonçalves](https://github.com/gabrielgv456)  
+📩 Issues? Use the GitHub [Issues tab](https://github.com/gabrielgv456/pdvsystem/issues)
+
+---
+
+⭐ If you like this project, give it a star on GitHub!  
